@@ -1,0 +1,212 @@
+<div class="wrapper wrapper-full-page">
+	<div class="full-page">
+
+		<section class="left">
+			<article>
+				<img [@fadeIn]="{value: true, params: {distance: '25%', timing: '750ms'}}" src="assets/img/symbolmark-light-transparent.png" alt="4iiz Logo">
+
+				<div [@fadeIn]="{value: true, params: {distance: '10%', timing: '1000ms'}}">
+					<h2 class="subheading">Optimization Software<span class="version">{{appVersion}}</span></h2>
+					<p>Building a community around sales, systems and marketing insights that will skyrocket your business to the next level.</p>
+					<button class="transparent"> Sign in to continue ></button>
+				</div>
+
+				<div class="social" [@fadeIn]="{value: true, params: {distance: '0%', timing: '1000ms'}}">
+					<div class="title">Get social with us:</div>
+					<a href="https://www.facebook.com/4iiz-Software-107858220719484/" target="_blank">
+						<i class="fab fa-facebook-square"></i>
+					</a>
+					<a href="https://www.linkedin.com/company/4iiz/" target="_blank">
+						<i class="fab fa-linkedin"></i>
+					</a>
+				</div>
+			</article>
+		</section>
+
+		<section class="right">
+			<div class="form-container">
+				<!-- <ng-container 
+					[ngTemplateOutlet]="isLoading ? loadingTemplate : loginTemplate" 
+					*ngIf="showForm === 'login'" 
+					[ngTemplateOutletContext]="{loadingText: loadingMessage}">
+				</ng-container> -->
+				<ng-container 
+					[ngTemplateOutlet]="loginTemplate" 
+					*ngIf="showForm === 'login'" 
+				>
+				</ng-container>
+
+				<ng-template #loginTemplate>
+					<form [formGroup]="loginForm" (ngSubmit)="login()"  id="login-form" >
+						<h2>Sign In</h2>
+
+						<fiiz-input
+								id="username"
+								formControlName="username"
+								type="text"
+								placeholder="Username">
+						</fiiz-input>
+
+						<fiiz-input
+								id="password"
+								formControlName="password"
+								type="password"
+								required
+								minlength="12">
+						</fiiz-input>
+
+						<label for="remember_me">
+							<input type="checkbox" formControlName="remember_me" id="remember_me"> Remember me
+						</label>
+						<input type="submit" class="primary large" value="Let's Go!">
+
+						<button class="forgot-password transparent large" type="button" (click)="updateShowForm('forgot-password')">Forgot password?</button>
+						<div style="color:red; margin: 0 0 0 54px;" *ngIf="hasError">{{errorMessage}}</div>
+					</form>
+				</ng-template>
+
+				<!-- <form (ngSubmit)="restorePassword()" id="forgot-form" name="forgot-form" smart-validate-form *ngIf="showForm === 'forgot-password'">
+
+					<h2>{{'FORGOT_PASSWORD' | translate}}</h2>
+
+					<input type="text"
+						   id="forgot-pass-user"
+						   name="forgot-pass-user"
+						   placeholder="Enter your Username"
+						   class="form-control"
+						   [(ngModel)]="forgot.username"
+						   smart-validate-input
+						   required>
+
+					<input type="submit" value="{{'RESTORE'| translate}}" style="margin-top:20px;">
+
+					<button type="button" id="forgot-btn" (click)="updateShowForm('login')">{{'BACK'| translate}}</button>
+
+				</form>
+
+				<form (ngSubmit)="handleUser()" id="new-user-form" name="new-user-form" smart-validate-form *ngIf="showForm === 'new-user'">
+
+					<ng-container [ngTemplateOutlet]="isLoading ? loadingTemplate : newUserTemplate"
+								  [ngTemplateOutletContext]="{loadingText: 'Checking Invitation...'}"></ng-container>
+
+					<ng-template #newUserTemplate>
+						<h2>{{'NEW_USER_FORM_TITLE' | translate}}</h2>
+
+						<label for="create-user-username" style="display:none;"></label>
+						<input type="text"
+							   id="create-user-username"
+							   name="create-user-username"
+							   class="form-control"
+							   placeholder="{{ 'NEW_USER_USERNAME' | translate}}"
+							   [(ngModel)]="newUser.username"
+							   smart-validate-input
+							   autocomplete="new-password"
+							   required>
+
+						<label for="create-user-password" style="display:none;"></label>
+						<input type="password"
+							   name="create-user-password"
+							   id="create-user-password"
+							   placeholder="{{ 'NEW_USER_PASSWORD' | translate}}"
+							   class="form-control"
+							   [(ngModel)]="newUser.password"
+							   smart-validate-input
+							   autocomplete="new-password"
+							   required
+							   minlength="12">
+
+						<label for="create-user-confirm-password" style="display:none;"></label>
+						<input type="password"
+							   id="create-user-confirm-password"
+							   autocomplete="new-password"
+							   name="create-user-confirm-password"
+							   placeholder="{{'USER_CONFIRM_PASSWORD' | translate}}"
+							   class="form-control"
+							   required smart-validate-input
+							   [attr.confirmPassword]="newUser.password"
+							   minlength="12">
+
+						<p class="category text-center" *ngIf="showTokenExpiredMsg" style="color:red;">
+							{{'TOKEN_EXPIRED_BODY' | translate}}
+						</p>
+
+						<input type="submit"
+							   id="create-user-btn"
+							   value="{{'CONFIRM'| translate}}"
+							   [disabled]="isLoading">
+
+						<button type="button" id="forgot-btn2" (click)="updateShowForm('forgot-password')">{{'BACK' | translate}}</button>
+
+					</ng-template>
+
+
+				</form>
+
+				<form (ngSubmit)="handleResetPassword()" id="reset-password-form" name="reset-password-form" smart-validate-form *ngIf="showForm === 'reset-password'">
+
+					<h2>{{'RESET_PASSWORD' | translate}}</h2>
+
+					<label for="reset-password-username" style="display:none;"></label>
+					<input type="text"
+						   id="reset-password-username"
+						   class="form-control"
+						   name="reset-password-username"
+						   [value]="forgot.username"
+						   smart-validate-input
+						   disabled
+						   required>
+
+					<input type="text"
+						   id="reset-password-confirmation-code"
+						   class="form-control"
+						   placeholder="Confirmation Code"
+						   autocomplete="new-password"
+						   name="reset-password-confirmation-code"
+						   [(ngModel)]="resetPassword.confirmationCode"
+						   smart-validate-input
+						   required>
+
+					<label for="reset-password-password" style="display:none;"></label>
+					<input type="password"
+						   id="reset-password-password"
+						   class="form-control"
+						   placeholder="{{'FORGOT_PASSWORD_PASSWORD' | translate}}"
+						   autocomplete="new-password"
+						   name="reset-password-password"
+						   [(ngModel)]="resetPassword.password"
+						   smart-validate-input
+						   required
+						   minlength="12">
+
+					<label for="reset-password-confirm-password" style="display:none;"></label>
+					<input name="reset-password-confirm-password"
+						   id="reset-password-confirm-password"
+						   autocomplete="new-password"
+						   type="password"
+						   placeholder="{{'USER_CONFIRM_PASSWORD' | translate}}"
+						   class="form-control"
+						   required
+						   smart-validate-input
+						   [attr.confirmPassword]="resetPassword.password"
+						   minlength="12">
+
+					<p class="category text-center" *ngIf="showTokenExpiredMsg" style="color:red;">
+						{{'TOKEN_EXPIRED_BODY' | translate}}
+					</p>
+
+					<input type="submit" id="reset-password-btn" value="{{'CONFIRM'| translate}}">
+
+					<button type="button" id="forgot-btn3" (click)="updateShowForm('forgot-password')">{{'BACK' | translate}}</button>
+
+				</form> -->
+
+			</div>
+
+		</section>
+	</div>
+</div>
+
+
+<!-- <ng-template #loadingTemplate let-loadingText="loadingText">
+	<app-loading>{{loadingText}}</app-loading>
+</ng-template> -->

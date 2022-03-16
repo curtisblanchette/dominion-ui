@@ -1,0 +1,112 @@
+@import '~src/assets/css/variables';
+
+  /* class applies to select element itself, not a wrapper element */
+:host {
+  display: block;
+  position: relative;
+  margin-bottom: .75em;
+
+
+
+  @keyframes line {
+    from {
+      left: 50%;
+      width: 0;
+    }
+    to {
+      left: 0;
+      width: 100%;
+    }
+  }
+
+
+  label {
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-bottom: 0;
+    position: absolute;
+    left:0;
+    top: -14px;
+  }
+
+  textarea {
+    position: relative;
+    display: block;
+    font-size: 14px;
+    font-family: Roboto, sans-serif;
+    font-weight: 400;
+    color: $blue5;
+    line-height: 1.25em;
+    padding: 5px 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    box-shadow: $form-control-shadow;
+    border-radius: 2px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    z-index: 1;
+    cursor: text;
+    resize: none;
+
+    &:focus {
+      /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
+      box-shadow: 0 0 1px 2px $blue2;
+      box-shadow: 0 0 0 1px -moz-mac-focusring;
+      color: #222;
+      outline: none;
+    }
+
+    &:after {
+      position:absolute;
+      display:block;
+      content: '';
+      width:0;
+      height:2px;
+      bottom:0;
+      background: red;
+    }
+
+    &.ng-invalid.ng-dirty {
+      &:after {
+        width: 100%;
+        animation: line .25s forwards;
+      }
+    }
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    &::-webkit-autofill:focus {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    &:disabled, &[aria-disabled=true] {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    &:disabled:hover, &[aria-disabled=true] {
+      border-color: #aaa;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+  }
+
+
+
+}
+
+
+

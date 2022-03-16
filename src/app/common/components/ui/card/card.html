@@ -1,0 +1,4 @@
+<div class="fiiz-card-component" [ngClass]="{'dark': darkHeader}">
+	<div class="card-title" *ngIf="title"><i class="fa {{icon}}" *ngIf="icon"></i> {{title}}</div>
+	<ng-content></ng-content>
+</div>

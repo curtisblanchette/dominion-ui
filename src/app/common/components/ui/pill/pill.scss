@@ -1,0 +1,39 @@
+.fiiz-pill-component {
+  display: block;
+  text-align: center;
+  background: green;
+  width: fit-content;
+  border-radius: 2px;
+  padding: 0 .5em;
+  border: 1px solid rgba(0,0,0,0.22);
+
+  &.grey {
+    background-image: linear-gradient(180deg, #96A1B4 0%, #64738E 100%);
+  }
+
+  &.green {
+    background-image: linear-gradient(180deg, #65D400 0%, #35A900 100%);
+  }
+
+  &.red {
+    background-image: linear-gradient(180deg, #EE7979 0%, #D84444 100%);
+  }
+
+  &.blue {
+    background-image: linear-gradient(180deg, #0CB0F8 0%, #006D9C 100%);
+  }
+
+  &.yellow {
+    background-image: linear-gradient(180deg, #F4C457 0%, #C89B35  100%);
+  }
+
+  .title {
+    color: white;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: Roboto, sans-serif;
+    line-height: 18px;
+    display: block;
+  }
+}

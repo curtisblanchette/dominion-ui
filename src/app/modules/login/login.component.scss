@@ -1,0 +1,121 @@
+.full-page {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    border-right: 5px solid #0CB0F8;
+    overflow: hidden;
+  
+    section {
+      display: flex;
+      flex: 1;
+      justify-content: space-around;
+      align-items: center;
+      flex-direction:column;
+      position:relative;
+  
+      &:first-child {
+        background-image: linear-gradient(179deg, #0CB0F8 0%, #006D9C 100%);
+  
+        .version {
+          font-size: 14px;
+          color: #85C8ED;
+        }
+  
+        h2.subheading {
+          font-size: 36px;
+        }
+        &:after {
+          display:block;
+          position:absolute;
+          right:0;
+          pointer-events: none;
+          content: url(/assets/img/sign-in-cookie-cutter.svg);
+        }
+      }
+  
+      article {
+        width: 400px;
+        color: white;
+  
+        img {
+          display: block;
+        }
+  
+        p {
+          font-size: 16px;
+        }
+  
+        button {
+          padding: 0;
+          border: none;
+          background: none;
+          font-size: 16px;
+          font-weight: 500;
+        }
+  
+        .social {
+          margin-top: 96px;
+  
+          .title {
+            color: white;
+            font-size: 14px;
+            font-weight: 400;
+          }
+  
+          a {
+            color: white;
+  
+            .fab {
+              font-size: 28px;
+              margin: 5px;
+            }
+          }
+        }
+      }
+  
+      .form-container {
+        width: 254px;
+  
+        form {
+  
+          h2 {
+            font-size: 24px;
+            font-weight: 400;
+          }
+  
+  
+          input[type=text], input[type=password], label, input[type=submit], button {
+            width: 100%;
+          }
+  
+          input[type=text], input[type=password] {
+            padding: 0 1em;
+  
+            &::placeholder {
+              font-size: 12px;
+            }
+          }
+  
+          label {
+            margin: 10px 0 20px 0;
+            font-size: 12px;
+          }
+  
+          button {
+            border: none;
+            background: none;
+          }
+        }
+      }
+  
+    }
+  
+    .left {
+      background: lightblue;
+    }
+    .right {
+      background: white;
+    }
+  }
+  
+  

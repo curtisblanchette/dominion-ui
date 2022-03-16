@@ -1,0 +1,131 @@
+@mixin fiizBorder($placement, $size, $color) {
+  background-image:
+          repeating-linear-gradient(-60deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
+          repeating-linear-gradient(30deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
+          repeating-linear-gradient(120deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
+          repeating-linear-gradient(210deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px);
+
+  @if $placement == 'left' {
+    background-size: $size 100%, 100% 0, 0 100%, 100% 0;
+  }
+
+  @if $placement == 'top' {
+    background-size: 0 100%, 100% $size, 100% 0, 100% 0;
+  }
+
+  @if $placement == 'right' {
+    background-size: 0 100%, 100% 0, $size 100%, 100% 0;
+  }
+
+  @if $placement == 'bottom' {
+    background-size: 0 100%, 100% 0, 0 100%, 100% $size;
+  }
+
+  @if $placement == 'all' {
+    background-size: $size 100%, 100% $size, $size 100%, 100% $size;
+  }
+
+  background-position: 0 0, 0 0, 100% 0, 0 100%;
+  background-repeat: no-repeat;
+}
+
+
+@mixin triangle($direction, $width, $height, $color, $borderColor: "") {
+  width: 0;
+  height: 0;
+
+  @if $direction == 'up' {
+    border-left: $height + px solid transparent;
+    border-right: $height + px solid transparent;
+    border-bottom: $height + px solid $color;
+
+    @if unquote($borderColor) {
+      &:before {
+        content: '';
+        display: block;
+        position: relative;
+        top: -$height;
+        left: 2px;
+        width: 0;
+        height: 0;
+        border-left: $height + 1 + px solid transparent;
+        border-right: $height + 1 + px solid transparent;
+        border-bottom: $height + 1 + px solid $borderColor;
+      }
+    }
+  }
+
+  @if $direction == 'down' {
+    border-left: $height + px solid transparent;
+    border-right: $height + px solid transparent;
+    border-top: $height + px solid $color;
+
+    @if unquote($borderColor) {
+      &:before {
+        content: '';
+        display: block;
+        position: relative;
+        top: -$height;
+        left: 2px;
+        width: 0;
+        height: 0;
+        border-left: $height + 1 + px solid transparent;
+        border-right: $height + 1 + px solid transparent;
+        border-top: $height + 1 + px solid $borderColor;
+      }
+    }
+  }
+
+
+  @if $direction == 'right' {
+    border-top: $height + px solid transparent;
+    border-bottom: $height + px solid transparent;
+    border-left: $width + px solid $color;
+
+    @if unquote($borderColor) {
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: -11px;
+        right: -1px;
+        z-index: -1;
+        width: 0;
+        height: 0;
+        border-top: $height + 1 + px solid transparent;
+        border-bottom: $height + 1 + px solid transparent;
+        border-left: $width + 1 + px solid $borderColor;
+      }
+    }
+  }
+
+  @if $direction == 'left' {
+    border-top: $height + px solid transparent;
+    border-bottom: $height + px solid transparent;
+    border-right: $height + px solid $color;
+
+
+    @if unquote($borderColor) {
+      &:before {
+        content: '';
+        display: block;
+        position: relative;
+        top: -$height;
+        left: 2px;
+        width: 0;
+        height: 0;
+        border-top: $height + 3 + px solid transparent;
+        border-bottom: $height + 3 + px solid transparent;
+        border-right: $height + 3 + px solid $borderColor;
+      }
+    }
+  }
+
+
+}
+
+@mixin ellipsis() {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

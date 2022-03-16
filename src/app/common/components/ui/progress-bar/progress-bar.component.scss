@@ -1,0 +1,55 @@
+@import '~src/assets/css/variables';
+
+:host {
+  width: 100%;
+}
+
+.fiiz-progress {
+  width: 100%;
+
+  &__label {
+    color: #003247;
+    font-size:12px;
+    font-weight: 500;
+    line-height: 1em;
+  }
+  &__metric {
+    font-size: 26px;
+    line-height: 1em;
+    font-weight: 700;
+    color: $blue3-shaded;
+  }
+  &__bar {
+    width: 100%;
+    height: 10px;
+    border-radius: 6px;
+    position:relative;
+    margin-bottom: 3px;
+    box-shadow: 0 2px 2px rgba(0,0,0,.15);
+    background-image: linear-gradient(0deg, #E8F3FF 0%, #CDE4FF 100%);
+    background-image: url('assets/img/progress-bar-pattern.png'), linear-gradient(0deg, #E8F3FF 0%, #CDE4FF 100%);
+
+    &__fill {
+      position:absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      background: linear-gradient(180deg, #D84444 0%, #9B2525 100%);
+      border-radius: 6px;
+      height: 100%;
+      transition: width .75s ease-out;
+    }
+
+    &__marker {
+
+      &__min, &__goal {
+        text-align: right;
+        font-size: 12px;
+        position:absolute;
+        top: 10px;
+        font-weight: 700;
+        span:first-child { font-weight: 300; }
+      }
+    }
+  }
+}

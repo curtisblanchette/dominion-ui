@@ -1,0 +1,23 @@
+<label [for]="id" *ngIf="label">{{label}}</label>
+<ng-container *ngIf="type !== 'textarea'">
+	<input [id]="id"
+		   [type]="type"
+		   [minlength]="minlength"
+		   [maxlength]="maxlength"
+		   [attr.min]="min"
+		   [attr.max]="max"
+		   [placeholder]="placeholder"
+		   [value]="value"
+		   [autofocus]="autofocus"
+		   [(ngModel)]="value"
+		   [disabled]="disabled"
+		   [ngClass]="{'number': type === 'number'}"
+		   (ngModelChange)="changed($event)"/>
+</ng-container>
+
+<ng-container *ngIf="type === 'textarea'">
+	<textarea class="text-area" [id]="id" [attr.min]="min" [attr.max]="max" [placeholder]="placeholder"
+			  [disabled]="disabled">
+		value
+	</textarea>
+</ng-container>

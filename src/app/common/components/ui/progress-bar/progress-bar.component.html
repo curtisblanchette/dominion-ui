@@ -1,0 +1,12 @@
+<div class="fiiz-progress" #container>
+	<div style="display:flex; justify-content: flex-end; align-items: center; margin-bottom: 5px;">
+		<span class="fiiz-progress__label">{{label}}</span>
+		<!-- <span class="fiiz-progress__metric" animate-number [amount]="_value || 0"></span><span class="fiiz-progress__metric" *ngIf="percentage">%</span> -->
+		<span class="fiiz-progress__metric" animate-number ></span><span class="fiiz-progress__metric" *ngIf="percentage">%</span>
+	</div>
+	<div class="fiiz-progress__bar" [ngStyle]="{'height': height + 'px'}">
+		<div class="fiiz-progress__bar__fill" [ngStyle]="{'width': fillPercentage, 'background-image': fillColor}"></div>
+		<div *ngIf="showMarkers" #minMarker class="fiiz-progress__bar__marker__min" [ngStyle]="{'left': minMarkerX}"><span>min</span> <span>{{min}}</span></div>
+		<div *ngIf="showMarkers" #goalMarker class="fiiz-progress__bar__marker__goal" [ngStyle]="{'left': goalMarkerX, width: (goalMarkerWidth + 1) + 'px'}"><span>goal</span> <span>{{goal}}</span></div>
+	</div>
+</div>

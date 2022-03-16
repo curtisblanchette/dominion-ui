@@ -1,0 +1,120 @@
+@import '~src/assets/css/variables';
+
+/* class applies to select element itself, not a wrapper element */
+:host {
+  display: block;
+  position: relative;
+  margin-bottom: .5em;
+
+  &.ng-invalid {
+    input {
+      border-bottom: 2px solid red;
+    }
+  }
+
+  &:after {
+    display: block;
+    position: absolute;
+    content: '';
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    background: red;
+  }
+
+  &.ng-invalid.ng-dirty {
+    &:after {
+      width: 100%;
+      animation: line .25s forwards;
+    }
+  }
+
+  @keyframes line {
+    from {
+      left: 50%;
+      width: 0;
+    }
+    to {
+      left: 0;
+      width: 100%;
+    }
+  }
+
+
+  label {
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-bottom: 0;
+    position: absolute;
+    left: 0;
+    top: -14px;
+  }
+
+  input {
+    position: relative;
+    display: block;
+    font-size: 12px;
+    font-family: Roboto, sans-serif;
+    font-weight: 500;
+    color: $blue5;
+    line-height: 35px;
+    padding: 0 12px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    box-shadow: $form-control-shadow;
+    border-radius: 2px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    cursor: text;
+
+    &.number {
+      text-align: right;
+    }
+    &:focus {
+      /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
+      box-shadow: 0 0 1px 2px $blue2;
+      box-shadow: 0 0 0 1px -moz-mac-focusring;
+      color: #222;
+      outline: none;
+    }
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    &::-webkit-autofill:focus {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    &:disabled, &[aria-disabled=true] {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    &:disabled:hover, &[aria-disabled=true] {
+      border-color: #aaa;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
+
+
+}
+
+
+

@@ -1,0 +1,49 @@
+@import '~src/assets/css/variables';
+
+:host {
+  display: block;
+  width: fit-content;
+
+  nav {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+    display: flex;
+    width: fit-content;
+    justify-content: center;
+
+    div {
+      margin-bottom: -1px;
+      transition: border-bottom-color .1s ease-in-out;
+      border-bottom-color: rgba(0,0,0,0);
+
+      button {
+        border: 0;
+        background: none;
+        padding: .5em 3vw;
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        color: $slate1;
+        border-radius: 2px 2px 0 0;
+        height: 55px;
+        &:hover {
+          background: none!important;
+        }
+      }
+
+      &:hover {
+        border-bottom: 2px solid $slate0;
+      }
+
+      &.active {
+        border-bottom: 4px solid $blue3;
+
+        button {
+          font-weight: 700;
+          color: $blue3;
+
+        }
+      }
+    }
+  }
+
+}

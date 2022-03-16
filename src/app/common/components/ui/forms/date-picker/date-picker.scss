@@ -1,0 +1,119 @@
+@import '~src/assets/css/variables';
+
+/* class applies to select element itself, not a wrapper element */
+:host {
+  display: block;
+  width: fit-content;
+  position: relative;
+  margin-bottom: .5em;
+
+  &.ng-invalid {
+    input {
+      border-bottom: 2px solid red;
+    }
+  }
+
+
+  label {
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-bottom: 0;
+    position: absolute;
+    left:0;
+    top: -14px;
+  }
+
+  .input-wrapper {
+    position: relative;
+
+    &.disabled:after{
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    &:after {
+      position: absolute;
+      pointer-events: none;
+      color: #1D607D;
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      font-size: 12px;
+      content: '\f133';
+      display: block;
+      bottom: 8px;
+      right: 10px;
+    }
+
+    .label-control {
+      font-size: 12px;
+      position: absolute;
+      top: -12px;
+      margin-bottom: 0;
+    }
+  }
+
+
+  input {
+    display: block;
+    font-size: 12px;
+    font-family: Roboto, sans-serif;
+    font-weight: 500;
+    color: $blue5;
+    line-height: 1.3;
+    padding: 11px 30px 9px 12px;
+    width: 110px;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    box-shadow: $form-control-shadow;
+    border-radius: 2px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    cursor: pointer;
+
+
+    &:focus {
+      /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
+      box-shadow: 0 0 1px 2px $blue2;
+      box-shadow: 0 0 0 1px -moz-mac-focusring;
+      color: #222;
+      outline: none;
+    }
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    option {
+      font-weight: normal;
+    }
+
+    &:disabled, &[aria-disabled=true] {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    &:disabled:hover, &[aria-disabled=true] {
+      border-color: #aaa;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
+
+
+}
+
+
+

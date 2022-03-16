@@ -1,0 +1,5 @@
+<nav>
+	<div [routerLink]="item.routerLink" [routerLinkActive]="'active'" *ngFor="let item of navItems">
+		<button class="full-width transparent">{{item.label}}</button>
+	</div>
+</nav>
