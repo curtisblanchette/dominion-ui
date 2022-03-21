@@ -39,5 +39,5 @@ export class User {
       this.name = name;
       this.calendarType = calendarType;
     }
-  }
+}
   

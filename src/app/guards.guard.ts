@@ -17,37 +17,20 @@ export class GuardsGuard implements CanActivate {
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     
-    return this.store.select(fromRoot.getUser).pipe(
-      switchMap((userData) => {    
-        const isUserLoggedIn:boolean = userData ? true : false;
-        const path = route.routeConfig?.path;
-        let $return:boolean = false;
-        if( userData ){
-          if( path != 'login' ){
-            if( isUserLoggedIn ){
-              $return = true;
-            } else {
-              this.router.navigate(['login']);
-              $return = false;
-            }
-          } else {
-            if( isUserLoggedIn ){
-              this.router.navigate(['dashboard']);
-            } else {
-              $return = true;
-            }
-          }
+  
+    return this.store.select( fromRoot.getUser ).pipe(
+      switchMap((userData) => {
+        console.log( 'userData',userData );
+        if (userData !== null) {
+          console.log( 'in block - logged in');
+          return of(true);
         } else {
-          if( path != 'login' ){
-            $return = false;
-            this.router.navigate(['login']);
-          } else {
-            $return = true;
-          }
+          console.log( 'in else block - not logged in');
+          return of(false);
         }
-        return of($return);
       })
-    );
+    );    
+
   }
   
 }

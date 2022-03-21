@@ -45,15 +45,17 @@ function getWorkspaceInitialState(){
 export const initialState: State = {
     user : getUserInitialState(),
     agent: getAgentInitialState(),
-    workspace: getWorkspaceInitialState(),
+    workspace: getWorkspaceInitialState()
 };
 
 export const reducer = createReducer(
     initialState,
-    on(loginActions.LogUserAction, (state, { payload }) => ( {...state, user: payload} )),
+    on(loginActions.LogUserAction, (state, { payload }) => ({...state, ...payload })),
+    on(loginActions.LogInSuccesfullAction, (state, { payload }) => ( {...state, user: payload} )),
+    on(loginActions.LogInErrorAction, (state) => ( {...state } )),
     on(loginActions.SetAgentRecord, (state, { payload }) => ( {...state, agent: payload} )),
     on(loginActions.SetWorkspaceRecord, (state, { payload }) => ( {...state, workspace: payload} )),
-    on(loginActions.LogoutUserAction, (state) => ( { user: null, agent : null, workspace : null} ))
+    on(loginActions.LogoutUserAction, (state) => ( { user: null, agent : null, workspace : null } ))
 );
 
 export const getUserRecord = (state:State) => state.user;

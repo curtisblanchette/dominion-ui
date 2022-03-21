@@ -42,7 +42,7 @@ export class LoginService {
   public logout() {
     localStorage.clear();
     this.store.dispatch(loginActions.LogoutUserAction());    
-    this.router.navigate(['/login']);
+    this.router.navigate(['login']);
   }
 
 }

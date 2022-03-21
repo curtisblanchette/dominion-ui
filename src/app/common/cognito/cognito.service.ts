@@ -83,7 +83,7 @@ export class CognitoService {
   public authenticateUser(authenticationData: { Username: any; }) {
 
     const authenticationDetails = new AuthenticationDetails(authenticationData);
-    console.log('authenticationDetails',authenticationDetails);
+
     this.cognitoUserData = {
       Username: authenticationData.Username,
       Pool: this.cognitoUserPool
