@@ -16,8 +16,8 @@ export class GuardsGuard implements CanActivate {
   ){}
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    
-  
+
+
     return this.store.select( fromRoot.getUser ).pipe(
       switchMap((userData) => {
         console.log( 'userData',userData );
@@ -29,8 +29,8 @@ export class GuardsGuard implements CanActivate {
           return of(false);
         }
       })
-    );    
+    );
 
   }
-  
+
 }

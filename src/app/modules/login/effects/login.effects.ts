@@ -14,8 +14,8 @@ export class loginEffects{
     constructor( private actions$:Actions, private loginService:LoginService, private router:Router, private store:Store ){
         console.log('adas');
     }
-    
-    // login$ = createEffect(():any => 
+
+    // login$ = createEffect(():any =>
     //     this.actions$.pipe(
     //         ofType(loginActions.LogUserAction),
     //         switchMap( (action) => {
@@ -39,7 +39,7 @@ export class loginEffects{
     //     { dispatch: true }
     // );
 
-    login$ = createEffect(():any => 
+    login$ = createEffect(():any =>
         this.actions$.pipe(
             ofType(loginActions.LogUserAction),
             mergeMap( (action) => {
@@ -64,7 +64,7 @@ export class loginEffects{
         )
     );
 
-    navigateToDashboard$ = createEffect(
+    loginSuccess$ = createEffect(
         ():any =>
           this.actions$.pipe(
             ofType(loginActions.LogInSuccesfullAction),

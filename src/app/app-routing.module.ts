@@ -6,16 +6,16 @@ import { GuardsGuard } from './guards.guard';
 
 const routes: Routes = [
   {
-    path: '', 
-    redirectTo: 'login', 
-    pathMatch: 'full' 
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
   {
-    canActivate: [GuardsGuard],
+    // canActivate: [GuardsGuard],
     path : 'login',
     component : LoginComponent
   },
-  { 
+  {
     canActivate: [GuardsGuard],
     path : 'dashboard',
     component : DashboardComponent
