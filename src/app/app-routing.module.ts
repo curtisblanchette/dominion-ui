@@ -12,13 +12,17 @@ const routes: Routes = [
   },
   {
     // canActivate: [GuardsGuard],
-    path : 'login',
-    component : LoginComponent
+    path: 'login',
+    component: LoginComponent
   },
   {
     canActivate: [GuardsGuard],
-    path : 'dashboard',
-    component : DashboardComponent
+    path: 'dashboard',
+    component: DashboardComponent
+  },
+  {
+    path: 'flow',
+    loadChildren: () => import('./flow/flow.module').then( m => m.FlowModule)
   }
 ];
 
@@ -26,4 +30,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}
