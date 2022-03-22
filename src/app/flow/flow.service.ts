@@ -28,7 +28,7 @@ export class FlowService {
 
     const condition1 = new FlowCondition(true, third);
     const condition2 = new FlowCondition(false, fourth);
-      const condition3 = new FlowCondition(false, first);
+    const condition3 = new FlowCondition(false, first);
     const router1 = new FlowRouter('Router 1', [condition1, condition2, condition3]);
 
     const link2 = new FlowLink(second, router1);
