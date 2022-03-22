@@ -33,16 +33,7 @@ export class FlowService {
 
     const link2 = new FlowLink(second, router1);
 
-    this.addStep(first);
-    this.addStep(second);
-    this.addStep(third);
-    this.addStep(fourth);
-
-    this.addLink(link1);
-
-    this.addRouter(router1);
-
-    this.addLink(link2);
+    this.addStep(first).addStep(second).addStep(third).addStep(fourth).addLink(link1).addRouter(router1).addLink(link2);
 
   }
 
@@ -53,14 +44,17 @@ export class FlowService {
 
   public addStep(step: FlowStepItem) {
     this.steps.push(step);
+    return this;
   }
 
   public addRouter(router: FlowRouter) {
     this.routers.push(router);
+    return this;
   }
 
   public addLink(link: FlowLink) {
     this.links.push(link);
+    return this;
   }
 
 }
