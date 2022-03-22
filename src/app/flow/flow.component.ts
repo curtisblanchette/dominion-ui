@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
-import { FlowDirective, FlowStepItem } from "./common";
+import { FlowDirective, FlowRouter, FlowStepItem } from "./common";
 import { IStep } from "./common/flow.step.interface";
 
 
@@ -34,22 +34,24 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onNext() {
-    // find a link where the from is equal to currentStep
+    // find a link where the "from" is equal to "currentStep"
     const link = this.flowService.links.find(link => link.from.id === this.currentStep.id);
 
-    if (link) {
+    if (link?.to instanceof FlowStepItem) {
       const step = this.flowService.steps.find(step => step.id === link.to.id);
 
       if (step) {
         this.renderComponent(step);
       }
-    } else {
-      // Houston, we have a problem.
+    } else if (link?.to instanceof FlowRouter) {
+      const step = link.to.evaluate();
+      this.renderComponent(step);
     }
+
   }
 
   public onBack() {
-    // find a link where the from is equal to currentStep
+    // find a link where the "from" is equal to "currentStep"
     const link = this.flowService.links.find(link => link.to.id === this.currentStep.id);
 
     if (link) {

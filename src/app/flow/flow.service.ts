@@ -4,22 +4,9 @@ import { FlowRouter } from "./common/flow.router";
 import { FlowLink } from "./common/flow.link";
 import { Injectable } from "@angular/core";
 import { FlowComponent } from "./flow.component";
-import { FlowStepItem } from "./common";
+import { FlowCondition, FlowStepItem } from "./common";
 import { TextComponent } from "./components/text.component";
 import { DataComponent } from "./components/data.component";
-
-// const search = new FlowStep('Search', StepComponent);
-// const create = new FlowStep('Create Lead', new Component({}));
-// const selectReferral = new FlowStep('Select Referral', new Component({}));
-// const relationshipBuilding = new FlowStep('Relationship Building', new Component({}));
-//
-// const condition1 = new FlowCondition(true, selectReferral);
-// const condition2 = new FlowCondition(false, relationshipBuilding);
-// const router1 = new FlowRouter('Create New Lead?', [condition1]);
-//
-// const link1 = new FlowLink(search, create);
-// const link2 = new FlowLink(create, router1);
-// const link3 = new FlowLink(selectReferral, relationshipBuilding);
 
 @Injectable()
 export class FlowService {
@@ -31,16 +18,31 @@ export class FlowService {
   public currentStep: FlowStepItem;
 
   constructor(
-    private router: Router
   ) {
     const first = new FlowStepItem('First', TextComponent, {title: 'First', body: 'The first step'} );
     const second = new FlowStepItem('Second', DataComponent, {title: 'Second', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com'} )
     const link1 = new FlowLink(first, second);
 
+    const third = new FlowStepItem('Third', TextComponent, {title: 'Third', body: 'The third step'} );
+    const fourth = new FlowStepItem('Fourth', TextComponent, {title: 'Fourth', body: 'The fourth step'} );
+
+    const condition1 = new FlowCondition(true, third);
+    const condition2 = new FlowCondition(false, fourth);
+      const condition3 = new FlowCondition(false, first);
+    const router1 = new FlowRouter('Router 1', [condition1, condition2, condition3]);
+
+    const link2 = new FlowLink(second, router1);
+
     this.addStep(first);
     this.addStep(second);
+    this.addStep(third);
+    this.addStep(fourth);
 
     this.addLink(link1);
+
+    this.addRouter(router1);
+
+    this.addLink(link2);
 
   }
 
@@ -59,14 +61,6 @@ export class FlowService {
 
   public addLink(link: FlowLink) {
     this.links.push(link);
-  }
-
-  public next() {
-
-  }
-
-  public back() {
-
   }
 
 }

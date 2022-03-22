@@ -1,6 +1,6 @@
-import { FlowBaseModel, FlowStep, FlowRouter } from "./";
+import { FlowBaseModel, FlowStep, FlowRouter, FlowStepItem } from "./";
 
-export interface IEvaluation {
+export class IEvaluation {
   module: string;
   attribute: string;
   operator: FlowConditionOperators;
@@ -17,11 +17,11 @@ export enum FlowConditionOperators {
 
 export class FlowCondition extends FlowBaseModel {
   public evaluation: boolean | Function | IEvaluation;
-  public to: FlowStep | FlowRouter;
+  public to: FlowStepItem | FlowRouter;
 
   constructor(
     evaluation: boolean | Function | IEvaluation,
-    to: FlowStep | FlowRouter
+    to: FlowStepItem | FlowRouter
   ) {
     super();
     this.evaluation = evaluation;
@@ -29,6 +29,17 @@ export class FlowCondition extends FlowBaseModel {
   }
 
   public evaluate() {
+    if(this.evaluation instanceof IEvaluation) {
+      // check the module
+      // for an attribute
+      // that matches the value
+      // using the operator
+    }
+
+    if(this.evaluation instanceof Function) {
+      return this.evaluation;
+    }
+
     return this.evaluation;
   }
 }
