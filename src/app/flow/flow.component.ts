@@ -6,13 +6,42 @@ import { IStep } from "./common/flow.step.interface";
 
 @Component({
   template: `
-    <div>
-      <h3>Call Flow</h3>
-      <ng-template flowHost></ng-template>
-      <button (click)="onBack()" [disabled]="breadcrumbs.length === 1">Back</button>
-      <button (click)="onNext()" >Next</button>
+    <div class="container">
+      <h1>Call Flowz</h1>
+      <section>
+        <ng-template flowHost></ng-template>
+      </section>
+
+      <div class="controls">
+        <button (click)="onBack()" [disabled]="breadcrumbs.length === 1">Back</button>
+        <button class=primary (click)="onNext()">Next</button>
+      </div>
+
     </div>
-  `
+  `,
+  styles: [`
+    :host {
+      display: flex;
+      justify-content: space-around;
+    }
+    .container {
+      width: 768px;
+      display: flex;
+      flex-direction: column;
+
+      .controls {
+        display: inherit;
+        justify-content: space-between;
+      }
+    }
+    section {
+      height: 500px;
+      position: relative;
+    }
+    section ng-component {
+      width: 100%;
+    }
+  `]
 })
 export class FlowComponent implements OnInit, OnDestroy {
 
@@ -38,18 +67,17 @@ export class FlowComponent implements OnInit, OnDestroy {
   public onNext() {
     // find a link where the "from" is equal to "currentStep"
     const link = this.flowService.links.find(link => link.from.id === this.currentStep.id);
+    let step: FlowStep | FlowRouter | undefined = link?.to;
 
-    if (link?.to instanceof FlowStep) {
-      const step = this.flowService.steps.find(step => step.id === link.to.id);
-
-      if (step) {
-        this.breadcrumbs.push(step);
-        this.renderComponent(step);
+    if(step) {
+      if (step instanceof FlowRouter) {
+        step = (<FlowRouter>step).evaluate();
       }
-    } else if (link?.to instanceof FlowRouter) {
-      const step = link.to.evaluate();
+
       this.breadcrumbs.push(step);
-      this.renderComponent(step);
+      this.renderComponent(<FlowStep>step);
+    } else {
+      console.warn('No step found to transition to.');
     }
 
   }
@@ -59,20 +87,6 @@ export class FlowComponent implements OnInit, OnDestroy {
       this.breadcrumbs.pop();
       this.renderComponent(this.breadcrumbs[this.breadcrumbs.length - 1]);
     }
-
-    // find a link where the "from" is equal to "currentStep"
-    // const link = this.flowService.links.find(link => link.to.id === this.currentStep.id);
-    //
-    // if (link?.from instanceof FlowStep) {
-    //   const step = this.flowService.steps.find(step => step.id === link.from.id);
-    //
-    //   if (step) {
-    //     this.renderComponent(step);
-    //   }
-    //
-    // } else if (link?.from) {
-    //   // Houston, we have a problem.
-    // }
   }
 
   public renderComponent(step: FlowStep) {
@@ -81,6 +95,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     const componentRef = this.flowHost.viewContainerRef.createComponent<IStep>(step.component);
     componentRef.instance.data = step.data;
+
   }
 
 

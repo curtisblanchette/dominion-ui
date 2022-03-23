@@ -1,9 +1,9 @@
 import { Component, Input } from "@angular/core";
-import { animate, style, transition, trigger } from "@angular/animations";
+import { FlowAnimations } from "../common";
 
 @Component({
   template: `
-    <div @animate>
+    <div [@slide]="direction">
       <h2>{{data.title}}</h2>
       <label for="firstName">First Name <input type="text" id="firstName" [value]="data.firstName"></label>
       <label for="lastName">Last Name <input type="text" id="lastName" [value]="data.lastName"></label>
@@ -11,19 +11,12 @@ import { animate, style, transition, trigger } from "@angular/animations";
       <label for="email">Email <input type="text" id="email" [value]="data.email"></label>
     </div>
   `,
-  animations: [
-    trigger('animate', [
-      transition(':enter', [
-        style({ opacity: '0' }),
-        animate('.25s ease-in-out', style({ opacity: '1' })),
-      ]),
-      transition(':leave', [
-        animate('.25s ease-in-out', style({ opacity: '0' }))
-      ])
-    ])
-  ]
+  animations: FlowAnimations,
+  styleUrls: ['_base.scss'],
+  host: { '[@slide]': 'direction' }
 })
 export class DataComponent {
+  direction: string = 'next';
   @Input() data: any;
 
   public save() {

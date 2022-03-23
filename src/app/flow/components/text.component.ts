@@ -1,27 +1,19 @@
 import { Component, Input } from "@angular/core";
-import { animate, style, transition, trigger } from "@angular/animations";
+import { FlowAnimations } from "../common";
 
 @Component({
   template: `
-    <div @animate>
+    <div [@slide]="direction">
       <h2>{{data.title}}</h2>
       {{data.body}}
     </div>
-`,
-  animations: [
-    trigger('animate', [
-      transition(':enter', [
-        style({ opacity: '0' }),
-        animate('.25s ease-in-out', style({ opacity: '1' })),
-      ]),
-      transition(':leave', [
-        animate('.25s ease-in-out', style({ opacity: '0' }))
-      ])
-    ])
-  ]
+  `,
+  animations: FlowAnimations,
+  styleUrls: ['_base.scss'],
+  host: { '[@slide]': 'direction' }
 })
 export class TextComponent {
-
+  direction: string = 'next';
   @Input() data: any;
 
   public save() {
