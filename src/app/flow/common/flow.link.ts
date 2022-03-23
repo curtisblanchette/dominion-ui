@@ -1,15 +1,14 @@
 import { FlowRouter } from "./flow.router";
 import { FlowBaseModel } from "./flow.baseModel";
 import { FlowStep } from "./flow.step";
-import { FlowStepItem } from "./flow.step-item";
 
 export class FlowLink extends FlowBaseModel {
-  public from: FlowStepItem;
-  public to: FlowStepItem | FlowRouter;
+  public from: FlowStep;
+  public to: FlowStep | FlowRouter;
 
   constructor(
-    from: FlowStepItem,
-    to: FlowStepItem | FlowRouter
+    from: FlowStep,
+    to: FlowStep | FlowRouter
   ) {
     super();
     this.from = from;

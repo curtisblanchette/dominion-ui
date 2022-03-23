@@ -1,4 +1,4 @@
-import { FlowBaseModel, FlowStep, FlowRouter, FlowStepItem } from "./";
+import { FlowBaseModel, FlowStep, FlowRouter } from "./";
 
 export class IEvaluation {
   module: string;
@@ -17,11 +17,11 @@ export enum FlowConditionOperators {
 
 export class FlowCondition extends FlowBaseModel {
   public evaluation: boolean | Function | IEvaluation;
-  public to: FlowStepItem | FlowRouter;
+  public to: FlowStep | FlowRouter;
 
   constructor(
     evaluation: boolean | Function | IEvaluation,
-    to: FlowStepItem | FlowRouter
+    to: FlowStep | FlowRouter
   ) {
     super();
     this.evaluation = evaluation;

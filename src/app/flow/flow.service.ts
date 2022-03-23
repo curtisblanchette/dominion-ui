@@ -1,33 +1,29 @@
-import { Router } from "@angular/router";
-import { FlowStep } from "./common/flow.step";
-import { FlowRouter } from "./common/flow.router";
-import { FlowLink } from "./common/flow.link";
+import { FlowStep, FlowRouter, FlowLink } from "./common";
 import { Injectable } from "@angular/core";
-import { FlowComponent } from "./flow.component";
-import { FlowCondition, FlowStepItem } from "./common";
+import { FlowCondition } from "./common";
 import { TextComponent } from "./components/text.component";
 import { DataComponent } from "./components/data.component";
 
 @Injectable()
 export class FlowService {
 
-  public steps: FlowStepItem[] = [];
+  public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
   public links: FlowLink[] = [];
 
-  public currentStep: FlowStepItem;
+  public currentStep: FlowStep;
 
   constructor(
   ) {
-    const first = new FlowStepItem('First', TextComponent, {title: 'First', body: 'The first step'} );
-    const second = new FlowStepItem('Second', DataComponent, {title: 'Second', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com'} )
+    const first = new FlowStep('First', TextComponent, {title: 'First', body: 'The first step'} );
+    const second = new FlowStep('Second', DataComponent, {title: 'Second', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com'} )
     const link1 = new FlowLink(first, second);
 
-    const third = new FlowStepItem('Third', TextComponent, {title: 'Third', body: 'The third step'} );
-    const fourth = new FlowStepItem('Fourth', TextComponent, {title: 'Fourth', body: 'The fourth step'} );
+    const third = new FlowStep('Third', TextComponent, {title: 'Third', body: 'The third step'} );
+    const fourth = new FlowStep('Fourth', TextComponent, {title: 'Fourth', body: 'The fourth step'} );
 
-    const condition1 = new FlowCondition(true, third);
-    const condition2 = new FlowCondition(false, fourth);
+    const condition1 = new FlowCondition(false, third);
+    const condition2 = new FlowCondition(true, fourth);
     const condition3 = new FlowCondition(false, first);
     const router1 = new FlowRouter('Router 1', [condition1, condition2, condition3]);
 
@@ -37,12 +33,12 @@ export class FlowService {
 
   }
 
-  public getFirstStep(): FlowStepItem {
+  public getFirstStep(): FlowStep {
     this.currentStep = this.steps[0];
     return this.steps[0];
   }
 
-  public addStep(step: FlowStepItem) {
+  public addStep(step: FlowStep) {
     this.steps.push(step);
     return this;
   }

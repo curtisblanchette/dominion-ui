@@ -1,6 +1,4 @@
-import { FlowCondition } from "./flow.condition";
-import { FlowNode } from "./flow.node";
-import { FlowStepItem } from "./flow.step-item";
+import { FlowStep, FlowNode, FlowCondition } from "./";
 
 export class FlowRouter extends FlowNode {
   public conditions: FlowCondition[];
@@ -9,12 +7,12 @@ export class FlowRouter extends FlowNode {
     nodeText: string,
     conditions: FlowCondition[]
   ) {
-    super(nodeText, undefined);
+    super(nodeText);
     this.conditions = conditions;
   }
 
-  public evaluate(): FlowStepItem {
-    return <FlowStepItem>this.conditions.find(condition => condition.evaluate())?.to;
+  public evaluate(): FlowStep {
+    return <FlowStep>this.conditions.find(condition => condition.evaluate())?.to;
   }
 
 }
