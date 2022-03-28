@@ -1,9 +1,12 @@
 import { animate, style, transition, trigger } from "@angular/animations";
 
-const timing = '250ms';
+
+const duration = '250ms';
+const delay = '0ms';
 const easing = 'ease-out';
 
-export const FlowAnimations = [
+
+export const FlowTransitions = [
   trigger('slide', [
     transition(
       "void => prev", // ---> Entering --->
@@ -18,7 +21,7 @@ export const FlowAnimations = [
           opacity: 0
         }),
         animate(
-          `${timing} ${easing}`,
+          `${duration} ${delay} ${easing}`,
           style({
             transform: 'translateX(0)',
             opacity: 1
@@ -29,7 +32,7 @@ export const FlowAnimations = [
     transition(	"prev => void", // ---> Leaving --->
       [
         animate(
-          `${timing} ${easing}`,
+          `${duration} ${delay} ${easing}`,
           style({
             transform: 'translateX(20%)',
             opacity: 0
@@ -49,7 +52,7 @@ export const FlowAnimations = [
           opacity: 0,
         }),
         animate(
-          `${timing} ${easing}`,
+          `${duration} ${delay} ${easing}`,
           style({
             transform: 'translateX(0)',
             opacity: 1,
@@ -61,7 +64,7 @@ export const FlowAnimations = [
       "next => void", // <--- Leaving <---
       [
         animate(
-          `${timing} ${easing}`,
+          `${duration} ${delay} ${easing}`,
           style({
             transform: 'translateX(-20%)',
             opacity: 0

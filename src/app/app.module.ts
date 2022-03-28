@@ -13,7 +13,7 @@ import { SharedModule } from './modules/shared/shared.module';
 import { LoginModule } from './modules/login/login.modules';
 import { reducer, effects } from './reducers.index';
 import { CustomHttpInterceptor } from './common/interceptor/CustomHttpInterceptor.interceptor';
-import { FlowModule } from "./flow/flow.module";
+import { FlowModule } from "./modules/flow/flow.module";
 
 @NgModule({
   declarations: [

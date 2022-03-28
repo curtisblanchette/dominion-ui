@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
 import { FlowDirective, FlowRouter, FlowStep } from "./common";
-import { IStep } from "./common/flow.step.interface";
+import { FlowComponentTypes } from "./components";
 
 
 @Component({
@@ -15,6 +15,9 @@ import { IStep } from "./common/flow.step.interface";
       <div class="controls">
         <button (click)="onBack()" [disabled]="breadcrumbs.length === 1">Back</button>
         <button class=primary (click)="onNext()">Next</button>
+      </div>
+      <div style="font-size: 12px;">
+        <span *ngFor="let breadcrumb of breadcrumbs; let i = index">{{i > 0 ? '>' : '' }} {{ breadcrumb.nodeText }} </span>
       </div>
 
     </div>
@@ -46,7 +49,6 @@ import { IStep } from "./common/flow.step.interface";
 export class FlowComponent implements OnInit, OnDestroy {
 
   currentStep: FlowStep;
-  step: FlowStep;
   breadcrumbs: FlowStep[] = [];
   @ViewChild(FlowComponent) flow: FlowComponent;
   @ViewChild(FlowDirective, {static: true}) flowHost!: FlowDirective;
@@ -58,8 +60,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.step = this.flowService.getFirstStep();
-    this.currentStep = this.step;
+    this.currentStep = this.flowService.getFirstStep();
     this.renderComponent(this.currentStep);
     this.breadcrumbs.push(this.currentStep);
   }
@@ -83,6 +84,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onBack() {
+    localStorage.setItem('direction', 'prev');
     if(this.breadcrumbs.length > 1) {
       this.breadcrumbs.pop();
       this.renderComponent(this.breadcrumbs[this.breadcrumbs.length - 1]);
@@ -93,7 +95,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.currentStep = step;
     this.flowHost.viewContainerRef.clear();
 
-    const componentRef = this.flowHost.viewContainerRef.createComponent<IStep>(step.component);
+    const componentRef = this.flowHost.viewContainerRef.createComponent<FlowComponentTypes>(step.component);
     componentRef.instance.data = step.data;
 
   }

@@ -5,6 +5,7 @@ import { FlowDirective } from "./common";
 import { FlowService } from "./flow.service";
 import { FlowRouting } from "./flow.routing";
 import { DataComponent } from "./components/data.component";
+import { CommonModule } from "@angular/common";
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { DataComponent } from "./components/data.component";
     DataComponent
   ],
   imports: [
-    FlowRouting
+    FlowRouting,
+    CommonModule
   ],
   providers: [
     FlowService

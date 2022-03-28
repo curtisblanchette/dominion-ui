@@ -1,6 +1,5 @@
-import { FlowStep, FlowRouter, FlowLink } from "./common";
+import { FlowCondition, FlowConditionOperators, FlowLink, FlowRouter, FlowStep } from "./common";
 import { Injectable } from "@angular/core";
-import { FlowCondition } from "./common";
 import { TextComponent } from "./components/text.component";
 import { DataComponent } from "./components/data.component";
 
@@ -22,12 +21,17 @@ export class FlowService {
     const third = new FlowStep('Third', TextComponent, {title: 'Third', body: 'The third step'} );
     const fourth = new FlowStep('Fourth', TextComponent, {title: 'Fourth', body: 'The fourth step'} );
 
-    const condition1 = new FlowCondition(false, third);
-    const condition2 = new FlowCondition(true, fourth);
-    const condition3 = new FlowCondition(false, first);
-    const router1 = new FlowRouter('Router 1', [condition1, condition2, condition3]);
+    const condition1 = new FlowCondition({
+      module: 'Contact',
+      attribute: 'firstName',
+      operator: FlowConditionOperators.EQUALS,
+      value: 'John'
+    }, third);
+    const condition2 = new FlowCondition(false, fourth);
+    const router1 = new FlowRouter('Router 1', [condition1, condition2]);
 
     const link2 = new FlowLink(second, router1);
+
 
     this.addStep(first).addStep(second).addStep(third).addStep(fourth).addLink(link1).addRouter(router1).addLink(link2);
   }

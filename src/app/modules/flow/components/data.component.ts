@@ -1,5 +1,6 @@
-import { Component, Input } from "@angular/core";
-import { FlowAnimations } from "../common";
+import { Component, Input, OnDestroy } from "@angular/core";
+import { FlowTransitions } from "../common";
+import { FlowService } from "../flow.service";
 
 @Component({
   template: `
@@ -11,15 +12,26 @@ import { FlowAnimations } from "../common";
       <label for="email">Email <input type="text" id="email" [value]="data.email"></label>
     </div>
   `,
-  animations: FlowAnimations,
-  styleUrls: ['_base.scss'],
+  animations: FlowTransitions,
+  styleUrls: ['scss/_base.scss'],
   host: { '[@slide]': 'direction' }
 })
-export class DataComponent {
+export class DataComponent implements OnDestroy {
   direction: string = 'next';
+
   @Input() data: any;
+  @Input() module: string;
+
+  constructor(
+    private flowService: FlowService
+  ) {
+    this.direction = localStorage.getItem('direction') || 'next';
+  }
 
   public save() {
 
+  }
+
+  public ngOnDestroy() {
   }
 }

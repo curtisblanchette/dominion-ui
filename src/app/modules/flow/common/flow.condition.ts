@@ -1,4 +1,4 @@
-import { FlowBaseModel, FlowStep, FlowRouter } from "./";
+import { FlowBaseModel, FlowStep, FlowRouter } from "./index";
 
 export class IEvaluation {
   module: string;
@@ -30,10 +30,26 @@ export class FlowCondition extends FlowBaseModel {
 
   public evaluate() {
     if(this.evaluation instanceof IEvaluation) {
-      // check the module
-      // for an attribute
-      // that matches the value
-      // using the operator
+
+      // switch(this.evaluation.operator) {
+      //   case FlowConditionOperators.EQUALS:
+      //     return this.evaluation.attribute > this.evaluation.value;
+      //
+      //   case FlowConditionOperators.NOT_EQUALS:
+      //     return;
+      //
+      //   case FlowConditionOperators.GREATER_THAN:
+      //     return this[this.evaluation.module][this.evaluation.attribute] > this.evaluation.value;
+      //
+      //   case FlowConditionOperators.LESS_THAN:
+      //     // @ts-ignore
+      //     return this[this.evaluation.module][this.evaluation.attribute] < this.evaluation.value;
+      //
+      //   case FlowConditionOperators.LIKE:
+      //     return;
+      //
+      // }
+
     }
 
     if(this.evaluation instanceof Function) {

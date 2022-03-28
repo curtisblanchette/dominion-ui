@@ -1,4 +1,4 @@
-import { FlowStep, FlowNode, FlowCondition } from "./";
+import { FlowStep, FlowNode, FlowCondition } from "./index";
 
 export class FlowRouter extends FlowNode {
   public conditions: FlowCondition[];
