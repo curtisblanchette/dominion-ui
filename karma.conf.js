@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/4iiz-lite'),
+      dir: require('path').join(__dirname, './coverage/dominion-ui'),
       subdir: '.',
       reporters: [
         { type: 'html' },
