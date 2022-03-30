@@ -32,6 +32,7 @@ jobs:
       # Bumps the Version number based on patterns found in the commit message
       - name: Generate CHANGELOG + Bump Version
         run: |
+          npm i -g standard-version
           npm run release
           git push --follow-tags origin develop
         env:
