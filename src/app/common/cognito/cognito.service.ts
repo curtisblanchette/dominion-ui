@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { 
+import {
   CognitoAccessToken,
   CognitoIdToken,
   CognitoRefreshToken,
@@ -30,10 +30,10 @@ export class CognitoService {
       UserPoolId: <any>environment.cognito_userPoolId,
       ClientId: <any>environment.cognito_clientId
     };
-    
+
     this.cognitoUserPool = new CognitoUserPool(this.cognitoUserPoolData);
 
-    const existingSession = this.getExistingSession() as {session: ICognitoUserSessionData, username: string};
+    const existingSession = this.getExistingSession() as { session: ICognitoUserSessionData, username: string };
 
     if (existingSession) {
       this.cognitoUserData = {
