@@ -40,6 +40,8 @@ jobs:
 
       - name: Build Application
         run: npm run build
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Upload to S3
         env:
