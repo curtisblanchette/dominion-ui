@@ -3,12 +3,12 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Observable, switchMap, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import * as fromRoot from './reducers.index';
+import * as fromRoot from '../reducers.index';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GuardsGuard implements CanActivate {
+export class RoleGuard implements CanActivate {
 
   constructor(
     public store:Store<fromRoot.State>,
@@ -17,15 +17,14 @@ export class GuardsGuard implements CanActivate {
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
+    let roles = route.data['roles'] as Array<string>;
 
     return this.store.select( fromRoot.getUser ).pipe(
       switchMap((userData) => {
-        console.log( 'userData',userData );
         if (userData !== null) {
-          console.log( 'in block - logged in');
-          return of(true);
+          return of( roles.includes(userData.role[0] ) );
         } else {
-          console.log( 'in else block - not logged in');
+          console.warn( 'Login Required, or user has insufficient privileges.');
           return of(false);
         }
       })

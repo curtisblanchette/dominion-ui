@@ -8,17 +8,17 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { SharedModule } from './modules/shared/shared.module';
-import { LoginModule } from './modules/login/login.modules';
+import { LoginModule } from './modules/login/login.module';
 import { reducer, effects } from './reducers.index';
 import { CustomHttpInterceptor } from './common/interceptor/CustomHttpInterceptor.interceptor';
 import { FlowModule } from "./modules/flow/flow.module";
+import { SystemModule } from "./modules/system/system.module";
+import { DashboardModule } from "./modules/dashboard/dashboard.module";
 
 @NgModule({
   declarations: [
-    AppComponent,
-    DashboardComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +31,9 @@ import { FlowModule } from "./modules/flow/flow.module";
     HttpClientModule,
     StoreModule.forRoot(reducer),
     EffectsModule.forRoot(effects),
-    FlowModule
+    DashboardModule,
+    FlowModule,
+    SystemModule
   ],
   providers: [
     {

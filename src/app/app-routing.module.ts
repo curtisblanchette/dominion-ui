@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
-import { LoginComponent } from './modules/login/login.component';
-import { GuardsGuard } from './guards.guard';
+import { RoleGuard } from './guards/role.guard';
 
 const routes: Routes = [
   {
@@ -13,16 +11,21 @@ const routes: Routes = [
   {
     // canActivate: [GuardsGuard],
     path: 'login',
-    component: LoginComponent
+    loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
   },
   {
-    canActivate: [GuardsGuard],
     path: 'dashboard',
-    component: DashboardComponent
+    canActivate: [RoleGuard],
+    data: { roles: ['system', 'admin', 'owner'] },
+    loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
     path: 'flow',
     loadChildren: () => import('./modules/flow/flow.module').then(m => m.FlowModule)
+  },
+  {
+    path: 'system',
+    loadChildren: () => import('./modules/system/system.module').then(m => m.SystemModule)
   }
 ];
 
