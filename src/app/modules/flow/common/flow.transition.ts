@@ -1,10 +1,8 @@
 import { animate, style, transition, trigger } from "@angular/animations";
 
-
 const duration = '250ms';
 const delay = '0ms';
 const easing = 'ease-out';
-
 
 export const FlowTransitions = [
   trigger('slide', [
