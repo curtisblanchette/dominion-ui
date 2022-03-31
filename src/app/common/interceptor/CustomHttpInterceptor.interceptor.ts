@@ -31,29 +31,29 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             tap( response => {
                 if( response instanceof HttpResponse ){
-                    // We might need to something here.. not necessary
+                    // We might need to something here... not necessary
                 }
             }),
             catchError( error => {
                 if( error instanceof HttpErrorResponse ){
                     switch (error.status) {
                         case 0 :
-                            console.log('Some Unknown error occured');
+                            console.log('An unknown error occurred');
                         break;
 
                         case 401 :
-                            console.log('Unauthorised error');
+                            console.log('Unauthorized error');
                         break;
 
                         default:
                         break;
                     }
-                    
+
                 }
                 throw error;
             })
         )
-        
+
     }
 
     private getHeaders(){
@@ -64,6 +64,6 @@ export class CustomHttpInterceptor implements HttpInterceptor {
             }
         }
     }
-    
+
 
 }
