@@ -71,6 +71,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     let step: FlowStep | FlowRouter | undefined = link?.to;
 
     if(step) {
+      localStorage.setItem('direction', 'next');
       if (step instanceof FlowRouter) {
         step = (<FlowRouter>step).evaluate();
       }
