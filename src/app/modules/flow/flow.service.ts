@@ -1,7 +1,6 @@
 import { FlowCondition, FlowConditionOperators, FlowLink, FlowRouter, FlowStep } from "./common";
 import { Injectable } from "@angular/core";
-import { TextComponent } from "./components/text.component";
-import { DataComponent } from "./components/data.component";
+import { FlowComponentType } from "./components";
 
 @Injectable()
 export class FlowService {
@@ -14,12 +13,17 @@ export class FlowService {
 
   constructor(
   ) {
-    const first = new FlowStep('First', TextComponent, {title: 'First', body: 'The first step'} );
-    const second = new FlowStep('Second', DataComponent, {title: 'Second', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com'} )
+
+    const intro = new FlowStep('Intro', FlowComponentType.INTRO, {});
+    const first = new FlowStep('First', FlowComponentType.TEXT, {title: 'First', body: 'The first step'} );
+
+    const link = new FlowLink(intro, first);
+
+    const second = new FlowStep('Second', FlowComponentType.DATA, {title: 'Second', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com'} )
     const link1 = new FlowLink(first, second);
 
-    const third = new FlowStep('Third', TextComponent, {title: 'Third', body: 'The third step'} );
-    const fourth = new FlowStep('Fourth', TextComponent, {title: 'Fourth', body: 'The fourth step'} );
+    const third = new FlowStep('Third', FlowComponentType.TEXT, {title: 'Third', body: 'The third step'} );
+    const fourth = new FlowStep('Fourth', FlowComponentType.TEXT, {title: 'Fourth', body: 'The fourth step'} );
 
     const condition1 = new FlowCondition({
       module: 'Contact',
@@ -33,7 +37,7 @@ export class FlowService {
     const link2 = new FlowLink(second, router1);
 
 
-    this.addStep(first).addStep(second).addStep(third).addStep(fourth).addLink(link1).addRouter(router1).addLink(link2);
+    this.addStep(intro).addLink(link).addStep(first).addStep(second).addStep(third).addStep(fourth).addLink(link1).addRouter(router1).addLink(link2);
   }
 
   public getFirstStep(): FlowStep {

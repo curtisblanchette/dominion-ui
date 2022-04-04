@@ -1,15 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
-import { FlowDirective, FlowRouter, FlowStep } from "./common";
-import { FlowComponentTypes } from "./components";
-
+import { FlowRouter, FlowStep, FlowTransitions } from "./common";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   template: `
     <div class="container">
-      <h1>Call Flowz</h1>
-      <section>
-        <ng-template flowHost></ng-template>
+      <h1>Call Flows</h1>
+      <section [@slide]="animationIndex">
+        <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
       </section>
 
       <div class="controls">
@@ -17,9 +16,9 @@ import { FlowComponentTypes } from "./components";
         <button class=primary (click)="onNext()">Next</button>
       </div>
       <div style="font-size: 12px;">
-        <span *ngFor="let breadcrumb of breadcrumbs; let i = index">{{i > 0 ? '>' : '' }} {{ breadcrumb.nodeText }} </span>
+        <span
+          *ngFor="let breadcrumb of breadcrumbs; let i = index">{{i > 0 ? '>' : '' }} {{ breadcrumb.nodeText }} </span>
       </div>
-
     </div>
   `,
   styles: [`
@@ -27,6 +26,7 @@ import { FlowComponentTypes } from "./components";
       display: flex;
       justify-content: space-around;
     }
+
     .container {
       width: 768px;
       display: flex;
@@ -37,41 +37,50 @@ import { FlowComponentTypes } from "./components";
         justify-content: space-between;
       }
     }
+
     section {
       height: 500px;
       position: relative;
     }
+
     section ng-component {
       width: 100%;
     }
-  `]
+  `],
+  animations: FlowTransitions
 })
 export class FlowComponent implements OnInit, OnDestroy {
 
+  animationIndex = 0;
   currentStep: FlowStep;
   breadcrumbs: FlowStep[] = [];
   @ViewChild(FlowComponent) flow: FlowComponent;
-  @ViewChild(FlowDirective, {static: true}) flowHost!: FlowDirective;
 
   constructor(
-    private flowService: FlowService
+    private flowService: FlowService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {
 
   }
 
   public ngOnInit() {
     this.currentStep = this.flowService.getFirstStep();
-    this.renderComponent(this.currentStep);
     this.breadcrumbs.push(this.currentStep);
+    this.renderComponent(this.currentStep);
+  }
+
+  public onActivate($event: any) {
   }
 
   public onNext() {
+    this.animationIndex = this.animationIndex + 1;
     // find a link where the "from" is equal to "currentStep"
     const link = this.flowService.links.find(link => link.from.id === this.currentStep.id);
     let step: FlowStep | FlowRouter | undefined = link?.to;
 
-    if(step) {
-      localStorage.setItem('direction', 'next');
+    if (step) {
+      // localStorage.setItem('direction', 'next');
       if (step instanceof FlowRouter) {
         step = (<FlowRouter>step).evaluate();
       }
@@ -85,8 +94,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onBack() {
-    localStorage.setItem('direction', 'prev');
-    if(this.breadcrumbs.length > 1) {
+    this.animationIndex = this.animationIndex - 1;
+    if (this.breadcrumbs.length > 1) {
       this.breadcrumbs.pop();
       this.renderComponent(this.breadcrumbs[this.breadcrumbs.length - 1]);
     }
@@ -94,11 +103,11 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public renderComponent(step: FlowStep) {
     this.currentStep = step;
-    this.flowHost.viewContainerRef.clear();
 
-    const componentRef = this.flowHost.viewContainerRef.createComponent<FlowComponentTypes>(step.component);
-    componentRef.instance.data = step.data;
-
+    return this.router.navigate([{outlets: {'aux': [`${step.component}`]}}], {
+      state: step.data,
+      relativeTo: this.route
+    });
   }
 
 

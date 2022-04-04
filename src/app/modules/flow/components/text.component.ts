@@ -1,26 +1,25 @@
-import { Component, Input, OnDestroy } from "@angular/core";
-import { FlowTransitions } from "../common";
+import { Component, OnDestroy } from "@angular/core";
 import { FlowService } from "../flow.service";
+import { Router } from "@angular/router";
 
 @Component({
   template: `
-    <div [@slide]="direction">
+    <div>
       <h2>{{data.title}}</h2>
       {{data.body}}
     </div>
   `,
-  animations: FlowTransitions,
-  styleUrls: ['scss/_base.scss'],
-  host: { '[@slide]': 'direction' }
+    styleUrls: ['scss/_base.scss'],
 })
 export class TextComponent implements OnDestroy {
   direction: string = 'next';
-  @Input() data: any;
+  public data: any;
 
   constructor(
+    private router: Router,
     private flowService: FlowService
   ) {
-    this.direction = localStorage.getItem('direction') || 'next';
+    this.data = this.router.getCurrentNavigation()!.extras.state;
   }
   public save() {
 
