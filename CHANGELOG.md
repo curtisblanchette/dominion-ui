@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.1.4 (2022-04-04)
+
+
+### Bug Fixes
+
+* **develop:** fix bi-directional flow transition animations ([393bb03](https://github.com/4iiz/dominion-ui/commit/393bb03b5b308278ae7af88a3fc0ac6170f7b340))
+
 ### 1.1.3 (2022-03-31)
 
 ### 1.1.2 (2022-03-31)
