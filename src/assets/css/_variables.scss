@@ -3,8 +3,8 @@ $grey2: #CAD2E2;
 
 $blue0: #85C8ED;
 $blue1: #44ADDF;
-$blue2: #2FB3F3;
-$blue3: #0091D0; // primary
+$blue2: #5BA5F9;
+$blue3: #5BA5F9; // primary
 $blue3-shaded: #008BC8;
 //$blue4: #1D607D;
 $blue4: #0D5777;
@@ -22,6 +22,9 @@ $green0: #1A936F;
 $button-border-radius: 4px;
 
 
-$form-control-shadow: 0 2px 5px 1px rgba(0, 0, 0, .12);
+$form-control-shadow: 0 2px 5px 0 rgba(0, 0, 0, .22);
 
 $ctmWidgetPaneSize: 382px;
+
+
+$input-margin-bottom: 14px;

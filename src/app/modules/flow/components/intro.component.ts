@@ -5,7 +5,7 @@ import { FlowService } from "../flow.service";
 @Component({
   template: `
     <div>
-      <h2>Welcome to Flow!</h2>
+      <h3>Welcome to Flow!</h3>
     </div>
   `,
   styleUrls: ['scss/_base.scss']

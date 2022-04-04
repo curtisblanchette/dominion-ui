@@ -4,7 +4,7 @@
 :host {
   display: block;
   position: relative;
-  margin-bottom: .5em;
+  margin-bottom: $input-margin-bottom;
 
   &.ng-invalid {
     input {
@@ -51,24 +51,21 @@
   }
 
   input {
+    border-radius: 22px;
     position: relative;
     display: block;
-    font-size: 12px;
-    font-family: Roboto, sans-serif;
+    color: #C6CEED;
     font-weight: 500;
-    color: $blue5;
-    line-height: 35px;
-    padding: 0 12px;
-    width: 100%;
+    line-height: 44px;
+    padding: 0 16px;
     box-sizing: border-box;
     margin: 0;
     border: none;
     box-shadow: $form-control-shadow;
-    border-radius: 2px;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    background-color: #fff;
+    background-color: #172B46;
     cursor: text;
 
     &.number {
@@ -78,7 +75,7 @@
       /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
       box-shadow: 0 0 1px 2px $blue2;
       box-shadow: 0 0 0 1px -moz-mac-focusring;
-      color: #222;
+      color: #C6CEED;
       outline: none;
     }
 
@@ -117,4 +114,14 @@
 }
 
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #A7B2D2;
+}
 
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #A7B2D2;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #A7B2D2;
+}

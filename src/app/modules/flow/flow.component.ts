@@ -6,13 +6,13 @@ import { ActivatedRoute, Router } from "@angular/router";
 @Component({
   template: `
     <div class="container">
-      <h1>Call Flows</h1>
+      <h2>Flow</h2>
       <section [@slide]="animationIndex">
         <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
       </section>
 
       <div class="controls">
-        <button (click)="onBack()" [disabled]="breadcrumbs.length === 1">Back</button>
+        <button (click)="onBack()" class="stroked" [disabled]="breadcrumbs.length === 1">Back</button>
         <button class=primary (click)="onNext()">Next</button>
       </div>
       <div style="font-size: 12px;">

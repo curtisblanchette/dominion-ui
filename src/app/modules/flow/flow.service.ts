@@ -19,8 +19,8 @@ export class FlowService {
 
     const link = new FlowLink(intro, first);
 
-    const second = new FlowStep('Second', FlowComponentType.DATA, {title: 'Second', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com'} )
-    const link1 = new FlowLink(first, second);
+    const newLead = new FlowStep('New Lead', FlowComponentType.DATA, {title: 'Create a New Lead', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com'} )
+    const link1 = new FlowLink(first, newLead);
 
     const third = new FlowStep('Third', FlowComponentType.TEXT, {title: 'Third', body: 'The third step'} );
     const fourth = new FlowStep('Fourth', FlowComponentType.TEXT, {title: 'Fourth', body: 'The fourth step'} );
@@ -34,10 +34,10 @@ export class FlowService {
     const condition2 = new FlowCondition(false, fourth);
     const router1 = new FlowRouter('Router 1', [condition1, condition2]);
 
-    const link2 = new FlowLink(second, router1);
+    const link2 = new FlowLink(newLead, router1);
 
 
-    this.addStep(intro).addLink(link).addStep(first).addStep(second).addStep(third).addStep(fourth).addLink(link1).addRouter(router1).addLink(link2);
+    this.addStep(intro).addLink(link).addStep(first).addStep(newLead).addStep(third).addStep(fourth).addLink(link1).addRouter(router1).addLink(link2);
   }
 
   public getFirstStep(): FlowStep {

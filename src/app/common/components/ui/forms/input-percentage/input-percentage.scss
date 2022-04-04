@@ -4,7 +4,7 @@
 :host {
   display: block;
   position: relative;
-  margin-bottom: .5em;
+  margin-bottom: $input-margin-bottom;
   width: 100%;
 
   &.ng-invalid {
@@ -93,3 +93,14 @@
 
 
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #A7B2D2;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #A7B2D2;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #A7B2D2;
+}

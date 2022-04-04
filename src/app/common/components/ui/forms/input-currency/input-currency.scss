@@ -5,7 +5,7 @@
   display: block;
   width: fit-content;
   position:relative;
-  margin-bottom: .5em;
+  margin-bottom: $input-margin-bottom;
 
   &.ng-invalid {
     input {
@@ -94,3 +94,14 @@
 
 
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #A7B2D2;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #A7B2D2;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #A7B2D2;
+}

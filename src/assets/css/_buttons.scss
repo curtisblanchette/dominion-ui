@@ -80,7 +80,7 @@ input[type=submit] {
   //////////////////////// COLORS
   &.primary, &.active {
     background: $blue3;
-    color: white;
+    color: #051323;
     font-weight: 600;
 
     &:hover {
@@ -90,32 +90,11 @@ input[type=submit] {
     &:active {
       background: shade($blue3, 25%);
     }
-
-    &.stroked {
-      border: 1px solid $slate1;
-      color: $blue3;
-      background: white!important;
-      position: relative;
-      transform: translateY(0);
-      transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
-
-      &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 1px 5px rgba(0, 0, 0, .11);
-      }
-
-      &:focus {
-        transform: translateY(0);
-        box-shadow: none;
-      }
-
-    }
-
   }
 
   &.secondary {
     background: $blue4;
-    color: white;
+    color: #051323;
     font-weight: 600;
 
     &:hover {
@@ -127,9 +106,29 @@ input[type=submit] {
     }
   }
 
+  &.stroked {
+    border: 1px solid $blue3;
+    color: $blue3;
+    background: none!important;
+    position: relative;
+    transform: translateY(0);
+    transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 1px 5px rgba(0, 0, 0, .11);
+    }
+
+    &:focus {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+  }
+
   &.warning {
     background: $red0;
-    color: white;
+    color: #051323;
     font-weight: 600;
 
     &:hover {
@@ -142,11 +141,11 @@ input[type=submit] {
 
     &.stroked {
       border: 1px solid $slate1;
-      color: $red0;
+      color: #051323;
       background: white!important;
 
       &:hover {
-        background: shade($grey1, 5%)!important;
+        background: shade(#051323, 5%)!important;
       }
     }
   }

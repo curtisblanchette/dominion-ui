@@ -5,11 +5,11 @@ import { FlowService } from "../flow.service";
 @Component({
   template: `
     <div>
-      <h2>{{data.title}}</h2>
-      <label for="firstName">First Name <input type="text" id="firstName" [value]="data.firstName"></label>
-      <label for="lastName">Last Name <input type="text" id="lastName" [value]="data.lastName"></label>
-      <label for="phone">Phone <input type="text" id="phone" [value]="data.phone"></label>
-      <label for="email">Email <input type="text" id="email" [value]="data.email"></label>
+      <h3>{{data.title}}</h3>
+      <fiiz-input type="text" id="firstName" placeholder="First Name" [ngModel]="data.firstName"></fiiz-input>
+      <fiiz-input type="text" id="lastName" placeholder="Last Name" [ngModel]="data.lastName"></fiiz-input>
+      <fiiz-input type="text" id="phone" placeholder="Mobile" [ngModel]="data.phone"></fiiz-input>
+      <fiiz-input type="text" id="email" placeholder="Email" [ngModel]="data.email"></fiiz-input>
     </div>
   `,
   styleUrls: ['scss/_base.scss']

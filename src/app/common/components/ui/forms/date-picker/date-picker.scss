@@ -5,7 +5,7 @@
   display: block;
   width: fit-content;
   position: relative;
-  margin-bottom: .5em;
+  margin-bottom: $input-margin-bottom;
 
   &.ng-invalid {
     input {

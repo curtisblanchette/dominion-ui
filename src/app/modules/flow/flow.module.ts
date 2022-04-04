@@ -5,6 +5,8 @@ import { FlowRouting } from "./flow.routing";
 import { DataComponent, TextComponent } from "./components";
 import { CommonModule } from "@angular/common";
 import { IntroComponent } from "./components/intro.component";
+import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { IntroComponent } from "./components/intro.component";
   ],
   imports: [
     FlowRouting,
-    CommonModule
+    CommonModule,
+    FiizUIModule,
+    FormsModule
   ],
   providers: [
     FlowService
