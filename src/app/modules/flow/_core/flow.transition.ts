@@ -1,4 +1,4 @@
-import { animate, group, query, style, transition, trigger } from "@angular/animations";
+import { animate, group, query, style, transition, trigger } from '@angular/animations';
 
 const duration = '250ms';
 const delay = '0ms';

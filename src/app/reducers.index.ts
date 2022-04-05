@@ -18,7 +18,7 @@ export interface State {
  * the result from right to left.
  */
 const reducers = {
-  authentication: fromLogin.reducer,
+  authentication: fromLogin.reducer
 };
 
 const combinedReducer: ActionReducer<State> = combineReducers(reducers);

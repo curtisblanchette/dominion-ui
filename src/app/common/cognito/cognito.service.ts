@@ -22,7 +22,7 @@ export class CognitoService {
   readonly cognitoUserPoolData!: ICognitoUserPoolData;
   private cognitoUserData!: ICognitoUserData;
   private cognitoUser!: CognitoUser;
-  private cognitoUserSession!: CognitoUserSession;
+  public cognitoUserSession!: CognitoUserSession;
 
   constructor() {
 
@@ -80,7 +80,7 @@ export class CognitoService {
 
   }
 
-  public authenticateUser(authenticationData: { Username: any; }) {
+  public authenticateUser(authenticationData: { Username: any; }): Promise<CognitoUserSession> {
 
     const authenticationDetails = new AuthenticationDetails(authenticationData);
 

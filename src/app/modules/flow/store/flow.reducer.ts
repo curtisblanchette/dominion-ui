@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 
-// import * as flowActions from './flow.actions';
-import { FlowLink, FlowRouter, FlowStep } from '../common';
+import * as flowActions from './flow.actions';
+import { FlowLink, FlowRouter, FlowStep } from '../_core';
 
 export interface State {
   steps: FlowStep[] | null
@@ -9,10 +9,19 @@ export interface State {
   links: FlowLink[] | null
 }
 
-function getStepsState(){
+// need to serialize/deserialize the step/flow/router objects
+function getStepsState() {
   const steps = localStorage.getItem('steps');
   if (steps) {
     return steps || null;
+  }
+  return null;
+}
+
+function getLinksState(){
+  const links = localStorage.getItem('links');
+  if (links) {
+    return links || null;
   }
   return null;
 }
@@ -25,7 +34,7 @@ export const initialState: State = {
 
 export const reducer = createReducer(
   initialState,
-  // on(flowActions.LogUserAction, (state, { payload }) => ({...state, ...payload })),
+  // on(flowActions.AddStepAction, (state, { payload }) => ([...state, ...payload])),
 
 );
 

@@ -5,7 +5,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, mergeMap, tap } from 'rxjs';
 
 @Injectable()
-export class loginEffects {
+export class FlowEffects {
 
   constructor(
     private actions$: Actions,

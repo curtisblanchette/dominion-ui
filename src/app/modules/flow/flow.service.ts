@@ -1,4 +1,4 @@
-import { FlowCondition, FlowConditionOperators, FlowLink, FlowRouter, FlowStep } from "./common";
+import { FlowCondition, FlowConditionOperators, FlowLink, FlowRouter, FlowStep } from "./_core";
 import { Injectable } from "@angular/core";
 import { FlowComponentType } from "./components";
 

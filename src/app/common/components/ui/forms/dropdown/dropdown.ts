@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-// import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 export interface DropdownItem {
   id: number | string | boolean;

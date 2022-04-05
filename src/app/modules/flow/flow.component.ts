@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
-import { FlowRouter, FlowStep, FlowTransitions } from "./common";
+import { FlowRouter, FlowStep, FlowTransitions } from "./_core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({

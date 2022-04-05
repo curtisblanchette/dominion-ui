@@ -7,6 +7,7 @@ import { map, mergeMap, tap } from 'rxjs';
 import * as loginActions from '../actions/login';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
+import { CognitoUserSession } from 'amazon-cognito-identity-js';
 
 @Injectable()
 export class loginEffects {
@@ -27,6 +28,7 @@ export class loginEffects {
         return this.loginService.login(action.payload).then((response: any) => {
           const accessToken = response.accessToken.getJwtToken();
           const refreshToken = response.refreshToken.getToken();
+          const idToken = response.idToken.getJwtToken();
           const cognitoGroup = response.idToken.payload['cognito:groups'];
           const cognitoUsername = response.idToken.payload['cognito:username'];
           const workspaceId = response.idToken.payload['custom:workspaceId'];
@@ -35,6 +37,7 @@ export class loginEffects {
             'assets/img/default-avatar.png',
             accessToken,
             refreshToken,
+            idToken,
             cognitoGroup,
             cognitoUsername
           );
