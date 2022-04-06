@@ -12,6 +12,9 @@ export class EntityStoreModule {
     entityDataService: EntityDataService,
     leadsDataService: LeadsDataService
   ) {
-    entityDataService.registerService('Lead', leadsDataService);
+    entityDataService.registerService('lead', leadsDataService);
+    // entityDataService.registerService('contact', contactDataService);
+    // entityDataService.registerService('deal', dealDataService);
+    // entityDataService.registerService('event', eventDataService);
   }
 }

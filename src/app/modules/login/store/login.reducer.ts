@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import * as loginActions from '../actions/login';
+import * as loginActions from './login.actions';
 import { User } from '../models/user';
 
 

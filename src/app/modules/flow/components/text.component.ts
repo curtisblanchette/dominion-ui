@@ -1,13 +1,13 @@
 import { Component, OnDestroy } from "@angular/core";
 import { FlowService } from "../flow.service";
 import { Router } from "@angular/router";
-import { LeadService } from '../store/data/lead.service';
+import { LeadService } from '../../../data/lead.service';
 import { Observable } from 'rxjs';
 import { Lead } from '@4iiz/corev2';
 
 @Component({
   template: `
-    <div>
+    <div *ngIf="data">
       <h3>{{data.title}}</h3>
       {{data.body}}
       <div *ngFor="let lead of leads$ | async">{{lead.id}}</div>

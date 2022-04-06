@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, mergeMap, tap } from 'rxjs';
 
-import * as loginActions from '../actions/login';
+import * as loginActions from './login.actions';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';

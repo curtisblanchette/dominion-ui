@@ -5,8 +5,8 @@ import { Store } from '@ngrx/store';
 
 import { LoginService } from './services/login.service';
 import { User } from './models/user';
-import * as fromRoot from './reducers/login';
-import * as loginActions from './actions/login';
+import * as fromRoot from './store/login.reducer';
+import * as loginActions from './store/login.actions';
 import { of, switchMap } from 'rxjs';
 
 // declare var $: any;
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
     formGroup['username'] = new FormControl('', Validators.required);
     formGroup['password'] = new FormControl('', Validators.required);
     formGroup['remember_me'] = new FormControl('');
-    this.loginForm = this.fb.group(formGroup);    
+    this.loginForm = this.fb.group(formGroup);
   }
 
   public login(){
@@ -63,9 +63,9 @@ export class LoginComponent implements OnInit {
       this.isLoading = false;
       this.hasError = false;
       this.loadingMessage = `Validating credentials...`;
-      
+
       this.store.dispatch(loginActions.LogUserAction( {payload:this.loginForm.value} ));
-      
+
     } else {
       alert('Invalid Form');
     }

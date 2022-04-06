@@ -1,6 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule,HTTP_INTERCEPTORS} from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
@@ -12,9 +12,19 @@ import { SharedModule } from './modules/shared/shared.module';
 import { LoginModule } from './modules/login/login.module';
 import { reducer, effects } from './reducers.index';
 import { CustomHttpInterceptor } from './common/interceptor/CustomHttpInterceptor.interceptor';
-import { FlowModule } from "./modules/flow/flow.module";
-import { SystemModule } from "./modules/system/system.module";
-import { DashboardModule } from "./modules/dashboard/dashboard.module";
+import { FlowModule } from './modules/flow/flow.module';
+import { SystemModule } from './modules/system/system.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { DefaultDataServiceConfig, EntityDataModule } from '@ngrx/data';
+import { entityConfig } from './data/entity-metadata';
+import { EntityStoreModule } from './data/entity-store.module';
+import { environment } from '../environments/environment';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
+const defaultDataServiceConfig: DefaultDataServiceConfig = {
+  root: environment.dominion_api_url,
+  timeout: 3000 // request timeout
+}
 
 @NgModule({
   declarations: [
@@ -31,6 +41,9 @@ import { DashboardModule } from "./modules/dashboard/dashboard.module";
     HttpClientModule,
     StoreModule.forRoot(reducer),
     EffectsModule.forRoot(effects),
+    EntityDataModule.forRoot(entityConfig),
+    EntityStoreModule,
+    StoreDevtoolsModule.instrument(),
     DashboardModule,
     FlowModule,
     SystemModule
@@ -40,6 +53,10 @@ import { DashboardModule } from "./modules/dashboard/dashboard.module";
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptor,
       multi: true
+    },
+    {
+      provide: DefaultDataServiceConfig,
+      useValue: defaultDataServiceConfig
     }
   ],
   bootstrap: [AppComponent],
@@ -47,4 +64,5 @@ import { DashboardModule } from "./modules/dashboard/dashboard.module";
     CUSTOM_ELEMENTS_SCHEMA
   ]
 })
-export class AppModule { }
+export class AppModule {
+}

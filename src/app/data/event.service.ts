@@ -7,6 +7,6 @@ export class EventService extends EntityCollectionServiceBase<Event> {
   constructor(
     serviceElementsFactory: EntityCollectionServiceElementsFactory
   ) {
-    super('Event', serviceElementsFactory);
+    super('event', serviceElementsFactory);
   }
 }

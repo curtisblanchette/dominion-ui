@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { CognitoService } from '../../../common/cognito/cognito.service';
 import * as fromRoot from '../../../reducers.index';
-import * as loginActions from '../actions/login';
+import * as loginActions from '../store/login.actions';
 
 @Injectable({
   providedIn: 'root'

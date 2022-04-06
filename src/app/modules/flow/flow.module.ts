@@ -9,9 +9,6 @@ import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/flow.reducer';
-import { entityConfig } from './store/data/entity-metadata';
-import { EntityDataModule } from '@ngrx/data';
-import { EntityStoreModule } from './store/data/entity-store.module';
 
 @NgModule({
   declarations: [
@@ -22,8 +19,6 @@ import { EntityStoreModule } from './store/data/entity-store.module';
   ],
   imports: [
     StoreModule.forFeature('flow', reducer),
-    EntityDataModule.forRoot(entityConfig),
-    EntityStoreModule,
     FlowRouting,
     CommonModule,
     FiizUIModule,

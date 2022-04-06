@@ -1,6 +1,6 @@
 import { combineReducers, ActionReducer, createSelector, Store, createFeatureSelector } from '@ngrx/store';
-import * as fromLogin from './modules/login/reducers/login';
-import { loginEffects } from './modules/login/effects/login.effects';
+import * as fromLogin from './modules/login/store/login.reducer';
+import { loginEffects } from './modules/login/store/login.effects';
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
