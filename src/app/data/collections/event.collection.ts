@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Contact } from '@4iiz/corev2';
+import { Event } from '@4iiz/corev2';
 
 @Injectable({ providedIn: 'root' })
-export class ContactService extends EntityCollectionServiceBase<Contact> {
+export class EventCollection extends EntityCollectionServiceBase<Event> {
   constructor(
     serviceElementsFactory: EntityCollectionServiceElementsFactory
   ) {
-    super('contact', serviceElementsFactory);
+    super('event', serviceElementsFactory);
   }
 }

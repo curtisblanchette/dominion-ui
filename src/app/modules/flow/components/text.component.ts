@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from "@angular/core";
 import { FlowService } from "../flow.service";
 import { Router } from "@angular/router";
-import { LeadService } from '../../../data/lead.service';
+import { LeadCollection } from '../../../data/collections/lead.collection';
 import { Observable } from 'rxjs';
 import { Lead } from '@4iiz/corev2';
 
@@ -25,7 +25,7 @@ export class TextComponent implements OnDestroy {
   constructor(
     private router: Router,
     private flowService: FlowService,
-    private leadService: LeadService
+    private leadService: LeadCollection
   ) {
     this.data = this.router.getCurrentNavigation()!.extras.state;
     this.leads$ = leadService.entities$;

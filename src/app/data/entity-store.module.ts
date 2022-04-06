@@ -1,6 +1,6 @@
 import { EntityDataService } from '@ngrx/data';
 import { NgModule } from '@angular/core';
-import { LeadsDataService } from './leads-data.service';
+import { LeadsDataService } from './data.service';
 
 @NgModule({
   providers: [

@@ -3,13 +3,13 @@ import { DefaultDataService, DefaultHttpUrlGenerator, DefaultPluralizer, HttpMet
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { pluralNames } from './entity-metadata';
-import { Lead } from '@4iiz/corev2';
+import { Contact, Lead, Event, Deal } from '@4iiz/corev2';
 import { environment } from '../../environments/environment';
 import { CognitoService } from '../common/cognito/cognito.service';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';
 
 @Injectable()
-export class LeadsDataService extends DefaultDataService<Lead> {
+export class DataService extends DefaultDataService<Contact | Lead | Event | Deal> {
   public cognitoService: CognitoService;
   public cognitoSession: CognitoUserSession;
 
