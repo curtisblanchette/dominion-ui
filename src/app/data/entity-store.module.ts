@@ -1,20 +1,22 @@
 import { EntityDataService } from '@ngrx/data';
 import { NgModule } from '@angular/core';
-import { LeadsDataService } from './data.service';
+import { DataService } from './data.service';
 
 @NgModule({
   providers: [
-    LeadsDataService
+    DataService
   ]
 })
 export class EntityStoreModule {
   constructor(
     entityDataService: EntityDataService,
-    leadsDataService: LeadsDataService
+    dataService: DataService
   ) {
-    entityDataService.registerService('lead', leadsDataService);
-    // entityDataService.registerService('contact', contactDataService);
-    // entityDataService.registerService('deal', dealDataService);
-    // entityDataService.registerService('event', eventDataService);
+    entityDataService.registerServices({
+      'contact': dataService,
+      'lead': dataService,
+      'deal': dataService,
+      'event': dataService
+    });
   }
 }
