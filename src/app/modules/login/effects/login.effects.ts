@@ -26,6 +26,7 @@ export class loginEffects {
       mergeMap((action) => {
         return this.loginService.login(action.payload).then((response: any) => {
           const accessToken = response.accessToken.getJwtToken();
+          const idToken = response.idToken.getJwtToken();
           const refreshToken = response.refreshToken.getToken();
           const cognitoGroup = response.idToken.payload['cognito:groups'];
           const cognitoUsername = response.idToken.payload['cognito:username'];
@@ -34,11 +35,12 @@ export class loginEffects {
           const loggedUser = new User(
             'assets/img/default-avatar.png',
             accessToken,
+            idToken,
             refreshToken,
             cognitoGroup,
             cognitoUsername
           );
-          console.log(loggedUser);
+          
           return loginActions.LogInSuccesfullAction({payload: loggedUser});
         });
       })

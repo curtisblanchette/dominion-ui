@@ -59,8 +59,9 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     private getHeaders(){
         if( this.loggedUser ){
             return {
-                'x-id-token' : this.loggedUser.access_token,
-                'x-access-token' : this.loggedUser.refresh_token
+                'x-access-token' : this.loggedUser.access_token,
+                'x-id-token' : this.loggedUser.id_token,                
+                'x-acting-for' : '67b17061-5c0c-45b4-92fa-9fbbbb2f76d8'
             }
         }
     }
