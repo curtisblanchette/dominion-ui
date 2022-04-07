@@ -29,6 +29,7 @@
     "amazon-cognito-identity-js": "^5.2.8",
     "intl-tel-input": "^17.0.16",
     "lodash": "^4.17.21",
+    "ngx-pagination": "^5.1.1",
     "normalize.css": "^8.0.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
