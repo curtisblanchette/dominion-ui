@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators'
 import { DropdownItem } from '../../../common/components/ui/forms';
 import { environment } from '../../../../environments/environment';
 import { FlowService } from '../flow.service';
-import { ModuleType } from '../common/flow.moduleTypes';
+import { ModuleType } from '../_core/flow.moduleTypes';
 
 @Component({
   templateUrl : 'templates/search-list.component.html',
@@ -111,7 +111,7 @@ export class ListComponent implements OnDestroy, AfterViewInit {
       if( this.searchForm.valid ){
         this.isSearching = true;
         const formValues = this.searchForm.value;
-        this.http.get(`${environment.api_private_url}${this.data.module}/search?${formValues.field.id}=${formValues.key}`).subscribe((data:any) => {
+        this.http.get(`${environment.dominion_api_url}${this.data.module}/search?${formValues.field.id}=${formValues.key}`).subscribe((data:any) => {
           if( data && data.count > 0 ){
             this.totalRecords = data.count;
             this.listData = data.rows;
