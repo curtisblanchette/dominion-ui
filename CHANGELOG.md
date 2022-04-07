@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.2.0 (2022-04-07)
+
+
+### Features
+
+* **develop:** add ngrxDevTools + NGRX dataService work ([f65f738](https://github.com/4iiz/dominion-ui/commit/f65f7387fe9deeb181d2399d27cc0d3f94312375))
+
 ### 1.1.9 (2022-04-06)
 
 ### 1.1.8 (2022-04-06)
