@@ -60,8 +60,8 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         if( this.loggedUser ){
             return {
                 'x-access-token' : this.loggedUser.access_token,
-                'x-id-token' : this.loggedUser.id_token,                
-                'x-acting-for' : '67b17061-5c0c-45b4-92fa-9fbbbb2f76d8'
+                'x-id-token' : this.loggedUser.id_token,
+                'x-acting-for' : '80052327-9e54-4d27-bf90-b4175556a50a'
             }
         }
     }

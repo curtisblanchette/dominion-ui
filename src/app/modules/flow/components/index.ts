@@ -5,7 +5,6 @@ export enum FlowComponentType {
   LIST = 'list'
 }
 
-
-export { DataComponent } from './data.component';
+export { DataComponent } from './data/data.component';
 export { TextComponent } from './text.component';
-export { ListComponent } from './list.component';
+export { ListComponent } from './list/list.component';

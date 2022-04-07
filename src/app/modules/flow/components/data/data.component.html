@@ -1,0 +1,11 @@
+<ng-container [ngTemplateOutlet]="isLoading ? loading : main"
+              [ngTemplateOutletContext]="{loadingText: 'Loading employees...'}"></ng-container>
+
+<ng-template #main>
+  <h3>{{state.title}}</h3>
+  <fiiz-input type="text" id="firstName" placeholder="First Name" [(ngModel)]="data.firstName"></fiiz-input>
+  <fiiz-input type="text" id="lastName" placeholder="Last Name" [(ngModel)]="data.lastName"></fiiz-input>
+  <fiiz-input type="text" id="phone" placeholder="Mobile" [(ngModel)]="data.phone"></fiiz-input>
+</ng-template>
+
+<ng-template #loading>Loading...</ng-template>

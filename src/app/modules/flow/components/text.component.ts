@@ -12,7 +12,7 @@ import { Lead } from '@4iiz/corev2';
       <div *ngFor="let lead of leads$ | async">{{lead.id}}</div>
     </div>
   `,
-    styleUrls: ['scss/_base.scss'],
+    styleUrls: ['../_core/scss/_base.scss'],
 })
 export class TextComponent implements OnDestroy {
 

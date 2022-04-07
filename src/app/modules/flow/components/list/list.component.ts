@@ -5,46 +5,19 @@ import { Router } from "@angular/router";
 import { fromEvent, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
-import { DropdownItem } from '../../../common/components/ui/forms';
-import { environment } from '../../../../environments/environment';
-import { FlowService } from '../flow.service';
-import { ModuleType } from '../_core/flow.moduleTypes';
+import { DropdownItem } from '../../../../common/components/ui/forms';
+import { environment } from '../../../../../environments/environment';
+import { FlowService } from '../../flow.service';
+import { getSearchableColumns } from './searchable-columns';
+import { ModuleType } from '../../_core/classes/flow.moduleTypes';
 
 @Component({
-  templateUrl : 'templates/search-list.component.html',
-  styleUrls : ['scss/_base.scss','scss/search_n_list.scss']
+  templateUrl : 'list.component.html',
+  styleUrls : ['../../_core/scss/_base.scss','list.component.scss']
 })
 export class ListComponent implements OnDestroy, AfterViewInit {
 
-  public leadSearchColumns: DropdownItem[] = [ 
-    {id: 'firstName', label: 'First Name'}, 
-    {id: 'lastName', label: 'Last Name'},
-    {id: 'phone', label: 'Phone'}
-  ];
-
-  public DealSearchColumns: DropdownItem[] = [
-    {id: 'name', label: 'Name'}
-  ];
-
-  public ContactSearchColumns: DropdownItem[] = [
-    {id: 'firstName', label: 'First Name'}, 
-    {id: 'lastName', label: 'Last Name'},
-    {id: 'email', label: 'Email'},
-    {id: 'phone', label: 'Phone'}
-  ];
-
-  public CampaignsSearchColumns: DropdownItem[] = [
-    {id: 'name', label: 'Name'}
-  ];
-
-  public moduleColumnsMap:{ [key:string]:DropdownItem[] } = {
-    [ModuleType.LEAD] : this.leadSearchColumns,
-    [ModuleType.DEAL] : this.DealSearchColumns,
-    [ModuleType.CAMPAIGNS] : this.CampaignsSearchColumns,
-    [ModuleType.CONTACTS] : this.ContactSearchColumns
-  };
-  
-  public searchColumns:DropdownItem[] = [];
+  public searchColumns: DropdownItem[] = [];
 
   public searchForm!: FormGroup;
   public searchable:boolean = true;
@@ -59,15 +32,17 @@ export class ListComponent implements OnDestroy, AfterViewInit {
   public totalRecords:number = 0;
 
   public data: any;
-  @Input() module: string;
-  
+
+  @Input() module: ModuleType;
+
   private SearchInput: ElementRef;
+
   @ViewChild('SearchInput') set content(content: ElementRef) {
     if(content) {
       this.SearchInput = content;
     }
   }
-  public apiResponse: any;
+
   public isSearching: boolean;
 
   constructor(
@@ -75,16 +50,17 @@ export class ListComponent implements OnDestroy, AfterViewInit {
     private http : HttpClient,
     private flowService: FlowService,
     private router: Router
-  ){      
+  ) {
       this.isSearching = false;
       this.data = this.router.getCurrentNavigation()!.extras.state;
+
       if( this.data && this.data.module ){
-        this.searchColumns = this.moduleColumnsMap[this.data.module];
-      }      
+        this.searchColumns = getSearchableColumns(this.data.module);
+      }
 
       let form : { [key:string] : FormControl } = {};
       form['key'] = new FormControl('', Validators.required);
-      form['field'] = new FormControl('', Validators.required);
+      form['field'] = new FormControl(this.searchColumns[0], Validators.required);
       this.searchForm = this.fb.group(form);
   }
 
@@ -99,7 +75,7 @@ export class ListComponent implements OnDestroy, AfterViewInit {
           return event.target.value;
         }),
         filter(res => res.length > 2),
-        debounceTime(1000),
+        debounceTime(350),
         distinctUntilChanged()
       ).
       subscribe((text: string) => {
@@ -127,7 +103,7 @@ export class ListComponent implements OnDestroy, AfterViewInit {
         });
       } else {
         console.error('From not valid');
-        return of([]);        
+        return of([]);
       }
     }
 
@@ -135,7 +111,7 @@ export class ListComponent implements OnDestroy, AfterViewInit {
       this.page = pageNo;
       this.offset = this.perPage * (this.page - 1);
       this.arrangePaginatedData( this.offset );
-      
+
     }
 
     private arrangePaginatedData( offset:number ){

@@ -1,4 +1,4 @@
-import { FlowBaseModel, FlowStep, FlowRouter } from "./index";
+import { FlowBaseModel, FlowStep, FlowRouter } from "../index";
 
 export class IEvaluation {
   module: string;

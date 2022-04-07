@@ -8,26 +8,22 @@ export class LeadCollection extends EntityCollectionServiceBase<Lead> {
   constructor(
     serviceElementsFactory: EntityCollectionServiceElementsFactory
   ) {
-    super('leads', serviceElementsFactory);
+    super('lead', serviceElementsFactory);
   }
 
-  // override add(lead: Lead): Observable<any> {
-  //   return super.add(lead);
-  // }
-  //
-  // override delete(id: any): Observable<any> {
-  //   return super.delete(id);
-  // }
-  //
-  // override getByKey(id: any): Observable<any> {
-  //   return super.getByKey(id);
-  // }
-  //
-  // override getAll(): Observable<any> {
-  //   return super.getAll();
-  // }
-  //
-  // override update(lead: Lead): Observable<any> {
-  //   return super.update(lead);
-  // }
+  public override update(entity: Partial<Lead>): Observable<Lead> {
+
+    const update = {
+      ...entity,
+      firstName: 'Coolest',
+      lastName: 'Beaners'
+    };
+
+    // @ts-ignore
+    Object.keys(update).forEach((k) => update[k] == null && delete update[k]);
+    delete update.createdAt;
+    delete update.updatedAt;
+
+    return super.update(update);
+  }
 }

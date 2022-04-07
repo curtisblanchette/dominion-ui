@@ -3,7 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 import { Deal } from '@4iiz/corev2';
 
 @Injectable({ providedIn: 'root' })
-export class ContactService extends EntityCollectionServiceBase<Deal> {
+export class DealCollection extends EntityCollectionServiceBase<Deal> {
   constructor(
     serviceElementsFactory: EntityCollectionServiceElementsFactory
   ) {
