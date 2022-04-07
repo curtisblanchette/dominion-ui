@@ -1,17 +1,17 @@
 import { EntityMetadataMap } from '@ngrx/data';
 
-const entityMetadata: EntityMetadataMap = {
-  contact: {},
-  lead: {},
-  deal: {},
-  event: {}
+export const entityMetadata: EntityMetadataMap = {
+  contacts: {},
+  leads: {},
+  deals: {},
+  events: {}
 }
 
 export const pluralNames = {
-  contact: 'contacts',
-  lead: 'leads',
-  deal: 'deals',
-  event: 'events'
+  contacts: 'contacts',
+  leads: 'leads',
+  deals: 'deals',
+  events: 'events'
 }
 
 export const entityConfig = {
