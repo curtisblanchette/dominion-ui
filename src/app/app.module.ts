@@ -21,6 +21,7 @@ import { EntityStoreModule } from './data/entity-store.module';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+
 const defaultDataServiceConfig: DefaultDataServiceConfig = {
   root: environment.dominion_api_url,
   timeout: 3000 // request timeout
@@ -43,7 +44,7 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
     EffectsModule.forRoot(effects),
     EntityDataModule.forRoot(entityConfig),
     EntityStoreModule,
-    StoreDevtoolsModule.instrument(),
+    environment.production ? [] : StoreDevtoolsModule.instrument(),
     DashboardModule,
     FlowModule,
     SystemModule
