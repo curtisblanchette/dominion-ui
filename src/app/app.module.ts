@@ -19,6 +19,7 @@ import { DefaultDataServiceConfig, EntityDataModule, HttpUrlGenerator } from '@n
 import { entityConfig } from './data/entity-metadata';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 import { PluralHttpUrlGenerator } from './data/plural.httpUrlGenerator';
 
 
@@ -29,7 +30,8 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
