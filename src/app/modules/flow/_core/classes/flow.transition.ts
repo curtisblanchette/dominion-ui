@@ -7,7 +7,7 @@ const easing = 'ease-out';
 export const FlowTransitions = [
   trigger('slide', [
     transition(':increment', [
-      query(':enter, :leave', style({position: 'fixed', width: '100%'}), {optional: true}),
+      query(':enter, :leave', style({}), {optional: true}),
       group([
         query(':enter', [style({transform: 'translateX(20%)', opacity: 0}), animate(`${duration} ${delay} ${easing}`, style({transform: 'translateX(0%)', opacity: 1}))], {
           optional: true,
@@ -18,7 +18,7 @@ export const FlowTransitions = [
       ]),
     ]),
     transition(':decrement', [
-      query(':enter, :leave', style({position: 'fixed', width: '100%'}), {optional: true}),
+      query(':enter, :leave', style({}), {optional: true}),
       group([
         query(':enter', [style({transform: 'translateX(-20%)', opacity: 0}), animate(`${duration} ${delay} ${easing}`, style({transform: 'translateX(0%)', opacity: 1}))], {
           optional: true,

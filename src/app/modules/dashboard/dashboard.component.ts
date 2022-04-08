@@ -14,9 +14,7 @@ export class DashboardComponent implements OnInit {
     private http:HttpClient
   ) { }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 
   public logout(){
     this.loginservice.logout();

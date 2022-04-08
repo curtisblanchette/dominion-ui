@@ -8,7 +8,7 @@ import { FlowService } from "../flow.service";
       <h3>Welcome to Flow!</h3>
     </div>
   `,
-  styleUrls: ['scss/_base.scss']
+  styleUrls: ['../_core/scss/_base.scss']
 })
 export class IntroComponent implements OnDestroy {
 
