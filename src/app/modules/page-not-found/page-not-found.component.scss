@@ -1,0 +1,55 @@
+@import '~src/assets/css/variables';
+
+.agile-info {
+    padding: 10%;
+    text-align: center;
+}
+.agile-info h2 {
+    font-size: 12em;
+    color: $text1;
+    line-height: 1;
+    font-weight: 100;
+    letter-spacing: 20px;
+}
+.agile-info h3 {
+    font-size: 38px;
+    text-transform: uppercase;
+    color: $text1;
+    line-height: 1.5;
+    font-weight: 100;
+    letter-spacing: 2px;
+    margin-top: 12px;
+}
+ .agile-info p {
+    font-size: 18px;
+	color: $text1;
+    text-transform: capitalize;
+    letter-spacing: 6px;
+    margin-bottom: 46px;
+}
+.agile-info a {
+    font-size: 15px;
+    text-transform: uppercase;
+    color: white;
+    border: 1px solid #3b5998;
+    padding: 10px 40px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-top: 8px;
+    background: #3b5998;
+    font-family: 'Open Sans', sans-serif;
+	transition:0.5s all;
+	-webkit-transition:0.5s all;
+	-o-transition:0.5s all;
+	-moz-transition:0.5s all;
+	-ms-transition:0.5s all;
+}
+.agile-info a:hover {
+    background: #1f3c7b;
+	transition:0.5s all;
+	-webkit-transition:0.5s all;
+	-o-transition:0.5s all;
+	-moz-transition:0.5s all;
+	-ms-transition:0.5s all;
+}

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard } from './guards/role.guard';
+import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,11 @@ const routes: Routes = [
   {
     path: 'system',
     loadChildren: () => import('./modules/system/system.module').then(m => m.SystemModule)
+  },  
+  { 
+    path: '**',
+    pathMatch : 'full',
+    component : PageNotFoundComponent
   }
 ];
 
