@@ -9,15 +9,15 @@
           placeholder="Search here..."
         ></fiiz-input>
       </div>
-      <div class="filter-dropdown">
-        <fiiz-dropdown
-          id="SearchFields"
-          [items]="searchColumns"
-          formControlName="field"
-          [showDefault]="true"
-          (change)="searchInModule()">
-        </fiiz-dropdown>
-      </div>
+<!--      <div class="filter-dropdown">-->
+<!--        <fiiz-dropdown-->
+<!--          id="SearchFields"-->
+<!--          [items]="searchColumns"-->
+<!--          formControlName="field"-->
+<!--          [showDefault]="true"-->
+<!--          (change)="searchInModule()">-->
+<!--        </fiiz-dropdown>-->
+<!--      </div>-->
     </form>
   </div>
 
@@ -51,7 +51,7 @@
               <div style="align-self: start;">{{item.phone}}</div>
             </div>
             <div class="flex-table__cell" style="flex-grow : 30;">
-              <div style="align-self: start;">{{item.status}}</div>
+              <div style="align-self: start;">{{item.email}}</div>
             </div>
           </label>
         </div>
