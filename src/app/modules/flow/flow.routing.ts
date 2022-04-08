@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FlowComponent } from "./flow.component";
-import { DataComponent, TextComponent } from "./components";
+import { DataComponent, TextComponent, ListComponent } from "./components";
 import { IntroComponent } from "./components/intro.component";
 
 const routes: Routes = [
@@ -23,6 +23,11 @@ const routes: Routes = [
         path: 'text',
         component: TextComponent,
         outlet: 'aux'
+      },
+      {
+        path : 'list',
+        component : ListComponent,
+        outlet : 'aux'
       }
     ]
   }

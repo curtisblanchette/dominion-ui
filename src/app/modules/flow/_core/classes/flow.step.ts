@@ -1,5 +1,5 @@
 import { FlowNode } from "./flow.node";
-import { FlowComponentType } from "../components";
+import { FlowComponentType } from "../../components";
 
 export class FlowStep extends FlowNode {
 

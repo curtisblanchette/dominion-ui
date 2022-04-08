@@ -36,19 +36,19 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             tap( response => {
                 if( response instanceof HttpResponse ){
-                    // We might need to something here.. not necessary                    
+                    // We might need to something here.. not necessary
                 }
             }),
             catchError( error => {
                 if( error instanceof HttpErrorResponse ){
                     switch (error.status) {
-                        
+
                         case 0 :
-                            console.log('Some Unknown error occured');                            
+                            console.log('Some Unknown error occured');
                         break;
 
                         case 401 :
-                            // Refresh the Cognito Token                            
+                            // Refresh the Cognito Token
                             if( this.loggedUser ){
                                 const refreshed:any = this.refreshToken(0);
                                 if( refreshed ){
@@ -75,20 +75,25 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     private getAuthHeaders(){
         if( this.loggedUser ){
             return {
-                'x-id-token': this.loggedUser.id_token,
-                'x-access-token': this.loggedUser.access_token,
-                'x-acting-for': '4583e3f2-dca3-4a1d-9457-13b0a6d12f48'
+                'x-access-token' : this.loggedUser.access_token,
+                'x-id-token' : this.loggedUser.id_token,
+                'x-acting-for' : '80052327-9e54-4d27-bf90-b4175556a50a'
             }
         }
     }
 
     private refreshToken( counter:number = 0):Promise<boolean> {
         return this.cognito.refreshSession().then((session) => {
-            const newAccessToken = session.accessToken.getJwtToken();
-            const newIdToken = session.idToken.getJwtToken();
-            const newRefreshToken = session.refreshToken.getToken();            
-            this.loggedUser = {... this.loggedUser, access_token : newAccessToken, id_token : newIdToken, refresh_token : newRefreshToken };
-            this.store.dispatch(loginActions.udpateRecordAction({payload:this.loggedUser}));
+            const access_token = session.accessToken.getJwtToken();
+            const id_token = session.idToken.getJwtToken();
+            const refresh_token = session.refreshToken.getToken();
+            const user: User = {
+              ...this.loggedUser,
+              access_token,
+              id_token,
+              refresh_token
+            };
+            this.store.dispatch(loginActions.UpdateUserAction({ payload: user }));
             return true;
         }).catch(error => {
             console.error('Error refreshing token', error);

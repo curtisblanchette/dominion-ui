@@ -1,0 +1,98 @@
+<div class="flex_main_wrapper">
+  <div class="flex_main_wrapper__filter-container" *ngIf="searchable">
+    <form [formGroup]="searchForm" id="search-form">
+      <div class="filter-input" #SearchInput>
+        <fiiz-input
+          id="search"
+          formControlName="key"
+          type="text"
+          placeholder="Search here..."
+        ></fiiz-input>
+      </div>
+<!--      <div class="filter-dropdown">-->
+<!--        <fiiz-dropdown-->
+<!--          id="SearchFields"-->
+<!--          [items]="searchColumns"-->
+<!--          formControlName="field"-->
+<!--          [showDefault]="true"-->
+<!--          (change)="searchInModule()">-->
+<!--        </fiiz-dropdown>-->
+<!--      </div>-->
+    </form>
+  </div>
+
+  <ng-container [ngTemplateOutlet]="table" *ngIf="dataFound && listData.length > 0"></ng-container>
+  <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="!dataFound && listData.length == 0"></ng-container>
+  <ng-container [ngTemplateOutlet]="initial" *ngIf="dataFound && listData.length == 0"></ng-container>
+
+  <ng-template #table>
+    <div class="flex-table">
+      <div class="flex-table__header">
+        <div class="flex-table__cell" style="flex-grow : 10">&nbsp;</div>
+        <div class="flex-table__cell" style="flex-grow : 30">Name</div>
+        <div class="flex-table__cell" style="flex-grow : 30">Phone</div>
+        <div class="flex-table__cell" style="flex-grow : 30">Email</div>
+      </div>
+      <div class="flex-table__body" style="height: calc(100% - 38px); overflow-x: hidden;">
+        <div class="flex-table__row"
+             *ngFor="let item of paginatedData | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: totalRecords }; let i = index;"
+            (click)="onSelect(item)">
+          <label [for]="'recordId_' + i" style="display: flex; width: 100%;">
+            <div class="flex-table__cell" style="flex-grow : 10;">
+              <div style="align-self: center; justify-content: center;">
+                <input name="recordId" [id]="'recordId_' + i" [value]="item.id" type="radio">
+                <span class="customRadio"></span>
+              </div>
+            </div>
+            <div class="flex-table__cell" style="flex-grow : 30;">
+              <div style="align-self: start;">{{item.firstName}} {{item.lastName}}</div>
+            </div>
+            <div class="flex-table__cell" style="flex-grow : 30;">
+              <div style="align-self: start;">{{item.phone}}</div>
+            </div>
+            <div class="flex-table__cell" style="flex-grow : 30;">
+              <div style="align-self: start;">{{item.email}}</div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="flex-table__footer">
+        <pagination-controls
+          previousLabel="Prev"
+          nextLabel="Next"
+          responsive="true"
+          directionLinks="true"
+          autoHide="false"
+          screenReaderPaginationLabel="Pagination"
+          screenReaderPageLabel="page"
+          screenReaderCurrentLabel="You're on page"
+          maxSize="5"
+          (pageChange)="handlePageChange($event)">
+        </pagination-controls>
+      </div>
+    </div>
+
+  </ng-template>
+
+  <ng-template #noDataFound>
+    <div class="message-block" style="padding-top: 5%;">
+      We could not find {{data.module}} with term "{{searchForm.value.key}}"
+    </div>
+    <div class="message-block">
+      <span>Try another search term or create a new lead</span>
+    </div>
+    <div class="message-block" style="padding-top: 4%;">
+      <button class="primary">Create New Lead</button>
+    </div>
+  </ng-template>
+
+  <ng-template #initial>
+    <div class="message-block" style="padding-top: 5%;">
+      Perform a new {{data?.module}} search
+    </div>
+    <div class="message-block">
+      <span>Please try a search</span>
+    </div>
+  </ng-template>
+
+</div>

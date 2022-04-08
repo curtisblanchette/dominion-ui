@@ -1,7 +1,7 @@
 export class User {
     access_token: string;
+    id_token:string;
     refresh_token: string;
-    id_token: string;
     role: string;
     username: string;
     picture: string;
@@ -16,8 +16,8 @@ export class User {
     constructor(
       picture: string,
       access_token: string,
+      id_token:string,
       refresh_token: string,
-      id_token: string,
       role: string,
       username: string,
       id?: string,
@@ -31,8 +31,8 @@ export class User {
       this.id = id;
       this.picture = picture;
       this.access_token = access_token;
-      this.refresh_token = refresh_token;
       this.id_token = id_token;
+      this.refresh_token = refresh_token;
       this.role = role;
       this.username = username;
       this.workspace = workspace;

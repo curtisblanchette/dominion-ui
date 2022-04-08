@@ -15,18 +15,14 @@ import { CustomHttpInterceptor } from './common/interceptor/CustomHttpIntercepto
 import { FlowModule } from './modules/flow/flow.module';
 import { SystemModule } from './modules/system/system.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { DefaultDataServiceConfig, EntityDataModule } from '@ngrx/data';
+import { DefaultDataServiceConfig, EntityDataModule, HttpUrlGenerator } from '@ngrx/data';
 import { entityConfig } from './data/entity-metadata';
-import { EntityStoreModule } from './data/entity-store.module';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+import { EntityStoreModule } from './data/entity-store.module';
 
 
-const defaultDataServiceConfig: DefaultDataServiceConfig = {
-  root: environment.dominion_api_url,
-  timeout: 3000 // request timeout
-}
 
 
 @NgModule({
@@ -45,7 +41,6 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
     HttpClientModule,
     StoreModule.forRoot(reducer),
     EffectsModule.forRoot(effects),
-    EntityDataModule.forRoot(entityConfig),
     EntityStoreModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     DashboardModule,
@@ -57,10 +52,6 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptor,
       multi: true
-    },
-    {
-      provide: DefaultDataServiceConfig,
-      useValue: defaultDataServiceConfig
     }
   ],
   bootstrap: [AppComponent],
