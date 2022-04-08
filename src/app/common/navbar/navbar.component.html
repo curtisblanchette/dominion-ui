@@ -1,0 +1,21 @@
+<nav class="navbar" *ngIf="loggedUser !== null">
+    
+    <div class="navbar__header" style="flex-grow: 5;">
+        <a  routerLink="/">
+            <img src="assets/img/logo@1x.png" />
+        </a>
+    </div>
+
+    <div class="navbar__menu" style="flex-grow: 1;">
+        <ul class="navbar__nav">
+            <li routerLinkActive="active" *ngFor="let menu of menus">
+                <a [routerLink] = "menu.path">
+                    {{menu.name}}
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div style="flex-grow: 0;"></div>
+    
+</nav>

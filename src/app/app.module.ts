@@ -20,6 +20,7 @@ import { entityConfig } from './data/entity-metadata';
 import { EntityStoreModule } from './data/entity-store.module';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { NavbarComponent } from './common/navbar/navbar.component';
 
 
 const defaultDataServiceConfig: DefaultDataServiceConfig = {
@@ -29,7 +30,8 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

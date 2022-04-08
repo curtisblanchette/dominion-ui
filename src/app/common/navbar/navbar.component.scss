@@ -1,0 +1,58 @@
+@import '~src/assets/css/variables';
+
+.navbar{
+    
+    display: flex;
+    align-items: center;
+    flex-basis: auto;
+    flex-grow: 1;
+    background-color: #0A1930;
+    box-shadow: 0px 2px 50px rgb(0 0 0 / 90%);
+
+    &__header{
+        img {
+            padding-left: 5%;
+        }
+    }
+
+    &__nav {
+        margin-left: auto;
+        flex-direction: row;
+        display: flex;
+        padding-left: 0;
+        margin-bottom: 0;
+        list-style: none;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+        align-items: flex-start;
+    
+        & > li {
+
+            &:hover {
+                border-bottom: 3px solid #79B8FF;
+                border-radius: 3px;
+            }
+
+            & > a {
+                text-decoration: none;
+                display: inline-block;
+                padding: 0.5rem 1.7rem;
+                color : #C6CEED;
+                &:hover {
+                    color: #79B8FF
+                }
+            }            
+
+            &.active {
+                border-bottom: 3px solid #79B8FF;
+                border-radius: 3px;
+                transition: outline 0.6s linear;
+                a {
+                    color: #79B8FF;
+                }
+            }
+        }
+    }
+    
+}
