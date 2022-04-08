@@ -5,6 +5,7 @@ import { ModuleType } from './_core/classes/flow.moduleTypes';
 
 @Injectable()
 export class FlowService {
+  public cache: { [key: string]: any } = {};
 
   public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
@@ -17,7 +18,7 @@ export class FlowService {
 
     const intro = new FlowStep('Intro', FlowComponentType.INTRO, undefined);
     const first = new FlowStep('First', FlowComponentType.TEXT, {title: 'First', body: 'The first step'} );
-    const search = new FlowStep('Search', FlowComponentType.LIST, {title : 'Search in Leads', module : ModuleType.LEAD} );
+    const search = new FlowStep('Search', FlowComponentType.LIST, {title: 'Search in Leads', module: ModuleType.LEAD} );
     const newLead = new FlowStep('New Lead', FlowComponentType.DATA, {title: 'Create a New Lead', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com', module : ModuleType.LEAD} )
     const campaign = new FlowStep('Campaigns', FlowComponentType.LIST, {title : 'Select Campaigns', module : ModuleType.CAMPAIGN} );
 
@@ -48,6 +49,14 @@ export class FlowService {
       .addLink(link_search_to_newLead)
       .addLink(link_newLead_to_campaign);
 
+  }
+
+  public addToCache(module: ModuleType, data: any) {
+    this.cache[module] = data;
+  }
+
+  public getFromCache(module: ModuleType) {
+    return this.cache[module];
   }
 
   public getFirstStep(): FlowStep {

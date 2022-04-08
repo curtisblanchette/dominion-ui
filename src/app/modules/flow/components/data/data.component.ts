@@ -49,7 +49,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   public getData(key?: string) {
-    this._dynamicService.getById('47fa4910-0e73-44e4-a724-f02dcb7ff74b').subscribe(res => {
+    this._dynamicService.getById(this.flowService.cache[this.module].id).subscribe(res => {
       this.data = res;
       // build the form
       this.buildForm();

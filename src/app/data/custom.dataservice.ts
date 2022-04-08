@@ -17,16 +17,9 @@ export class ExtendedDataService<T> extends DefaultDataService<T> {
     config?: DefaultDataServiceConfig) {
     super(entityName, http, httpUrlGenerator, config);
   }
-
-  override update(payload: Update<T>): Observable<T> {
-    return super.update(payload);
-  }
-
-  override getWithQuery(params: string | QueryParams): Observable<T[]> {
-    return super.getWithQuery(params).pipe(
-      tap(res => console.log(res)),
-      map((res: any) => res.entities)
-    );
-  }
+  // override parent class members here
+  // override update(payload: Update<T>): Observable<T> {
+  //   return super.update(payload);
+  // }
 
 }
