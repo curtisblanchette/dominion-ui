@@ -24,8 +24,7 @@ import { EntityStoreModule } from './data/entity-store.module';
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent
-    AppComponent,
+    NavbarComponent,
     PageNotFoundComponent,
   ],
   imports: [
