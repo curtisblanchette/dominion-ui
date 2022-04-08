@@ -17,7 +17,6 @@ import { SystemModule } from './modules/system/system.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { DefaultDataServiceConfig, EntityDataModule, HttpUrlGenerator } from '@ngrx/data';
 import { entityConfig } from './data/entity-metadata';
-import { EntityStoreModule } from './data/entity-store.module';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { PluralHttpUrlGenerator } from './data/plural.httpUrlGenerator';
@@ -44,7 +43,6 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
     StoreModule.forRoot(reducer),
     EffectsModule.forRoot(effects),
     EntityDataModule.forRoot(entityConfig),
-    EntityStoreModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     DashboardModule,
     FlowModule,
