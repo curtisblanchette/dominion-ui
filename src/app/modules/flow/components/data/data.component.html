@@ -1,11 +1,14 @@
-<ng-container [ngTemplateOutlet]="isLoading ? loading : main"
-              [ngTemplateOutletContext]="{loadingText: 'Loading employees...'}"></ng-container>
+<ng-container [ngTemplateOutlet]="(loading$ | async) ? loading : main"
+              [ngTemplateOutletContext]="{loadingText: 'Loading...'}"></ng-container>
 
 <ng-template #main>
-  <h3>{{state.title}}</h3>
-  <fiiz-input type="text" id="firstName" placeholder="First Name" [(ngModel)]="data.firstName"></fiiz-input>
-  <fiiz-input type="text" id="lastName" placeholder="Last Name" [(ngModel)]="data.lastName"></fiiz-input>
-  <fiiz-input type="text" id="phone" placeholder="Mobile" [(ngModel)]="data.phone"></fiiz-input>
+  <div *ngIf="data">
+    <h3>{{state.title}}</h3>
+    <form [formGroup]="form">
+      <fiiz-input *ngFor="let control of getFormControls()" [formControlName]="control"></fiiz-input>
+    </form>
+
+  </div>
 </ng-template>
 
 <ng-template #loading>Loading...</ng-template>

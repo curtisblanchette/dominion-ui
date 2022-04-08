@@ -33,7 +33,7 @@ export const LogInErrorAction = createAction(
     props<{error:any}>()
 );
 
-export const udpateRecordAction = createAction(
+export const UpdateUserAction = createAction(
     ActionTypes.UPDATE_RECORD,
     props<{ payload:User }>()
 )

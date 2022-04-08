@@ -41,7 +41,7 @@ export class loginEffects {
             cognitoGroup,
             cognitoUsername
           );
-          
+
           return loginActions.LogInSuccesfullAction({payload: loggedUser});
         });
       })
@@ -78,5 +78,16 @@ export class loginEffects {
       ),
     {dispatch: false}
   );
+
+  updateUserSuccess$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.UpdateUserAction),
+        map((action) => {
+          localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
+          return action.payload;
+        })
+      )
+  )
 
 }

@@ -36,19 +36,19 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             tap( response => {
                 if( response instanceof HttpResponse ){
-                    // We might need to something here.. not necessary                    
+                    // We might need to something here.. not necessary
                 }
             }),
             catchError( error => {
                 if( error instanceof HttpErrorResponse ){
                     switch (error.status) {
-                        
+
                         case 0 :
-                            console.log('Some Unknown error occured');                            
+                            console.log('Some Unknown error occured');
                         break;
 
                         case 401 :
-                            // Refresh the Cognito Token                            
+                            // Refresh the Cognito Token
                             if( this.loggedUser ){
                                 const refreshed:any = this.refreshToken(0);
                                 if( refreshed ){
@@ -84,11 +84,16 @@ export class CustomHttpInterceptor implements HttpInterceptor {
 
     private refreshToken( counter:number = 0):Promise<boolean> {
         return this.cognito.refreshSession().then((session) => {
-            const newAccessToken = session.accessToken.getJwtToken();
-            const newIdToken = session.idToken.getJwtToken();
-            const newRefreshToken = session.refreshToken.getToken();            
-            this.loggedUser = {... this.loggedUser, access_token : newAccessToken, id_token : newIdToken, refresh_token : newRefreshToken };
-            this.store.dispatch(loginActions.udpateRecordAction({payload:this.loggedUser}));
+            const access_token = session.accessToken.getJwtToken();
+            const id_token = session.idToken.getJwtToken();
+            const refresh_token = session.refreshToken.getToken();
+            const user: User = {
+              ...this.loggedUser,
+              access_token,
+              id_token,
+              refresh_token
+            };
+            this.store.dispatch(loginActions.UpdateUserAction({ payload: user }));
             return true;
         }).catch(error => {
             console.error('Error refreshing token', error);
