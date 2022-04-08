@@ -57,7 +57,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
                                     this.login.logout();
                                 }
                             } else {
-                                console.log('Unauthorised access');
+                                console.warn('Unauthorized access');
                             }
                         break;
 
@@ -91,7 +91,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
             this.store.dispatch(loginActions.udpateRecordAction({payload:this.loggedUser}));
             return true;
         }).catch(error => {
-            console.error('Error in refreshing token', error);
+            console.error('Error refreshing token', error);
             console.log(`Retrying count ${counter}`);
             if (counter < this.retry) {
                 counter++;
