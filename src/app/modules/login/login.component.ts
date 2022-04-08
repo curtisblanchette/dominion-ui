@@ -9,7 +9,6 @@ import * as fromRoot from './store/login.reducer';
 import * as loginActions from './store/login.actions';
 import { of, switchMap } from 'rxjs';
 
-// declare var $: any;
 declare var require:any;
 const { version } = require('../../../../package.json');
 
@@ -60,12 +59,11 @@ export class LoginComponent implements OnInit {
     if( this.loginForm.valid ){
 
       this.errorMessage = '';
-      this.isLoading = false;
+      this.isLoading = true;
       this.hasError = false;
       this.loadingMessage = `Validating credentials...`;
 
       this.store.dispatch(loginActions.LogUserAction( {payload:this.loginForm.value} ));
-
     } else {
       alert('Invalid Form');
     }

@@ -20,6 +20,7 @@ import { entityConfig } from './data/entity-metadata';
 import { EntityStoreModule } from './data/entity-store.module';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 
 
 const defaultDataServiceConfig: DefaultDataServiceConfig = {
@@ -27,9 +28,11 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
   timeout: 3000 // request timeout
 }
 
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,

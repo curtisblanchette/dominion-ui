@@ -99,7 +99,6 @@ export class CognitoService {
           resolve(this.cognitoUserSession);
         },
         onFailure: (err) => {
-          console.log('Failure',err);
           reject(err);
         }
       });
@@ -114,7 +113,7 @@ export class CognitoService {
           if (error) {
             return reject(error);
           }
-          return resolve(session.getAccessToken().getJwtToken());
+          return resolve(session);
         });
       }
     }) as Promise<any>;
