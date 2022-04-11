@@ -13,7 +13,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class FiizInputComponent implements ControlValueAccessor {
 
+  @HostBinding('class.has-label')
   @Input('label') public label: string | undefined;
+
   @Input('id') id!: string;
   @Input('type') type!: string;
   @Input('minlength') minlength!: string;

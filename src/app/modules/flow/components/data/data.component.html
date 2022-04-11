@@ -2,10 +2,10 @@
               [ngTemplateOutletContext]="{loadingText: 'Loading...'}"></ng-container>
 
 <ng-template #main>
-  <div *ngIf="data">
+  <div *ngIf="data$ | async as data">
     <h3>{{state.title}}</h3>
     <form [formGroup]="form">
-      <fiiz-input *ngFor="let control of getFormControls()" [formControlName]="control"></fiiz-input>
+      <fiiz-input *ngFor="let control of getFormControls()" [label]="control" [formControlName]="control"></fiiz-input>
     </form>
 
   </div>
