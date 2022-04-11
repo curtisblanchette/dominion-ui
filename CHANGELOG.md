@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.3.0 (2022-04-11)
+
+
+### Features
+
+* **develop:** convert list component to use ngrx/data async ([3927a19](https://github.com/4iiz/dominion-ui/commit/3927a19963a9c34fd7e19039c67d50edf1354d43))
+
 ### 1.2.2 (2022-04-08)
 
 ### 1.2.1 (2022-04-08)
