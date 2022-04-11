@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlowService } from '../../flow.service';
 import { Observable } from 'rxjs';
-import { Contact, Deal, Lead, Event, ILeadDTO, ILead, IContact, IDeal, IEvent } from '@4iiz/corev2';
+import { Contact, Deal, Lead, Event, ILeadDTO } from '@4iiz/corev2';
 
 import { ModuleType } from '../../_core/classes/flow.moduleTypes';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -81,8 +81,9 @@ export class DataComponent implements OnInit, OnDestroy {
         ...this.form.value,
         practiceAreaId: 1
       }
-    }
+    };
     this._dynamicService.update(payload).subscribe();
+    this.flowService.addToCache(this.module, payload);
   }
 
   public ngOnDestroy() {
