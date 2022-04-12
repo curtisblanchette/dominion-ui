@@ -100,6 +100,9 @@ export class ListComponent implements OnDestroy, AfterViewInit {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
       this._dynamicService.getWithQuery({'q': formValues.key});
+      this._dynamicService.setFilter({
+        q: formValues.key
+      });
     } else {
       console.warn('Form not valid');
       return of([]);
