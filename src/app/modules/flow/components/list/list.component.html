@@ -2,12 +2,7 @@
   <div class="flex_main_wrapper__filter-container" *ngIf="searchable">
     <form [formGroup]="searchForm" id="search-form">
       <div class="filter-input" #SearchInput>
-        <fiiz-input
-          id="search"
-          formControlName="key"
-          type="text"
-          placeholder="Search here..."
-        ></fiiz-input>
+        <fiiz-input id="search" formControlName="key" type="text" placeholder="Search here..."></fiiz-input>
       </div>
 <!--      <div class="filter-dropdown">-->
 <!--        <fiiz-dropdown-->
@@ -21,9 +16,9 @@
     </form>
   </div>
 
-  <ng-container [ngTemplateOutlet]="table" *ngIf="dataFound && listData.length > 0"></ng-container>
-  <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="!dataFound && listData.length == 0"></ng-container>
-  <ng-container [ngTemplateOutlet]="initial" *ngIf="dataFound && listData.length == 0"></ng-container>
+  <ng-container [ngTemplateOutlet]="table" *ngIf="state?.module && data$ | async"></ng-container>
+  <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
+  <ng-container [ngTemplateOutlet]="initial" *ngIf="state?.module && !(loaded$ | async)"></ng-container>
 
   <ng-template #table>
     <div class="flex-table">
@@ -35,7 +30,7 @@
       </div>
       <div class="flex-table__body" style="height: calc(100% - 38px); overflow-x: hidden;">
         <div class="flex-table__row"
-             *ngFor="let item of paginatedData | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: totalRecords }; let i = index;"
+             *ngFor="let item of data$ | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: totalRecords } | async; let i = index;"
             (click)="onSelect(item)">
           <label [for]="'recordId_' + i" style="display: flex; width: 100%;">
             <div class="flex-table__cell" style="flex-grow : 10;">
@@ -76,7 +71,7 @@
 
   <ng-template #noDataFound>
     <div class="message-block" style="padding-top: 5%;">
-      We could not find {{data.module}} with term "{{searchForm.value.key}}"
+      We could not find {{state.module}} with term "{{searchForm.value.key}}"
     </div>
     <div class="message-block">
       <span>Try another search term or create a new lead</span>
@@ -88,7 +83,7 @@
 
   <ng-template #initial>
     <div class="message-block" style="padding-top: 5%;">
-      Perform a new {{data?.module}} search
+      Perform a new {{state?.module || ''}} search
     </div>
     <div class="message-block">
       <span>Please try a search</span>

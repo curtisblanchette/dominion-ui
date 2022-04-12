@@ -2,17 +2,14 @@ import { Component, Input, ElementRef, AfterViewInit, ViewChild, OnInit, OnDestr
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { fromEvent, of } from 'rxjs';
+import { fromEvent, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
-
 import { DropdownItem } from '../../../../common/components/ui/forms';
-import { environment } from '../../../../../environments/environment';
 import { FlowService } from '../../flow.service';
 import { getSearchableColumns } from './searchable-columns';
 import { ModuleType } from '../../_core/classes/flow.moduleTypes';
-import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfaces';
-import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
-import { DefaultDataServiceFactory } from '@ngrx/data';
+import { Lead } from '@4iiz/corev2';
+import { LeadCollection } from '../../../../data/collections/lead.collection';
 
 @Component({
   templateUrl: 'list.component.html',
@@ -22,8 +19,6 @@ export class ListComponent implements OnDestroy, AfterViewInit {
 
   public state: any;
   public module: ModuleType;
-  public _dynamicService: EntityCollectionDataService<Lead | Contact | Deal | Event>;
-
 
   public searchColumns: DropdownItem[] = [];
 
@@ -39,8 +34,6 @@ export class ListComponent implements OnDestroy, AfterViewInit {
   public offset: number = 0;
   public totalRecords: number = 0;
 
-  public data: any;
-
   private SearchInput: ElementRef;
 
   @ViewChild('SearchInput') set content(content: ElementRef) {
@@ -51,27 +44,35 @@ export class ListComponent implements OnDestroy, AfterViewInit {
 
   public isSearching: boolean;
 
+  loaded$: Observable<boolean>;
+  loading$: Observable<boolean>;
+  data$: Observable<Lead[]>;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private flowService: FlowService,
     private router: Router,
-    private dataServiceFactory: DefaultDataServiceFactory
+    private leadService: LeadCollection
   ) {
     this.state = this.router.getCurrentNavigation()!.extras.state;
     this.module = this.state?.module;
-    this._dynamicService = this.dataServiceFactory.create(this.module);
 
     this.isSearching = false;
-    this.data = this.router.getCurrentNavigation()!.extras.state;
 
-    if (this.data && this.data.module) {
-      this.searchColumns = getSearchableColumns(this.data.module);
-    }
+    this.data$ = leadService.entities$;
+    this.loading$ = leadService.loading$;
+    this.loaded$ = leadService.loaded$;
+
+    this.data$.subscribe(res => {
+      if(res.length && this.state?.module) {
+        this.searchColumns = getSearchableColumns(this.state.module);
+      }
+    })
 
     let form: { [key: string]: FormControl } = {};
     form['key'] = new FormControl('', Validators.required);
-    form['field'] = new FormControl(this.searchColumns[0], Validators.required);
+    // form['field'] = new FormControl(this.searchColumns[0], Validators.required);
     this.searchForm = this.fb.group(form);
   }
 
@@ -100,7 +101,7 @@ export class ListComponent implements OnDestroy, AfterViewInit {
     if (this.searchForm.valid) {
       this.isSearching = true;
       const formValues = this.searchForm.value;
-      this._dynamicService.getWithQuery({'q': formValues.key}).subscribe((res: any) => {
+      this.leadService.getWithQuery({'q': formValues.key}).subscribe((res: any) => {
         if (res && res.count > 0) {
           this.totalRecords = res.count;
           this.listData = res.rows;
@@ -115,7 +116,7 @@ export class ListComponent implements OnDestroy, AfterViewInit {
         this.isSearching = false;
       });
     } else {
-      console.error('From not valid');
+      console.error('Form not valid');
       return of([]);
     }
   }
