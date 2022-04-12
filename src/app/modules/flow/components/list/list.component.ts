@@ -1,16 +1,14 @@
-import { Component, Input, ElementRef, AfterViewInit, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { fromEvent, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { DropdownItem } from '../../../../common/components/ui/forms';
 import { FlowService } from '../../flow.service';
-import { getSearchableColumns } from './searchable-columns';
 import { ModuleType } from '../../_core/classes/flow.moduleTypes';
 import { Lead } from '@4iiz/corev2';
-import { LeadCollection } from '../../../../data/collections/lead.collection';
 import * as pluralize from 'pluralize';
+import { EntityCollectionService, EntityServices } from '@ngrx/data';
 
 @Component({
   templateUrl: 'list.component.html',
@@ -20,17 +18,11 @@ export class ListComponent implements OnDestroy, AfterViewInit {
 
   public state: any;
   public module: ModuleType;
-
-  public searchColumns: DropdownItem[] = [];
-
   public searchForm!: FormGroup;
-  public searchable: boolean = true;
-  public listData: [] = [];
-  public paginatedData: any[] = [];
-  public dataFound: boolean = true;
+  @Input() searchable: boolean = true;
 
   // Pagination
-  public perPage: number = 5;
+  public perPage: number = 2;
   public page: number = 1;
   public offset: number = 0;
   public totalRecords: number = 0;
@@ -43,33 +35,31 @@ export class ListComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  public isSearching: boolean;
-
+  public _dynamicService: EntityCollectionService<Lead>
   loaded$: Observable<boolean>;
   loading$: Observable<boolean>;
   data$: Observable<Lead[]>;
+  count$: Observable<number>;
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private flowService: FlowService,
     private router: Router,
-    private leadService: LeadCollection
+    private entityServices: EntityServices
   ) {
     this.state = this.router.getCurrentNavigation()!.extras.state;
     this.module = this.state?.module;
+    this._dynamicService = this.entityServices.getEntityCollectionService(this.module);
 
-    this.isSearching = false;
+    this.data$ = this._dynamicService.filteredEntities$;
+    this.loading$ = this._dynamicService.loading$;
+    this.loaded$ = this._dynamicService.loaded$;
+    this.count$ = this._dynamicService.count$;
 
-    this.data$ = leadService.entities$;
-    this.loading$ = leadService.loading$;
-    this.loaded$ = leadService.loaded$;
-
-    this.data$.subscribe(res => {
-      if(res.length && this.state?.module) {
-        this.searchColumns = getSearchableColumns(this.state.module);
-      }
-    })
+    this.data$.subscribe((res: Lead[]) => {
+      console.log(res);
+    });
 
     let form: { [key: string]: FormControl } = {};
     form['key'] = new FormControl('', Validators.required);
@@ -82,7 +72,7 @@ export class ListComponent implements OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy() {
-    console.log('Destroyed');
+    console.log(`[${this.module}] List Component Destroyed`);
   }
 
   get pluralModuleName() {
@@ -108,24 +98,10 @@ export class ListComponent implements OnDestroy, AfterViewInit {
 
   public searchInModule() {
     if (this.searchForm.valid) {
-      this.isSearching = true;
       const formValues = this.searchForm.value;
-      this.leadService.getWithQuery({'q': formValues.key}).subscribe((res: any) => {
-        if (res && res.count > 0) {
-          this.totalRecords = res.count;
-          this.listData = res.rows;
-          this.dataFound = true;
-          this.arrangePaginatedData(0);
-        } else {
-          this.totalRecords = 0;
-          this.listData = [];
-          this.dataFound = false;
-          this.paginatedData = [];
-        }
-        this.isSearching = false;
-      });
+      this._dynamicService.getWithQuery({'q': formValues.key});
     } else {
-      console.error('Form not valid');
+      console.warn('Form not valid');
       return of([]);
     }
   }
@@ -133,12 +109,8 @@ export class ListComponent implements OnDestroy, AfterViewInit {
   public handlePageChange(pageNo: number) {
     this.page = pageNo;
     this.offset = this.perPage * (this.page - 1);
-    this.arrangePaginatedData(this.offset);
-
   }
 
-  private arrangePaginatedData(offset: number) {
-    this.paginatedData = this.listData.slice(offset, offset + this.perPage);
-  }
+
 
 }

@@ -30,7 +30,7 @@
       </div>
       <div class="flex-table__body" style="height: calc(100% - 38px); overflow-x: hidden;">
         <div class="flex-table__row"
-             *ngFor="let item of data$ | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: totalRecords } | async; let i = index;"
+             *ngFor="let item of data$ | async | paginate: { itemsPerPage: 2, currentPage: page, totalItems: (count$ | async)}; let i = index;"
             (click)="onSelect(item)">
           <label [for]="'recordId_' + i" style="display: flex; width: 100%;">
             <div class="flex-table__cell" style="flex-grow : 10;">
