@@ -99,7 +99,6 @@ export class loginEffects {
         map(async (action) => {
           try {
             const session = await this.cognito.refreshSession();
-
             const access_token = session.accessToken.getJwtToken();
             const id_token = session.idToken.getJwtToken();
             const refresh_token = session.refreshToken.getToken();
@@ -111,8 +110,8 @@ export class loginEffects {
               refresh_token
             };
 
-            this.store.dispatch(loginActions.UpdateUserAction({payload: user}));
-            return true;
+            return this.store.dispatch(loginActions.UpdateUserAction({payload: user}));
+
           } catch (error) {
             console.error('Error refreshing token', error);
           }

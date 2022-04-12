@@ -7,6 +7,7 @@ import { User } from '../../modules/login/models/user';
 import * as fromRoot from '../../reducers.index';
 import * as loginActions from '../../modules/login/store/login.actions';
 import { filter } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
@@ -51,7 +52,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       setHeaders: {
         'x-access-token': this.loggedUser.access_token,
         'x-id-token': this.loggedUser.id_token,
-        'x-acting-for': '80052327-9e54-4d27-bf90-b4175556a50a'
+        'x-acting-for': environment.acting_for
       }
     });
   }
