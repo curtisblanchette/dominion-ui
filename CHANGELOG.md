@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.4.0 (2022-04-12)
+
+
+### Features
+
+* **develop:** create the entity collection services dynamically ([ca47328](https://github.com/4iiz/dominion-ui/commit/ca47328f61a695db5c3a5c5f3c2a56922c18937a))
+
 ### 1.3.8 (2022-04-12)
 
 ### 1.3.7 (2022-04-12)
