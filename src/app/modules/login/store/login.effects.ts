@@ -8,6 +8,7 @@ import * as loginActions from './login.actions';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';
+import { CognitoService } from '../../../common/cognito/cognito.service';
 
 @Injectable()
 export class loginEffects {
@@ -16,14 +17,15 @@ export class loginEffects {
     private actions$: Actions,
     private loginService: LoginService,
     private router: Router,
-    private store: Store
+    private store: Store,
+    private cognito: CognitoService
   ) {
 
   }
 
   login$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(loginActions.LogUserAction),
+      ofType(loginActions.LoginAction),
       mergeMap((action) => {
         return this.loginService.login(action.payload).then((response: any) => {
           const accessToken = response.accessToken.getJwtToken();
@@ -42,7 +44,7 @@ export class loginEffects {
             cognitoUsername
           );
 
-          return loginActions.LogInSuccessfulAction({payload: loggedUser});
+          return loginActions.LoginSuccessfulAction({payload: loggedUser});
         });
       })
     )
@@ -51,7 +53,7 @@ export class loginEffects {
   loginSuccess$ = createEffect(
     (): any =>
       this.actions$.pipe(
-        ofType(loginActions.LogInSuccessfulAction),
+        ofType(loginActions.LoginSuccessfulAction),
         map((action) => {
           localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
           return action.payload;
@@ -89,5 +91,34 @@ export class loginEffects {
         })
       )
   )
+
+  refreshToken$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.RefreshTokenAction),
+        map(async (action) => {
+          try {
+            const session = await this.cognito.refreshSession();
+
+            const access_token = session.accessToken.getJwtToken();
+            const id_token = session.idToken.getJwtToken();
+            const refresh_token = session.refreshToken.getToken();
+
+            const user: User = {
+              ...action.payload,
+              access_token,
+              id_token,
+              refresh_token
+            };
+
+            this.store.dispatch(loginActions.UpdateUserAction({payload: user}));
+            return true;
+          } catch (error) {
+            console.error('Error refreshing token', error);
+          }
+        })
+      )
+  )
+
 
 }

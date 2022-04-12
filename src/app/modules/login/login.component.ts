@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
       this.hasError = false;
       this.loadingMessage = `Validating credentials...`;
 
-      this.store.dispatch(loginActions.LogUserAction( {payload:this.loginForm.value} ));
+      this.store.dispatch(loginActions.LoginAction( {payload:this.loginForm.value} ));
     } else {
       alert('Invalid Form');
     }
