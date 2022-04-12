@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from "@ngrx/store";
 
 import { User } from '../../../../modules/login/models/user';
 import * as fromRoot from '../../../../reducers.index';
+import { ActivationEnd, Router } from '@angular/router';
+import { delay, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
 
   public loggedUser!: User | null;
 
-  public menus:Array<Object> = [
+  public menus: { name: string, path: string; }[] = [
     {
       name : 'Dashboard',
       path : 'dashboard'
@@ -34,10 +36,15 @@ export class NavbarComponent implements OnInit {
       name : 'Settings',
       path : 'settings'
     }
-  ]
+  ];
+
+  @ViewChild('activeUnderline', { static: false }) activeUnderline: ElementRef;
+  @ViewChildren('link') links: QueryList<ElementRef>;
 
   constructor(
-    private store: Store<fromRoot.State>
+    private router: Router,
+    private store: Store<fromRoot.State>,
+    private renderer: Renderer2
   ) {
     this.store.select(fromRoot.getUser).subscribe((user) => {
       if( user ){
@@ -48,7 +55,28 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    this.router.events.pipe(
+      filter(r=>r instanceof ActivationEnd),
+      delay(0) // DO NOT REMOVE
+    ).subscribe(() => this.updateActiveUnderline());
+  }
+
+  updateActiveUnderline() {
+    const el = this.links.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
+
+    const link = {
+      left: el.offsetLeft || 0,
+      width: el.offsetWidth || 0
+    }
+
+    this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
+    this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
+  }
+
+
   ngOnInit(): void {
+
   }
 
 }
