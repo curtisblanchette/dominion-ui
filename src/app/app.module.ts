@@ -11,13 +11,13 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { LoginModule } from './modules/login/login.module';
 import { reducer, effects } from './reducers.index';
-import { CustomHttpInterceptor } from './common/interceptor/CustomHttpInterceptor.interceptor';
+import { CustomHttpInterceptor } from './common/interceptors/CustomHttpInterceptor.interceptor';
 import { FlowModule } from './modules/flow/flow.module';
 import { SystemModule } from './modules/system/system.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { NavbarComponent } from './common/navbar/navbar.component';
+import { NavbarComponent } from './common/components/ui/navbar/navbar.component';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 import { EntityStoreModule } from './data/entity-store.module';
 

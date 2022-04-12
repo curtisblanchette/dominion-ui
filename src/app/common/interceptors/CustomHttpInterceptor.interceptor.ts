@@ -64,7 +64,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       console.log("Token expired. Dispatching new token action!")
       // Set the refreshTokenSubject to null so that subsequent API calls will wait until the new token has been retrieved
       this.refreshTokenSubject.next(null);
-      this.store.dispatch(loginActions.RefreshTokenAction({payload: this.loggedUser}));
+      this.store.dispatch(loginActions.RefreshTokenAction({ payload: this.loggedUser }));
       return true;
     } else {
       return false;

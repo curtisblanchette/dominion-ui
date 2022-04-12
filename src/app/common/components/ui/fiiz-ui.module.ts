@@ -5,7 +5,7 @@ import {
   FiizInputPercentageComponent,
   FiizDropdownComponent,
   FiizDatePickerComponent,
-  FiizDatePickerDirective,  
+  FiizDatePickerDirective,
   FiizMaxDateDirective,
   FiizMinDateDirective, FiizInputComponent, FiizTextAreaComponent
 } from './forms';
@@ -18,7 +18,7 @@ import { FiizToggleComponent } from './forms/toggle/toggle';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 // import { AnimateNumberDirective } from '../../directives/animateNumber';
 // import { DirectivesModule } from '../../directives/directives.module';
-import { AutofocusDirective } from './directives/autofocus/autofocus.directive';
+import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { FiizInputCurrencyComponent } from './forms/input-currency';
 // import { FiizPageHeaderComponent } from './page/header/header.component';
 

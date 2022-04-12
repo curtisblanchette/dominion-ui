@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from "@ngrx/store";
 
-import { User } from '../../modules/login/models/user';
-import * as fromRoot from '../../reducers.index';
+import { User } from '../../../../modules/login/models/user';
+import * as fromRoot from '../../../../reducers.index';
 
 @Component({
   selector: 'app-navbar',
@@ -36,9 +36,9 @@ export class NavbarComponent implements OnInit {
     }
   ]
 
-  constructor( 
-    private store: Store<fromRoot.State> 
-  ) { 
+  constructor(
+    private store: Store<fromRoot.State>
+  ) {
     this.store.select(fromRoot.getUser).subscribe((user) => {
       if( user ){
           this.loggedUser = user as User

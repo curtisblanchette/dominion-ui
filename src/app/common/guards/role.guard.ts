@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Observable, switchMap, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import * as fromRoot from '../reducers.index';
+import * as fromRoot from '../../reducers.index';
 
 @Injectable({
   providedIn: 'root'
