@@ -4,7 +4,7 @@ import { FlowService } from "./flow.service";
 import { FlowRouting } from "./flow.routing";
 import { DataComponent, TextComponent, ListComponent } from "./components";
 import { CommonModule } from "@angular/common";
-import { IntroComponent } from "./components/intro.component";
+import { IntroComponent } from "./components/intro/intro.component";
 import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
 import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/flow.reducer';

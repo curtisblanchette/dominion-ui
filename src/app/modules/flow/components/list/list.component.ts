@@ -9,15 +9,14 @@ import { ModuleType } from '../../_core/classes/flow.moduleTypes';
 import { Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { EntityCollectionService, EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
+import { FlowComponentBase } from '../flow.component.base';
 
 @Component({
   templateUrl: 'list.component.html',
   styleUrls: ['../../_core/scss/_base.scss', 'list.component.scss']
 })
-export class ListComponent implements OnDestroy, AfterViewInit {
+export class ListComponent extends FlowComponentBase implements OnDestroy, AfterViewInit {
 
-  public state: any;
-  public module: ModuleType;
   public searchForm!: FormGroup;
   @Input() searchable: boolean = true;
 
@@ -35,12 +34,6 @@ export class ListComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  public _dynamicService: EntityCollectionService<Lead>
-  loaded$: Observable<boolean>;
-  loading$: Observable<boolean>;
-  data$: Observable<Lead[]>;
-  count$: Observable<number>;
-
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -49,18 +42,10 @@ export class ListComponent implements OnDestroy, AfterViewInit {
     private entityServices: EntityServices,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
-    this.state = this.router.getCurrentNavigation()!.extras.state;
-    this.module = this.state?.module;
-    this._dynamicService = entityCollectionServiceFactory.create<Lead>(this.module);
-
-    this.data$ = this._dynamicService.filteredEntities$;
-    this.loading$ = this._dynamicService.loading$;
-    this.loaded$ = this._dynamicService.loaded$;
-    this.count$ = this._dynamicService.count$;
+    super(router, entityCollectionServiceFactory);
 
     this.data$.subscribe((res: Lead[]) => {
       console.log(res);
-
       if (!this.loading$ && this.loaded$ && res.length === 0) {
         // we only want to query if the cache doesn't return a record
       }

@@ -1,0 +1,5 @@
+<div *ngIf="data">
+  <h3>{{data.title}}</h3>
+  {{data.body}}
+  <div *ngFor="let lead of leads$ | async">{{lead.id}}</div>
+</div>

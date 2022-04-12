@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
-import { FlowService } from "../flow.service";
+import { FlowService } from "../../flow.service";
 
 @Component({
   template: `
@@ -8,7 +8,7 @@ import { FlowService } from "../flow.service";
       <h3>Welcome to Flow!</h3>
     </div>
   `,
-  styleUrls: ['../_core/scss/_base.scss']
+  styleUrls: ['../../_core/scss/_base.scss']
 })
 export class IntroComponent implements OnDestroy {
 

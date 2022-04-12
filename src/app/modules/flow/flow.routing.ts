@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FlowComponent } from "./flow.component";
 import { DataComponent, TextComponent, ListComponent } from "./components";
-import { IntroComponent } from "./components/intro.component";
+import { IntroComponent } from "./components/intro/intro.component";
 
 const routes: Routes = [
   {
