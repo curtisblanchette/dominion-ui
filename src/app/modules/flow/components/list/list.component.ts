@@ -63,7 +63,6 @@ export class ListComponent implements OnDestroy, AfterViewInit {
 
     let form: { [key: string]: FormControl } = {};
     form['key'] = new FormControl('', Validators.required);
-    // form['field'] = new FormControl(this.searchColumns[0], Validators.required);
     this.searchForm = this.fb.group(form);
   }
 
@@ -99,10 +98,9 @@ export class ListComponent implements OnDestroy, AfterViewInit {
   public searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
-      this._dynamicService.getWithQuery({'q': formValues.key});
-      this._dynamicService.setFilter({
-        q: formValues.key
-      });
+      const pattern = {'q': formValues.key.toLowerCase()}
+      this._dynamicService.setFilter(pattern); // this is to get the right filteredEntities$ subset
+      this._dynamicService.getWithQuery(pattern); // this performs the API call
     } else {
       console.warn('Form not valid');
       return of([]);

@@ -6,9 +6,13 @@ const entityMetadata: EntityMetadataMap = {
   lead: {
     filterFn: (entities: Lead[], pattern: { q: string }) => {
       return entities.filter((entity: any) => {
-        return (entity.firstName + ' ' + entity.lastName).includes(pattern.q)
-          || (entity.phone).includes(pattern.q)
-          || (entity.email).includes(pattern.q)
+        const fields = [
+          entity.firstName.toLowerCase(),
+          entity.lastName.toLowerCase(),
+          entity.phone.toLowerCase(),
+          entity.email.toLowerCase()
+        ];
+        return fields.find(field => field.includes(pattern.q));
       })
     }
   },
