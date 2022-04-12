@@ -8,7 +8,7 @@ import { FlowService } from '../../flow.service';
 import { ModuleType } from '../../_core/classes/flow.moduleTypes';
 import { Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
-import { EntityCollectionService, EntityServices } from '@ngrx/data';
+import { EntityCollectionService, EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
 
 @Component({
   templateUrl: 'list.component.html',
@@ -46,11 +46,12 @@ export class ListComponent implements OnDestroy, AfterViewInit {
     private http: HttpClient,
     private flowService: FlowService,
     private router: Router,
-    private entityServices: EntityServices
+    private entityServices: EntityServices,
+    private entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
     this.state = this.router.getCurrentNavigation()!.extras.state;
     this.module = this.state?.module;
-    this._dynamicService = this.entityServices.getEntityCollectionService(this.module);
+    this._dynamicService = entityCollectionServiceFactory.create<Lead>(this.module);
 
     this.data$ = this._dynamicService.filteredEntities$;
     this.loading$ = this._dynamicService.loading$;
@@ -59,6 +60,10 @@ export class ListComponent implements OnDestroy, AfterViewInit {
 
     this.data$.subscribe((res: Lead[]) => {
       console.log(res);
+
+      if (!this.loading$ && this.loaded$ && res.length === 0) {
+        // we only want to query if the cache doesn't return a record
+      }
     });
 
     let form: { [key: string]: FormControl } = {};
