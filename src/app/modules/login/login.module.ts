@@ -5,6 +5,8 @@ import { LoginComponent } from './login.component';
 import { LoginRouting } from './login.routing';
 import { LoginService } from './services/login.service';
 import { FiizUIModule } from '../../common/components/ui/fiiz-ui.module';
+import { StoreModule } from '@ngrx/store';
+import { reducer } from './store/login.reducer';
 
 @NgModule({
   imports: [
@@ -12,7 +14,8 @@ import { FiizUIModule } from '../../common/components/ui/fiiz-ui.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FiizUIModule
+    FiizUIModule,
+    StoreModule.forFeature('login', reducer)
   ],
   declarations: [
     LoginComponent,

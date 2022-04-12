@@ -1,5 +1,4 @@
 export { FlowBaseModel } from './classes/flow.baseModel';
-export * from './classes/flow.baseModel';
 export * from './classes/flow.condition';
 export * from './classes/flow.link';
 export * from './classes/flow.node';

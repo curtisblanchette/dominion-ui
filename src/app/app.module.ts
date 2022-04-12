@@ -15,19 +15,16 @@ import { CustomHttpInterceptor } from './common/interceptor/CustomHttpIntercepto
 import { FlowModule } from './modules/flow/flow.module';
 import { SystemModule } from './modules/system/system.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { DefaultDataServiceConfig, EntityDataModule, HttpUrlGenerator } from '@ngrx/data';
-import { entityConfig } from './data/entity-metadata';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { NavbarComponent } from './common/navbar/navbar.component';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 import { EntityStoreModule } from './data/entity-store.module';
-
-
-
 
 @NgModule({
   declarations: [
     AppComponent,
+    NavbarComponent,
     PageNotFoundComponent,
   ],
   imports: [

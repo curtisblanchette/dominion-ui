@@ -92,6 +92,7 @@ export class DataComponent implements OnInit, OnDestroy {
     // remove null values from form
     let o = Object.fromEntries(Object.entries(this.form.value).filter(([_, v]) => v != null));
     this.leadService.update(o);
+    this.flowService.addToCache(this.module, o);
   }
 
   public ngOnDestroy() {
