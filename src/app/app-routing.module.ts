@@ -22,13 +22,17 @@ const routes: Routes = [
   },
   {
     path: 'flow',
+    canActivate: [RoleGuard],
+    data: { roles: ['system', 'admin', 'owner', 'consultant', 'agent'] },
     loadChildren: () => import('./modules/flow/flow.module').then(m => m.FlowModule)
   },
   {
     path: 'system',
+    canActivate: [RoleGuard],
+    data: { roles: ['system'] },
     loadChildren: () => import('./modules/system/system.module').then(m => m.SystemModule)
-  },  
-  { 
+  },
+  {
     path: '**',
     pathMatch : 'full',
     component : PageNotFoundComponent

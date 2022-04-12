@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { LoadingComponent } from '../../common/loading/loading.component';
-import { SafePipe } from '../../common/pipes/safe..pipe';
+import { SafePipe } from '../../common/pipes/safe.pipe';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
