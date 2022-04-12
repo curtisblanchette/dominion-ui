@@ -110,13 +110,14 @@ export class loginEffects {
               refresh_token
             };
 
-            return this.store.dispatch(loginActions.UpdateUserAction({payload: user}));
+            return loginActions.UpdateUserAction({payload: user});
 
           } catch (error) {
             console.error('Error refreshing token', error);
           }
         })
-      )
+      ),
+    {dispatch: false}
   )
 
 

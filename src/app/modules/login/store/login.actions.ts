@@ -10,14 +10,14 @@ export const ActionTypes = {
     SET_WORKSPACE_RECORD: 'Set workspace record',
     START_PM_LOGIN: 'Log user using PM Login',
     LOGOUT_USER: 'Logout user',
-    REFRESH_TOKEN: 'Refresh toke'
+    REFRESH_TOKEN: 'Refresh token'
 };
 
 export interface loginCredentials {
     username:string,
     password:string,
     remember_me:string
-};
+}
 
 export const LoginAction = createAction(
     ActionTypes.LOGIN,
