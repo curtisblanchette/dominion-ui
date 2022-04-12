@@ -52,7 +52,7 @@ export const initialState: State = {
 export const reducer = createReducer(
   initialState,
   on(loginActions.LogUserAction, (state) => ({...state})),
-  on(loginActions.LogInSuccesfullAction, (state, {payload}) => ({...state, user: payload, error: null})),
+  on(loginActions.LogInSuccessfulAction, (state, {payload}) => ({...state, user: payload, error: null})),
   on(loginActions.LogInErrorAction, (state, {error}) => ({...state, error: error})),
   on(loginActions.UpdateUserAction, (state, {payload}) => ({...state, user: payload, error: null})),
   on(loginActions.SetAgentRecord, (state, {payload}) => ({...state, agent: payload})),

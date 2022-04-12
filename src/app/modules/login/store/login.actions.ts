@@ -3,7 +3,7 @@ import { User } from '../models/user';
 
 export const ActionTypes = {
     LOG_USER: 'Log user to app',
-    LOGIN_SUCCESSFULL: 'Log in successfull',
+    LOGIN_SUCCESSFUL: 'Log in successful',
     LOGIN_ERROR:'Log in error',
     UPDATE_RECORD:'Update record',
     SET_AGENT_RECORD: 'Set agent record (if exists)',
@@ -23,8 +23,8 @@ export const LogUserAction = createAction(
     props<{ payload:loginCredentials }>()
 );
 
-export const LogInSuccesfullAction = createAction(
-    ActionTypes.LOGIN_SUCCESSFULL,
+export const LogInSuccessfulAction = createAction(
+    ActionTypes.LOGIN_SUCCESSFUL,
     props<{ payload:User }>()
 );
 

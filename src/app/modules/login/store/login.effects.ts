@@ -42,7 +42,7 @@ export class loginEffects {
             cognitoUsername
           );
 
-          return loginActions.LogInSuccesfullAction({payload: loggedUser});
+          return loginActions.LogInSuccessfulAction({payload: loggedUser});
         });
       })
     )
@@ -51,7 +51,7 @@ export class loginEffects {
   loginSuccess$ = createEffect(
     (): any =>
       this.actions$.pipe(
-        ofType(loginActions.LogInSuccesfullAction),
+        ofType(loginActions.LogInSuccessfulAction),
         map((action) => {
           localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
           return action.payload;
