@@ -33,7 +33,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onNext() {
-    this.animationIndex = this.animationIndex + 1;
+    this.animationIndex++;
     // find a link where the "from" is equal to "currentStep"
     const link = this.flowService.links.find(link => link.from.id === this.currentStep.id);
     let step: FlowStep | FlowRouter | undefined = link?.to;
@@ -52,7 +52,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onBack() {
-    this.animationIndex = this.animationIndex - 1;
+    this.animationIndex--;
     const link = this.flowService.links.find(link => link.to.id === this.currentStep.id);
     let step: FlowStep | FlowRouter | undefined = link?.from;
 
@@ -62,6 +62,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     } else {
       console.warn('No step found to transition to.');
     }
+  }
+
+  public directlyToStep(step: FlowStep) {
+    this.steps.indexOf(step) < this.steps.indexOf(this.currentStep) ? this.animationIndex-- : this.animationIndex++;
+    this.renderComponent(step);
   }
 
   public renderComponent(step: FlowStep) {

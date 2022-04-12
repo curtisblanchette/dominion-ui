@@ -33,3 +33,6 @@ $input-margin-bottom: 14px;
 
 $blue6 : #0E1D34;
 $text1 : #C6CEED;
+
+$navbar-height: 64px;
+$full-height-minus-navbar: calc(100% - #{$navbar-height});
