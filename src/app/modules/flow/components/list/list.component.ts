@@ -9,13 +9,13 @@ import { ModuleType } from '../../_core/classes/flow.moduleTypes';
 import { Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { EntityCollectionService, EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
-import { FlowComponentBase } from '../flow.component.base';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
 @Component({
   templateUrl: 'list.component.html',
   styleUrls: ['../../_core/scss/_base.scss', 'list.component.scss']
 })
-export class ListComponent extends FlowComponentBase implements OnDestroy, AfterViewInit {
+export class ListComponent extends EntityCollectionComponentBase implements OnDestroy, AfterViewInit {
 
   public searchForm!: FormGroup;
   @Input() searchable: boolean = true;

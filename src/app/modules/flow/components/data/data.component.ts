@@ -3,17 +3,16 @@ import { Router } from '@angular/router';
 import { FlowService } from '../../flow.service';
 import { Observable } from 'rxjs';
 import { Contact, Deal, Lead, Event } from '@4iiz/corev2';
-
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { entityConfig } from '../../../../data/entity-metadata';
-import { FlowComponentBase } from '../flow.component.base';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
 @Component({
   templateUrl: './data.component.html',
   styleUrls: ['../../_core/scss/_base.scss', './data.component.scss'],
 })
-export class DataComponent extends FlowComponentBase implements OnInit, OnDestroy {
+export class DataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
   public data: Lead | Contact | Deal | Event;
   public errors$: Observable<any>;
   public form: FormGroup;
