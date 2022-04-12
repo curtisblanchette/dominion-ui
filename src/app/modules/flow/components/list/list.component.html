@@ -71,10 +71,10 @@
 
   <ng-template #noDataFound>
     <div class="message-block" style="padding-top: 5%;">
-      We could not find {{state.module}} with term "{{searchForm.value.key}}"
+      We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
     </div>
     <div class="message-block">
-      <span>Try another search term or create a new lead</span>
+      <span>Try another search term or create a new lead.</span>
     </div>
     <div class="message-block" style="padding-top: 4%;">
       <button class="primary">Create New Lead</button>
@@ -83,10 +83,10 @@
 
   <ng-template #initial>
     <div class="message-block" style="padding-top: 5%;">
-      Perform a new {{state?.module || ''}} search
+      Search {{ pluralModuleName }}
     </div>
     <div class="message-block">
-      <span>Please try a search</span>
+      <span>You can search by name, phone number or email.</span>
     </div>
   </ng-template>
 

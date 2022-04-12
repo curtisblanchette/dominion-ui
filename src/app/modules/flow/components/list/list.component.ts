@@ -10,6 +10,7 @@ import { getSearchableColumns } from './searchable-columns';
 import { ModuleType } from '../../_core/classes/flow.moduleTypes';
 import { Lead } from '@4iiz/corev2';
 import { LeadCollection } from '../../../../data/collections/lead.collection';
+import * as pluralize from 'pluralize';
 
 @Component({
   templateUrl: 'list.component.html',
@@ -82,6 +83,14 @@ export class ListComponent implements OnDestroy, AfterViewInit {
 
   public ngOnDestroy() {
     console.log('Destroyed');
+  }
+
+  get pluralModuleName() {
+    if(this.state?.module) {
+      return pluralize(this.state.module);
+    }
+
+    return '';
   }
 
   public ngAfterViewInit() {
