@@ -1,0 +1,23 @@
+<div class="container">
+
+  <div class="flow-layout">
+    <div class="flow-layout__main">
+      <section class="flow-layout__sidebar">
+        <div class="flow-layout__sidebar__item" *ngFor="let step of steps; let i = index">
+          <div class="flow-layout__sidebar__item__icon fa fa-{{step.nodeIcon}}"></div>
+          <div class="flow-layout__sidebar__item__title">{{step.nodeText }}</div>
+        </div>
+      </section>
+      <section [@slide]="animationIndex" class="flow-layout__content">
+        <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
+        <div class="flow-layout__controls">
+          <button (click)="onBack()" class="stroked" [disabled]="false">Back</button>
+          <button class=primary (click)="onNext()">Next</button>
+        </div>
+      </section>
+    </div>
+
+
+  </div>
+
+</div>

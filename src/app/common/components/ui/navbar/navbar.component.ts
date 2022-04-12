@@ -66,8 +66,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     const el = this.links.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
 
     const link = {
-      left: el.offsetLeft || 0,
-      width: el.offsetWidth || 0
+      left: el?.offsetLeft || 0,
+      width: el?.offsetWidth || 0
     }
 
     this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');

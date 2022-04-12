@@ -8,10 +8,11 @@ export class FlowStep extends FlowNode {
 
   constructor(
     nodeText: string,
+    nodeIcon: string,
     component: FlowComponentType,
     data?: any
   ) {
-    super(nodeText);
+    super(nodeText, nodeIcon);
     this.component = component;
     this.data = data;
   }

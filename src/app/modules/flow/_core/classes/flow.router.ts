@@ -5,9 +5,10 @@ export class FlowRouter extends FlowNode {
 
   constructor(
     nodeText: string,
+    nodeIcon: string,
     conditions: FlowCondition[]
   ) {
-    super(nodeText);
+    super(nodeText, nodeIcon);
     this.conditions = conditions;
   }
 

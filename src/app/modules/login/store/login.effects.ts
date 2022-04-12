@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, tap } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs';
 
 import * as loginActions from './login.actions';
 import { LoginService } from '../services/login.service';
@@ -89,14 +89,15 @@ export class loginEffects {
           localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
           return action.payload;
         })
-      )
+      ),
+    { dispatch: false }
   )
 
   refreshToken$ = createEffect(
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.RefreshTokenAction),
-        map(async (action) => {
+        switchMap(async (action) => {
           try {
             const session = await this.cognito.refreshSession();
             const access_token = session.accessToken.getJwtToken();
@@ -117,7 +118,7 @@ export class loginEffects {
           }
         })
       ),
-    {dispatch: false}
+    {dispatch: true}
   )
 
 

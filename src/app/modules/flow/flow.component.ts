@@ -4,56 +4,15 @@ import { FlowRouter, FlowStep, FlowTransitions } from "./_core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
-  template: `
-    <div class="container">
-      <h2>Flow</h2>
-      <section [@slide]="animationIndex">
-        <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
-      </section>
-
-      <div class="controls">
-        <button (click)="onBack()" class="stroked" [disabled]="breadcrumbs.length === 1">Back</button>
-        <button class=primary (click)="onNext()">Next</button>
-      </div>
-      <div style="font-size: 12px;">
-        <span
-          *ngFor="let breadcrumb of breadcrumbs; let i = index">{{i > 0 ? '>' : '' }} {{ breadcrumb.nodeText }} </span>
-      </div>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: flex;
-      justify-content: space-around;
-    }
-
-    .container {
-      width: 768px;
-      display: flex;
-      flex-direction: column;
-
-      .controls {
-        display: inherit;
-        justify-content: space-between;
-      }
-    }
-
-    section {
-      height: 500px;
-      position: relative;
-    }
-
-    section ng-component {
-      width: 100%;
-    }
-  `],
+  templateUrl: './flow.component.html',
+  styleUrls: ['./flow.component.scss'],
   animations: FlowTransitions
 })
 export class FlowComponent implements OnInit, OnDestroy {
 
   animationIndex = 0;
   currentStep: FlowStep;
-  breadcrumbs: FlowStep[] = [];
+  steps: FlowStep[] = [];
   @ViewChild(FlowComponent) flow: FlowComponent;
 
   constructor(
@@ -66,7 +25,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.currentStep = this.flowService.getFirstStep();
-    this.breadcrumbs.push(this.currentStep);
+    this.steps = this.flowService.steps;
     this.renderComponent(this.currentStep);
   }
 
@@ -85,7 +44,6 @@ export class FlowComponent implements OnInit, OnDestroy {
         step = (<FlowRouter>step).evaluate();
       }
 
-      this.breadcrumbs.push(step);
       this.renderComponent(<FlowStep>step);
     } else {
       console.warn('No step found to transition to.');
@@ -95,9 +53,14 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public onBack() {
     this.animationIndex = this.animationIndex - 1;
-    if (this.breadcrumbs.length > 1) {
-      this.breadcrumbs.pop();
-      this.renderComponent(this.breadcrumbs[this.breadcrumbs.length - 1]);
+    const link = this.flowService.links.find(link => link.to.id === this.currentStep.id);
+    let step: FlowStep | FlowRouter | undefined = link?.from;
+
+    // TODO add handling for navigating back through a FlowRouter
+    if (step) {
+      this.renderComponent(<FlowStep>step);
+    } else {
+      console.warn('No step found to transition to.');
     }
   }
 

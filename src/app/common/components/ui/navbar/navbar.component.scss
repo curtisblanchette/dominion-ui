@@ -1,13 +1,14 @@
 @import '../../../../../assets/css/variables';
 
 .navbar {
-
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-basis: auto;
   background-color: #0A1930;
   box-shadow: 0 2px 50px rgb(0 0 0 / 90%);
+  position: relative;
+  z-index: 10;
 
   &__header {
     a {
