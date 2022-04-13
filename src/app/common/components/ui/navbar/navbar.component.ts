@@ -65,13 +65,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   updateActiveUnderline() {
     const el = this.links.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
 
-    const link = {
-      left: el?.offsetLeft || 0,
-      width: el?.offsetWidth || 0
+    if (el) {
+      const link = {
+        left: el?.offsetLeft || 0,
+        width: el?.offsetWidth || 0
+      }
+
+      this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
+      this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
     }
 
-    this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
-    this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
   }
 
 

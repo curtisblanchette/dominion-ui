@@ -7,7 +7,7 @@ import { loginEffects } from './modules/login/store/login.effects';
  * our top level state interface is just a map of keys to inner state types.
  */
 export interface State {
-  authentication: fromLogin.State;
+  login: fromLogin.State;
 }
 
 /**
@@ -18,7 +18,7 @@ export interface State {
  * the result from right to left.
  */
 const reducers = {
-  authentication: fromLogin.reducer
+  login: fromLogin.reducer
 };
 
 const combinedReducer: ActionReducer<State> = combineReducers(reducers);
@@ -33,9 +33,9 @@ export const effects: any[] = [loginEffects];
 //               AUTHENTICATION                  //
 ///////////////////////////////////////////////////
 
-export const getUserState = (state:State) => fromLogin.getUserRecord(fromLogin.initialState);
-export const getAgentState = (state:State) => fromLogin.getAgentRecord(fromLogin.initialState);
-export const getWorkspaceState = (state:State) => fromLogin.getWorkspaceRecord(fromLogin.initialState);
+export const getUserState = (state: State) => fromLogin.getUserRecord(fromLogin.initialState);
+export const getAgentState = (state: State) => fromLogin.getAgentRecord(fromLogin.initialState);
+export const getWorkspaceState = (state: State) => fromLogin.getWorkspaceRecord(fromLogin.initialState);
 
 export const getUser = createSelector( getUserState, ( user ) => { return user; } );
 export const getAgent = createSelector( getAgentState, ( agent ) => { return agent; } );

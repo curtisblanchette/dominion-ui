@@ -11,8 +11,8 @@ import * as fromRoot from '../../reducers.index';
 export class RoleGuard implements CanActivate {
 
   constructor(
-    public store:Store<fromRoot.State>,
-    public router:Router
+    public store: Store<fromRoot.State>,
+    public router: Router
   ){}
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {

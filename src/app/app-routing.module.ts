@@ -10,7 +10,6 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    // canActivate: [GuardsGuard],
     path: 'login',
     loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
   },
