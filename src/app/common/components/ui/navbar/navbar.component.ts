@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, QueryList, Renderer2, Vie
 import { Store } from "@ngrx/store";
 
 import { User } from '../../../../modules/login/models/user';
-import * as fromRoot from '../../../../reducers.index';
+import * as fromLogin from '../../../../modules/login/store/login.reducer';
 import { ActivationEnd, Router } from '@angular/router';
 import { delay, filter } from 'rxjs/operators';
 
@@ -43,10 +43,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
-    private store: Store<fromRoot.State>,
+    private store: Store<fromLogin.LoginState>,
     private renderer: Renderer2
   ) {
-    this.store.select(fromRoot.getUser).subscribe((user) => {
+    this.store.select(fromLogin.selectLoginUser).subscribe((user) => {
       if( user ){
           this.loggedUser = user as User
       } else {

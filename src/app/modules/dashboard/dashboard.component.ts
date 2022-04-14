@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../login/services/login.service';
-import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import * as fromLogin from 'src/app/modules/login/store/login.reducer';
+import * as loginActions from 'src/app/modules/login/store/login.actions';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,14 +11,14 @@ import { HttpClient } from '@angular/common/http';
 export class DashboardComponent implements OnInit {
 
   constructor(
-    private loginservice:LoginService,
-    private http:HttpClient
+    private store: Store<fromLogin.LoginState>
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   public logout(){
-    this.loginservice.logout();
+    this.store.dispatch(loginActions.LogoutAction());
   }
 
 }

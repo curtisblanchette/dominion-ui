@@ -7,6 +7,8 @@ import { LoginService } from './services/login.service';
 import { FiizUIModule } from '../../common/components/ui/fiiz-ui.module';
 import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/login.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { LoginEffects } from './store/login.effects';
 
 @NgModule({
   imports: [
@@ -15,7 +17,8 @@ import { reducer } from './store/login.reducer';
     FormsModule,
     ReactiveFormsModule,
     FiizUIModule,
-    StoreModule.forFeature('login', reducer)
+    StoreModule.forFeature('login', reducer),
+    EffectsModule.forFeature([LoginEffects])
   ],
   declarations: [
     LoginComponent,

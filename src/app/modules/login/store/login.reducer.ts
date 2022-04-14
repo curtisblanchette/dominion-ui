@@ -1,9 +1,9 @@
-import { createReducer, on } from '@ngrx/store';
+import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 
 import * as loginActions from './login.actions';
 import { User } from '../models/user';
 
-export interface State {
+export interface LoginState {
   user: User | null;
   agent: any;
   workspace: any;
@@ -42,7 +42,7 @@ function getWorkspaceInitialState() {
   return null;
 }
 
-export const initialState: State = {
+export const initialState: LoginState = {
   user: getUserInitialState(),
   agent: getAgentInitialState(),
   workspace: getWorkspaceInitialState(),
@@ -57,11 +57,17 @@ export const reducer = createReducer(
   on(loginActions.UpdateUserAction, (state, {payload}) => ({...state, user: payload, error: null})),
   on(loginActions.SetAgentRecord, (state, {payload}) => ({...state, agent: payload})),
   on(loginActions.SetWorkspaceRecord, (state, {payload}) => ({...state, workspace: payload})),
-  on(loginActions.LogoutUserAction, (state) => ({user: null, agent: null, workspace: null})),
+  on(loginActions.LogoutAction, (state) => ({user: null, agent: null, workspace: null})),
   on(loginActions.RefreshTokenAction, (state) => ({...state}))
 );
 
-export const getUserRecord = (state: State) => state.user;
-export const getAgentRecord = (state: State) => state.agent;
-export const getWorkspaceRecord = (state: State) => state.workspace;
-export const getloginError = (state: State) => state.error;
+export const selectLogin = createFeatureSelector<LoginState>('login');
+
+export const selectLoginUser = createSelector(
+  selectLogin,
+  (state: LoginState) => state.user
+);
+
+export const getAgent = (state: LoginState) => state.agent;
+export const getWorkspace = (state: LoginState) => state.workspace;
+export const getLogin = (state: LoginState) => state.error;

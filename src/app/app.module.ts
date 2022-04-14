@@ -10,7 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { LoginModule } from './modules/login/login.module';
-import { reducer, effects } from './reducers.index';
+
 import { CustomHttpInterceptor } from './common/interceptors/CustomHttpInterceptor.interceptor';
 import { FlowModule } from './modules/flow/flow.module';
 import { SystemModule } from './modules/system/system.module';
@@ -36,8 +36,8 @@ import { EntityStoreModule } from './data/entity-store.module';
     LoginModule,
     SharedModule,
     HttpClientModule,
-    StoreModule.forRoot(reducer),
-    EffectsModule.forRoot(effects),
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
     EntityStoreModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     DashboardModule,

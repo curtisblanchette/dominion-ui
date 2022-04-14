@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 
 import { User } from '../../modules/login/models/user';
-import * as fromRoot from '../../reducers.index';
+import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
 import { filter } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -19,9 +19,9 @@ export class CustomHttpInterceptor implements HttpInterceptor {
   private refreshTokenInProgress = false;
 
   constructor(
-    private store: Store<fromRoot.State>
+    private store: Store<fromLogin.LoginState>
   ) {
-    this.store.select(fromRoot.getUser).subscribe((user: any) => {
+    this.store.select(fromLogin.selectLoginUser).subscribe((user: any) => {
       if (user) {
         this.loggedUser = user as User;
         this.refreshTokenSubject.next(true);

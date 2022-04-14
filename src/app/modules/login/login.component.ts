@@ -2,12 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-
 import { LoginService } from './services/login.service';
-import { User } from './models/user';
 import * as fromRoot from './store/login.reducer';
 import * as loginActions from './store/login.actions';
-import { of, switchMap } from 'rxjs';
 
 declare var require:any;
 const { version } = require('../../../../package.json');
@@ -44,7 +41,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private fb: FormBuilder,
-    private store: Store<fromRoot.State>
+    private store: Store<fromRoot.LoginState>
   ) { }
 
   ngOnInit(): void {
@@ -63,9 +60,9 @@ export class LoginComponent implements OnInit {
       this.hasError = false;
       this.loadingMessage = `Validating credentials...`;
 
-      this.store.dispatch(loginActions.LoginAction( {payload:this.loginForm.value} ));
+      this.store.dispatch(loginActions.LoginAction( { payload: this.loginForm.value } ));
     } else {
-      alert('Invalid Form');
+      console.warn('Invalid Form');
     }
   }
 

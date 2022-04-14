@@ -2,15 +2,14 @@ import { createAction, props } from '@ngrx/store';
 import { User } from '../models/user';
 
 export const ActionTypes = {
-    LOGIN: 'Log user to app',
-    LOGIN_SUCCESSFUL: 'Log in successful',
-    LOGIN_ERROR:'Log in error',
-    UPDATE_RECORD:'Update record',
-    SET_AGENT_RECORD: 'Set agent record (if exists)',
-    SET_WORKSPACE_RECORD: 'Set workspace record',
-    START_PM_LOGIN: 'Log user using PM Login',
-    LOGOUT_USER: 'Logout user',
-    REFRESH_TOKEN: 'Refresh token'
+    LOGIN: '[Login] Login',
+    LOGIN_SUCCESSFUL: '[Login] Login Successful',
+    LOGIN_ERROR:'[Login] Login Error',
+    UPDATE_RECORD:'[Login] Update User',
+    SET_AGENT_RECORD: '[Login] Set agent record (if exists)',
+    SET_WORKSPACE_RECORD: '[Login] Set workspace record',
+    LOGOUT: '[Login] Logout',
+    REFRESH_TOKEN: '[Login] Refresh Token'
 };
 
 export interface loginCredentials {
@@ -49,8 +48,8 @@ export const SetWorkspaceRecord = createAction(
     props<{ payload: User }>()
 );
 
-export const LogoutUserAction = createAction(
-    ActionTypes.LOGOUT_USER
+export const LogoutAction = createAction(
+    ActionTypes.LOGOUT
 );
 
 export const RefreshTokenAction = createAction(

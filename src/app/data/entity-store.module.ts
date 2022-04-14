@@ -13,6 +13,7 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
 import { Action } from '@ngrx/store';
 import { EntityAction, DefaultPersistenceResultHandler } from '@ngrx/data';
 
+@Injectable()
 export class AdditionalPersistenceResultHandler extends DefaultPersistenceResultHandler {
   override handleSuccess(originalAction: EntityAction): (data: any) => Action {
     const actionHandler = super.handleSuccess(originalAction);

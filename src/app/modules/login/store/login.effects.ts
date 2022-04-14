@@ -2,22 +2,23 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, switchMap, tap } from 'rxjs';
+import { map, mergeMap, tap, withLatestFrom } from 'rxjs';
 
 import * as loginActions from './login.actions';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
-import { CognitoUserSession } from 'amazon-cognito-identity-js';
+
+import * as fromLogin from './login.reducer';
 import { CognitoService } from '../../../common/cognito/cognito.service';
 
 @Injectable()
-export class loginEffects {
+export class LoginEffects {
 
   constructor(
     private actions$: Actions,
     private loginService: LoginService,
     private router: Router,
-    private store: Store,
+    private store: Store<fromLogin.LoginState>,
     private cognito: CognitoService
   ) {
 
@@ -35,7 +36,7 @@ export class loginEffects {
           const cognitoUsername = response.idToken.payload['cognito:username'];
           const workspaceId = response.idToken.payload['custom:workspaceId'];
 
-          const loggedUser = new User(
+          const user = new User(
             'assets/img/default-avatar.png',
             accessToken,
             idToken,
@@ -43,8 +44,8 @@ export class loginEffects {
             cognitoGroup,
             cognitoUsername
           );
-
-          return loginActions.LoginSuccessfulAction({payload: loggedUser});
+          localStorage.setItem('user', btoa(JSON.stringify(user)));
+          return loginActions.LoginSuccessfulAction({ payload: user });
         });
       })
     )
@@ -54,12 +55,9 @@ export class loginEffects {
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.LoginSuccessfulAction),
-        map((action) => {
-          localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
-          return action.payload;
-        }),
-        tap((user) => {
-          switch (user.role[0]) {
+        map((action: { payload: User }) => action.payload),
+        tap((action) => {
+          switch (action.role[0]) {
             case 'system':
               this.router.navigate(['system'])
               break;
@@ -78,7 +76,7 @@ export class loginEffects {
           }
         })
       ),
-    {dispatch: false}
+    { dispatch: false }
   );
 
   updateUserSuccess$ = createEffect(
@@ -91,13 +89,13 @@ export class loginEffects {
         })
       ),
     { dispatch: false }
-  )
+  );
 
   refreshToken$ = createEffect(
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.RefreshTokenAction),
-        switchMap(async (action) => {
+        map(async (action) => {
           try {
             const session = await this.cognito.refreshSession();
             const access_token = session.accessToken.getJwtToken();
@@ -119,7 +117,7 @@ export class loginEffects {
         })
       ),
     {dispatch: true}
-  )
-
+  );
 
 }
+

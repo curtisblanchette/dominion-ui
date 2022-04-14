@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { CognitoService } from '../../../common/cognito/cognito.service';
-import * as fromRoot from '../../../reducers.index';
+import * as fromLogin from '../store/login.reducer';
 import * as loginActions from '../store/login.actions';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class LoginService {
   constructor(
     private cognitoService: CognitoService,
     private router: Router,
-    private store: Store<fromRoot.State>,
+    private store: Store<fromLogin.LoginState>,
   ) { }
 
   public login(credentials:any): Promise<any> {
@@ -33,7 +33,7 @@ export class LoginService {
 
   public logout() {
     localStorage.clear();
-    this.store.dispatch(loginActions.LogoutUserAction());
+    this.store.dispatch(loginActions.LogoutAction());
     this.router.navigate(['login']);
   }
 
