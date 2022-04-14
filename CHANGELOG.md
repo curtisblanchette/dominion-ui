@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.4.11 (2022-04-14)
+
+
+### Bug Fixes
+
+* **develop:** route to dashboard from navbar logo ([455c893](https://github.com/4iiz/dominion-ui/commit/455c8931efba532e8ef36c7b7c66458716dabfaa))
+
 ### 1.4.10 (2022-04-14)
 
 ### 1.4.9 (2022-04-14)
