@@ -5,10 +5,11 @@ export class FlowNode extends FlowBaseModel {
   public nodeIcon: string;
 
   constructor(
+    id: string | null,
     nodeText: string,
     nodeIcon: string,
   ) {
-    super();
+    super(id);
     this.nodeText = nodeText;
     this.nodeIcon = nodeIcon;
   }

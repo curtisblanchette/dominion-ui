@@ -52,6 +52,6 @@ export const reducer = createReducer(
 
 export const selectLogin = createFeatureSelector<LoginState>('login');
 
-export const selectLoginUser = createSelector(selectLogin, (state: LoginState) => state.user);
-export const getLoginAgent = createSelector(selectLogin, (state: LoginState) => state.agent);
+export const selectLoginUser   = createSelector(selectLogin, (state: LoginState) => state.user);
+export const getLoginAgent     = createSelector(selectLogin, (state: LoginState) => state.agent);
 export const getLoginWorkspace = createSelector(selectLogin, (state: LoginState) => state.workspace);

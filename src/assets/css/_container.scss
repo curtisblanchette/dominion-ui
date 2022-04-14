@@ -1,0 +1,13 @@
+@import '~src/assets/css/variables';
+
+:host {
+  padding: {
+    top: 28px;
+    right: 28px;
+    left: 28px;
+    bottom: 0;
+  }
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - #{$navbar-height})
+}

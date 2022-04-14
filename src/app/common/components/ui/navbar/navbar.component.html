@@ -1,4 +1,4 @@
-<nav class="navbar" *ngIf="loggedUser !== null">
+<nav class="navbar" *ngIf="loggedUser">
     <div class="navbar__header">
         <a  routerLink="/dashboard">
             <img src="../../../../../assets/img/logo@1x.png" alt="4iiz Logo" />
@@ -7,8 +7,8 @@
 
     <div class="navbar__menu">
         <ul class="navbar__nav">
-            <li routerLinkActive="active" #link *ngFor="let menu of menus">
-                <a [routerLink]="menu.path">{{menu.name}}</a>
+            <li routerLinkActive="active" #link *ngFor="let item of menu">
+                <a [routerLink]="item.path">{{item.name}}</a>
             </li>
             <div class="active-underline" #activeUnderline></div>
         </ul>

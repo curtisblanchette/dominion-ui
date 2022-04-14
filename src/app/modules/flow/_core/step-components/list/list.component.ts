@@ -2,18 +2,18 @@ import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input } fro
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { fromEvent, Observable, of } from 'rxjs';
+import { fromEvent, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { FlowService } from '../../flow.service';
-import { ModuleType } from '../../_core/classes/flow.moduleTypes';
+import { FlowService } from '../../../flow.service';
 import { Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
-import { EntityCollectionService, EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
-import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
+import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 
 @Component({
+  selector: 'flow-list',
   templateUrl: 'list.component.html',
-  styleUrls: ['../../_core/scss/_base.scss', 'list.component.scss']
+  styleUrls: ['../_base.scss', 'list.component.scss']
 })
 export class ListComponent extends EntityCollectionComponentBase implements OnDestroy, AfterViewInit {
 

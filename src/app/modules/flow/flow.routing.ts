@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FlowComponent } from "./flow.component";
-import { DataComponent, TextComponent, ListComponent } from "./components";
-import { IntroComponent } from "./components/intro/intro.component";
+import { DataComponent, TextComponent, ListComponent } from "./_core/step-components";
+import { IntroComponent } from "./_core/step-components/intro/intro.component";
 
 const routes: Routes = [
   {

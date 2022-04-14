@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
-import { Store } from "@ngrx/store";
-
+import { Store } from '@ngrx/store';
 import { User } from '../../../../modules/login/models/user';
-import * as fromLogin from '../../../../modules/login/store/login.reducer';
 import { ActivationEnd, Router } from '@angular/router';
 import { delay, filter } from 'rxjs/operators';
+import * as fromLogin from '../../../../modules/login/store/login.reducer';
 
 @Component({
   selector: 'app-navbar',
@@ -15,30 +14,40 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   public loggedUser!: User | null;
 
-  public menus: { name: string, path: string; }[] = [
+  public menu: { name: string; path: string; roles: string[] }[] = [
     {
-      name : 'Dashboard',
-      path : 'dashboard'
+      name: 'Dashboard',
+      path: 'dashboard',
+      roles: ['system', 'admin', 'consultant', 'agent']
     },
     {
-      name : 'Reports',
-      path : 'reports'
+      name: 'Reports',
+      path: 'reports',
+      roles: ['system', 'admin', 'consultant', 'agent']
     },
     {
-      name : 'Data',
-      path : 'data'
+      name: 'Data',
+      path: 'data',
+      roles: ['system', 'admin', 'consultant', 'agent']
     },
     {
-      name : 'Call Flow',
-      path : 'flow/f'
+      name: 'Call Flow',
+      path: 'flow/f',
+      roles: ['system', 'admin', 'consultant', 'agent']
     },
     {
-      name : 'Settings',
-      path : 'settings'
+      name: 'Settings',
+      path: 'settings',
+      roles: ['system', 'admin']
+    },
+    {
+      name: 'System',
+      path: 'system',
+      roles: ['system']
     }
   ];
 
-  @ViewChild('activeUnderline', { static: false }) activeUnderline: ElementRef;
+  @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
   @ViewChildren('link') links: QueryList<ElementRef>;
 
   constructor(
@@ -47,18 +56,20 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     private renderer: Renderer2
   ) {
     this.store.select(fromLogin.selectLoginUser).subscribe((user) => {
-      if( user ){
-          this.loggedUser = user as User
+      if (user) {
+        this.loggedUser = user as User
+        // TODO will likely have to test for more than the first role
+        this.menu = this.menu.filter(item => item.roles.includes(user.role[0]));
       } else {
-          this.loggedUser = null;
+        this.loggedUser = null;
       }
     });
   }
 
   ngAfterViewInit() {
     this.router.events.pipe(
-      filter(r=>r instanceof ActivationEnd),
-      delay(0) // DO NOT REMOVE
+      filter(r => r instanceof ActivationEnd),
+      delay(0) // DO NOT REMOVE -- similar to run outside angular zone or setTimeout
     ).subscribe(() => this.updateActiveUnderline());
   }
 

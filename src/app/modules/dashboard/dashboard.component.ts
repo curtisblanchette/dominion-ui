@@ -6,7 +6,7 @@ import * as loginActions from 'src/app/modules/login/store/login.actions';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['../../../assets/css/_container.scss', './dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
 

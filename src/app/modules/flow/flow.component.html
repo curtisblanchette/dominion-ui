@@ -2,12 +2,7 @@
 
   <div class="flow-layout">
     <div class="flow-layout__main">
-      <section class="flow-layout__sidebar">
-        <div class="flow-layout__sidebar__item" *ngFor="let step of steps; let i = index" [ngClass]="{'active': step === currentStep}" (click)="directlyToStep(step)">
-          <div class="flow-layout__sidebar__item__icon fa fa-{{step.nodeIcon}}"></div>
-          <div class="flow-layout__sidebar__item__title">{{step.nodeText }}</div>
-        </div>
-      </section>
+      <flow-timeline></flow-timeline>
       <section [@slide]="animationIndex" class="flow-layout__content">
         <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
         <div class="flow-layout__controls">

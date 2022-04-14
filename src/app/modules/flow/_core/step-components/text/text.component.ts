@@ -1,12 +1,13 @@
 import { Component, OnDestroy } from "@angular/core";
-import { FlowService } from "../../flow.service";
+import { FlowService } from "../../../flow.service";
 import { Router } from "@angular/router";
-import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 
 @Component({
+  selector: 'flow-text',
   templateUrl: './text.component.html',
-    styleUrls: ['../../_core/scss/_base.scss', './text.component.scss'],
+  styleUrls: ['../_base.scss', './text.component.scss'],
 })
 export class TextComponent extends EntityCollectionComponentBase implements OnDestroy {
 

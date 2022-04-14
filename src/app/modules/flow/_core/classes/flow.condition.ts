@@ -20,10 +20,11 @@ export class FlowCondition extends FlowBaseModel {
   public to: FlowStep | FlowRouter;
 
   constructor(
+    id: string | null,
     evaluation: boolean | Function | IEvaluation,
     to: FlowStep | FlowRouter
   ) {
-    super();
+    super(id);
     this.evaluation = evaluation;
     this.to = to;
   }

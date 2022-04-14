@@ -1,16 +1,18 @@
 import { FlowRouter } from "./flow.router";
 import { FlowBaseModel } from "./flow.baseModel";
 import { FlowStep } from "./flow.step";
+import { cloneDeep } from 'lodash';
 
 export class FlowLink extends FlowBaseModel {
   public from: FlowStep;
   public to: FlowStep | FlowRouter;
 
   constructor(
+    id: string | null,
     from: FlowStep,
     to: FlowStep | FlowRouter
   ) {
-    super();
+    super(id);
     this.from = from;
     this.to = to;
   }
@@ -22,5 +24,15 @@ export class FlowLink extends FlowBaseModel {
   public async beforeRouting() {
     // apply any model changes.
     await this.from.save();
+  }
+
+
+  serialize() {
+    const data: FlowLink = { ...cloneDeep(this)};
+    // @ts-ignore
+    return new FlowLink(data.id, data.from, data.to);
+  }
+
+  deserialize() {
   }
 }

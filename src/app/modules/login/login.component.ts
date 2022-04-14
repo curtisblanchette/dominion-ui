@@ -3,7 +3,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { LoginService } from './services/login.service';
-import * as fromRoot from './store/login.reducer';
+import * as fromLogin from './store/login.reducer';
 import * as loginActions from './store/login.actions';
 
 declare var require:any;
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private fb: FormBuilder,
-    private store: Store<fromRoot.LoginState>
+    private store: Store<fromLogin.LoginState>
   ) { }
 
   ngOnInit(): void {
