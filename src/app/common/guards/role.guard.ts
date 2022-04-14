@@ -21,14 +21,8 @@ export class RoleGuard implements CanActivate {
 
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-
-
-    combineLatest([this.user$]).subscribe(([user]) => {
-        console.log(user);
-    });
-
     let roles = route.data['roles'] as Array<string>;
-    withLatestFrom();
+
     return this.store.select(fromLogin.selectLoginUser).pipe(
       map((user) => {
         if (user !== null) {
@@ -38,7 +32,6 @@ export class RoleGuard implements CanActivate {
           return false
         }
     }));
-
   }
 
 }
