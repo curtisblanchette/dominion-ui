@@ -74,12 +74,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
       this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
     }
-
   }
 
 
   ngOnInit(): void {
-
   }
-
 }

@@ -51,6 +51,20 @@ export class LoginEffects {
     )
   );
 
+  logout$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.LogoutAction),
+        map(action => {
+          localStorage.clear();
+        }),
+        tap((action) => {
+          this.router.navigate(['login']);
+        })
+      ),
+    { dispatch: false }
+  );
+
   loginSuccess$ = createEffect(
     (): any =>
       this.actions$.pipe(
