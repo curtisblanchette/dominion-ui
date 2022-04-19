@@ -1,4 +1,4 @@
-import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input, ViewChildren, QueryList, Renderer2 } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -33,12 +33,14 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
       this.SearchInput = content;
     }
   }
+  @ViewChildren('row') rows: QueryList<ElementRef>
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private flowService: FlowService,
     private router: Router,
+    private renderer: Renderer2,
     private entityServices: EntityServices,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
@@ -56,8 +58,18 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
     this.searchForm = this.fb.group(form);
   }
 
-  public onSelect(record: any) {
+  public onSelect($event: any, record: any) {
     this.flowService.addToCache(this.module, record);
+
+    // remove active from current
+    const prev = this.rows.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
+    if(prev) {
+      prev.classList.toggle('active');
+    }
+
+    // add active to selection
+    $event.currentTarget.classList.toggle("active");
+
   }
 
   public ngOnDestroy() {
