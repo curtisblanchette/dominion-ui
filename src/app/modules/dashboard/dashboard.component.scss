@@ -1,0 +1,36 @@
+.dashboard_main_wrapper {
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: stretch;
+    align-content: center;
+
+    &__title {
+        & h2 {
+            margin-bottom: 0px;
+        }
+    }
+
+    &__subtitle {
+        font-size: 16px;
+    }
+
+    .dashboard_buttons_heading{
+        margin: 3% 0% 1% 0%;
+        color : #5F6E8D;
+    }
+
+    .dashboard__buttons {
+        
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: stretch;
+        justify-content: space-between;
+        align-items: center;
+
+    }
+
+}

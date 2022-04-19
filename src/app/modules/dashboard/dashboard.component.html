@@ -1,2 +1,47 @@
-<p>dashboard works!</p>
-<button (click)="logout()" >Logout</button>
+<div class="dashboard_main_wrapper">
+    
+    <div class="dashboard_main_wrapper__title">
+        <h2> Welcome back, {{loggedUser.name}}</h2>
+    </div>
+    <div class="dashboard_main_wrapper__subtitle">
+        Select a task from one of the quickstart options below to get started
+    </div>
+
+    
+    <div class="dashboard_buttons_heading" *ngIf="quickStartMenu.length">
+        Quickstart
+    </div>
+    
+    <div class="dashboard__buttons" *ngIf="quickStartMenu.length">
+        <div *ngFor="let item of quickStartMenu" [@slideIn]>
+            <fiiz-button
+                [icon] = item.icon
+                [title] = item.title
+                [subtitle] = item.subtitle
+                [theme] = item.theme
+                (onClick)="doSomething($event)"
+            ></fiiz-button>
+        </div>
+    </div>
+
+    <div class="dashboard_buttons_heading" *ngIf="supportMenu.length">
+        Education and Support
+    </div>
+
+    <div class="dashboard__buttons" [@slideInWithDelay]>
+        <div *ngFor="let item of supportMenu">
+            <fiiz-button
+                [icon] = item.icon
+                [title] = item.title
+                [subtitle] = item.subtitle
+                [theme] = item.theme
+            ></fiiz-button>
+        </div>
+    </div>
+
+    
+
+</div>
+
+
+<!-- <button (click)="logout()" >Logout</button> -->
