@@ -1,4 +1,5 @@
 @import '~src/assets/css/variables';
+@import '~src/assets/css/functions';
 
   /* class applies to select element itself, not a wrapper element */
 :host {
@@ -35,10 +36,11 @@
     font-size: 14px;
     font-family: Roboto, sans-serif;
     font-weight: 400;
-    color: $blue5;
-    line-height: 1.25em;
-    padding: 5px 12px;
+    color: #C6CEED;
+    line-height: 1.5em;
+    padding: 20px;
     width: 100%;
+    height: 400px;
     box-sizing: border-box;
     margin: 0;
     border: none;
@@ -47,16 +49,14 @@
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    background-color: #fff;
+    background-color: #172B46;
     z-index: 1;
     cursor: text;
     resize: none;
 
     &:focus {
       /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-      box-shadow: 0 0 1px 2px $blue2;
-      box-shadow: 0 0 0 1px -moz-mac-focusring;
-      color: #222;
+      box-shadow: none!important;
       outline: none;
     }
 
@@ -105,6 +105,26 @@
   }
 
 
+  wysiwyg-container {
+    display: flex;
+    button {
+      margin-bottom: 0;
+      border-radius: 0;
+      flex: 1;
+      background: #1E314E;
+      color: #7D89A6;
+
+      &.active {
+        background: shade(#1E314E, 25);
+        color: shade(#7D89A6, 25);
+      }
+
+      &:focus {
+        outline: 0;
+        box-shadow: none!important;
+      }
+    }
+  }
 
 }
 

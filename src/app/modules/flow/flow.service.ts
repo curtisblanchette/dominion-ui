@@ -7,9 +7,7 @@ import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FlowService {
   public cache: { [key: string]: any } = {};
 
@@ -18,29 +16,33 @@ export class FlowService {
   public links: FlowLink[];
   public currentStep: FlowStep;
 
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<fromFlow.FlowState>
   ) {
 
-    this.store.select(fromFlow.selectSteps).subscribe(steps => {
-      this.steps = steps
-    });
-    this.store.select(fromFlow.selectRouters).subscribe(routers => {
-      this.routers = routers;
-    });
-    this.store.select(fromFlow.selectLinks).subscribe(links => {
-      this.links = links;
-    });
-    this.store.select(fromFlow.selectCurrentStep).subscribe((step: FlowStep) => {
+      this.store.select(fromFlow.selectSteps).subscribe(steps => {
+        this.steps = steps
+      });
+      this.store.select(fromFlow.selectRouters).subscribe(routers => {
+        this.routers = routers;
+      });
+      this.store.select(fromFlow.selectLinks).subscribe(links => {
+        this.links = links;
+      });
+      this.store.select(fromFlow.selectCurrentStep).subscribe((step: FlowStep) => {
         this.currentStep = step;
-    });
-
+      });
   }
 
   get _currentStep() {
     return this.currentStep;
+  }
+
+  public reset() {
+    this.store.dispatch(flowActions.ResetAction());
   }
 
   public create() {
@@ -148,8 +150,7 @@ export class FlowService {
     this.store.dispatch(flowActions.SetCurrentStepAction({ payload: step }));
 
     return this.router.navigate(['/flow/f', {outlets: {'aux': [`${step.component}`]}}], {
-      state: step.data,
-      // relativeTo: this.route
+      state: step.data
     });
   }
 

@@ -2,6 +2,9 @@ import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
 import { FlowTransitions } from "./_core";
 import { TimelineComponent } from './_core/layout-components';
+import { Store } from '@ngrx/store';
+import * as fromFlow from './store/flow.reducer';
+import * as flowActions from './store/flow.actions';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -15,8 +18,23 @@ export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild(FlowComponent) flow: FlowComponent;
   @ViewChild(TimelineComponent) timeline: TimelineComponent;
 
+  public tinymceOptions = {
+    branding: false,
+    menubar: false,
+    toolbar: 'bold italic strikethrough underline align',
+    statusbar: false,
+    content_style:`
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.5em;
+        color: #C6CEED;
+      }`
+  }
 
   constructor(
+    private store: Store<fromFlow.FlowState>,
     private flowService: FlowService,
   ) {
   }
@@ -47,7 +65,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-
+    this.store.dispatch(flowActions.ResetAction());
   }
 
 }

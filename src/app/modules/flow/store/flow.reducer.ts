@@ -32,7 +32,7 @@ function getInitialStateByKey(key: string): FlowStep | FlowStep[] | FlowRouter[]
 
     return items;
   }
-  return key === 'currentStep' ? <FlowStep>{ serialize: ()=>{} } : [];
+  return key === 'currentStep' ? <FlowStep>{serialize:()=>{}} : [];
 }
 
 export const initialState: FlowState = {
@@ -49,6 +49,7 @@ export const reducer = createReducer(
   on(flowActions.AddRouterAction, (state, { payload }) => ({ ...state, routers: [ ...state.routers, payload ]})),
   on(flowActions.SetCurrentStepAction, (state, { payload }) => ({ ...state, currentStep: payload })),
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
+  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: <FlowStep>{serialize:()=>{}}}))
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
