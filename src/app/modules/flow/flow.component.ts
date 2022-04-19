@@ -1,10 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
-import { FlowRouter, FlowStep, FlowTransitions } from "./_core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Store } from '@ngrx/store';
-import * as fromFlow from './store/flow.reducer';
-import * as flowActions from './store/flow.actions';
+import { FlowTransitions } from "./_core";
+import { TimelineComponent } from './_core/layout-components';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -14,41 +11,39 @@ import * as flowActions from './store/flow.actions';
 export class FlowComponent implements OnInit, OnDestroy {
 
   animationIndex = 0;
-  currentStep: FlowStep;
-  steps: FlowStep[] = [];
+  tabIndex = 1;
   @ViewChild(FlowComponent) flow: FlowComponent;
+  @ViewChild(TimelineComponent) timeline: TimelineComponent;
+
 
   constructor(
     private flowService: FlowService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private store: Store<fromFlow.FlowState>
   ) {
-
   }
 
-  public ngOnInit() {
-
-
-    this.store.select(fromFlow.selectSteps).subscribe((steps: FlowStep[]) => {
-      if(steps) {
-        this.steps = steps;
-      }
-    });
-
+  public async ngOnInit() {
+    await this.flowService.start();
   }
 
   public onActivate($event: any) {
+
   }
 
-  public onNext() {
+  public onNext(): Promise<any> {
     this.animationIndex++;
-    this.flowService.next();
+    return this.flowService.next();
   }
 
-  public onBack() {
+  public onBack(): Promise<any> {
     this.animationIndex--;
-    this.flowService.back();
+    return this.flowService.back();
+  }
+
+  public goTo(id: string): Promise<any> {
+    const next = this.flowService.steps.findIndex(x => x.id === id);
+    const current = this.flowService.steps.findIndex(x => x.id === this.flowService._currentStep.id);
+    next < current ? this.animationIndex-- : this.animationIndex++;
+    return this.flowService.goTo(id);
   }
 
   public ngOnDestroy() {

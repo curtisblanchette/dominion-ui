@@ -2,7 +2,15 @@
 
   <div class="flow-layout">
     <div class="flow-layout__main">
-      <flow-timeline></flow-timeline>
+      <section class="flow-layout__sidebar">
+        <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
+
+        <ng-template #flowTimeline>
+          <flow-timeline (onSelect)="goTo($event)" ></flow-timeline>
+        </ng-template>
+        <ng-template #flowNotes><div>Notes</div></ng-template>
+      </section>
+
       <section [@slide]="animationIndex" class="flow-layout__content">
         <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
         <div class="flow-layout__controls">

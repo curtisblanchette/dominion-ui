@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, tap } from 'rxjs';
+import { tap } from 'rxjs';
+import * as flowActions from './flow.actions';
+import * as fromFlow from './flow.reducer';
+import { FlowService } from '../flow.service';
 
 @Injectable()
 export class FlowEffects {
@@ -10,34 +13,20 @@ export class FlowEffects {
   constructor(
     private actions$: Actions,
     private router: Router,
-    private store: Store
+    private store: Store<fromFlow.FlowState>,
+    private flowService: FlowService
   ) {
 
   }
 
-  // login$ = createEffect((): any =>
-  //   this.actions$.pipe(
-  //     ofType(loginActions.LogUserAction),
-  //     mergeMap((action) => {
-  //       return this.loginService.login(action.payload).then((response: any) => {
-  //         const accessToken = response.accessToken.getJwtToken();
-  //         const refreshToken = response.refreshToken.getToken();
-  //         const cognitoGroup = response.idToken.payload['cognito:groups'];
-  //         const cognitoUsername = response.idToken.payload['cognito:username'];
-  //         const workspaceId = response.idToken.payload['custom:workspaceId'];
-  //
-  //         const loggedUser = new User(
-  //           'assets/img/default-avatar.png',
-  //           accessToken,
-  //           refreshToken,
-  //           cognitoGroup,
-  //           cognitoUsername
-  //         );
-  //         console.log(loggedUser);
-  //         return loginActions.LogInSuccesfullAction({payload: loggedUser});
-  //       });
-  //     })
-  //   )
-  // );
+  goToStepById$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(flowActions.GoToStepByIdAction),
+      tap((action) => {
+        const id = action.id;
+        this.flowService.next();
+      })
+    ), { dispatch: false }
+  );
 
 }

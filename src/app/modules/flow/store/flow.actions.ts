@@ -7,6 +7,7 @@ export const ActionTypes = {
   ADD_ROUTER: '[Flow] Add FlowRouter',
   SET_CURRENT_STEP: '[Flow] Set Current Step',
   GO_TO_STEP: '[Flow] Go to step'
+
 };
 
 export const AddStepAction = createAction(

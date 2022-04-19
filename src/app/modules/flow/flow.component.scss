@@ -19,6 +19,11 @@ router-outlet {
   height: 100%;
 
 
+  &__sidebar {
+    height: 100%;
+    flex: 1;
+  }
+
   &__main {
     display: flex;
     flex-direction: row;
@@ -37,7 +42,7 @@ router-outlet {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 768px;
+    max-width: 80%;
     margin: 0 auto;
     button {
       margin: 0;

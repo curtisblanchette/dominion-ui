@@ -45,9 +45,10 @@ export const initialState: FlowState = {
 export const reducer = createReducer(
   initialState,
   on(flowActions.AddStepAction, (state, { payload }) => ({ ...state, steps: [ ...state.steps, payload ]})),
-  on(flowActions.AddLinkAction, (state, { payload }) => ({...state, links: [ ...state.links, payload ]})),
-  on(flowActions.AddRouterAction, (state, { payload }) => ({...state, routers: [ ...state.routers, payload ]})),
-  on(flowActions.SetCurrentStepAction, (state, { payload }) => ({...state, currentStep: payload })),
+  on(flowActions.AddLinkAction, (state, { payload }) => ({ ...state, links: [ ...state.links, payload ]})),
+  on(flowActions.AddRouterAction, (state, { payload }) => ({ ...state, routers: [ ...state.routers, payload ]})),
+  on(flowActions.SetCurrentStepAction, (state, { payload }) => ({ ...state, currentStep: payload })),
+  on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');

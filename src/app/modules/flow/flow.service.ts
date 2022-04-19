@@ -6,16 +6,16 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable, take } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class FlowService {
   public cache: { [key: string]: any } = {};
 
   public steps: FlowStep[];
   public routers: FlowRouter[];
   public links: FlowLink[];
-
   public currentStep: FlowStep;
 
   constructor(
@@ -37,6 +37,13 @@ export class FlowService {
         this.currentStep = step;
     });
 
+  }
+
+  get _currentStep() {
+    return this.currentStep;
+  }
+
+  public create() {
     const intro = new FlowStep(null,'Intro', 'address-book', FlowComponentType.INTRO, undefined);
     const first = new FlowStep(null, 'First', 'landmark', FlowComponentType.TEXT, {title: 'First', body: 'The first step'} );
     const search = new FlowStep(null, 'Search', 'bullseye', FlowComponentType.LIST, {title: 'Search in Leads', module: ModuleType.LEAD} );
@@ -69,12 +76,21 @@ export class FlowService {
       .addLink(link_first_to_search)
       .addLink(link_search_to_newLead)
       .addLink(link_newLead_to_campaign);
-
-    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: intro }));
-    this.renderComponent(intro);
   }
 
-  public next() {
+  public start(): Promise<any> {
+    this.create();
+    const firstStep: FlowStep = this.steps[0];
+    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: firstStep }));
+    return this.renderComponent(firstStep);
+  }
+
+  public async goTo(id: string) {
+    const step = this.steps.find(x => x.id === id);
+    await this.renderComponent(<FlowStep>step);
+  }
+
+  public async next() {
     // find a link where the "from" is equal to "currentStep"
     const link = this.links.find(link => link.from.id === this.currentStep.id);
 
@@ -86,20 +102,20 @@ export class FlowService {
         step = (<FlowRouter>step).evaluate();
       }
 
-      this.renderComponent(<FlowStep>step);
+      await this.renderComponent(<FlowStep>step);
     } else {
       console.warn('No step found to transition to.');
     }
   }
 
-  public back() {
+  public async back() {
     const link = this.links.find(link => link.to.id === this.currentStep.id);
 
     let step: FlowStep | FlowRouter | undefined = link?.from;
 
     // TODO add handling for navigating back through a FlowRouter
     if (step) {
-      this.renderComponent(<FlowStep>step);
+      await this.renderComponent(<FlowStep>step);
     } else {
       console.warn('No step found to transition to.');
     }

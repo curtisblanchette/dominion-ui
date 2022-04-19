@@ -11,6 +11,8 @@ import { reducer } from './store/flow.reducer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NotesComponent, TimelineComponent } from './_core/layout-components';
+import { EffectsModule } from '@ngrx/effects';
+import { FlowEffects } from './store/flow.effects';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { NotesComponent, TimelineComponent } from './_core/layout-components';
   ],
   imports: [
     StoreModule.forFeature('flow', reducer),
+    EffectsModule.forFeature([FlowEffects]),
     FlowRouting,
     CommonModule,
     FiizUIModule,
