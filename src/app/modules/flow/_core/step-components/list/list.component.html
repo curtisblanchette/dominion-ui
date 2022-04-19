@@ -24,10 +24,10 @@
       </div>
       <div class="flex-table__body" style="height: calc(100% - 38px); overflow-x: hidden;">
         <div class="flex-table__row"
-             tabindex="0"
-             #row
-             (focus)="onSelect($event, item)"
-             (click)="onSelect($event, item)"
+             tabindex="0" #row
+             (focusin)="onFocus($event, item)"
+             (focusout)="onFocus($event, item)"
+             [ngClass]="{'active': this.flowService.cache[this.module]?.id === item.id}"
              *ngFor="let item of data$ | async | paginate: { itemsPerPage: 2, currentPage: page, totalItems: (count$ | async) }; let i = index;">
           <label [for]="item.id" style="display: flex; width: 100%;">
             <div class="flex-table__cell" style="flex-grow : 10;">

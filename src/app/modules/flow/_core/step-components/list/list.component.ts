@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { fromEvent, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { FlowService } from '../../../flow.service';
-import { Lead } from '@4iiz/corev2';
+import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
@@ -25,7 +25,7 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
   public page: number = 1;
   public offset: number = 0;
   public totalRecords: number = 0;
-
+  public selected: Lead | Contact | Event | Deal | null;
   private SearchInput: ElementRef;
 
   @ViewChild('SearchInput') set content(content: ElementRef) {
@@ -61,18 +61,15 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
     this.searchForm = this.fb.group(form);
   }
 
-  public onSelect($event: any, record: any) {
-    this.flowService.addToCache(this.module, record);
-
-    // remove active from current
-    const prev = this.rows.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
-    if(prev) {
-      prev.classList.toggle('active');
+  public onFocus($event: any, record: any) {
+    $event.preventDefault();
+    if(this.selected === record) {
+      this.flowService.cache[this.module] = null;
+      this.selected = null;
+      return;
     }
-
-    // add active to selection
-    $event.currentTarget.classList.toggle("active");
-
+    this.selected = record;
+    this.flowService.addToCache(this.module, record);
   }
 
   public ngOnDestroy() {

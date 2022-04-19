@@ -57,7 +57,7 @@
       flex-wrap: nowrap;
       align-content: center;
       align-items: stretch;
-      cursor: pointer;
+      cursor: pointer!important;
 
       &:focus {
         box-shadow: none;

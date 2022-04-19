@@ -27,7 +27,7 @@ export class DataComponent extends EntityCollectionComponentBase implements OnIn
     super(router, entityCollectionServiceFactory);
 
     this.data$.subscribe(data => {
-      if(data.length > 0) {
+      if(data.length > 1) {
         this.buildForm(data[0]);
       }
     })

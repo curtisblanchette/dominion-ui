@@ -46,12 +46,8 @@ export class FlowService {
     const newLead = new FlowStep(null, 'New Lead', 'address-book', FlowComponentType.DATA, { title: 'Create a New Lead', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com', module: ModuleType.LEAD } )
     const appointment = new FlowStep(null, 'Set Appointment', 'calendar', FlowComponentType.TEXT,  { title : 'Set an Appointment' } );
 
-    const leadSelected = new FlowCondition(null,() => {
-      return this.cache[ModuleType.LEAD]
-    }, appointment);
-    const leadNotSelected = new FlowCondition(null,() => {
-      return !this.cache[ModuleType.LEAD]
-    }, newLead);
+    const leadSelected = new FlowCondition(null,() => (this.cache[ModuleType.LEAD]), appointment);
+    const leadNotSelected = new FlowCondition(null,() => (!this.cache[ModuleType.LEAD]), newLead);
     const existingLeadRouter = new FlowRouter(null,'Router 1', '',[leadSelected, leadNotSelected]);
 
     const leadSearch_to_existingLeadRouter = new FlowLink(null, existingLead, existingLeadRouter);
