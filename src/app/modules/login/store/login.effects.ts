@@ -109,25 +109,20 @@ export class LoginEffects {
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.RefreshTokenAction),
-        map(async (action) => {
-          try {
-            const session = await this.cognito.refreshSession();
-            const access_token = session.accessToken.getJwtToken();
-            const id_token = session.idToken.getJwtToken();
-            const refresh_token = session.refreshToken.getToken();
+        mergeMap(async (action) => {
+          const session = await this.cognito.refreshSession();
+          const access_token = session.accessToken.getJwtToken();
+          const id_token = session.idToken.getJwtToken();
+          const refresh_token = session.refreshToken.getToken();
 
-            const user: User = {
-              ...action.payload,
-              access_token,
-              id_token,
-              refresh_token
-            };
+          const user: User = {
+            ...action.payload,
+            access_token,
+            id_token,
+            refresh_token
+          };
 
-            return loginActions.UpdateUserAction({payload: user});
-
-          } catch (error) {
-            console.error('Error refreshing token', error);
-          }
+          return loginActions.UpdateUserAction({ payload: user });
         })
       ),
     {dispatch: true}
