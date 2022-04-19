@@ -13,8 +13,8 @@
       <section [@slide]="animationIndex" class="flow-layout__content">
         <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
         <div class="flow-layout__controls">
-          <button (click)="onBack()" class="stroked" [disabled]="false">Back</button>
-          <button class=primary (click)="onNext()">Next</button>
+          <button (click)="onBack()" class="stroked" *ngIf="(stepHistory$ | async)?.length > 0">Back</button>
+          <button class=primary (click)="onNext()" style="margin-left: auto;">Next</button>
         </div>
       </section>
 

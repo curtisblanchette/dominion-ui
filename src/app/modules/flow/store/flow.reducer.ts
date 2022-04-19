@@ -61,6 +61,7 @@ export const selectSteps       = createSelector(selectFlow, (flow: FlowState) =>
 export const selectRouters     = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
 export const selectLinks       = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
 export const selectCurrentStep = createSelector(selectFlow, (flow: FlowState) => flow.currentStep.serialize());
+export const selectStepHistory = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
 
 export const selectStepById   = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id));
 export const selectRouterById = (id: string) => createSelector(selectRouters, (entities: FlowRouter[]) => entities.filter((item: FlowRouter) => item.id === id));

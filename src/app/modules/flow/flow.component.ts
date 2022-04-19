@@ -5,6 +5,7 @@ import { TimelineComponent } from './_core/layout-components';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -15,6 +16,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   animationIndex = 0;
   tabIndex = 1;
+  stepHistory$: Observable<string[]>;
   @ViewChild(FlowComponent) flow: FlowComponent;
   @ViewChild(TimelineComponent) timeline: TimelineComponent;
 
@@ -37,6 +39,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     private store: Store<fromFlow.FlowState>,
     private flowService: FlowService,
   ) {
+    this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
 
   public async ngOnInit() {
