@@ -48,7 +48,8 @@ router-outlet {
     justify-content: space-between;
     width: 100%;
     max-width: 80%;
-    margin: 0 auto;
+    margin: 0 auto 20px auto;
+
     button {
       margin: 0;
     }
@@ -68,7 +69,6 @@ router-outlet {
 }
 
 section {
-  height: 500px;
   position: relative;
 }
 
