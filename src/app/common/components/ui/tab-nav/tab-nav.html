@@ -1,5 +1,10 @@
 <nav>
-	<div [routerLink]="item.routerLink" [routerLinkActive]="'active'" *ngFor="let item of navItems">
-		<button class="full-width transparent">{{item.label}}</button>
-	</div>
+  <button class="full-width transparent"
+          #link
+          *ngFor="let item of items"
+          (click)="onClick(item.key)"
+          [ngClass]="{'active': item.key === selected}">
+    {{item.label}}
+  </button>
+  <div class="active-underline" #activeUnderline></div>
 </nav>

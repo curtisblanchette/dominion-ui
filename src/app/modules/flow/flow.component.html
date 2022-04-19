@@ -2,13 +2,12 @@
 
   <div class="flow-layout">
     <div class="flow-layout__main">
-      <section class="flow-layout__sidebar">
-        <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
 
-        <ng-template #flowTimeline>
-          <flow-timeline (onSelect)="goTo($event)" ></flow-timeline>
-        </ng-template>
-        <ng-template #flowNotes><div>Notes</div></ng-template>
+      <section class="flow-layout__sidebar">
+        <div style="padding: 20px;">
+          <fiiz-tab-nav [items]="[{key: 'timeline', label: 'Timeline'}, {key: 'notes', label: 'Notes'}]" (onSelect)="$event === 'timeline' ? tabIndex = 1 : tabIndex = 0 "></fiiz-tab-nav>
+          <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
+        </div>
       </section>
 
       <section [@slide]="animationIndex" class="flow-layout__content">
@@ -18,9 +17,17 @@
           <button class=primary (click)="onNext()">Next</button>
         </div>
       </section>
+
     </div>
-
-
   </div>
-
 </div>
+
+
+<ng-template #flowTimeline>
+  <flow-timeline (onSelect)="goTo($event)" ></flow-timeline>
+</ng-template>
+
+<ng-template #flowNotes><div>
+  <h3>Notes</h3>
+  <textarea></textarea>
+</div></ng-template>
