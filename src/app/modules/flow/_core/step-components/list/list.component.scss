@@ -1,3 +1,4 @@
+@import '~src/assets/css/variables';
 
 .flex_main_wrapper {
 
@@ -57,6 +58,11 @@
       align-content: center;
       align-items: stretch;
       cursor: pointer;
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
 
       &.active {
         position: relative;

@@ -38,20 +38,23 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private flowService: FlowService,
     private router: Router,
     private renderer: Renderer2,
     private entityServices: EntityServices,
-    private entityCollectionServiceFactory: EntityCollectionServiceFactory
+    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    public flowService: FlowService
   ) {
     super(router, entityCollectionServiceFactory);
 
-    this.data$.subscribe((res: Lead[]) => {
-      console.log(res);
-      if (!this.loading$ && this.loaded$ && res.length === 0) {
-        // we only want to query if the cache doesn't return a record
-      }
-    });
+    if(this.data$) {
+      this.data$.subscribe((res: Lead[]) => {
+        console.log(res);
+        if (!this.loading$ && this.loaded$ && res.length === 0) {
+          // we only want to query if the cache doesn't return a record
+        }
+      });
+    }
+
 
     let form: { [key: string]: FormControl } = {};
     form['key'] = new FormControl('', Validators.required);
