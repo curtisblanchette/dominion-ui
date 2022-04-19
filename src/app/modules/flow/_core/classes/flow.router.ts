@@ -20,8 +20,7 @@ export class FlowRouter extends FlowNode {
 
   serialize() {
     const data: FlowRouter = { ...cloneDeep(this)};
-    // @ts-ignore
-    return new FlowRouter(...data);
+    return new FlowRouter(data.id, data.nodeText, data.nodeIcon, data.conditions);
   }
 
   deserialize() {

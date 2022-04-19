@@ -7,7 +7,8 @@ export interface FlowState {
   steps: FlowStep[]
   routers: FlowRouter[]
   links: FlowLink[],
-  currentStep: FlowStep
+  currentStep: FlowStep,
+  stepHistory: string[]
 }
 
 // need to serialize/deserialize the step/flow/router objects
@@ -39,7 +40,8 @@ export const initialState: FlowState = {
   steps: <FlowStep[]>getInitialStateByKey('steps'),
   routers: <FlowRouter[]>getInitialStateByKey('routers'),
   links: <FlowLink[]>getInitialStateByKey('links'),
-  currentStep: <FlowStep>getInitialStateByKey('currentStep')
+  currentStep: <FlowStep>getInitialStateByKey('currentStep'),
+  stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]')
 };
 
 export const reducer = createReducer(
@@ -48,6 +50,7 @@ export const reducer = createReducer(
   on(flowActions.AddLinkAction, (state, { payload }) => ({ ...state, links: [ ...state.links, payload ]})),
   on(flowActions.AddRouterAction, (state, { payload }) => ({ ...state, routers: [ ...state.routers, payload ]})),
   on(flowActions.SetCurrentStepAction, (state, { payload }) => ({ ...state, currentStep: payload })),
+  on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: payload })),
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
   on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: <FlowStep>{serialize:()=>{}}}))
 );

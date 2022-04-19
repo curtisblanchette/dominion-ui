@@ -54,7 +54,7 @@ export class FlowCondition extends FlowBaseModel {
     }
 
     if(this.evaluation instanceof Function) {
-      return this.evaluation;
+      return this.evaluation();
     }
 
     return this.evaluation;
