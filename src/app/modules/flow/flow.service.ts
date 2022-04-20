@@ -88,7 +88,7 @@ export class FlowService {
       }
 
       const clone = [...this.stepHistory];
-      clone.push(step.id);
+      clone.push(this.currentStep.id);
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
 
       await this.renderComponent(<FlowStep>step);
