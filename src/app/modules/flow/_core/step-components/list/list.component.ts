@@ -61,13 +61,25 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
     this.searchForm = this.fb.group(form);
   }
 
-  public onFocus($event: any, record: any) {
+  public onClick($event: any, record: any) {
     $event.preventDefault();
-    if(this.selected === record) {
+    if(this.selected?.id === record.id) {
       this.flowService.cache[this.module] = null;
       this.selected = null;
       return;
     }
+    this.selected = record;
+    this.flowService.addToCache(this.module, record);
+  }
+
+  public onFocusOut($event: any) {
+    $event.preventDefault();
+      this.flowService.cache[this.module] = null;
+      this.selected = null;
+  }
+
+  public onFocusIn($event: any, record: any) {
+    $event.preventDefault();
     this.selected = record;
     this.flowService.addToCache(this.module, record);
   }
