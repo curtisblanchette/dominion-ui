@@ -16,16 +16,12 @@ import { FiizTabNavComponent } from './tab-nav/tab-nav';
 import { RouterModule } from '@angular/router';
 import { FiizToggleComponent } from './forms/toggle/toggle';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
-// import { AnimateNumberDirective } from '../../directives/animateNumber';
-// import { DirectivesModule } from '../../directives/directives.module';
 import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { FiizInputCurrencyComponent } from './forms/input-currency';
-// import { FiizPageHeaderComponent } from './page/header/header.component';
-import { FiizBigButtonComponent } from './big-buttons/index';
+import { FiizBigButtonComponent } from './big-button/index';
 
 @NgModule({
   declarations: [
-    // FiizPageHeaderComponent,
     FiizPillComponent,
     FiizDropdownComponent,
     FiizInputPercentageComponent,

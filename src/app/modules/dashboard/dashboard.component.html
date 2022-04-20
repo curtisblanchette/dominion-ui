@@ -1,47 +1,29 @@
-<div class="dashboard_main_wrapper">
-    
-    <div class="dashboard_main_wrapper__title">
-        <h2> Welcome back, {{loggedUser.name}}</h2>
-    </div>
-    <div class="dashboard_main_wrapper__subtitle">
-        Select a task from one of the quickstart options below to get started
-    </div>
+<div class="dashboard">
 
-    
-    <div class="dashboard_buttons_heading" *ngIf="quickStartMenu.length">
-        Quickstart
-    </div>
-    
-    <div class="dashboard__buttons" *ngIf="quickStartMenu.length">
-        <div *ngFor="let item of quickStartMenu" [@slideIn]>
-            <fiiz-big-button
-                [icon] = item.icon
-                [title] = item.title
-                [subtitle] = item.subtitle
-                [theme] = item.theme
-                (onClick)="doSomething($event)"
-            ></fiiz-big-button>
-        </div>
-    </div>
+  <div class="dashboard__heading">
+    <h2 class="dashboard__heading__title"> Welcome back, {{loggedUser.name}}</h2>
+    <span class="dashboard__heading__subtitle">Select a task from one of the quickstart options below to get started</span>
+  </div>
 
-    <div class="dashboard_buttons_heading" *ngIf="supportMenu.length">
-        Education and Support
-    </div>
 
-    <div class="dashboard__buttons" [@slideInWithDelay]>
-        <div *ngFor="let item of supportMenu">
-            <fiiz-big-button
-                [icon] = item.icon
-                [title] = item.title
-                [subtitle] = item.subtitle
-                [theme] = item.theme
-            ></fiiz-big-button>
-        </div>
-    </div>
+  <h3>Quickstart</h3>
+  <section class="dashboard__quickstart" *ngIf="quickStartMenu.length" [@slideIn]>
+    <fiiz-big-button *ngFor="let item of quickStartMenu"
+      [icon]="item?.icon"
+      [title]="item?.title"
+      [subtitle]="item?.subtitle"
+      [theme]="item?.theme"
+      (onClick)="doSomething($event)"></fiiz-big-button>
+  </section>
 
-    
+  <h3>Education and Support</h3>
+  <section class="dashbaord__support" *ngIf="supportMenu.length">
+    <fiiz-big-button *ngFor="let item of supportMenu"
+                     [icon]=item?.icon
+                     [title]=item?.title
+                     [subtitle]=item?.subtitle
+                     [theme]=item?.theme
+    ></fiiz-big-button>
+  </section>
 
 </div>
-
-
-<!-- <button (click)="logout()" >Logout</button> -->

@@ -1,0 +1,88 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.fiiz-big-button {
+  padding: 0;
+  width: 100%;
+  height: 90px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+  border-radius: 10px;
+
+  &__icon {
+    flex-grow: 0;
+    height: 100%;
+    width: 107px;
+    padding: 0px;
+    left: 0;
+    right: 0;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 10px 0px 0px 10px;
+
+    & i {
+      font-size: 34px;
+    }
+  }
+
+  &__content {
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: flex-start;
+    padding-left: 10px;
+    line-height: 22px;
+
+    &__title {
+      font-size: 18px;
+    }
+
+    &__sub_title {
+      font-weight: 400;
+      font-size: 14px;
+      font-style: normal;
+    }
+  }
+
+}
+
+.light {
+  @include btnTheme('light', 'fiiz-big-button');
+  @include btnBG('light');
+}
+
+.dark {
+  @include btnTheme('dark', 'fiiz-big-button');
+  @include btnBG('dark');
+}
+
+.orange {
+  @include btnTheme('orange', 'fiiz-big-button');
+  @include btnBG('orange');
+}
+
+.purple {
+  @include btnTheme('purple', 'fiiz-big-button');
+  @include btnBG('purple');
+}
+
+.pitch {
+  @include btnTheme('pitch', 'fiiz-big-button');
+  @include btnBG('pitch');
+}
