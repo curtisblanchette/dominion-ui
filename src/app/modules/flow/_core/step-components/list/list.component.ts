@@ -33,6 +33,7 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
       this.SearchInput = content;
     }
   }
+
   @ViewChildren('row') rows: QueryList<ElementRef>
 
   constructor(
@@ -46,7 +47,7 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
   ) {
     super(router, entityCollectionServiceFactory);
 
-    if(this.data$) {
+    if (this.data$) {
       this.data$.subscribe((res: Lead[]) => {
         console.log(res);
         if (!this.loading$ && this.loaded$ && res.length === 0) {
@@ -63,7 +64,7 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
 
   public onClick($event: any, record: any) {
     $event.preventDefault();
-    if(this.selected?.id === record.id) {
+    if (this.selected?.id === record.id) {
       this.flowService.cache[this.module] = null;
       this.selected = null;
       return;
@@ -74,8 +75,8 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
 
   public onFocusOut($event: any) {
     $event.preventDefault();
-      this.flowService.cache[this.module] = null;
-      this.selected = null;
+    this.flowService.cache[this.module] = null;
+    this.selected = null;
   }
 
   public onFocusIn($event: any, record: any) {
@@ -89,7 +90,7 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
   }
 
   get pluralModuleName() {
-    if(this.state?.module) {
+    if (this.state?.module) {
       return pluralize(this.state.module);
     }
 
@@ -125,7 +126,6 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
     this.page = pageNo;
     this.offset = this.perPage * (this.page - 1);
   }
-
 
 
 }
