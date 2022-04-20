@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-selector: 'fiiz-button',
-  templateUrl: './buttons.html',
-  styleUrls: ['./buttons.scss']
+selector: 'fiiz-big-button',
+  templateUrl: './big-buttons.html',
+  styleUrls: ['./big-buttons.scss']
 })
-export class FiizButtonComponent {
+export class FiizBigButtonComponent {
 
     @Input('icon') icon!: string;
     @Input('title') title!: string;

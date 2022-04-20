@@ -14,13 +14,13 @@
     
     <div class="dashboard__buttons" *ngIf="quickStartMenu.length">
         <div *ngFor="let item of quickStartMenu" [@slideIn]>
-            <fiiz-button
+            <fiiz-big-button
                 [icon] = item.icon
                 [title] = item.title
                 [subtitle] = item.subtitle
                 [theme] = item.theme
                 (onClick)="doSomething($event)"
-            ></fiiz-button>
+            ></fiiz-big-button>
         </div>
     </div>
 
@@ -30,12 +30,12 @@
 
     <div class="dashboard__buttons" [@slideInWithDelay]>
         <div *ngFor="let item of supportMenu">
-            <fiiz-button
+            <fiiz-big-button
                 [icon] = item.icon
                 [title] = item.title
                 [subtitle] = item.subtitle
                 [theme] = item.theme
-            ></fiiz-button>
+            ></fiiz-big-button>
         </div>
     </div>
 
