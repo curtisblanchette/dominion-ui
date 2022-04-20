@@ -1,27 +1,23 @@
-<div class="container">
+<div class="flow-layout">
+  <div class="flow-layout__main">
 
-  <div class="flow-layout">
-    <div class="flow-layout__main">
+    <section class="flow-layout__sidebar">
+      <div style="padding: 30px;">
+        <fiiz-tab-nav [items]="[{key: 'timeline', label: 'Timeline'}, {key: 'notes', label: 'Notes'}]" (onSelect)="$event === 'timeline' ? tabIndex = 1 : tabIndex = 0 "></fiiz-tab-nav>
+        <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
+      </div>
+    </section>
 
-      <section class="flow-layout__sidebar">
-        <div style="padding: 20px;">
-          <fiiz-tab-nav [items]="[{key: 'timeline', label: 'Timeline'}, {key: 'notes', label: 'Notes'}]" (onSelect)="$event === 'timeline' ? tabIndex = 1 : tabIndex = 0 "></fiiz-tab-nav>
-          <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
-        </div>
-      </section>
+    <section [@slide]="animationIndex" class="flow-layout__content">
+      <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
+      <div class="flow-layout__controls">
+        <button (click)="onBack()" class="stroked" *ngIf="(stepHistory$ | async)?.length > 0">Back</button>
+        <button class=primary (click)="onNext()" style="margin-left: auto;">Next</button>
+      </div>
+    </section>
 
-      <section [@slide]="animationIndex" class="flow-layout__content">
-        <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
-        <div class="flow-layout__controls">
-          <button (click)="onBack()" class="stroked" *ngIf="(stepHistory$ | async)?.length > 0">Back</button>
-          <button class=primary (click)="onNext()" style="margin-left: auto;">Next</button>
-        </div>
-      </section>
-
-    </div>
   </div>
 </div>
-
 
 <ng-template #flowTimeline>
   <flow-timeline (onSelect)="goTo($event)" ></flow-timeline>

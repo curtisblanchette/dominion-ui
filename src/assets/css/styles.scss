@@ -21,3 +21,8 @@ html, body {
 body {
   background: #0E1D34;
 }
+
+.container {
+  max-width: $container-width;
+  margin: 0 auto;
+}

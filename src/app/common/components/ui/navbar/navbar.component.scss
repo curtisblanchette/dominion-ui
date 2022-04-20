@@ -1,14 +1,18 @@
 @import '~src/assets/css/variables';
-
+:host {
+  display: block;
+  background-color: #0A1930;
+  box-shadow: 0 2px 50px rgb(0 0 0 / 90%);
+  z-index: 10;
+  position: fixed;
+  width: 100%;
+}
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-basis: auto;
-  background-color: #0A1930;
-  box-shadow: 0 2px 50px rgb(0 0 0 / 90%);
-  position: relative;
-  z-index: 10;
+
 
   &__header {
     a {
@@ -17,7 +21,7 @@
       height: $navbar-height;
       display: flex;
       align-items: center;
-      padding: 0 1.7rem;
+      padding: 0 15px;
 
       img {
       }

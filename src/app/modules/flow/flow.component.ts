@@ -6,10 +6,11 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { Observable } from 'rxjs';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 
 @Component({
   templateUrl: './flow.component.html',
-  styleUrls: ['./flow.component.scss'],
+  styleUrls: ['../../../assets/css/_container.scss', './flow.component.scss'],
   animations: FlowTransitions
 })
 export class FlowComponent implements OnInit, OnDestroy {
@@ -38,7 +39,14 @@ export class FlowComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<fromFlow.FlowState>,
     private flowService: FlowService,
+    private router: Router
   ) {
+    // this catches when a user refreshes the page
+    // the inner router-outlet is maintained by this component so we have to strip off aux outlet segments
+    if(this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
+      this.router.navigate(['flow/f']);
+    }
+
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
 

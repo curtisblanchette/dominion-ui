@@ -14,8 +14,7 @@ import { EntityCollectionComponentBase } from '../../../../../data/entity-collec
   styleUrls: ['../_base.scss', './data.component.scss'],
 })
 export class DataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
-  public data: Lead | Contact | Deal | Event;
-  public errors$: Observable<any>;
+
   public form: FormGroup;
 
   constructor(
