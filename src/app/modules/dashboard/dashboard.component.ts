@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { User } from '../login/models/user';
 import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
@@ -12,6 +11,7 @@ export interface IDashboardButton {
   subtitle: string;
   icon: string;
   theme: string;
+  route?: string;
   roles?: string[];
 }
 
@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public doSomething(value: any) {
-    console.log(`Emiited value received ${value}`);
+    console.log(`Emitted value received: ${value}`);
   }
 
   public logout() {

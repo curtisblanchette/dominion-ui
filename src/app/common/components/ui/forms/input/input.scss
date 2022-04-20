@@ -24,12 +24,12 @@
     width: 0;
     height: 2px;
     bottom: 0;
-    background: red;
+    background: $red0;
   }
 
   &.ng-invalid.ng-dirty {
     &:after {
-      width: 100%;
+      width: 90%;
       animation: line .25s forwards;
     }
   }

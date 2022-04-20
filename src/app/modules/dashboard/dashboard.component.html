@@ -15,6 +15,7 @@
                      [title]="item?.title"
                      [subtitle]="item?.subtitle"
                      [theme]="item?.theme"
+                     [routerLink]="item?.route"
                      (onClick)="doSomething($event)"></fiiz-big-button>
   </section>
 
@@ -24,6 +25,7 @@
                      [icon]=item?.icon
                      [title]=item?.title
                      [subtitle]=item?.subtitle
+                     [routerLink]="item?.route"
                      [theme]=item?.theme
     ></fiiz-big-button>
   </section>
