@@ -129,3 +129,62 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+@mixin btnTheme($theme, $elmClass){
+  $iconContainer : #95C2F6;
+  $iconColor : #25304E;
+  $title : #131828;
+  $subtitle : #191F30;
+
+  @if $theme == 'dark' {
+    $iconContainer : #35649A;
+    $iconColor : #CCD8F9;
+    $title : #CCD8F9;
+    $subtitle : #A7B2D2;
+  } @else if $theme == 'orange' {
+    $iconContainer : #FFD36E;
+    $iconColor : #413415;
+    $title : #030405;
+    $subtitle : #413415;
+  } @else if $theme == 'purple' {
+    $iconContainer : #9D6EFF;
+    $iconColor : #422C6E;
+    $title : #DBC8FF;
+    $subtitle : #DBC8FF;
+  } @else if $theme == 'pitch' {
+    $iconContainer : #F1DFCD;
+    $iconColor : #413415;
+    $title : #030405;
+    $subtitle : #413415;
+  }
+  .#{$elmClass} {
+    &__icon {
+        background-color: $iconContainer;
+        & i {
+            color: $iconColor;
+        }
+    }
+    &__content {
+        &__title {
+            color: $title;
+        }
+        &__sub_title {
+          color: $title;
+      }
+    }
+  }
+}
+
+@mixin btnBG($theme) {
+  @if $theme == 'light' {
+    background-color: #759ACA;
+  } @else if $theme == 'dark' {
+    background-color: #254876;
+  } @else if $theme == 'orange' {
+    background-color: #CFAB5A;
+  } @else if $theme == 'purple' {
+    background-color: #7550C1;
+  } @else if $theme == 'pitch' {
+    background-color: #CCBBA9;
+  }
+}
