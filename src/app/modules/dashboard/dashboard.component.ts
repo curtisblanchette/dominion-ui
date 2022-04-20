@@ -5,6 +5,7 @@ import { User } from '../login/models/user';
 import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
 import { buttons } from './dashboard.buttons';
+import { bigButtons } from './dashboard.animations';
 
 export interface IDashboardButton {
   title: string;
@@ -19,26 +20,7 @@ export interface IDashboardButton {
   templateUrl: './dashboard.component.html',
   styleUrls: ['../../../assets/css/_container.scss', './dashboard.component.scss'],
   animations: [
-    trigger('slideIn', [
-      transition(':enter',
-        query('button', [
-          style({transform: 'translateX(-100%)', opacity: 0}),
-          stagger(-30, [
-            animate('350ms cubic-bezier(0.16, 0.14, 0.21, 0.61)', style({transform: 'translateX(0%)', opacity: 1}))
-          ])
-        ], {optional: true})
-      )
-    ]),
-    trigger('slideInWithDelay', [
-      transition(':enter',
-        query('button', [
-          style({transform: 'translateX(-100%)', opacity: 0}),
-          stagger(-60, [
-            animate('450ms cubic-bezier(0.3, -0.02, 0.14, 1.01)', style({transform: 'translateX(0%)', opacity: 1}))
-          ])
-        ], {optional: true})
-      )
-    ])
+    bigButtons
   ]
 })
 export class DashboardComponent implements OnInit {
