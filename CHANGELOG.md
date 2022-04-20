@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.5.0 (2022-04-20)
+
+
+### Features
+
+* **develop:** create dashboard.animations.ts ([97d9b3d](https://github.com/4iiz/dominion-ui/commit/97d9b3daddf795693af8cde8a6ac719960e5154f))
+
 ### 1.4.23 (2022-04-20)
 
 ### 1.4.22 (2022-04-20)
