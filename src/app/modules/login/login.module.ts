@@ -9,17 +9,19 @@ import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/login.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { LoginEffects } from './store/login.effects';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  imports: [
-    LoginRouting,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FiizUIModule,
-    StoreModule.forFeature('login', reducer),
-    EffectsModule.forFeature([LoginEffects])
-  ],
+    imports: [
+        LoginRouting,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FiizUIModule,
+        StoreModule.forFeature('login', reducer),
+        EffectsModule.forFeature([LoginEffects]),
+        SharedModule
+    ],
   declarations: [
     LoginComponent,
   ],

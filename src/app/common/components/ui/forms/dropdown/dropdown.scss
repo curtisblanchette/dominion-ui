@@ -24,7 +24,7 @@
 
   /* class applies to select element itself, not a wrapper element */
   select.fiiz-dropdown-component {
-    border-radius: 18px !important;
+    border-radius: $input-border-radius;
     display: block;
     font-size: 14px;
     font-family: Roboto, sans-serif;
@@ -35,7 +35,6 @@
     margin: 0;
     border: none;
     box-shadow: $form-control-shadow;
-    border-radius: 2px;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
