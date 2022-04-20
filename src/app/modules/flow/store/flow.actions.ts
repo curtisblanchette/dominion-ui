@@ -6,8 +6,9 @@ export const ActionTypes = {
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
   SET_CURRENT_STEP: '[Flow] Set Current Step',
-  GO_TO_STEP: '[Flow] Go to step'
-
+  SET_STEP_HISTORY: '[Flow] Set Step History',
+  GO_TO_STEP: '[Flow] Go to step',
+  RESET: '[Flow] Reset'
 };
 
 export const AddStepAction = createAction(
@@ -30,8 +31,17 @@ export const SetCurrentStepAction = createAction(
   props<{ payload: FlowStep }>()
 );
 
+export const SetStepHistoryAction = createAction(
+  ActionTypes.SET_STEP_HISTORY,
+  props<{ payload: string[] }>()
+);
+
 export const GoToStepByIdAction = createAction(
   ActionTypes.GO_TO_STEP,
   props<{ id: string }>()
+);
+
+export const ResetAction = createAction(
+  ActionTypes.RESET
 );
 

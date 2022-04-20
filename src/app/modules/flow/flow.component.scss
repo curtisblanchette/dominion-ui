@@ -23,6 +23,10 @@ router-outlet {
     background: #0A1930;
     height: 100%;
     flex: 1;
+
+    fiiz-tab-nav {
+      margin-bottom: 16px;
+    }
   }
 
   &__main {
@@ -44,7 +48,8 @@ router-outlet {
     justify-content: space-between;
     width: 100%;
     max-width: 80%;
-    margin: 0 auto;
+    margin: 0 auto 20px auto;
+
     button {
       margin: 0;
     }
@@ -64,10 +69,11 @@ router-outlet {
 }
 
 section {
-  height: 500px;
   position: relative;
 }
 
 section ng-component {
   width: 100%;
 }
+
+

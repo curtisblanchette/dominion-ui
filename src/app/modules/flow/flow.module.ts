@@ -13,6 +13,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { NotesComponent, TimelineComponent } from './_core/layout-components';
 import { EffectsModule } from '@ngrx/effects';
 import { FlowEffects } from './store/flow.effects';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { FlowEffects } from './store/flow.effects';
     FlowRouting,
     CommonModule,
     FiizUIModule,
+    EditorModule,
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule

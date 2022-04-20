@@ -1,11 +1,11 @@
-import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input, ViewChildren, QueryList, Renderer2 } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { fromEvent, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { FlowService } from '../../../flow.service';
-import { Lead } from '@4iiz/corev2';
+import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
@@ -25,7 +25,7 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
   public page: number = 1;
   public offset: number = 0;
   public totalRecords: number = 0;
-
+  public selected: Lead | Contact | Event | Deal | null;
   private SearchInput: ElementRef;
 
   @ViewChild('SearchInput') set content(content: ElementRef) {
@@ -33,30 +33,54 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
       this.SearchInput = content;
     }
   }
+  @ViewChildren('row') rows: QueryList<ElementRef>
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private flowService: FlowService,
     private router: Router,
+    private renderer: Renderer2,
     private entityServices: EntityServices,
-    private entityCollectionServiceFactory: EntityCollectionServiceFactory
+    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    public flowService: FlowService
   ) {
     super(router, entityCollectionServiceFactory);
 
-    this.data$.subscribe((res: Lead[]) => {
-      console.log(res);
-      if (!this.loading$ && this.loaded$ && res.length === 0) {
-        // we only want to query if the cache doesn't return a record
-      }
-    });
+    if(this.data$) {
+      this.data$.subscribe((res: Lead[]) => {
+        console.log(res);
+        if (!this.loading$ && this.loaded$ && res.length === 0) {
+          // we only want to query if the cache doesn't return a record
+        }
+      });
+    }
+
 
     let form: { [key: string]: FormControl } = {};
     form['key'] = new FormControl('', Validators.required);
     this.searchForm = this.fb.group(form);
   }
 
-  public onSelect(record: any) {
+  public onClick($event: any, record: any) {
+    $event.preventDefault();
+    if(this.selected?.id === record.id) {
+      this.flowService.cache[this.module] = null;
+      this.selected = null;
+      return;
+    }
+    this.selected = record;
+    this.flowService.addToCache(this.module, record);
+  }
+
+  public onFocusOut($event: any) {
+    $event.preventDefault();
+      this.flowService.cache[this.module] = null;
+      this.selected = null;
+  }
+
+  public onFocusIn($event: any, record: any) {
+    $event.preventDefault();
+    this.selected = record;
     this.flowService.addToCache(this.module, record);
   }
 

@@ -7,9 +7,7 @@ import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class FlowService {
   public cache: { [key: string]: any } = {};
 
@@ -17,6 +15,8 @@ export class FlowService {
   public routers: FlowRouter[];
   public links: FlowLink[];
   public currentStep: FlowStep;
+  public stepHistory: string[];
+
 
   constructor(
     private router: Router,
@@ -24,58 +24,43 @@ export class FlowService {
     private store: Store<fromFlow.FlowState>
   ) {
 
-    this.store.select(fromFlow.selectSteps).subscribe(steps => {
-      this.steps = steps
-    });
-    this.store.select(fromFlow.selectRouters).subscribe(routers => {
-      this.routers = routers;
-    });
-    this.store.select(fromFlow.selectLinks).subscribe(links => {
-      this.links = links;
-    });
-    this.store.select(fromFlow.selectCurrentStep).subscribe((step: FlowStep) => {
-        this.currentStep = step;
-    });
-
+      this.store.select(fromFlow.selectFlow).subscribe(state => {
+        this.steps = state.steps;
+        this.routers = state.routers;
+        this.links = state.links;
+        this.currentStep = state.currentStep;
+        this.stepHistory = state.stepHistory;
+      });
   }
 
   get _currentStep() {
     return this.currentStep;
   }
 
+  public reset() {
+    this.store.dispatch(flowActions.ResetAction());
+  }
+
   public create() {
-    const intro = new FlowStep(null,'Intro', 'address-book', FlowComponentType.INTRO, undefined);
-    const first = new FlowStep(null, 'First', 'landmark', FlowComponentType.TEXT, {title: 'First', body: 'The first step'} );
-    const search = new FlowStep(null, 'Search', 'bullseye', FlowComponentType.LIST, {title: 'Search in Leads', module: ModuleType.LEAD} );
-    const newLead = new FlowStep(null, 'New Lead', 'calendar', FlowComponentType.DATA, {title: 'Create a New Lead', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com', module: ModuleType.LEAD} )
-    const campaign = new FlowStep(null, 'Campaigns', 'handshake', FlowComponentType.LIST, {title : 'Select Campaigns', module : ModuleType.CAMPAIGN} );
+    const existingLead = new FlowStep(null, 'Existing Lead?', 'address-book', FlowComponentType.LIST, { title: 'Search Leads', module: ModuleType.LEAD } );
+    const newLead = new FlowStep(null, 'New Lead', 'address-book', FlowComponentType.DATA, { title: 'Create a New Lead', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com', module: ModuleType.LEAD } )
+    const appointment = new FlowStep(null, 'Set Appointment', 'calendar', FlowComponentType.TEXT,  { title : 'Set an Appointment' } );
 
-    const link_intro_to_first = new FlowLink(null, intro, first);
-    const link_first_to_search = new FlowLink(null, first, search);
-    const link_search_to_newLead = new FlowLink(null, search, newLead);
-    const link_newLead_to_campaign = new FlowLink(null, newLead, campaign);
+    const leadSelected = new FlowCondition(null,() => {
+      return this.cache[ModuleType.LEAD]
+    }, appointment);
+    const leadNotSelected = new FlowCondition(null,() => {
+      return !this.cache[ModuleType.LEAD]
+    }, newLead);
+    const existingLeadRouter = new FlowRouter(null,'Router 1', '',[leadSelected, leadNotSelected]);
 
-    const third = new FlowStep(null, 'Third', '', FlowComponentType.TEXT, {title: 'Third', body: 'The third step'} );
-    const fourth = new FlowStep(null, 'Fourth', '', FlowComponentType.TEXT, {title: 'Fourth', body: 'The fourth step'} );
+    const leadSearch_to_existingLeadRouter = new FlowLink(null, existingLead, existingLeadRouter);
 
-    // const condition1 = new FlowCondition({
-    //   module: 'Contact',
-    //   attribute: 'firstName',
-    //   operator: FlowConditionOperators.EQUALS,
-    //   value: 'John'
-    // }, third);
-    // const condition2 = new FlowCondition(false, fourth);
-    // const router1 = new FlowRouter('Router 1', [condition1, condition2]);
-
-    this.addStep(intro)
-      .addStep(first)
-      .addStep(search)
-      .addStep(newLead)
-      .addStep(campaign)
-      .addLink(link_intro_to_first)
-      .addLink(link_first_to_search)
-      .addLink(link_search_to_newLead)
-      .addLink(link_newLead_to_campaign);
+    this.addStep(existingLead)
+        .addStep(newLead)
+        .addStep(appointment)
+        .addRouter(existingLeadRouter)
+        .addLink(leadSearch_to_existingLeadRouter);
   }
 
   public start(): Promise<any> {
@@ -102,6 +87,10 @@ export class FlowService {
         step = (<FlowRouter>step).evaluate();
       }
 
+      const clone = [...this.stepHistory];
+      clone.push(step.id);
+      this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
+
       await this.renderComponent(<FlowStep>step);
     } else {
       console.warn('No step found to transition to.');
@@ -109,12 +98,11 @@ export class FlowService {
   }
 
   public async back() {
-    const link = this.links.find(link => link.to.id === this.currentStep.id);
-
-    let step: FlowStep | FlowRouter | undefined = link?.from;
-
-    // TODO add handling for navigating back through a FlowRouter
-    if (step) {
+    const clone = [...this.stepHistory]
+    const previousStep = clone.pop();
+    const step = this.steps.find(step => step.id === previousStep);
+    this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
+    if(step)  {
       await this.renderComponent(<FlowStep>step);
     } else {
       console.warn('No step found to transition to.');
@@ -148,8 +136,7 @@ export class FlowService {
     this.store.dispatch(flowActions.SetCurrentStepAction({ payload: step }));
 
     return this.router.navigate(['/flow/f', {outlets: {'aux': [`${step.component}`]}}], {
-      state: step.data,
-      // relativeTo: this.route
+      state: step.data
     });
   }
 

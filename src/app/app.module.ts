@@ -20,7 +20,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NavbarComponent } from './common/components/ui/navbar/navbar.component';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 import { EntityStoreModule } from './data/entity-store.module';
-import { FlowService } from './modules/flow/flow.service';
 
 @NgModule({
   declarations: [

@@ -1,0 +1,21 @@
+.tox-tinymce {
+  border: none!important;
+  border-radius: 0!important;
+}
+.tox-editor-header,
+.tox-toolbar__primary,
+.tox-edit-area iframe {
+  background-color: #172B46!important;
+}
+
+.mce-content-body {
+  color: #C6CEED!important;
+}
+
+.tox-tbtn svg {
+  fill: #C6CEED!important;
+}
+
+.tox-tbtn:hover {
+  background-color: shade(#172B46, 25)!important;
+}

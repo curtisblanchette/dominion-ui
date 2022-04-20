@@ -1,3 +1,4 @@
+@import '~src/assets/css/variables';
 
 .flex_main_wrapper {
 
@@ -56,7 +57,27 @@
       flex-wrap: nowrap;
       align-content: center;
       align-items: stretch;
-      cursor: pointer;
+      cursor: pointer!important;
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+
+      &.active {
+        position: relative;
+
+        &:before {
+          display: block;
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255,255,255, .02);
+        }
+      }
     }
 
     &__cell {

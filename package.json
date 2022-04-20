@@ -1,6 +1,6 @@
 {
   "name": "dominion-ui",
-  "version": "1.4.14",
+  "version": "1.4.22",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -26,6 +26,7 @@
     "@ngrx/effects": "^13.1.0",
     "@ngrx/entity": "^13.1.0",
     "@ngrx/store": "^13.1.0",
+    "@tinymce/tinymce-angular": "^6.0.1",
     "@types/pluralize": "0.0.29",
     "amazon-cognito-identity-js": "^5.2.8",
     "intl-tel-input": "^17.0.16",
