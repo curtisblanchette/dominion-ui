@@ -4,7 +4,7 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 import { User } from '../login/models/user';
 import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
-import { buttons } from './buttons.definition';
+import { buttons } from './dashboard.buttons';
 
 export interface IDashboardButton {
   title: string;

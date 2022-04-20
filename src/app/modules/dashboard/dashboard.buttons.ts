@@ -73,4 +73,4 @@ const support = {
   ]
 }
 
-export const buttons = {user, support}
+export const buttons = { user, support }
