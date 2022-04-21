@@ -1,0 +1,47 @@
+.fiiz-dropdown-button {
+
+    width: 120px;
+    height: 34px;
+    box-shadow : 0px 4px 13px rgb(0 0 0 / 60%);
+    z-index: 1;
+
+    & button {
+        background-color: #172B46;
+        border-radius: 4px;
+        color : #C6CEED;
+        width: 100%;
+
+        & i {
+            padding-left: 15px;
+        }
+    }
+
+    &__content {
+        position: absolute;
+        z-index: 1;
+        list-style: none;
+        background-color: #172B46;
+        box-shadow : 0px 4px 13px rgb(0 0 0 / 60%);
+        padding: 0px 0px 0px 0;
+        margin: 0px 0px 0 0;
+        border-radius: 4px;
+        transition : opacity 2s cubic-bezier(0.4, 0, 1, 1);
+
+        & li {
+            padding: 10px;
+            font-size: 12px;
+
+            & i {                
+                padding-right: 10px;
+            }
+
+            &.divider {
+                border-bottom : 1px solid rgb(38 68 109 / 35%);
+            }
+        }
+        
+        &__item {
+            text-decoration: none;
+        }
+    }
+}

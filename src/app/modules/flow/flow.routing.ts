@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FlowComponent } from "./flow.component";
-import { DataComponent, TextComponent, ListComponent } from "./_core/step-components";
+import { DataComponent, TextComponent, ListComponent, AppointmentComponent } from "./_core/step-components";
 import { IntroComponent } from "./_core/step-components/intro/intro.component";
 
 const routes: Routes = [
@@ -27,6 +27,11 @@ const routes: Routes = [
       {
         path : 'list',
         component : ListComponent,
+        outlet : 'aux'
+      },
+      {
+        path : 'event',
+        component : AppointmentComponent,
         outlet : 'aux'
       }
     ]

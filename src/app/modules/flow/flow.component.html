@@ -7,13 +7,20 @@
         <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
       </div>
     </section>
-
+    <fiiz-dropodown-button
+          [items] = "menuItems"
+          title = "Actions"
+        ></fiiz-dropodown-button>
     <section [@slide]="animationIndex" class="flow-layout__content">
-      <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
+      <div class="flow-layout__fab">
+        
+      </div>
+      <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>      
       <div class="flow-layout__controls">
         <button (click)="onBack()" class="stroked" *ngIf="(stepHistory$ | async)?.length > 0">Back</button>
-        <button class=primary (click)="onNext()" style="margin-left: auto;">Next</button>
+        <button class=primary (click)="onNext()" style="margin-left: auto;">Next</button>        
       </div>
+      
     </section>
 
   </div>

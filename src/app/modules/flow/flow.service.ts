@@ -44,10 +44,10 @@ export class FlowService {
   public create() {
     const existingLead = new FlowStep(null, 'Existing Lead?', 'address-book', FlowComponentType.LIST, { title: 'Search Leads', module: ModuleType.LEAD } );
     const newLead = new FlowStep(null, 'New Lead', 'address-book', FlowComponentType.DATA, { title: 'Create a New Lead', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com', module: ModuleType.LEAD } )
-    const appointment = new FlowStep(null, 'Set Appointment', 'calendar', FlowComponentType.TEXT,  { title : 'Set an Appointment' } );
+    const appointment = new FlowStep(null, 'Set Appointment', 'calendar', FlowComponentType.EVENT,  { title : 'Set an Appointment', module: ModuleType.EVENT } );
 
     const leadSelected = new FlowCondition(null,() => {
-      return this.cache[ModuleType.LEAD]
+      return this.cache[ModuleType.EVENT]
     }, appointment);
     const leadNotSelected = new FlowCondition(null,() => {
       return !this.cache[ModuleType.LEAD]
@@ -57,7 +57,7 @@ export class FlowService {
     const leadSearch_to_existingLeadRouter = new FlowLink(null, existingLead, existingLeadRouter);
 
     this.addStep(existingLead)
-        .addStep(newLead)
+        // .addStep(newLead)
         .addStep(appointment)
         .addRouter(existingLeadRouter)
         .addLink(leadSearch_to_existingLeadRouter);

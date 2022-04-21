@@ -44,6 +44,17 @@ router-outlet {
     overflow: hidden;
   }
 
+  &__fab {
+    display: flex;
+    justify-content: space-between;
+    width: 95%;
+    margin: 20px 0px 0px 0px;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: center;
+  }
+
   &__controls {
     display: flex;
     justify-content: space-between;
