@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.5.6 (2022-04-21)
+
+
+### Bug Fixes
+
+* **develop:** add global AppState with settings feature ([6fa54d8](https://github.com/4iiz/dominion-ui/commit/6fa54d854cec5aecc8b448c86f58d3dafdbc2d6d))
+
 ### 1.5.5 (2022-04-21)
 
 ### 1.5.4 (2022-04-20)
