@@ -14,6 +14,7 @@ import { NotesComponent, TimelineComponent } from './_core/layout-components';
 import { EffectsModule } from '@ngrx/effects';
 import { FlowEffects } from './store/flow.effects';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { AppointmentComponent } from './_core/step-components/appointment/appointment.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     IntroComponent,
     TextComponent,
     DataComponent,
-    ListComponent
+    ListComponent,
+    AppointmentComponent
   ],
   imports: [
     StoreModule.forFeature('flow', reducer),

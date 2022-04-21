@@ -1,0 +1,9 @@
+<div class="fiiz-dropdown-button" (click)="toggle()">
+    <button>{{title}}<i class="fa-solid fa-caret-down"></i></button>
+    <ul class="fiiz-dropdown-button__content" *ngIf="showDropDowns">
+        <li *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !=='last'}">
+            <i [class]="item.icon"></i>
+            <a class="fiiz-dropdown-button__content__item" href="#">{{ item.label }}</a>
+        </li>
+    </ul>
+</div>

@@ -19,6 +19,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { FiizInputCurrencyComponent } from './forms/input-currency';
 import { FiizBigButtonComponent } from './big-button/index';
+import { DropDownButtonComponent } from './dropdown-button/index';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { FiizBigButtonComponent } from './big-button/index';
     FiizMaxDateDirective,
     AutofocusDirective,
     ProgressBarComponent,
-    FiizBigButtonComponent
+    FiizBigButtonComponent,
+    DropDownButtonComponent
   ],
   imports: [
     CommonModule,
@@ -64,7 +66,8 @@ import { FiizBigButtonComponent } from './big-button/index';
     FiizMaxDateDirective,
     AutofocusDirective,
     ProgressBarComponent,
-    FiizBigButtonComponent
+    FiizBigButtonComponent,
+    DropDownButtonComponent
   ]
 })
 export class FiizUIModule {

@@ -7,6 +7,7 @@ import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { Observable } from 'rxjs';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { IDropDownMenuItem } from '../../common/components/ui/dropdown-button/dropdown-button';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -34,7 +35,22 @@ export class FlowComponent implements OnInit, OnDestroy {
         line-height: 1.5em;
         color: #C6CEED;
       }`
-  }
+  };
+
+  public menuItems:IDropDownMenuItem[] = [
+    {
+      label: 'Object',
+      icon: 'fa-solid fa-gavel',
+    },
+    {
+      label: 'End Call',
+      icon: 'fa-solid fa-phone-slash'
+    },
+    {
+      label: 'Another one End Call',
+      icon: 'fa-solid fa-phone-slash'
+    }
+  ];
 
   constructor(
     private store: Store<fromFlow.FlowState>,
