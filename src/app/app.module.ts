@@ -20,6 +20,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NavbarComponent } from './common/components/ui/navbar/navbar.component';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
 import { EntityStoreModule } from './data/entity-store.module';
+import { reducer } from './store/app.reducer';
+import { AppEffects } from './store/app.effects';
 
 @NgModule({
   declarations: [
@@ -36,8 +38,12 @@ import { EntityStoreModule } from './data/entity-store.module';
     LoginModule,
     SharedModule,
     HttpClientModule,
-    StoreModule.forRoot({}),
-    EffectsModule.forRoot([]),
+    StoreModule.forRoot({
+      app: reducer
+    }),
+    EffectsModule.forRoot([
+      AppEffects
+    ]),
     EntityStoreModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     DashboardModule,

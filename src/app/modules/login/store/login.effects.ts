@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, tap, withLatestFrom } from 'rxjs';
+import { map, mergeMap, tap } from 'rxjs';
 
+import * as appActions from '../../../store/app.actions';
 import * as loginActions from './login.actions';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
@@ -55,14 +56,15 @@ export class LoginEffects {
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.LogoutAction),
-        map(action => {
-          localStorage.clear();
-        }),
         tap((action) => {
+          localStorage.clear();
           this.router.navigate(['login']);
+        }),
+        mergeMap( async(action) => {
+          return appActions.ClearSettingsAction();
         })
       ),
-    { dispatch: false }
+    { dispatch: true }
   );
 
   loginSuccess$ = createEffect(
@@ -88,9 +90,12 @@ export class LoginEffects {
               this.router.navigate(['dashboard'])
               break;
           }
+        }),
+        mergeMap( async ( action ) => {
+          return appActions.GetSettingsAction();
         })
       ),
-    { dispatch: false }
+    { dispatch: true }
   );
 
   updateUserSuccess$ = createEffect(
