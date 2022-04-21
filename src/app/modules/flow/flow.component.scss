@@ -7,6 +7,7 @@
   justify-content: space-around;
 }
 
+
 router-outlet {
   display: block;
   width: 100%;
@@ -38,7 +39,7 @@ router-outlet {
   &__content {
     display: flex;
     flex-direction: column;
-    flex: 3;
+    flex: 2.5;
     justify-content: space-around;
     overflow: hidden;
   }
