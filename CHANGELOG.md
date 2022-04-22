@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.6.0 (2022-04-22)
+
+
+### Features
+
+* **develop:** add settings module to app ([9671f28](https://github.com/4iiz/dominion-ui/commit/9671f28aacf40f54f06e88c963d9df0d1adc74b1))
+
 ### 1.5.6 (2022-04-21)
 
 
