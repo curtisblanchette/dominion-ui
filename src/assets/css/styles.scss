@@ -30,3 +30,20 @@ a {
   max-width: $container-width;
   margin: 0 auto;
 }
+
+
+
+.page-heading {
+  margin-bottom: 30px;
+
+  &__title {
+    margin-bottom: 0;
+    font-weight: 400;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    font-weight: 300;
+    color: #A7B2D2;
+  }
+}

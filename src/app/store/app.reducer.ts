@@ -1,12 +1,13 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import * as appActions from './app.actions';
+import { ISettingResponse } from '@4iiz/corev2';
 
 export interface AppState {
-  settings: any;
+  settings: ISettingResponse[] | null;
 }
 
 export const initialState: AppState = {
-  settings: JSON.parse(localStorage.getItem('settings') || '')
+  settings: localStorage.getItem('settings') && JSON.parse(localStorage.getItem('settings') || '') || null
 };
 
 export const reducer = createReducer(
