@@ -20,7 +20,7 @@ export class AppEffects {
       ofType(appActions.GetSettingsAction),
       mergeMap(async () => {
          const res = await firstValueFrom(this.http.get(environment.dominion_api_url + '/settings')) as any;
-
+         localStorage.setItem('settings', JSON.stringify(res.rows));
          return appActions.SetSettingsAction({payload: res.rows });
 
       })

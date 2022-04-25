@@ -1,0 +1,8 @@
+
+<div class="page-heading">
+  <h2 class="page-heading__title">Workspace Settings</h2>
+  <div *ngFor="let setting of settings$ | async">
+    {{setting.name}} - {{setting.value}} {{setting.unit}}
+  </div>
+</div>
+

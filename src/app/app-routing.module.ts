@@ -26,6 +26,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/flow/flow.module').then(m => m.FlowModule)
   },
   {
+    path: 'settings',
+    canActivate: [RoleGuard],
+    data: { roles: ['system', 'admin', 'owner'] },
+    loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule)
+  },
+  {
     path: 'system',
     canActivate: [RoleGuard],
     data: { roles: ['system'] },

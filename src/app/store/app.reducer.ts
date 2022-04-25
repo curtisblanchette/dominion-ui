@@ -1,12 +1,13 @@
-import { createReducer, createSelector, on } from '@ngrx/store';
+import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import * as appActions from './app.actions';
+import { ISettingResponse } from '@4iiz/corev2';
 
 export interface AppState {
-  settings: any;
+  settings: ISettingResponse[] | null;
 }
 
 export const initialState: AppState = {
-  settings: localStorage.getItem('settings') || null
+  settings: localStorage.getItem('settings') && JSON.parse(localStorage.getItem('settings') || '') || null
 };
 
 export const reducer = createReducer(
@@ -16,6 +17,8 @@ export const reducer = createReducer(
   on(appActions.ClearSettingsAction, (state) => ({ ...state, settings: null }))
 );
 
-export const selectState = (state: AppState) => state;
+export const selectApp = createFeatureSelector<AppState>('app');
 
-export const selectSettings   = createSelector(selectState, (state: AppState) => state.settings);
+export const selectSettings = createSelector(selectApp, (state: AppState) => state.settings);
+
+

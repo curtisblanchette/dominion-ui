@@ -4,9 +4,6 @@ import * as loginActions from './login.actions';
 
 export interface LoginState {
   user: User | null;
-  agent: any;
-  workspace: any;
-  error?: any
 }
 
 /**
@@ -21,21 +18,8 @@ function getUserInitialState() {
   return isBase64(userData) && JSON.parse(atob(<string>userData)) || null;
 }
 
-function getAgentInitialState() {
-  const agentData = localStorage.getItem('agent');
-  return agentData && JSON.parse(agentData) || null;
-}
-
-function getWorkspaceInitialState() {
-  const workspaceData = localStorage.getItem('workspace');
-  return isBase64(workspaceData) && JSON.parse(atob(<string>workspaceData)) || null;
-}
-
 export const initialState: LoginState = {
-  user: getUserInitialState(),
-  agent: getAgentInitialState(),
-  workspace: getWorkspaceInitialState(),
-  error: null
+  user: getUserInitialState()
 };
 
 export const reducer = createReducer(
@@ -53,5 +37,3 @@ export const reducer = createReducer(
 export const selectLogin = createFeatureSelector<LoginState>('login');
 
 export const selectLoginUser   = createSelector(selectLogin, (state: LoginState) => state.user);
-export const getLoginAgent     = createSelector(selectLogin, (state: LoginState) => state.agent);
-export const getLoginWorkspace = createSelector(selectLogin, (state: LoginState) => state.workspace);

@@ -7,21 +7,6 @@
   align-items: stretch;
   align-content: center;
 
-  &__heading {
-    margin-bottom: 30px;
-
-    &__title {
-      margin-bottom: 0;
-      font-weight: 400;
-    }
-
-    &__subtitle {
-      font-size: 16px;
-      font-weight: 300;
-      color: #A7B2D2;
-    }
-  }
-
   &__quickstart {
     color: #5F6E8D;
   }
