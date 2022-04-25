@@ -9,30 +9,15 @@
         </div>
     </div>
 
-    <div class="flex_main_wrapper__slots">
-        <div class="flex_main_wrapper__slots__day">
-            Wednesday April 1, 2022
-        </div>
-        <div class="flex_main_wrapper__slots__time">
-            <div>
-                <button class="btn_time_slots">11:00 am</button>            
+    <div *ngFor="let slot of timeSlots">
+        <div class="flex_main_wrapper__slots" *ngFor="let item of slot | keyvalue">
+            <div class="flex_main_wrapper__slots__day">
+                {{ item.key }}
             </div>
-            <div>
-                <button class="btn_time_slots">12:30 pm</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="flex_main_wrapper__slots">
-        <div class="flex_main_wrapper__slots__day">
-            Wednesday April 1, 2022
-        </div>
-        <div class="flex_main_wrapper__slots__time">
-            <div>
-                <button class="btn_time_slots">11:00 am</button>            
-            </div>
-            <div>
-                <button class="btn_time_slots">12:30 pm</button>
+            <div class="flex_main_wrapper__slots__time">
+                <div *ngFor="let time of item.value">
+                    <button #slotBtn class="btn_time_slots" (click)="setEventTime(item.key, time, $event)" >{{ time }}</button>            
+                </div>
             </div>
         </div>
     </div>
