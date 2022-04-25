@@ -21,7 +21,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
 	public duration:any = 30;
 	public dayStart:any = 7;
 	public dayEnd:any = 23;
-  
+
   public timeSlots:Array<any> = [];
 
   @ViewChildren('slotBtn') slotBtn: QueryList<ElementRef>;
@@ -33,7 +33,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
     public store:Store<fromSettings.AppState>,
     public apptService:AppointmentService,
     public renderer:Renderer2
-  ) { 
+  ) {
     super(router, entityCollectionServiceFactory);
 
     this.data$.subscribe(data => {
@@ -42,7 +42,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
       }
     });
 
-    this.store.select(fromSettings.selectState).pipe(
+    this.store.select(fromSettings.selectSettings).pipe(
       map((state:any) => {
         const settings = state.app.settings;
         if( settings ){
@@ -58,7 +58,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
             }
             if( elm.name == 'timezone' ){
               this.timeZone = elm.value;
-            }          
+            }
           });
         }
       })
@@ -75,11 +75,11 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
   async getData( dates:Array<string> ){
     dates.forEach( date => {
       this.apptService.getEvents( date ).subscribe( data => {
-        
+
         let bookedSlots:Array<any> = [];
         let freeSlots:Array<any> = [];
-        
-        if( data && data.count > 0 ){        
+
+        if( data && data.count > 0 ){
             data.rows.forEach( (value:{ [key:string] : any }, index:number) => {
               if( value['startTime'] ){
                 bookedSlots.push( dayjs(value['startTime']) );
@@ -89,7 +89,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
 
         let startTime = dayjs().startOf('day').add(this.dayStart, 'h');
         const endTime = dayjs().startOf('day').add(this.dayEnd, 'h');
-        
+
         while( endTime.diff(startTime, 'h') > 0 ){
           const find = bookedSlots.filter( slot => { return startTime.diff(slot, 'm') == 0 });
           if( !find.length ){
@@ -98,20 +98,20 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
           startTime = startTime.add(0.5, 'h');
         }
         let day:string = dayjs(date).format('dddd MMMM D, YYYY');
-        this.timeSlots.push( {[day] : freeSlots} );        
-      });  
+        this.timeSlots.push( {[day] : freeSlots} );
+      });
     });
-    
+
   }
 
   public setEventTime( date:string, time:string, event:any ){
     const elm = this.slotBtn.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
     if( elm ){
       this.renderer.removeClass(elm, 'active');
-    }    
+    }
     this.renderer.addClass(event.srcElement, 'active');
     const apptSetDate = dayjs(`${date} ${time}`);
   }
-  
+
 
 }
