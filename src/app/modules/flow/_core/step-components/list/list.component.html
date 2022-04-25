@@ -29,7 +29,7 @@
              (focusin)="onFocusIn($event, item)"
              (focusout)="onFocusOut($event)"
              [ngClass]="{'active': this.flowService.cache[this.module]?.id === item.id}"
-             *ngFor="let item of data$ | async | paginate: { itemsPerPage: 2, currentPage: page, totalItems: (count$ | async) }; let i = index;">
+             *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: (count$ | async) }; let i = index;">
           <label [for]="item.id" style="display: flex; width: 100%;">
             <div class="flex-table__cell" style="flex-grow : 10;">
               <div style="align-self: center; justify-content: center;">
