@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.6.2 (2022-04-25)
+
+
+### Bug Fixes
+
+* **develop:** use perPage variable ([2433f8e](https://github.com/4iiz/dominion-ui/commit/2433f8e00b2519c33b08b75cec495d8be045d373))
+
 ### 1.6.1 (2022-04-22)
 
 ## 1.6.0 (2022-04-22)
