@@ -21,7 +21,7 @@ export class ListComponent extends EntityCollectionComponentBase implements OnDe
   @Input() searchable: boolean = true;
 
   // Pagination
-  public perPage: number = 2;
+  public perPage: number = 5;
   public page: number = 1;
   public offset: number = 0;
   public totalRecords: number = 0;
