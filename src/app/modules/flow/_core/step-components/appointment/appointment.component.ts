@@ -2,13 +2,13 @@ import { Component, OnInit, Renderer2, ViewChildren, ElementRef, QueryList } fro
 import { Router } from '@angular/router';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
 import * as dayjs from 'dayjs';
 
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { FlowService } from '../../../flow.service';
 import { AppointmentService } from './service/appointment.service';
-import * as fromSettings from '../../../../../store/app.reducer';
+import * as fromApp from '../../../../../store/app.reducer';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-appointment',
@@ -30,7 +30,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     public flowService: FlowService,
-    public store:Store<fromSettings.AppState>,
+    public store:Store<fromApp.AppState>,
     public apptService:AppointmentService,
     public renderer:Renderer2
   ) {
@@ -41,35 +41,18 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
         console.log(data);
       }
     });
-
-    this.store.select(fromSettings.selectSettings).pipe(
-      map((state:any) => {
-        const settings = state.app.settings;
-        if( settings ){
-          settings.map( (elm: { name: string; value: any; }) => {
-            if( elm.name == 'appointment:duration' ){
-              this.duration = elm.value;
-            }
-            if( elm.name == 'appointment:day_start' ){
-              this.dayStart = elm.value;
-            }
-            if( elm.name == 'appointment:day_end' ){
-              this.dayEnd = elm.value;
-            }
-            if( elm.name == 'timezone' ){
-              this.timeZone = elm.value;
-            }
-          });
-        }
-      })
-    );
-
   }
 
-  ngOnInit(): void {
-    const today = dayjs().format('YYYY-MM-DD');
-    const tomorrow = dayjs().add(1,'day').format('YYYY-MM-DD');
-    this.getData( [today, tomorrow] );
+  async ngOnInit(): Promise<any> {
+    const day1 = dayjs().add(1,'day').format('YYYY-MM-DD');
+    const day2 = dayjs().add(2,'day').format('YYYY-MM-DD');
+
+    this.duration = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('duration')));
+    this.dayStart = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_start')));
+    this.dayEnd =await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_end')));
+    this.timeZone = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('timezone')));
+
+    await this.getData( [day1, day2] );
   }
 
   async getData( dates:Array<string> ){
@@ -87,15 +70,15 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
             });
         }
 
-        let startTime = dayjs().startOf('day').add(this.dayStart, 'h');
-        const endTime = dayjs().startOf('day').add(this.dayEnd, 'h');
+        let startTime = dayjs().startOf('day').add(this.dayStart.value, this.dayStart.unit);
+        const endTime = dayjs().startOf('day').add(this.dayEnd.value, this.dayEnd.unit);
 
         while( endTime.diff(startTime, 'h') > 0 ){
           const find = bookedSlots.filter( slot => { return startTime.diff(slot, 'm') == 0 });
           if( !find.length ){
             freeSlots.push( startTime.format('hh:mm a') );
           }
-          startTime = startTime.add(0.5, 'h');
+          startTime = startTime.add(this.duration.value, this.duration.unit);
         }
         let day:string = dayjs(date).format('dddd MMMM D, YYYY');
         this.timeSlots.push( {[day] : freeSlots} );
