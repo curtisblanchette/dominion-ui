@@ -1,9 +1,18 @@
-<div class="fiiz-dropdown-button" (click)="toggle()">
-    <button>{{title}}<i class="fa-solid fa-caret-down"></i></button>
-    <ul class="fiiz-dropdown-button__content" *ngIf="showDropDowns">
-        <li *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !=='last'}">
+<div class="fiiz-dropdown-button fiiz-dropdown-button-{{position}}" [ngClass]=" !title ? 'fiiz-dropdown-button-no-title' : 'fiiz-dropdown-button-title' " (click)="toggle()">
+    <button>
+        {{title}}
+        <i class="fa-solid fa-square-caret-down"></i>
+    </button>
+    <ul class="fiiz-dropdown-button__content" *ngIf="showDropDowns" [@dropDownMenu] >
+        <li class="fiiz-dropdown-button__items" *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !=='last'}">
             <i [class]="item.icon"></i>
-            <a class="fiiz-dropdown-button__content__item" href="#">{{ item.label }}</a>
+            <ng-container *ngTemplateOutlet="item.route ? link : btn"></ng-container>
+            <ng-template #link>
+                <a [routerLink]="item.route" class="fiiz-dropdown-button__content__item">{{ item.label }}</a>
+            </ng-template>
+            <ng-template #btn>
+                <a style="cursor:pointer;" (click)="emitTheValue(item.emitterValue)" class="fiiz-dropdown-button__content__item">{{ item.label }}</a>
+            </ng-template>
         </li>
     </ul>
 </div>

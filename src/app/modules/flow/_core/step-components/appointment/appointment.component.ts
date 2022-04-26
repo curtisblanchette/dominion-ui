@@ -62,7 +62,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
 
         let bookedSlots:Array<any> = data.rows.map((appt: IEvent) => dayjs(appt.startTime));
         let freeSlots:Array<any> = [];
-
+        console.log('this.dayStart.value')
         let startTime = dayjs().startOf('day').add(this.dayStart.value, this.dayStart.unit);
         const endTime = dayjs().startOf('day').add(this.dayEnd.value, this.dayEnd.unit);
 

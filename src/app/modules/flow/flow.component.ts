@@ -41,14 +41,12 @@ export class FlowComponent implements OnInit, OnDestroy {
     {
       label: 'Object',
       icon: 'fa-solid fa-gavel',
+      route : '/flow/f/(aux:event)'
     },
     {
       label: 'End Call',
-      icon: 'fa-solid fa-phone-slash'
-    },
-    {
-      label: 'Another one End Call',
-      icon: 'fa-solid fa-phone-slash'
+      icon: 'fa-solid fa-phone-slash',
+      emitterValue : 'end-call'
     }
   ];
 
@@ -93,6 +91,17 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.store.dispatch(flowActions.ResetAction());
+  }
+
+  public menuClickAction( event:string ){
+    if( event == 'end-call'){
+      this.endCall();
+    }
+  }
+
+  public endCall() {
+    this.store.dispatch(flowActions.ResetAction());
+    this.router.navigate(['dashboard']);
   }
 
 }
