@@ -103,9 +103,16 @@
       display: none;
     }
 
-    &::-webkit-autofill:focus {
-      font-size: 12px;
-      font-weight: 500;
+    /**
+     Removes the autocomplete default background styling in chrome
+     */
+    &:-webkit-autofill,
+    &:-webkit-autofill:focus {
+      transition: background-color 600000s 0s, color 600000s 0s;
+    }
+
+    input[data-autocompleted] {
+      background-color: transparent !important;
     }
 
     &:disabled, &[aria-disabled=true] {
