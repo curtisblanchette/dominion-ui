@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
 import * as dayjs from 'dayjs';
+import { IEvent } from '@4iiz/corev2';
 
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { FlowService } from '../../../flow.service';
@@ -59,16 +60,8 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
     dates.forEach( date => {
       this.apptService.getEvents( date ).subscribe( data => {
 
-        let bookedSlots:Array<any> = [];
+        let bookedSlots:Array<any> = data.rows.map((appt: IEvent) => dayjs(appt.startTime));
         let freeSlots:Array<any> = [];
-
-        if( data && data.count > 0 ){
-            data.rows.forEach( (value:{ [key:string] : any }, index:number) => {
-              if( value['startTime'] ){
-                bookedSlots.push( dayjs(value['startTime']) );
-              }
-            });
-        }
 
         let startTime = dayjs().startOf('day').add(this.dayStart.value, this.dayStart.unit);
         const endTime = dayjs().startOf('day').add(this.dayEnd.value, this.dayEnd.unit);
