@@ -1,5 +1,6 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import * as appActions from './app.actions';
+import { INestedSetting } from './app.effects';
 
 export interface AppState {
   settings: any
@@ -19,9 +20,8 @@ export const reducer = createReducer(
 export const selectApp = createFeatureSelector<AppState>('app');
 
 export const selectSettings = createSelector(selectApp, (state: AppState) => state.settings);
-export const selectSettingGroup = ( group: string ) => createSelector(selectSettings, (state: AppState) => state.settings[group] || {});
-export const selectSettingById = ( id: number ) => createSelector(selectSettings, (state: AppState) => findByProperty(state.settings, (val: any) => val.id === id));
-
+export const selectSettingGroup = (group: string) => createSelector(selectSettings, (settings: {[key: string]: INestedSetting}) => settings[group] || {});
+export const selectSettingByKey = (name: string) => createSelector(selectSettings, (settings: {[key: string]: INestedSetting}) => findByKey(settings, name));
 
 const findByKey = (obj: any, kee: string): any => {
   if (kee in obj) return obj[kee];

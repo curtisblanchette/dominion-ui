@@ -1,8 +1,16 @@
-
 <div class="page-heading">
   <h2 class="page-heading__title">Workspace Settings</h2>
-  <div *ngFor="let setting of settings$ | async">
-    {{setting.name}} - {{setting.value}} {{setting.unit}}
+
+  <h3>Appointments</h3>
+  <div *ngFor="let setting of appointmentSettings$ | async | keyvalue">
+    <strong>{{getSettingDisplayName(setting.key)}}:</strong> {{setting.value.value}} {{setting.value.unit}}
   </div>
+
+  <h3>General</h3>
+  <div *ngFor="let setting of generalSettings$ | async | keyvalue">
+    <strong>{{getSettingDisplayName(setting.key)}}:</strong> {{setting.value.value}} {{setting.value.unit}}
+  </div>
+
+  <pre>{{byKey$ | async | json}}</pre>
 </div>
 
