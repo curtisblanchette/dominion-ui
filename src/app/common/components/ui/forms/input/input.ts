@@ -15,7 +15,7 @@ export class FiizInputComponent implements ControlValueAccessor {
 
   @HostBinding('class.has-label')
   @Input('label') public label: string | undefined;
-
+  @Input('icon') icon: string | undefined;
   @Input('id') id!: string;
   @Input('type') type!: string;
   @Input('minlength') minlength!: string;

@@ -56,6 +56,15 @@
 
   }
 
+  i.fa {
+    position: absolute;
+    top: 13px;
+    left: 18px;
+    color: #4D71A3;
+    z-index: 1;
+    font-size: 18px;
+  }
+
   input {
     border-radius: $input-border-radius;
     width: 100%;
@@ -74,6 +83,10 @@
     appearance: none;
     background-color: #172B46;
     cursor: text;
+
+    &.has-icon {
+      padding: 0 16px 0 54px;
+    }
 
     &.number {
       text-align: right;

@@ -1,5 +1,9 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
-<ng-container *ngIf="type !== 'textarea'">
+<ng-container [ngTemplateOutlet]="type === 'textarea' ? textarea : input"></ng-container>
+
+<ng-template #input>
+  <i class="fa {{icon}}" *ngIf="!!icon"></i>
+
 	<input [id]="id"
 		   [type]="type"
 		   [minlength]="minlength"
@@ -11,13 +15,13 @@
 		   [autofocus]="autofocus"
 		   [(ngModel)]="value"
 		   [disabled]="disabled"
-		   [ngClass]="{'number': type === 'number'}"
+		   [ngClass]="{ 'number': type === 'number', 'has-icon': !!icon }"
 		   (ngModelChange)="changed($event)"/>
-</ng-container>
+</ng-template>
 
-<ng-container *ngIf="type === 'textarea'">
+<ng-template #textarea>
 	<textarea class="text-area" [id]="id" [attr.min]="min" [attr.max]="max" [placeholder]="placeholder"
 			  [disabled]="disabled">
 		value
 	</textarea>
-</ng-container>
+</ng-template>
