@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { firstValueFrom, Observable, take, withLatestFrom } from 'rxjs';
+import { first, firstValueFrom, Observable } from 'rxjs';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -20,7 +20,7 @@ export interface DropdownItem {
 })
 export class FiizDropdownComponent implements ControlValueAccessor, OnInit, AfterViewInit {
 
-  @Input('items') items: Observable<DropdownItem[]>;
+  @Input('items') items$: Observable<DropdownItem[]>;
   @Input('label') public label: string | undefined;
   @Input('id') id!: string;
   @Input('size') size!: 'small' | 'large';
@@ -45,7 +45,8 @@ export class FiizDropdownComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   async ngAfterViewInit() {
-    const selected = await firstValueFrom(this.items.pipe(take(1)));
+    // auto-select the first value
+    const selected = await firstValueFrom(this.items$.pipe(first(items => !!items.length)));
     this.selected = selected[0];
   }
 
@@ -66,7 +67,7 @@ export class FiizDropdownComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   changed($event:any) {
-    this.selected = firstValueFrom(this.items).then(items => items.find(item => item.id === $event.target.value));
+    this.selected = firstValueFrom(this.items$).then(items => items.find(item => item.id === $event.target.value));
     this.onChange(this.selected);
     this.onTouched();
   }
