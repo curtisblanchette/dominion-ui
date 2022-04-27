@@ -21,7 +21,7 @@ export class SystemEffects {
       mergeMap(async () => {
         let res = await firstValueFrom(this.http.get(environment.dominion_api_url + '/system/workspaces')) as any;
 
-        // transform it into a DropdownItem
+        // transform it into a DropdownItem[]
         res = res.map((ws: any) => ({id: ws.id, label: ws.name }));
 
         localStorage.setItem('workspaces', JSON.stringify(res));
