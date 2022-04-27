@@ -1,6 +1,6 @@
 {
   "name": "dominion-ui",
-  "version": "1.6.2",
+  "version": "1.6.6",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,7 +11,7 @@
   },
   "private": true,
   "dependencies": {
-    "@4iiz/corev2": "0.0.78",
+    "@4iiz/corev2": "0.0.79",
     "@angular/animations": "~13.2.0",
     "@angular/cdk": "^13.2.6",
     "@angular/common": "~13.2.0",

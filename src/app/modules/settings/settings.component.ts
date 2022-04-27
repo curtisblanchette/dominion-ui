@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import { Observable } from 'rxjs';
 
-
 @Component({
   selector: 'app-system',
   templateUrl: './settings.component.html',

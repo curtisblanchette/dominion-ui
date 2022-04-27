@@ -7,11 +7,11 @@ import { FormsModule } from '@angular/forms';
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
   ],
   declarations: [
     LoadingComponent,
-    SafePipe
+    SafePipe,
   ],
   exports: [
     CommonModule,
