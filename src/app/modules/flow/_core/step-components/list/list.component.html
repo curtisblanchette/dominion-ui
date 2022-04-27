@@ -5,7 +5,7 @@
   <div class="flex_main_wrapper__filter-container" *ngIf="searchable">
     <form [formGroup]="searchForm" id="search-form">
       <div class="filter-input" #SearchInput>
-        <fiiz-input id="search" icon="fa-search" formControlName="key" type="text" placeholder="Search here..."></fiiz-input>
+        <fiiz-input id="search" icon="fa-search" formControlName="key" type="text" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
       </div>
     </form>
   </div>

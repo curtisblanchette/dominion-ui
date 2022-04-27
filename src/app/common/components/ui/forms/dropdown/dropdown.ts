@@ -1,5 +1,6 @@
-import { Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { firstValueFrom, Observable, take, withLatestFrom } from 'rxjs';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -17,9 +18,9 @@ export interface DropdownItem {
     multi: true
   }]
 })
-export class FiizDropdownComponent implements ControlValueAccessor, OnInit {
+export class FiizDropdownComponent implements ControlValueAccessor, OnInit, AfterViewInit {
 
-  @Input('items') items!: DropdownItem[];
+  @Input('items') items: Observable<DropdownItem[]>;
   @Input('label') public label: string | undefined;
   @Input('id') id!: string;
   @Input('size') size!: 'small' | 'large';
@@ -39,8 +40,13 @@ export class FiizDropdownComponent implements ControlValueAccessor, OnInit {
   ) {
   }
 
-  ngOnInit() {
-    this.selected = this.items[0];
+  async ngOnInit() {
+
+  }
+
+  async ngAfterViewInit() {
+    const selected = await firstValueFrom(this.items.pipe(take(1)));
+    this.selected = selected[0];
   }
 
   writeValue(value: DropdownItem) {
@@ -60,7 +66,7 @@ export class FiizDropdownComponent implements ControlValueAccessor, OnInit {
   }
 
   changed($event:any) {
-    this.selected = this.items.find(item => item.id === $event.target.value);
+    this.selected = firstValueFrom(this.items).then(items => items.find(item => item.id === $event.target.value));
     this.onChange(this.selected);
     this.onTouched();
   }

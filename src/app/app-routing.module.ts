@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard } from './common/guards/role.guard';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+import { SystemResolver } from './modules/system/system.resolver';
 
 const routes: Routes = [
   {
@@ -34,6 +35,9 @@ const routes: Routes = [
   {
     path: 'system',
     canActivate: [RoleGuard],
+    resolve: {
+      system: SystemResolver
+    },
     data: { roles: ['system'] },
     loadChildren: () => import('./modules/system/system.module').then(m => m.SystemModule)
   },
