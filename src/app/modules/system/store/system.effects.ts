@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { firstValueFrom, mergeMap } from 'rxjs';
+import * as appActions from '../../../store/app.actions';
 import * as systemActions from './system.actions';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -29,5 +30,12 @@ export class SystemEffects {
       })
     )
   );
+
+  onActingForSet$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(systemActions.SetActingForAction),
+      mergeMap(async () => appActions.GetSettingsAction() )
+    )
+  )
 
 }

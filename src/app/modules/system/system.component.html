@@ -1,2 +1,9 @@
 <h2>System Administration</h2>
-<fiiz-dropdown [items]="workspaces$" label="Accounts"></fiiz-dropdown>
+<fiiz-dropdown [items]="workspaces$" label="Accounts" [ngModel]="actingFor$ | async" (change)="onChange($event)"></fiiz-dropdown>
+
+
+<ng-container [ngTemplateOutlet]="(actingFor$ | async) ? inviteUsers : null"></ng-container>
+<ng-template #inviteUsers>
+  <h3>Invite Users</h3>
+  <fiiz-input type="email" placeholder="Email Address"></fiiz-input>
+</ng-template>

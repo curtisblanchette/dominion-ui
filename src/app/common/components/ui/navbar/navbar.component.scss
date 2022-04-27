@@ -12,7 +12,15 @@
   justify-content: space-between;
   align-items: center;
   flex-basis: auto;
+  position:relative;
 
+  .acting-for {
+    color: #80CBC2;
+    position: absolute;
+    font-weight: 300;
+    top: 27px;
+    left: 90px;
+  }
 
   &__header {
     a {
