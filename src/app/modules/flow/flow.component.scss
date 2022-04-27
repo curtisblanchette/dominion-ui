@@ -76,4 +76,9 @@ section ng-component {
   width: 100%;
 }
 
-
+.fab-button {
+  position: absolute;
+  top: calc($navbar-height + 3%);
+  right: calc(100vw - 95%);
+  z-index: 1;
+}

@@ -7,11 +7,13 @@
         <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
       </div>
     </section>
-    <fiiz-dropodown-button
-      [items] = "menuItems"      
-      position = "top-right"
-      (onClick)="menuClickAction($event)"
-    ></fiiz-dropodown-button>
+    <section class="fab-button">
+      <fiiz-dropodown-button
+        type = "button"
+        [items] = "menuItems"
+        position = "bottom-right"
+      ></fiiz-dropodown-button>
+    </section>
     <section [@slide]="animationIndex" class="flow-layout__content">
       <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>      
       <div class="flow-layout__controls">

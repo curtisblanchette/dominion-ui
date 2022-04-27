@@ -1,11 +1,30 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { DropDownButtonAnimation } from './dropdown.animations';
 
-export interface IDropDownMenuItem {
-  label: string;
+export interface IDropDownMenu {
+  type:string;
+  title?:string;
+  items: IDropDownMenuItemAnchor | IDropDownMenuItemButton | IDropDownMenuItemForm;
+  position?:string;
+};
+
+export interface IDropDownMenuItemAnchor {
+  label:string;
+  icon?: string;
+  path: string;
+}
+
+export interface IDropDownMenuItemButton {
+  label:string;
   icon: string;
-  route?: string;
-  emitterValue?: any;
+  emitterValue:string;
+}
+
+export interface IDropDownMenuItemForm {
+  label:string;
+  value: number | string | boolean;
+  disabled?: boolean;
+  default?:boolean;
 }
 
 @Component({
@@ -14,17 +33,23 @@ export interface IDropDownMenuItem {
   styleUrls: ['./dropdown-button.scss'],
   animations : [ DropDownButtonAnimation ]
 })
-export class DropDownButtonComponent {
+export class DropDownButtonComponent implements OnInit {
 
-    @Input('title') title!: string;
-    @Input('items') items:IDropDownMenuItem[];
-    @Input('position') position: 'top-right';
+    @Input('items') items:IDropDownMenuItemAnchor[] | IDropDownMenuItemButton[] | IDropDownMenuItemForm[];
+    @Input('position') position:string = 'top-right';
+    @Input('title') title!:string;
+    @Input('type') type!:string;
 
     @Output('onClick') onClick: EventEmitter<any> = new EventEmitter();
 
     public showDropDowns:boolean = false;
+    public selected!: any;
 
     constructor() {}
+
+    public ngOnInit(): void {
+
+    }
 
     public emitTheValue( value:string ){
       this.onClick.emit(value);
@@ -32,6 +57,16 @@ export class DropDownButtonComponent {
 
     public toggle(){
       this.showDropDowns = !this.showDropDowns;
+    }
+
+    public setFormValue( item:IDropDownMenuItemForm, index:number, event:any ){
+      this.title = item.label;
+      this.selected = item.value;
+      if( item.default ){
+        item.default = false;
+        this.items[index] = item;
+      }
+      console.log(this.items);
     }
 
   }

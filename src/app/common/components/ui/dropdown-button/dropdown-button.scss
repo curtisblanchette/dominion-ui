@@ -9,7 +9,7 @@
     box-shadow : 0px 4px 13px rgb(0 0 0 / 60%);
     height: 34px;
     z-index: 1;
-    position: absolute;
+    width: 100%;
 
     & button {
         background-color: #172B46;
@@ -28,18 +28,49 @@
         padding: 0px 0px 0px 0;
         margin: 0px 0px 0 0;
         border-radius: 4px;
+        font-size: 12px;
 
         & li {
-            padding: 10px;
-            font-size: 12px;
 
-            & i {                
+            & i {
                 padding-right: 10px;
+            }
+
+            & button {
+                width: 100%;
+                padding: 0px 2px 0px 10px;
+                margin: 0;
+                font-size: 12px;
+                text-align: left;
+            }
+
+            & a {
+                display: block;
+                padding: 10px;
+                cursor: pointer;
+                text-decoration: none;
             }
 
             &.divider {
                 border-bottom : 1px solid rgb(38 68 109 / 35%);
             }
+
+            &.selected {
+                background-color: #C6CEED;                
+                font-weight: bold;
+                & a {
+                    color: #0a1930;
+                }
+            }
+
+            &.disabled {
+                background-color: #dddddd;
+                & a {
+                    cursor: not-allowed;
+                    color : #525252;
+                }
+            }
+            
         }
         
         &__item {
@@ -48,22 +79,20 @@
     }
 }
 
-.fiiz-dropdown-button-top-right {
-    top: calc($navbar-height + 3%);
-    left: calc(100vw - 14%);
-}
-
-.fiiz-dropdown-button-top-left {
-    top: calc($navbar-height + 3%);
-    right: calc(100vw - 14%);
-}
-
 .fiiz-dropdown-button-bottom-right {
-    top: $full-height-minus-navbar;
-    left: calc(100vw - 14%);
+    right: 1%;
 }
 
 .fiiz-dropdown-button-bottom-left {
-    top: $full-height-minus-navbar;
-    right: calc(100vw - 14%);
+    left: 1%;
+}
+
+.fiiz-dropdown-button-top-right {
+    right: 1%;
+    bottom : 110%;
+}
+
+.fiiz-dropdown-button-top-left {
+    left: 1%;
+    bottom : 110%;
 }

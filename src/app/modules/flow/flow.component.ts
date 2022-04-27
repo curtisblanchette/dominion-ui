@@ -7,7 +7,7 @@ import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { Observable } from 'rxjs';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { IDropDownMenuItem } from '../../common/components/ui/dropdown-button/dropdown-button';
+import { IDropDownMenuItemButton } from '../../common/components/ui/dropdown-button/dropdown-button';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -37,11 +37,11 @@ export class FlowComponent implements OnInit, OnDestroy {
       }`
   };
 
-  public menuItems:IDropDownMenuItem[] = [
+  public menuItems:IDropDownMenuItemButton[] = [
     {
       label: 'Object',
       icon: 'fa-solid fa-gavel',
-      route : '/flow/f/(aux:event)'
+      emitterValue : 'object'
     },
     {
       label: 'End Call',

@@ -1,26 +1,6 @@
 @import '~src/assets/css/variables';
 
-.flex_main_wrapper {
-
-    &__header{
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-content: center;
-        justify-content: center;
-        align-items: flex-start;
-        padding-bottom: 3%;
-
-        &__title {
-            font-size: 23px;
-            font-weight: 500;
-            padding : 0px 0px 23px 0px;
-        }
-        &__sub_title {
-            font-size: 16px;
-            line-height: 28px;
-        }
-    }
+.flex_main_wrapper {    
     
     &__slots {
 

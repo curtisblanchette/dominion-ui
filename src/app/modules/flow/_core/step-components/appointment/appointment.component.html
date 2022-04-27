@@ -15,8 +15,8 @@
                 {{ item.key }}
             </div>
             <div class="flex_main_wrapper__slots__time">
-                <div *ngFor="let time of item.value">
-                    <button #slotBtn class="btn_time_slots" (click)="setEventTime(item.key, time, $event)" >{{ time }}</button>            
+                <div *ngFor="let time of item.value;">
+                    <button [id]="item.key+', '+time" [ngClass]="{'active' : selectedBtnId === item.key+', '+time}" #slotBtn class="btn_time_slots" (click)="setEventTime($event)" >{{ time }}</button>            
                 </div>
             </div>
         </div>

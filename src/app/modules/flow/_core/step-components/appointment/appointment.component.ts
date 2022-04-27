@@ -24,6 +24,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
 	public dayEnd:any = 23;
 
   public timeSlots:Array<any> = [];
+  public selectedBtnId:string;
 
   @ViewChildren('slotBtn') slotBtn: QueryList<ElementRef>;
 
@@ -62,7 +63,7 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
 
         let bookedSlots:Array<any> = data.rows.map((appt: IEvent) => dayjs(appt.startTime));
         let freeSlots:Array<any> = [];
-        console.log('this.dayStart.value')
+
         let startTime = dayjs().startOf('day').add(this.dayStart.value, this.dayStart.unit);
         const endTime = dayjs().startOf('day').add(this.dayEnd.value, this.dayEnd.unit);
 
@@ -80,13 +81,8 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
 
   }
 
-  public setEventTime( date:string, time:string, event:any ){
-    const elm = this.slotBtn.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
-    if( elm ){
-      this.renderer.removeClass(elm, 'active');
-    }
-    this.renderer.addClass(event.srcElement, 'active');
-    const apptSetDate = dayjs(`${date} ${time}`);
+  public setEventTime( event:any ){
+    this.selectedBtnId = event.target.id;
   }
 
 
