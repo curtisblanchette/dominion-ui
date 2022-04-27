@@ -3,7 +3,10 @@ import { Store } from '@ngrx/store';
 import { User } from '../../../../modules/login/models/user';
 import { ActivationEnd, Router } from '@angular/router';
 import { delay, filter } from 'rxjs/operators';
+import * as fromApp from '../../../../store/app.reducer';
+import * as fromSystem from '../../../../modules/system/store/system.reducer';
 import * as fromLogin from '../../../../modules/login/store/login.reducer';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -13,6 +16,7 @@ import * as fromLogin from '../../../../modules/login/store/login.reducer';
 export class NavbarComponent implements OnInit, AfterViewInit {
 
   public loggedUser!: User | null;
+  public actingFor$: Observable<any>;
 
   public menu: { name: string; path: string; roles: string[] }[] = [
     {
@@ -52,9 +56,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
-    private store: Store<fromLogin.LoginState>,
+    private store: Store<fromApp.AppState>,
     private renderer: Renderer2
   ) {
+
+    this.actingFor$ = this.store.select(fromSystem.selectActingFor);
     this.store.select(fromLogin.selectLoginUser).subscribe((user) => {
       if (user) {
         this.loggedUser = user as User

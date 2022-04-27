@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, take, switchMap } from 'rxjs';
+import { Observable, BehaviorSubject, take, switchMap, firstValueFrom } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 
 import { User } from '../../modules/login/models/user';
+import * as fromApp from '../../store/app.reducer';
+import * as fromSystem from '../../modules/system/store/system.reducer';
 import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
 import { filter } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { DropdownItem } from '../components/ui/forms';
 
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
@@ -17,10 +20,18 @@ export class CustomHttpInterceptor implements HttpInterceptor {
 
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private refreshTokenInProgress = false;
+  private actingFor: DropdownItem;
 
   constructor(
-    private store: Store<fromLogin.LoginState>
+    private store: Store<fromApp.AppState>
   ) {
+
+    this.store.select(fromSystem.selectActingFor).subscribe(workspace => {
+      if(workspace) {
+        this.actingFor = workspace;
+      }
+    });
+
     this.store.select(fromLogin.selectLoginUser).subscribe((user: any) => {
       if (user) {
         this.loggedUser = user as User;
@@ -48,12 +59,17 @@ export class CustomHttpInterceptor implements HttpInterceptor {
 
   addAuthenticationToken(request: HttpRequest<any>) {
     // clone the request, because the original is immutable
+    let headers: {[key:string]: string} = {
+      'x-access-token': this.loggedUser.access_token,
+      'x-id-token': this.loggedUser.id_token,
+    };
+
+    if(this.actingFor?.id) {
+      headers['x-acting-for'] = this.actingFor.id as string;
+    }
+
     return request.clone({
-      setHeaders: {
-        'x-access-token': this.loggedUser.access_token,
-        'x-id-token': this.loggedUser.id_token,
-        'x-acting-for': environment.acting_for
-      }
+      setHeaders: headers
     });
   }
 

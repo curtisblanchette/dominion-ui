@@ -18,7 +18,7 @@ export interface DropdownItem {
     multi: true
   }]
 })
-export class FiizDropdownComponent implements ControlValueAccessor, OnInit, AfterViewInit {
+export class FiizDropdownComponent implements ControlValueAccessor, OnInit {
 
   @Input('items') items$: Observable<DropdownItem[]>;
   @Input('label') public label: string | undefined;
@@ -44,12 +44,6 @@ export class FiizDropdownComponent implements ControlValueAccessor, OnInit, Afte
 
   }
 
-  async ngAfterViewInit() {
-    // auto-select the first value
-    const selected = await firstValueFrom(this.items$.pipe(first(items => !!items.length)));
-    this.selected = selected[0];
-  }
-
   writeValue(value: DropdownItem) {
     this.selected = value;
   }
@@ -66,8 +60,8 @@ export class FiizDropdownComponent implements ControlValueAccessor, OnInit, Afte
     this.isDisabled = disabled;
   }
 
-  changed($event:any) {
-    this.selected = firstValueFrom(this.items$).then(items => items.find(item => item.id === $event.target.value));
+  async changed($event:any) {
+    this.selected = await firstValueFrom(this.items$).then(items => items.find(item => item.id === $event.target.value));
     this.onChange(this.selected);
     this.onTouched();
   }

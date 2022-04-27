@@ -4,6 +4,7 @@
       <a  routerLink="/dashboard">
         <img src="../../../../../assets/img/logo@1x.png" alt="4iiz Logo" />
       </a>
+      <div class="acting-for" *ngIf="actingFor$ | async">{{(actingFor$ | async).label}}</div>
     </div>
 
     <div class="navbar__menu">

@@ -92,7 +92,15 @@ export class LoginEffects {
           }
         }),
         mergeMap( async ( action ) => {
-          return appActions.GetSettingsAction();
+
+          // system users won't get settings yet
+          // because settings are workspace specific
+          // system users will fetch app settings when switching workspaces
+          if(!action.role.includes('system')) {
+            return appActions.GetSettingsAction();
+          }
+          return appActions.ClearSettingsAction();
+
         })
       ),
     { dispatch: true }

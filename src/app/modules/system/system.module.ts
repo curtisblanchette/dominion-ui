@@ -8,6 +8,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { SystemEffects } from './store/system.effects';
 import { FiizUIModule } from '../../common/components/ui/fiiz-ui.module';
 import { SharedModule } from '../shared/shared.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     StoreModule.forFeature('system', reducer),
     EffectsModule.forFeature([SystemEffects]),
-    FiizUIModule
+    FiizUIModule,
+    FormsModule
   ],
   providers: [
 
