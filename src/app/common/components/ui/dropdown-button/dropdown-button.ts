@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener } from '@angular/core';
 import { DropDownButtonAnimation } from './dropdown.animations';
 
 export interface IDropDownMenu {
@@ -42,6 +42,17 @@ export class DropDownButtonComponent implements OnInit {
 
     @Output('onClick') onClick: EventEmitter<any> = new EventEmitter();
 
+    @HostListener('click', ['$event'])
+    clickInside($event: Event) {
+      $event.stopPropagation();
+      this.toggle();
+    }
+
+    @HostListener('document:click')
+    clickOutside() {
+      this.showDropDowns = false;
+    }
+
     public showDropDowns:boolean = false;
     public selected!: any;
 
@@ -55,7 +66,7 @@ export class DropDownButtonComponent implements OnInit {
       this.onClick.emit(value);
     }
 
-    public toggle(){
+    public toggle() {
       this.showDropDowns = !this.showDropDowns;
     }
 

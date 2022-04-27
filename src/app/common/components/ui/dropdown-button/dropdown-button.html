@@ -1,12 +1,12 @@
-<div class="fiiz-dropdown-button" [ngClass]=" !title ? 'fiiz-dropdown-button-no-title' : 'fiiz-dropdown-button-title'" (click)="toggle()">
+<div class="fiiz-dropdown-button" [ngClass]=" !title ? 'fiiz-dropdown-button-no-title' : 'fiiz-dropdown-button-title'" >
     <button>
         {{title}}
-        <i class="fa-solid fa-square-caret-down"></i>
+        <i class="fa-solid fa-caret-down"></i>
     </button>
     <ul class="fiiz-dropdown-button__content fiiz-dropdown-button-{{position}}" *ngIf="showDropDowns" [@dropDownMenu] [ngSwitch]="type" >
 
         <ng-template [ngIf]="type === 'button'" >
-            <li *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !=='last'}">
+            <li *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !== 'last'}">
                 <button (click)="emitTheValue(item.emitterValue)">
                     <i [class]="item.icon"></i> {{ item.label }}
                 </button>
@@ -14,7 +14,7 @@
         </ng-template>
 
         <ng-template [ngIf]="type === 'anchor'" >
-            <li *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !=='last'}">
+            <li *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !== 'last'}">
                 <a routerLink="item.path">
                     <i [class]="item.icon"></i> {{ item.label }}
                 </a>
@@ -28,6 +28,6 @@
                 </a>
             </li>
         </ng-template>
-                
+
     </ul>
 </div>

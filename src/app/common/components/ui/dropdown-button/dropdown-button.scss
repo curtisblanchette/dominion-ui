@@ -1,98 +1,110 @@
 @import '~src/assets/css/variables';
+@import '~src/assets/css/functions';
 
 .fiiz-dropdown-button-no-title {
-    width: 50px;    
+  width: 50px;
 }
 
 .fiiz-dropdown-button {
-    
-    box-shadow : 0px 4px 13px rgb(0 0 0 / 60%);
-    height: 34px;
+
+  box-shadow: 0px 4px 13px rgb(0 0 0 / 60%);
+  height: 34px;
+  z-index: 1;
+  width: 100%;
+
+  button {
+    background-color: #172B46;
+    color: #C6CEED;
+
+    &:hover {
+      background-color: shade(#172B46, 15);
+    }
+  }
+
+  &__content {
+    position: absolute;
     z-index: 1;
-    width: 100%;
+    list-style: none;
+    background-color: #172B46;
+    box-shadow: 0 4px 13px rgb(0 0 0 / 60%);
+    padding: 0;
+    margin: 0;
+    border-radius: $button-border-radius;
+    white-space: nowrap;
 
-    & button {
-        background-color: #172B46;
-        border-radius: 4px;
-        color : #C6CEED;
+    li {
+
+      i {
+        padding-right: 10px;
+      }
+
+      button {
+        width: 100%;
+        padding: 0 2em;
+        margin: 0;
+        text-align: left;
+        border-radius: 0;
+      }
+
+      a {
+        display: block;
+        padding: 10px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      &.divider {
+        border-bottom: 1px solid rgb(38 68 109 / 35%);
+      }
+
+      &.selected {
+        background-color: #C6CEED;
+        font-weight: bold;
+
+        a {
+          color: #0a1930;
+        }
+      }
+
+      &.disabled {
+        background-color: #dddddd;
+
+        & a {
+          cursor: not-allowed;
+          color: #525252;
+        }
+      }
+
+      &:first-child button {
+        border-radius: $button-border-radius $button-border-radius 0 0;
+      }
+      &:last-child button {
+        border-radius: 0 0 $button-border-radius $button-border-radius;
+      }
     }
 
-    &__content {
-        position: absolute;
-        max-width: 110px;
-        width: 110px;
-        z-index: 1;
-        list-style: none;
-        background-color: #172B46;
-        box-shadow : 0px 4px 13px rgb(0 0 0 / 60%);
-        padding: 0px 0px 0px 0;
-        margin: 0px 0px 0 0;
-        border-radius: 4px;
-        font-size: 12px;
 
-        & li {
 
-            & i {
-                padding-right: 10px;
-            }
-
-            & button {
-                width: 100%;
-                padding: 0px 2px 0px 10px;
-                margin: 0;
-                font-size: 12px;
-                text-align: left;
-            }
-
-            & a {
-                display: block;
-                padding: 10px;
-                cursor: pointer;
-                text-decoration: none;
-            }
-
-            &.divider {
-                border-bottom : 1px solid rgb(38 68 109 / 35%);
-            }
-
-            &.selected {
-                background-color: #C6CEED;                
-                font-weight: bold;
-                & a {
-                    color: #0a1930;
-                }
-            }
-
-            &.disabled {
-                background-color: #dddddd;
-                & a {
-                    cursor: not-allowed;
-                    color : #525252;
-                }
-            }
-            
-        }
-        
-        &__item {
-            text-decoration: none;
-        }
+    &__item {
+      text-decoration: none;
     }
+  }
 }
 
 .fiiz-dropdown-button-bottom-right {
-    right: 1%;
+  right: 0;
 }
 
 .fiiz-dropdown-button-bottom-left {
-    left: 1%;
+  left: 0;
 }
 
 .fiiz-dropdown-button-top-right {
-    right: 1%;
-    bottom : 110%;
+  right: 0;
+  bottom: 110%;
 }
 
 .fiiz-dropdown-button-top-left {
-    left: 1%;
-    bottom : 110%;
+  left: 0;
+  bottom: 110%;
 }
