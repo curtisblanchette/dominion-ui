@@ -57,4 +57,29 @@ export class AppEffects {
       })
     )
   );
+
+  getRoles$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(appActions.GetRolesAction),
+      mergeMap(async () => {
+        let res = await firstValueFrom(this.http.get(environment.dominion_api_url + '/roles')) as any;
+
+        // transform it into a DropdownItem[]
+        res = res.map((r: any) => ({id: r.id, label: r.name }));
+
+        localStorage.setItem('roles', JSON.stringify(res));
+        return appActions.SetRolesAction({ payload: res });
+      })
+    )
+  );
+
+  onSetRoles$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(appActions.SetRolesAction),
+      mergeMap(async () => {
+        return appActions.AppInitializedAction();
+      })
+    )
+  );
+
 }

@@ -61,7 +61,7 @@ export class FiizDropdownComponent implements ControlValueAccessor, OnInit {
   }
 
   async changed($event:any) {
-    this.selected = await firstValueFrom(this.items$).then(items => items.find(item => item.id === $event.target.value));
+    this.selected = await firstValueFrom(this.items$).then(items => items.find(item => item.id == $event.target.value));
     this.onChange(this.selected);
     this.onTouched();
   }
