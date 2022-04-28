@@ -2,8 +2,14 @@
 <fiiz-dropdown [items]="workspaces$" label="Accounts" [ngModel]="actingFor$ | async" (change)="onChange($event)"></fiiz-dropdown>
 
 
-<ng-container [ngTemplateOutlet]="(actingFor$ | async) ? inviteUsers : null"></ng-container>
+<ng-container [ngTemplateOutlet]="(actingFor$ | async)?.id ? inviteUsers : null"></ng-container>
+
 <ng-template #inviteUsers>
   <h3>Invite Users</h3>
-  <fiiz-input type="email" placeholder="Email Address"></fiiz-input>
+
+  <form (ngSubmit)="submitUserInvite()"  [formGroup]="userInviteForm" *ngIf="userInviteForm?.controls">
+    <fiiz-input label="Email" placeholder="Email Address" [formControlName]="'email'"></fiiz-input>
+    <fiiz-dropdown label="Role" [items]="roles$" [formControlName]="'role'"></fiiz-dropdown>
+    <input type="submit" class="stroked" value="Send Invitation">
+  </form>
 </ng-template>

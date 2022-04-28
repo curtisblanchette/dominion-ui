@@ -1,7 +1,7 @@
 
 
-<ng-container
-  [ngTemplateOutlet]="isLoading ? loadingTemplate : loginTemplate"
+<ng-container *ngIf="!isLoading"
+  [ngTemplateOutlet]="getTemplate()"
   [ngTemplateOutletContext]="{loadingText: loadingMessage}">
 </ng-container>
 
@@ -18,6 +18,7 @@
     <fiiz-input
       id="password"
       formControlName="password"
+      placeholder="Password"
       type="password"
       required
       minlength="12">
@@ -29,6 +30,63 @@
     <div style="color:red; margin: 0 0 0 54px;" *ngIf="hasError">{{errorMessage}}</div>
   </form>
 </ng-template>
+
+<ng-template #newUserTemplate>
+  <form (ngSubmit)="createUser()" [formGroup]="newUserForm" id="new-user-form" name="new-user-form">
+
+    <ng-container [ngTemplateOutlet]="isLoading ? loadingTemplate : newUserTemplate"
+                  [ngTemplateOutletContext]="{loadingText: 'Checking Invitation...'}"></ng-container>
+
+    <ng-template #newUserTemplate>
+      <h2>New User</h2>
+
+      <fiiz-input
+        formControlName="email"
+        type="text"
+        placeholder="Email Address">
+      </fiiz-input>
+
+      <fiiz-input
+        formControlName="firstName"
+        type="text"
+        placeholder="First Name">
+      </fiiz-input>
+
+      <fiiz-input
+        formControlName="lastName"
+        type="text"
+        placeholder="Last Name">
+      </fiiz-input>
+
+      <fiiz-input
+        formControlName="password"
+        type="password"
+        placeholder="Password"
+        required
+        minlength="12">
+      </fiiz-input>
+
+      <fiiz-input
+        formControlName="confirmPassword"
+        type="password"
+        placeholder="Confirm Password"
+        required
+        minlength="12">
+      </fiiz-input>
+
+      <input type="submit"
+             class="primary"
+             id="create-user-btn"
+             value="Complete Registration"
+             [disabled]="isLoading">
+
+    </ng-template>
+
+
+  </form>
+</ng-template>
+
+
 
 <ng-template #loadingTemplate let-loadingText="loadingText">
   <app-loading>{{loadingText}}</app-loading>

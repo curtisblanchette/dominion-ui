@@ -22,6 +22,8 @@ import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.c
 import { EntityStoreModule } from './data/entity-store.module';
 import { reducer } from './store/app.reducer';
 import { AppEffects } from './store/app.effects';
+import { ToastrModule } from 'ngx-toastr';
+import { ErrorInterceptor } from './common/interceptors/Error.interceptor';
 
 @NgModule({
   declarations: [
@@ -48,12 +50,22 @@ import { AppEffects } from './store/app.effects';
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     DashboardModule,
     FlowModule,
-    SystemModule
+    SystemModule,
+    ToastrModule.forRoot({
+      timeOut: 7000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }),
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true
     }
   ],
@@ -63,4 +75,5 @@ import { AppEffects } from './store/app.effects';
   ]
 })
 export class AppModule {
+
 }

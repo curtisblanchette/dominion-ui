@@ -7,7 +7,7 @@ const user = {
     }
 
     if(typeof roles === 'object') {
-      return this.data.filter((el: IDashboardButton) => roles.filter(value => el && el.roles && el.roles.includes(value)));
+      return this.data.filter((el: IDashboardButton) => el && el.roles && el.roles.some(r=> roles.includes(r)));
     }
     return [];
   },

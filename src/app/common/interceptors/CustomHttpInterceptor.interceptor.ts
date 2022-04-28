@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, take, switchMap, firstValueFrom } from 'rxjs';
+import { Observable, BehaviorSubject, take, switchMap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 
@@ -9,7 +9,6 @@ import * as fromSystem from '../../modules/system/store/system.reducer';
 import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
 import { filter } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 import { DropdownItem } from '../components/ui/forms';
 
 @Injectable()

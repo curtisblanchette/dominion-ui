@@ -58,13 +58,16 @@ export class LoginEffects {
         ofType(loginActions.LogoutAction),
         tap((action) => {
           localStorage.clear();
-          this.router.navigate(['login']);
+          // preserve the queryString
+          // for case: accepting an invitation_code while logged in
+          this.router.navigate(['login'], { queryParamsHandling: 'preserve' });
         }),
-        mergeMap( async(action) => {
-          return appActions.ClearSettingsAction();
+        tap(async () => {
+          this.store.dispatch(appActions.ClearRolesAction());
+          this.store.dispatch(appActions.ClearSettingsAction());
         })
       ),
-    { dispatch: true }
+    { dispatch: false }
   );
 
   loginSuccess$ = createEffect(

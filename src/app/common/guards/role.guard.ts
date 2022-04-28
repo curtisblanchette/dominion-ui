@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable, map, withLatestFrom, combineLatest } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromLogin from '../../modules/login/store/login.reducer';
 import { User } from '../../modules/login/models/user';
@@ -26,7 +26,7 @@ export class RoleGuard implements CanActivate {
     return this.store.select(fromLogin.selectLoginUser).pipe(
       map((user) => {
         if (user !== null) {
-          return roles.includes(user.role[0]);
+          return roles.some(r=> user.role.includes(r));
         } else {
           console.warn( 'Login Required, or user has insufficient privileges.');
           return false
