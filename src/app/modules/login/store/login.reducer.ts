@@ -24,9 +24,9 @@ export const initialState: LoginState = {
 
 export const reducer = createReducer(
   initialState,
-  on(loginActions.LoginAction, (state) => ({...state})),
+  on(loginActions.LoginAction, (state) => ({ ...state })),
   on(loginActions.LoginSuccessfulAction, (state, {payload}) => ({...state, user: payload, error: null})),
-  on(loginActions.LoginErrorAction, (state, {error}) => ({...state, error: error})),
+  on(loginActions.LoginErrorAction, (state, {error}) => ({...state, user: null, error: error})),
   on(loginActions.UpdateUserAction, (state, {payload}) => ({...state, user: payload, error: null})),
   on(loginActions.SetAgentRecord, (state, {payload}) => ({...state, agent: payload})),
   on(loginActions.SetWorkspaceRecord, (state, {payload}) => ({...state, workspace: payload})),
@@ -36,4 +36,4 @@ export const reducer = createReducer(
 
 export const selectLogin = createFeatureSelector<LoginState>('login');
 
-export const selectLoginUser   = createSelector(selectLogin, (state: LoginState) => state.user);
+export const selectLoginUser = createSelector(selectLogin, (state: LoginState) => state.user);

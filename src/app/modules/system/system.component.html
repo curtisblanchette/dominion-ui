@@ -1,5 +1,5 @@
 <h2>System Administration</h2>
-<fiiz-dropdown [items]="workspaces$" label="Accounts" [ngModel]="actingFor$ | async" (change)="onChange($event)"></fiiz-dropdown>
+<fiiz-dropdown [items]="workspaces$" label="Accounts" [showDefault]="true" [ngModel]="actingFor$ | async" (change)="onChange($event)"></fiiz-dropdown>
 
 
 <ng-container [ngTemplateOutlet]="(actingFor$ | async)?.id ? inviteUsers : null"></ng-container>

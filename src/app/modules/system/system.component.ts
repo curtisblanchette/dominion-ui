@@ -10,6 +10,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { filter } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-system',
@@ -28,7 +29,8 @@ export class SystemComponent implements OnDestroy {
   constructor(
     private store: Store<fromSystem.SystemState>,
     private fb: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
+    private toastr: ToastrService
   ) {
     this.workspaces$ = this.store.select(fromSystem.selectWorkspaces);
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
@@ -66,7 +68,8 @@ export class SystemComponent implements OnDestroy {
       email: this.userInviteForm.controls['email'].value
     }
 
-    this.http.post(environment.dominion_api_url + '/invitations', payload).subscribe();
+    await firstValueFrom(this.http.post(environment.dominion_api_url + '/invitations', payload));
+    this.toastr.success('', 'Invite Sent!');
   }
 
   ngOnDestroy() {

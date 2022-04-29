@@ -22,27 +22,27 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     {
       name: 'Dashboard',
       path: 'dashboard',
-      roles: ['system', 'admin', 'consultant', 'agent']
+      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     },
     {
       name: 'Reports',
       path: 'reports',
-      roles: ['system', 'admin', 'consultant', 'agent']
+      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     },
     {
       name: 'Data',
       path: 'data',
-      roles: ['system', 'admin', 'consultant', 'agent']
+      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     },
     {
       name: 'Call Flow',
       path: 'flow/f',
-      roles: ['system', 'admin', 'consultant', 'agent']
+      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     },
     {
       name: 'Settings',
       path: 'settings',
-      roles: ['system', 'admin']
+      roles: ['system', 'admin', 'owner']
     },
     {
       name: 'System',
