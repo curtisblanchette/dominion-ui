@@ -10,6 +10,7 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { checkPasswords } from './login.validators';
 import { firstValueFrom } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -59,7 +60,8 @@ export class LoginComponent implements OnInit {
     private http: HttpClient,
     private httpBackend: HttpBackend,
     private store: Store<fromLogin.LoginState>,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {
     this.httpNoAuth = new HttpClient(httpBackend);
   }
@@ -108,10 +110,6 @@ export class LoginComponent implements OnInit {
 
   public login() {
     if (this.loginForm.valid) {
-
-      this.errorMessage = '';
-      this.isLoading = true;
-      this.hasError = false;
       this.loadingMessage = `Validating credentials...`;
 
       this.store.dispatch(loginActions.LoginAction({payload: this.loginForm.value}));
@@ -123,8 +121,9 @@ export class LoginComponent implements OnInit {
   public async createUser() {
     if(this.newUserForm.valid) {
       await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${this.invitationCode.id}`, this.newUserForm.value));
-      // perform login
+      this.toastr.success('Logging you in...', 'User Created!');
 
+      // perform login
       this.store.dispatch(loginActions.LoginAction({payload: {username: this.invitationCode.email, password: this.newUserForm.controls['password'].value, remember_me: 'yes'}}))
     } else {
       console.warn('Invalid Form');

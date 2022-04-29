@@ -18,14 +18,14 @@ const user = {
       subtitle: 'Start intake for a caller on the line',
       theme: 'orange',
       route: '/flow/f',
-      roles: ['agent']
+      roles: ['system', 'admin', 'owner', 'agent']
     }, {
       icon: 'fa-solid fa-up-long',
       title: 'Outbound Call',
       subtitle: 'Follow up on existing opportunities.',
       theme: 'purple',
       route: '/flow/f',
-      roles: ['agent']
+      roles: ['system', 'admin', 'owner', 'agent']
     },
     {
       icon: 'fa-solid fa-file-lines',
@@ -33,15 +33,15 @@ const user = {
       subtitle: 'Fill an outcome form for a recent appointment',
       theme: 'light',
       route: '/',
-      roles: ['consultant']
+      roles: ['system', 'admin', 'owner', 'consultant']
     },
     {
       icon: 'fa-solid fa-chart-pie',
       title: 'Reports',
-      subtitle: 'Fill an outcome form for a recent appointment',
+      subtitle: 'Monitor the health of your firm',
       theme: 'light',
-      route: '/flow/f',
-      roles: ['consultant']
+      route: '/reports',
+      roles: ['system', 'admin', 'owner', 'consultant']
     },
     {
       icon: 'fa-solid fa-chart-pie',
@@ -49,7 +49,7 @@ const user = {
       subtitle: 'Fill an outcome form for a recent appointment',
       theme: 'pitch',
       route: '/flow/f',
-      roles: ['owner']
+      roles: ['system', 'admin', 'owner']
     }
   ]
 }

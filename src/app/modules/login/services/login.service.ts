@@ -24,11 +24,7 @@ export class LoginService {
       Password: credentials.password
     };
 
-    return this.cognitoService.authenticateUser(authenticationData).then((result: any) => {
-      return result;
-    }).catch( error => {
-      return error;
-    });
+    return this.cognitoService.authenticateUser(authenticationData);
   }
 
   public logout() {

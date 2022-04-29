@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, tap } from 'rxjs';
+import { catchError, map, mergeMap, of, tap, throwError } from 'rxjs';
 
 import * as appActions from '../../../store/app.actions';
 import * as loginActions from './login.actions';
@@ -11,6 +11,7 @@ import { User } from '../models/user';
 
 import * as fromLogin from './login.reducer';
 import { CognitoService } from '../../../common/cognito/cognito.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class LoginEffects {
@@ -20,36 +21,51 @@ export class LoginEffects {
     private loginService: LoginService,
     private router: Router,
     private store: Store<fromLogin.LoginState>,
-    private cognito: CognitoService
+    private cognito: CognitoService,
+    private toastr: ToastrService
   ) {
 
   }
 
-  login$ = createEffect((): any =>
-    this.actions$.pipe(
-      ofType(loginActions.LoginAction),
-      mergeMap((action) => {
-        return this.loginService.login(action.payload).then((response: any) => {
-          const accessToken = response.accessToken.getJwtToken();
-          const idToken = response.idToken.getJwtToken();
-          const refreshToken = response.refreshToken.getToken();
-          const cognitoGroup = response.idToken.payload['cognito:groups'];
-          const cognitoUsername = response.idToken.payload['cognito:username'];
-          const workspaceId = response.idToken.payload['custom:workspaceId'];
+  login$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.LoginAction),
+        mergeMap((action) => {
 
-          const user = new User(
-            'assets/img/default-avatar.png',
-            accessToken,
-            idToken,
-            refreshToken,
-            cognitoGroup,
-            cognitoUsername
-          );
-          localStorage.setItem('user', btoa(JSON.stringify(user)));
-          return loginActions.LoginSuccessfulAction({ payload: user });
-        });
-      })
-    )
+            return this.loginService.login(action.payload).then((response: any) => {
+              const accessToken = response.accessToken.getJwtToken();
+              const idToken = response.idToken.getJwtToken();
+              const refreshToken = response.refreshToken.getToken();
+              const cognitoGroup = response.idToken.payload['cognito:groups'];
+              const cognitoUsername = response.idToken.payload['cognito:username'];
+              const workspaceId = response.idToken.payload['custom:workspaceId'];
+
+              const user = new User(
+                'assets/img/default-avatar.png',
+                accessToken,
+                idToken,
+                refreshToken,
+                cognitoGroup,
+                cognitoUsername
+              );
+              localStorage.setItem('user', btoa(JSON.stringify(user)));
+              return loginActions.LoginSuccessfulAction({payload: user});
+            }).catch(e => {
+              switch(e.code) {
+                case 'UserNotFoundException':
+                case 'NotAuthorizedException': {
+                  this.toastr.error('', 'Invalid username or password.');
+                  return of(loginActions.LoginErrorAction({error: e}));
+                }
+                default:
+                  return throwError(e);
+              }
+            });
+
+
+        }),
+      )
   );
 
   logout$ = createEffect(
@@ -108,6 +124,19 @@ export class LoginEffects {
       ),
     { dispatch: true }
   );
+
+  loginFailure$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.LoginErrorAction),
+        map((action: { error: any }) => {
+          return action.error
+        })
+      ),
+    { dispatch: false }
+  );
+
+
 
   updateUserSuccess$ = createEffect(
     (): any =>

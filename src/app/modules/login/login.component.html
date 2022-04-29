@@ -1,12 +1,10 @@
-
-
 <ng-container *ngIf="!isLoading"
-  [ngTemplateOutlet]="getTemplate()"
+  [ngTemplateOutlet]="getTemplate() || loadingTemplate"
   [ngTemplateOutletContext]="{loadingText: loadingMessage}">
 </ng-container>
 
 <ng-template #loginTemplate>
-  <form [formGroup]="loginForm" (ngSubmit)="login()"  id="login-form" >
+  <form [formGroup]="loginForm" (ngSubmit)="login()" id="login-form" >
     <img src="assets/img/symbolmark-light-transparent.png" alt="4iiz Logo">
     <fiiz-input
       id="username"
