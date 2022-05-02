@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FlowComponent } from "./flow.component";
-import { DataComponent, TextComponent, ListComponent, AppointmentComponent } from "./_core/step-components";
-import { IntroComponent } from "./_core/step-components/intro/intro.component";
+import { FlowComponent } from './flow.component';
+import { FlowDataComponent, FlowTextComponent, FlowIntroComponent, FlowListComponent, FlowAppointmentComponent } from './_core/';
 
 const routes: Routes = [
   {
@@ -11,27 +10,27 @@ const routes: Routes = [
     children: [
       {
         path: 'intro',
-        component: IntroComponent,
+        component: FlowIntroComponent,
         outlet: 'aux'
       },
       {
         path: 'data',
-        component: DataComponent,
+        component: FlowDataComponent,
         outlet: 'aux'
       },
       {
         path: 'text',
-        component: TextComponent,
+        component: FlowTextComponent,
         outlet: 'aux'
       },
       {
-        path : 'list',
-        component : ListComponent,
-        outlet : 'aux'
+        path: 'list',
+        component: FlowListComponent,
+        outlet: 'aux'
       },
       {
         path : 'event',
-        component : AppointmentComponent,
+        component : FlowAppointmentComponent,
         outlet : 'aux'
       }
     ]

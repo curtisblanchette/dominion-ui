@@ -18,7 +18,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { environment } from '../environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NavbarComponent } from './common/components/ui/navbar/navbar.component';
-import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './common/components/page-not-found/page-not-found.component';
 import { EntityStoreModule } from './data/entity-store.module';
 import { reducer } from './store/app.reducer';
 import { AppEffects } from './store/app.effects';

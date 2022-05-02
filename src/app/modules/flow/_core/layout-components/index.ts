@@ -1,2 +1,2 @@
-export { TimelineComponent } from './timeline/timeline.component';
-export { NotesComponent } from './notes/notes.component'
+export { FlowTimelineComponent } from './timeline/flow-timeline.component';
+export { FlowNotesComponent } from './notes/flow-notes.component'

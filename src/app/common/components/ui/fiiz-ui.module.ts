@@ -20,6 +20,8 @@ import { AutofocusDirective } from '../../directives/autofocus/autofocus.directi
 import { FiizInputCurrencyComponent } from './forms/input-currency';
 import { FiizBigButtonComponent } from './big-button/index';
 import { DropDownButtonComponent } from './dropdown-button/index';
+import { FiizListComponent } from './list/list.component';
+import { FiizDataComponent } from './data/data.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { DropDownButtonComponent } from './dropdown-button/index';
     AutofocusDirective,
     ProgressBarComponent,
     FiizBigButtonComponent,
-    DropDownButtonComponent
+    DropDownButtonComponent,
+    FiizListComponent,
+    FiizDataComponent
   ],
   imports: [
     CommonModule,
@@ -67,7 +71,9 @@ import { DropDownButtonComponent } from './dropdown-button/index';
     AutofocusDirective,
     ProgressBarComponent,
     FiizBigButtonComponent,
-    DropDownButtonComponent
+    DropDownButtonComponent,
+    FiizListComponent,
+    FiizDataComponent
   ]
 })
 export class FiizUIModule {

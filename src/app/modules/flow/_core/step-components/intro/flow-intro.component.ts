@@ -11,7 +11,7 @@ import { FlowService } from "../../../flow.service";
   `,
   styleUrls: ['../_base.scss']
 })
-export class IntroComponent implements OnDestroy {
+export class FlowIntroComponent implements OnDestroy {
 
   public data: any;
   @Input() module: string;
