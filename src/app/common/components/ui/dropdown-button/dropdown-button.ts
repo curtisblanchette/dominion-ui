@@ -4,7 +4,7 @@ import { DropDownButtonAnimation } from './dropdown.animations';
 export interface IDropDownMenu {
   type:string;
   title?:string;
-  items: IDropDownMenuItemAnchor | IDropDownMenuItemButton | IDropDownMenuItemForm;
+  items: IDropDownMenuItemAnchor | IDropDownMenuItemButton;
   position?:string;
 };
 
@@ -20,13 +20,6 @@ export interface IDropDownMenuItemButton {
   emitterValue:string;
 }
 
-export interface IDropDownMenuItemForm {
-  label:string;
-  value: number | string | boolean;
-  disabled?: boolean;
-  default?:boolean;
-}
-
 @Component({
   selector: 'fiiz-dropodown-button',
   templateUrl: './dropdown-button.html',
@@ -35,7 +28,7 @@ export interface IDropDownMenuItemForm {
 })
 export class DropDownButtonComponent implements OnInit {
 
-    @Input('items') items:IDropDownMenuItemAnchor[] | IDropDownMenuItemButton[] | IDropDownMenuItemForm[];
+    @Input('items') items:IDropDownMenuItemAnchor[] | IDropDownMenuItemButton[];
     @Input('position') position:string = 'top-right';
     @Input('title') title!:string;
     @Input('type') type!:string;
@@ -68,16 +61,6 @@ export class DropDownButtonComponent implements OnInit {
 
     public toggle() {
       this.showDropDowns = !this.showDropDowns;
-    }
-
-    public setFormValue( item:IDropDownMenuItemForm, index:number, event:any ){
-      this.title = item.label;
-      this.selected = item.value;
-      if( item.default ){
-        item.default = false;
-        this.items[index] = item;
-      }
-      console.log(this.items);
     }
 
   }

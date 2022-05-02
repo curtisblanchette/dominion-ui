@@ -1,5 +1,18 @@
-<label [for]="id" *ngIf="label">{{label}}</label>
-<select [id]="id" class="fiiz-dropdown-component {{size}}" [autofocus]="autofocus" (change)="changed($event)" [disabled]="isDisabled">
-	<option value="" selected [disabled]="showDefault" [hidden]="!showDefault">Select an option.</option>
-	<option [value]="item.id" *ngFor="let item of items$ | async" [selected]="item.id === selected?.id" [disabled]="item.disabled">{{item.label}}</option>
+<select style="display: none;" class="fiiz-dropdown-component {{size}}">
+	<option [value]="item.id" *ngFor="let item of items$" [selected]="item.id === selected" [disabled]="item.disabled">{{item.label}}</option>
 </select>
+<div [id]="id" class="fiiz-dropdown-button" [ngClass]=" !label ? 'fiiz-dropdown-button-no-title' : 'fiiz-dropdown-button-title'" >
+    <button>
+        {{label}}
+        <i class="fa-solid fa-caret-down"></i>
+    </button>
+    <ul class="fiiz-dropdown-button__content fiiz-dropdown-button-{{position}}" *ngIf="showDropDowns" [@dropDownMenu] >
+	<li 
+		*ngFor="let item of items$; let i = index; let last = last"
+		[ngClass]="{ 'divider': !last , 'selected' : item.id === default, 'disabled' : item.disabled}" 
+		(click)="!item.disabled && setFormValue(item, i, $event)"
+		[autofocus]="autofocus" (change)="changed($event)"
+	>
+		{{item.label}}
+	</li>
+</ul>
