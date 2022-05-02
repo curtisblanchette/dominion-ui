@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
 import { FlowTransitions } from "./_core";
-import { TimelineComponent } from './_core/layout-components';
+import { FlowTimelineComponent } from './_core/layout-components';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
@@ -19,7 +19,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   tabIndex = 1;
   stepHistory$: Observable<string[]>;
   @ViewChild(FlowComponent) flow: FlowComponent;
-  @ViewChild(TimelineComponent) timeline: TimelineComponent;
+  @ViewChild(FlowTimelineComponent) timeline: FlowTimelineComponent;
 
   public tinymceOptions = {
     branding: false,

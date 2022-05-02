@@ -1,6 +1,4 @@
-import { FlowRouter } from "./flow.router";
-import { FlowBaseModel } from "./flow.baseModel";
-import { FlowStep } from "./flow.step";
+import { FlowRouter, FlowBaseModel, FlowStep } from './index';
 import { cloneDeep } from 'lodash';
 
 export class FlowLink extends FlowBaseModel {
@@ -28,7 +26,7 @@ export class FlowLink extends FlowBaseModel {
 
 
   serialize() {
-    const data: FlowLink = { ...cloneDeep(this)};
+    const data: FlowLink = {...cloneDeep(this)};
     // @ts-ignore
     return new FlowLink(data.id, data.from, data.to);
   }

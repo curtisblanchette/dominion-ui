@@ -1,4 +1,4 @@
-import { FlowBaseModel } from "./flow.baseModel";
+import { FlowBaseModel } from "./index";
 
 export class FlowNode extends FlowBaseModel {
   public nodeText: string;

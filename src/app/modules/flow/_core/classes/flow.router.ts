@@ -1,4 +1,4 @@
-import { FlowStep, FlowNode, FlowCondition } from "../index";
+import { FlowStep, FlowNode, FlowCondition } from "./index";
 import { cloneDeep } from 'lodash';
 
 export class FlowRouter extends FlowNode {

@@ -18,7 +18,9 @@ import { FiizToggleComponent } from './forms/toggle/toggle';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { FiizInputCurrencyComponent } from './forms/input-currency';
-import { FiizBigButtonComponent } from './big-button/index';
+import { FiizBigButtonComponent } from './big-button';
+import { FiizListComponent } from './list/list.component';
+import { FiizDataComponent } from './data/data.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { FiizBigButtonComponent } from './big-button/index';
     FiizMaxDateDirective,
     AutofocusDirective,
     ProgressBarComponent,
-    FiizBigButtonComponent
+    FiizBigButtonComponent,
+    FiizListComponent,
+    FiizDataComponent
   ],
   imports: [
     CommonModule,
@@ -64,7 +68,9 @@ import { FiizBigButtonComponent } from './big-button/index';
     FiizMaxDateDirective,
     AutofocusDirective,
     ProgressBarComponent,
-    FiizBigButtonComponent
+    FiizBigButtonComponent,
+    FiizListComponent,
+    FiizDataComponent
   ]
 })
 export class FiizUIModule {

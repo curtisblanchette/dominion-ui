@@ -1,6 +1,7 @@
-import { FlowNode } from "./flow.node";
+import { FlowNode } from "./index";
 import { FlowComponentType } from "../step-components";
 import { cloneDeep } from 'lodash';
+
 export class FlowStep extends FlowNode {
 
   public component: FlowComponentType

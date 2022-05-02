@@ -1,19 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FlowService } from '../../../flow.service';
+import { FlowService } from '../../../../modules/flow/flow.service';
 import { Observable } from 'rxjs';
 import { Contact, Deal, Lead, Event } from '@4iiz/corev2';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
-import { entityConfig } from '../../../../../data/entity-metadata';
-import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
+import { entityConfig } from '../../../../data/entity-metadata';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
 @Component({
-  selector: 'flow-data',
+  selector: 'fiiz-data',
   templateUrl: './data.component.html',
-  styleUrls: ['../_base.scss', './data.component.scss'],
+  styleUrls: ['../../../../modules/flow/_core/step-components/_base.scss', './data.component.scss'],
 })
-export class DataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
+export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
 
   public form: FormGroup;
 

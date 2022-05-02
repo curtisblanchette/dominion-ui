@@ -3,8 +3,12 @@
   "version": "1.6.10",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve ",
+    "start:dev": "ng serve --configuration=development",
+    "start:prod": "ng serve --configuration=production",
     "build": "ng build",
+    "build:dev": "ng build --configuration=development",
+    "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}}\"",
     "test": "ng test"

@@ -6,10 +6,10 @@ import { EntityCollectionServiceFactory } from '@ngrx/data';
 
 @Component({
   selector: 'flow-text',
-  templateUrl: './text.component.html',
-  styleUrls: ['../_base.scss', './text.component.scss'],
+  templateUrl: './flow-text.component.html',
+  styleUrls: ['../_base.scss', './flow-text.component.scss'],
 })
-export class TextComponent extends EntityCollectionComponentBase implements OnDestroy {
+export class FlowTextComponent extends EntityCollectionComponentBase implements OnDestroy {
 
   public data: any;
 

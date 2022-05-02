@@ -8,10 +8,10 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'flow-timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.scss']
+  templateUrl: './flow-timeline.component.html',
+  styleUrls: ['./flow-timeline.component.scss']
 })
-export class TimelineComponent {
+export class FlowTimelineComponent {
 
   public steps$: Observable<FlowStep[] | null>;
   public currentStep$: Observable<FlowStep | null>;

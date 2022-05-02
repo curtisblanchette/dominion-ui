@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard } from './common/guards/role.guard';
-import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './common/components/page-not-found/page-not-found.component';
 import { SystemResolver } from './modules/system/system.resolver';
 
 const routes: Routes = [

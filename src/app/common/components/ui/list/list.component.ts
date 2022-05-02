@@ -4,18 +4,18 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { fromEvent, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { FlowService } from '../../../flow.service';
+import { FlowService } from '../../../../modules/flow/flow.service';
 import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
-import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
 @Component({
-  selector: 'flow-list',
+  selector: 'fiiz-list',
   templateUrl: 'list.component.html',
-  styleUrls: ['../_base.scss', 'list.component.scss']
+  styleUrls: ['../../../../modules/flow/_core/step-components/_base.scss', 'list.component.scss']
 })
-export class ListComponent extends EntityCollectionComponentBase implements OnDestroy, AfterViewInit {
+export class FiizListComponent extends EntityCollectionComponentBase implements OnDestroy, AfterViewInit {
 
   public searchForm!: FormGroup;
   @Input() searchable: boolean = true;

@@ -1,5 +1,5 @@
-import { DropdownItem } from '../../../../../common/components/ui/forms';
-import { ModuleType } from '../../classes/flow.moduleTypes';
+import { DropdownItem } from '../forms';
+import { ModuleType } from '../../../../modules/flow/_core/classes/flow.moduleTypes';
 
 const modules = new Map([
   [ModuleType.CONTACT, [
