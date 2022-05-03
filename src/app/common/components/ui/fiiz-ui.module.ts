@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   FiizInputPercentageComponent,
   FiizDropdownComponent,
@@ -21,6 +21,7 @@ import { FiizInputCurrencyComponent } from './forms/input-currency';
 import { FiizBigButtonComponent } from './big-button';
 import { FiizListComponent } from './list/list.component';
 import { FiizDataComponent } from './data/data.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,8 @@ import { FiizDataComponent } from './data/data.component';
     CommonModule,
     FormsModule,
     RouterModule,
+    NgxPaginationModule,
+    ReactiveFormsModule
     // DirectivesModule
   ],
   exports: [
