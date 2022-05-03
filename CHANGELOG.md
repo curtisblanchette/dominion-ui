@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.6.13 (2022-05-03)
+
+
+### Bug Fixes
+
+* **develop:** fix import barrel locations ([cd5cb67](https://github.com/4iiz/dominion-ui/commit/cd5cb6730e41f6ed9c8fab2af34eb16cc95c8342))
+
 ### 1.6.12 (2022-05-02)
 
 ### 1.6.11 (2022-04-29)
