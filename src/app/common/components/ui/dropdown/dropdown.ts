@@ -1,12 +1,18 @@
 import { Component, Input, Output, EventEmitter, OnInit, HostListener } from '@angular/core';
-import { DropDownButtonAnimation } from './dropdown.animations';
+import { DropDownAnimation } from './dropdown.animations';
+import { DropdownItem } from '../../interfaces/dropdownitem.interface';
+
+
+export interface IDropDownMenu extends DropdownItem {
+
+}
 
 export interface IDropDownMenu {
   type:string;
   title?:string;
-  items: IDropDownMenuItemAnchor | IDropDownMenuItemButton | IDropDownMenuItemForm;
+  items: IDropDownMenuItemAnchor | IDropDownMenuItem | IDropDownMenuItemForm;
   position?:string;
-};
+}
 
 export interface IDropDownMenuItemAnchor {
   label:string;
@@ -14,7 +20,7 @@ export interface IDropDownMenuItemAnchor {
   path: string;
 }
 
-export interface IDropDownMenuItemButton {
+export interface IDropDownMenuItem {
   label:string;
   icon: string;
   emitterValue:string;
@@ -28,14 +34,14 @@ export interface IDropDownMenuItemForm {
 }
 
 @Component({
-  selector: 'fiiz-dropodown-button',
-  templateUrl: './dropdown-button.html',
-  styleUrls: ['./dropdown-button.scss'],
-  animations : [ DropDownButtonAnimation ]
+  selector: 'fiiz-dropdown',
+  templateUrl: './dropdown.html',
+  styleUrls: ['./dropdown.scss'],
+  animations : [ DropDownAnimation ]
 })
-export class DropDownButtonComponent implements OnInit {
+export class FiizDropDownComponent implements OnInit {
 
-    @Input('items') items:IDropDownMenuItemAnchor[] | IDropDownMenuItemButton[] | IDropDownMenuItemForm[];
+    @Input('items') items:IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | IDropDownMenuItemForm[];
     @Input('position') position:string = 'top-right';
     @Input('title') title!:string;
     @Input('type') type!:string;

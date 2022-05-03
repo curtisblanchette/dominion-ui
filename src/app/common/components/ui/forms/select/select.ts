@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { first, firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -9,16 +9,16 @@ export interface DropdownItem {
 }
 
 @Component({
-  selector: 'fiiz-dropdown',
-  templateUrl: './dropdown.html',
-  styleUrls: ['./dropdown.scss'],
+  selector: 'fiiz-select',
+  templateUrl: './select.html',
+  styleUrls: ['./select.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => FiizDropdownComponent),
+    useExisting: forwardRef(() => FiizSelectComponent),
     multi: true
   }]
 })
-export class FiizDropdownComponent implements ControlValueAccessor, OnInit {
+export class FiizSelectComponent implements ControlValueAccessor, OnInit {
 
   @Input('items') items$: Observable<DropdownItem[]>;
   @Input('label') public label: string | undefined;

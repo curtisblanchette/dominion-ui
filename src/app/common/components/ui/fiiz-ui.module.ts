@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   FiizInputPercentageComponent,
-  FiizDropdownComponent,
+  FiizSelectComponent,
   FiizDatePickerComponent,
   FiizDatePickerDirective,
   FiizMaxDateDirective,
@@ -18,8 +18,8 @@ import { FiizToggleComponent } from './forms/toggle/toggle';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { FiizInputCurrencyComponent } from './forms/input-currency';
-import { FiizBigButtonComponent } from './big-button/index';
-import { DropDownButtonComponent } from './dropdown-button/index';
+import { FiizBigButtonComponent } from './big-button';
+import { FiizDropDownComponent } from './dropdown';
 import { FiizListComponent } from './list/list.component';
 import { FiizDataComponent } from './data/data.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -27,7 +27,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 @NgModule({
   declarations: [
     FiizPillComponent,
-    FiizDropdownComponent,
+    FiizDropDownComponent,
     FiizInputPercentageComponent,
     FiizInputCurrencyComponent,
     FiizCardComponent,
@@ -43,7 +43,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     AutofocusDirective,
     ProgressBarComponent,
     FiizBigButtonComponent,
-    DropDownButtonComponent,
+    FiizSelectComponent,
+    FiizDropDownComponent,
     FiizListComponent,
     FiizDataComponent
   ],
@@ -58,7 +59,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
   exports: [
     // FiizPageHeaderComponent,
     FiizPillComponent,
-    FiizDropdownComponent,
     FiizInputPercentageComponent,
     FiizInputCurrencyComponent,
     FiizCardComponent,
@@ -74,7 +74,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     AutofocusDirective,
     ProgressBarComponent,
     FiizBigButtonComponent,
-    DropDownButtonComponent,
+    FiizSelectComponent,
+    FiizDropDownComponent,
     FiizListComponent,
     FiizDataComponent
   ]

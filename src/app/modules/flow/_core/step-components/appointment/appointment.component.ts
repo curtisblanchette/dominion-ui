@@ -12,11 +12,11 @@ import * as fromApp from '../../../../../store/app.reducer';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-appointment',
+  selector: 'flow-appointment',
   templateUrl: './appointment.component.html',
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
-export class AppointmentComponent extends EntityCollectionComponentBase implements OnInit {
+export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit {
 
   public timeZone:any = 'America/New_York';
 	public duration:any = 30;

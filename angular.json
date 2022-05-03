@@ -35,7 +35,10 @@
               "./node_modules/ngx-toastr/toastr.css",
               "src/assets/css/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "rxjs-compat"
+            ]
           },
           "configurations": {
             "production": {

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FlowComponent } from "./flow.component";
 import { FlowService } from "./flow.service";
 import { FlowRouting } from "./flow.routing";
-import { FlowDataComponent, FlowAppointmentComponent, FlowIntroComponent, FlowListComponent, FlowTextComponent, FlowNotesComponent, FlowTimelineComponent } from './_core';
+import { FlowDataComponent, FlowIntroComponent, FlowListComponent, FlowTextComponent, FlowNotesComponent, FlowTimelineComponent, FlowAppointmentComponent } from './_core';
 import { CommonModule } from "@angular/common";
 import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
 import { StoreModule } from '@ngrx/store';
