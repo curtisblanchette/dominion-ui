@@ -1,5 +1,5 @@
 <section class="flow-timeline">
-  <div class="flow-timeline__item" *ngFor="let step of steps$ | async; let i = index" [ngClass]="{'active': step.id === (currentStep$ | async)?.id }" (click)="onClick(step.id)">
+  <div class="flow-timeline__item" tabindex="0" *ngFor="let step of steps$ | async; let i = index" [ngClass]="{'active': step.id === (currentStep$ | async)?.id }" (click)="onClick(step.id)">
     <div class="flow-timeline__item__icon fa fa-{{step.nodeIcon}}"></div>
     <div class="flow-timeline__item__title">{{step.nodeText }}</div>
   </div>

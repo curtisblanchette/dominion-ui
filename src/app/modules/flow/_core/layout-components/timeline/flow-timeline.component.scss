@@ -1,3 +1,6 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
+
 
 :host {
   flex: 1;
@@ -29,6 +32,10 @@
 
     &:active, &.active {
       color: #C6CEED;
+    }
+
+    &:focus {
+      @include focusRing($focusring, $focusring-moz-mac);
     }
   }
 }

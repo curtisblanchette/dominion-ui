@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FlowService } from "./flow.service";
-import { FlowTransitions } from "./_core";
-import { FlowTimelineComponent } from './_core/layout-components';
+import { FlowTransitions, FlowTimelineComponent } from './_core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { Observable } from 'rxjs';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { IDropDownMenuItemButton } from '../../common/components/ui/dropdown-button/dropdown-button';
+import { Router } from '@angular/router';
+import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -37,7 +36,7 @@ export class FlowComponent implements OnInit, OnDestroy {
       }`
   };
 
-  public menuItems:IDropDownMenuItemButton[] = [
+  public menuItems: IDropDownMenuItem[] = [
     {
       label: 'Object',
       icon: 'fa-solid fa-gavel',

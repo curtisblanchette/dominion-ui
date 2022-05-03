@@ -7,16 +7,15 @@ import { IEvent } from '@4iiz/corev2';
 
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { FlowService } from '../../../flow.service';
-import { AppointmentService } from './service/appointment.service';
 import * as fromApp from '../../../../../store/app.reducer';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-appointment',
+  selector: 'flow-appointment',
   templateUrl: './appointment.component.html',
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
-export class AppointmentComponent extends EntityCollectionComponentBase implements OnInit {
+export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit {
 
   public timeZone:any = 'America/New_York';
 	public duration:any = 30;
@@ -33,16 +32,18 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     public flowService: FlowService,
     public store:Store<fromApp.AppState>,
-    public apptService:AppointmentService,
     public renderer:Renderer2
   ) {
     super(router, entityCollectionServiceFactory);
 
-    this.data$.subscribe(data => {
-      if(data.length > 1) {
-        console.log(data);
-      }
-    });
+    if (this.data$) {
+      this.data$.subscribe((res: any) => {
+        if (!this.loading$ && this.loaded$ && res.length === 0) {
+          // we only want to query if the cache doesn't return a record
+        }
+      });
+    }
+    
   }
 
   async ngOnInit(): Promise<any> {
@@ -51,34 +52,45 @@ export class AppointmentComponent extends EntityCollectionComponentBase implemen
 
     this.duration = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('duration')));
     this.dayStart = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_start')));
-    this.dayEnd =await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_end')));
+    this.dayEnd = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_end')));
     this.timeZone = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('timezone')));
 
     await this.getData( [day1, day2] );
+    await this.createTimeSlots();
   }
 
   async getData( dates:Array<string> ){
     dates.forEach( date => {
-      this.apptService.getEvents( date ).subscribe( data => {
+      const pattern = {'date': date};
+      this._dynamicService.setFilter(pattern);
+      this._dynamicService.getWithQuery(pattern);
+    })
+  }
 
-        let bookedSlots:Array<any> = data.rows.map((appt: IEvent) => dayjs(appt.startTime));
-        let freeSlots:Array<any> = [];
+  public async createTimeSlots(){
+    this.data$.subscribe((data: any) => {
+      let bookedSlots:Array<any> = [];
+      let freeSlots:Array<any> = [];
+      
+      if( data.length ) {
+        bookedSlots = data.rows.map((appt: IEvent) => dayjs(appt.startTime));      
+      }
 
-        let startTime = dayjs().startOf('day').add(this.dayStart.value, this.dayStart.unit);
-        const endTime = dayjs().startOf('day').add(this.dayEnd.value, this.dayEnd.unit);
-
-        while( endTime.diff(startTime, 'h') > 0 ){
-          const find = bookedSlots.filter( slot => { return startTime.diff(slot, 'm') == 0 });
-          if( !find.length ){
-            freeSlots.push( startTime.format('hh:mm a') );
-          }
-          startTime = startTime.add(this.duration.value, this.duration.unit);
+      let startTime = dayjs().startOf('day').add(this.dayStart.value, this.dayStart.unit);
+      const endTime = dayjs().startOf('day').add(this.dayEnd.value, this.dayEnd.unit);
+      
+      while( endTime.diff(startTime, 'h') > 0 ){
+        const find = bookedSlots.filter( slot => { return startTime.diff(slot, 'm') == 0 });
+        if( !find.length ){
+          freeSlots.push( startTime.format('hh:mm a') );
         }
-        let day:string = dayjs(date).format('dddd MMMM D, YYYY');
-        this.timeSlots.push( {[day] : freeSlots} );
-      });
-    });
+        startTime = startTime.add(this.duration.value, this.duration.unit);
+      }
 
+      // let day:string = dayjs(date).format('dddd MMMM D, YYYY');
+      let day:string = dayjs().format('dddd MMMM D, YYYY');
+      this.timeSlots.push( {[day] : freeSlots} );  
+    });     
   }
 
   public setEventTime( event:any ){
