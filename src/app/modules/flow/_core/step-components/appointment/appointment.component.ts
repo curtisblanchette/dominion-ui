@@ -43,42 +43,41 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         }
       });
     }
-    
+
   }
 
   async ngOnInit(): Promise<any> {
-    const day1 = dayjs().add(1,'day').format('YYYY-MM-DD');
-    const day2 = dayjs().add(2,'day').format('YYYY-MM-DD');
+    const startDate = dayjs().add(1,'day').format('YYYY-MM-DD');
+    const endDate = dayjs().add(2,'day').format('YYYY-MM-DD');
 
     this.duration = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('duration')));
     this.dayStart = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_start')));
     this.dayEnd = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_end')));
     this.timeZone = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('timezone')));
 
-    await this.getData( [day1, day2] );
+    await this.getData( startDate, endDate );
     await this.createTimeSlots();
   }
 
-  async getData( dates:Array<string> ){
-    dates.forEach( date => {
-      const pattern = {'date': date};
+  async getData( startDate: string, endDate: string ) {
+
+      const pattern = { startDate, endDate };
       this._dynamicService.setFilter(pattern);
       this._dynamicService.getWithQuery(pattern);
-    })
   }
 
   public async createTimeSlots(){
     this.data$.subscribe((data: any) => {
       let bookedSlots:Array<any> = [];
       let freeSlots:Array<any> = [];
-      
+
       if( data.length ) {
-        bookedSlots = data.rows.map((appt: IEvent) => dayjs(appt.startTime));      
+        bookedSlots = data.rows.map((appt: IEvent) => dayjs(appt.startTime));
       }
 
       let startTime = dayjs().startOf('day').add(this.dayStart.value, this.dayStart.unit);
       const endTime = dayjs().startOf('day').add(this.dayEnd.value, this.dayEnd.unit);
-      
+
       while( endTime.diff(startTime, 'h') > 0 ){
         const find = bookedSlots.filter( slot => { return startTime.diff(slot, 'm') == 0 });
         if( !find.length ){
@@ -89,8 +88,8 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
       // let day:string = dayjs(date).format('dddd MMMM D, YYYY');
       let day:string = dayjs().format('dddd MMMM D, YYYY');
-      this.timeSlots.push( {[day] : freeSlots} );  
-    });     
+      this.timeSlots.push( {[day] : freeSlots} );
+    });
   }
 
   public setEventTime( event:any ){

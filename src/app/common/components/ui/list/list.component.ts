@@ -112,7 +112,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
-      const pattern = {'q': formValues.key.toLowerCase()}
+      const pattern = { q: formValues.key.toLowerCase() };
       this._dynamicService.setFilter(pattern); // this is to get the right filteredEntities$ subset
       this._dynamicService.getWithQuery(pattern); // this performs the API call
     } else {
