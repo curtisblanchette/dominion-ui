@@ -102,19 +102,20 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
         return event.target.value;
       }),
       filter(res => res.length > 2),
-      debounceTime(350),
+      debounceTime(250),
       distinctUntilChanged()
     ).subscribe((text: string) => {
       this.searchInModule();
     });
   }
 
+
   public searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
       const pattern = { q: formValues.key.toLowerCase() };
-      this._dynamicService.setFilter(pattern); // this is to get the right filteredEntities$ subset
-      this._dynamicService.getWithQuery(pattern); // this performs the API call
+      this._dynamicService.setFilter(pattern); // this modifies filteredEntities$ subset
+      this._dynamicService.getWithQuery(pattern); // this performs an API call
     } else {
       console.warn('Form not valid');
       return of([]);
