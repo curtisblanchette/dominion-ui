@@ -21,13 +21,5 @@
             </li>
         </ng-template>
 
-        <ng-template [ngIf]="type === 'form'" >
-            <li *ngFor="let item of items; let i = index; let last = 'last' " [ngClass]="{'divider': last !=='last', 'selected': item.value === selected, 'disabled' : item.disabled}">
-                <a (click)="!item.disabled && setFormValue(item, i, $event)">
-                    {{item.label}}
-                </a>
-            </li>
-        </ng-template>
-
     </ul>
 </div>

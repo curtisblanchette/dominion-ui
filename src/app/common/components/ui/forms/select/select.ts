@@ -1,6 +1,9 @@
 import { Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnInit, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { DropDownButtonAnimation } from '../../dropdown-button/dropdown.animations';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -16,22 +19,36 @@ export interface DropdownItem {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => FiizSelectComponent),
     multi: true
-  }]
+  }],
+  animations : [
+    DropDownButtonAnimation
+  ]
 })
 export class FiizSelectComponent implements ControlValueAccessor, OnInit {
 
   @Input('items') items$: Observable<DropdownItem[]>;
-  @Input('label') public label: string | undefined;
+  @Input('label') public label: string | number | boolean | undefined;
   @Input('id') id!: string;
   @Input('size') size!: 'small' | 'large';
-  @Input('showDefault') showDefault = false;
+  @Input('default') default:string | number | boolean;
   @Input('autofocus') autofocus = false;
+  @Input('position') position:string = 'bottom-right';
 
   @HostBinding('attr.disabled')
   isDisabled = false;
 
-  // selected!: DropdownItem;
-  selected!: any;
+  @HostListener('click', ['$event'])
+  clickInside($event: Event) {
+    $event.stopPropagation();
+    this.toggle();
+  }
+
+  @HostListener('document:click')
+  clickOutside() {
+    this.showDropDowns = false;
+  }
+
+  public showDropDowns:boolean = false;
 
   onChange: (value: DropdownItem) => void = () => {};
   onTouched: Function = () => {};
@@ -41,11 +58,24 @@ export class FiizSelectComponent implements ControlValueAccessor, OnInit {
   }
 
   async ngOnInit() {
-
+    if( this.default ){
+      this.label = this.default;
+    }
   }
 
+  public toggle() {
+    this.showDropDowns = !this.showDropDowns;
+  }
+
+  public setFormValue( item:DropdownItem, index:number, event:any){
+    this.label = item.label;
+    this.default = item.id;
+  }
+
+  async ngAfterViewInit() {}
+
   writeValue(value: DropdownItem) {
-    this.selected = value;
+
   }
 
   registerOnChange(fn: any) {

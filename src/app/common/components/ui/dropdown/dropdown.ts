@@ -10,7 +10,7 @@ export interface IDropDownMenu extends DropdownItem {
 export interface IDropDownMenu {
   type:string;
   title?:string;
-  items: IDropDownMenuItemAnchor | IDropDownMenuItem | IDropDownMenuItemForm;
+  items: IDropDownMenuItemAnchor | IDropDownMenuItemButton | IDropDownMenuItemForm;
   position?:string;
 }
 
@@ -24,13 +24,6 @@ export interface IDropDownMenuItem {
   label:string;
   icon: string;
   emitterValue:string;
-}
-
-export interface IDropDownMenuItemForm {
-  label:string;
-  value: number | string | boolean;
-  disabled?: boolean;
-  default?:boolean;
 }
 
 @Component({
@@ -74,16 +67,6 @@ export class FiizDropDownComponent implements OnInit {
 
     public toggle() {
       this.showDropDowns = !this.showDropDowns;
-    }
-
-    public setFormValue( item:IDropDownMenuItemForm, index:number, event:any ){
-      this.title = item.label;
-      this.selected = item.value;
-      if( item.default ){
-        item.default = false;
-        this.items[index] = item;
-      }
-      console.log(this.items);
     }
 
   }
