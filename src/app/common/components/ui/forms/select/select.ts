@@ -1,9 +1,7 @@
-import { Component, forwardRef, HostBinding, Input, OnInit } from '@angular/core';
-import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnInit, HostListener } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input, OnInit, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable } from 'rxjs';
-import { Observable } from 'rxjs';
-import { DropDownButtonAnimation } from '../../dropdown-button/dropdown.animations';
+import { DropDownAnimation } from '../../dropdown';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -21,10 +19,12 @@ export interface DropdownItem {
     multi: true
   }],
   animations : [
-    DropDownButtonAnimation
+    DropDownAnimation
   ]
 })
 export class FiizSelectComponent implements ControlValueAccessor, OnInit {
+  public selected!: any;
+
 
   @Input('items') items$: Observable<DropdownItem[]>;
   @Input('label') public label: string | number | boolean | undefined;
@@ -33,6 +33,7 @@ export class FiizSelectComponent implements ControlValueAccessor, OnInit {
   @Input('default') default:string | number | boolean;
   @Input('autofocus') autofocus = false;
   @Input('position') position:string = 'bottom-right';
+  @Input('showDefault') showDefault!: boolean;
 
   @HostBinding('attr.disabled')
   isDisabled = false;

@@ -10,7 +10,7 @@ export interface IDropDownMenu extends DropdownItem {
 export interface IDropDownMenu {
   type:string;
   title?:string;
-  items: IDropDownMenuItemAnchor | IDropDownMenuItemButton | IDropDownMenuItemForm;
+  items: IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[];
   position?:string;
 }
 
@@ -34,7 +34,7 @@ export interface IDropDownMenuItem {
 })
 export class FiizDropDownComponent implements OnInit {
 
-    @Input('items') items:IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | IDropDownMenuItemForm[];
+    @Input('items') items:IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[];
     @Input('position') position:string = 'top-right';
     @Input('title') title!:string;
     @Input('type') type!:string;

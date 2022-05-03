@@ -24,6 +24,10 @@ body {
 
 a {
   color: $text1;
+
+  &:focus {
+    @include focusRing($focusring, $focusring-moz-mac);
+  }
 }
 
 .container {

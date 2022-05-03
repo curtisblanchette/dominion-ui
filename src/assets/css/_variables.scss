@@ -29,6 +29,9 @@ $button-border-radius: 6px;
 
 $form-control-shadow: 0 2px 5px 0 rgba(0, 0, 0, .22);
 
+$focusring: inset 0 0 1px 2px $blue3;
+$focusring-moz-mac:  inset 0 0 0 1px -moz-mac-focusring;
+
 $ctmWidgetPaneSize: 382px;
 
 $input-margin-bottom: 14px;
