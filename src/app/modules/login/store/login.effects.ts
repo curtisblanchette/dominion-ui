@@ -95,29 +95,32 @@ export class LoginEffects {
         map((action: { payload: User }) => action.payload),
         tap((action: User) => {
 
-          this.http.get(environment.dominion_api_url + '/users/me').pipe(
-            map((res: any) => {
-              // merge the two user records
-              const merged = {...action, ...res};
-              const user = new User(
-                action.access_token,
-                action.id_token,
-                action.refresh_token,
-                action.role,
-                res.username,
-                action.picture,
-                res.id,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                res.firstName,
-                res.lastName
-              );
-              this.store.dispatch(loginActions.UpdateUserAction({payload: merged}));
-            })
-          ).subscribe();
+          if(!action.role.includes('system')) {
+            this.http.get(environment.dominion_api_url + '/users/me').pipe(
+              map((res: any) => {
+                // merge the two user records
+                const merged = {...action, ...res};
+                const user = new User(
+                  action.access_token,
+                  action.id_token,
+                  action.refresh_token,
+                  action.role,
+                  res.username,
+                  action.picture,
+                  res.id,
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  undefined,
+                  res.firstName,
+                  res.lastName
+                );
+                this.store.dispatch(loginActions.UpdateUserAction({payload: merged}));
+              })
+            ).subscribe();
+          }
+
 
           switch (action.role[0]) {
             case 'system':

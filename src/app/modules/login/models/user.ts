@@ -14,7 +14,6 @@ export class User {
   firstName?: string;
   lastName?: string;
 
-
   constructor(
     picture: string,
     access_token: string,
@@ -48,6 +47,9 @@ export class User {
   }
 
   get fullName(): string {
+    if(this.role.includes('system')){
+      return 'System Administrator';
+    }
     return this.firstName + ' ' + this.lastName;
   }
 
