@@ -96,9 +96,25 @@ export class LoginEffects {
         tap((action: User) => {
 
           this.http.get(environment.dominion_api_url + '/users/me').pipe(
-            map((res) => {
+            map((res: any) => {
               // merge the two user records
-              const merged = {...action, ...res}
+              const merged = {...action, ...res};
+              const user = new User(
+                action.access_token,
+                action.id_token,
+                action.refresh_token,
+                action.role,
+                res.username,
+                action.picture,
+                res.id,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                res.firstName,
+                res.lastName
+              );
               this.store.dispatch(loginActions.UpdateUserAction({payload: merged}));
             })
           ).subscribe();
@@ -169,12 +185,22 @@ export class LoginEffects {
           const id_token = session.idToken.getJwtToken();
           const refresh_token = session.refreshToken.getToken();
 
-          const user: User = {
-            ...action.payload,
+          const user: User = new User(
+            action.payload.picture,
             access_token,
             id_token,
-            refresh_token
-          };
+            refresh_token,
+            action.payload.role,
+            action.payload.username,
+            action.payload.id,
+            action.payload.language,
+            action.payload.timezone,
+            action.payload.email,
+            action.payload.workspace,
+            action.payload.calendarType,
+            action.payload.firstName,
+            action.payload.lastName
+          );
 
           return loginActions.UpdateUserAction({ payload: user });
         })

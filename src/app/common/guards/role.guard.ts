@@ -16,14 +16,14 @@ export class RoleGuard implements CanActivate {
     public store: Store<fromLogin.LoginState>,
     public router: Router
   ) {
-    this.user$ = this.store.select(fromLogin.selectLoginUser);
+    this.user$ = this.store.select(fromLogin.selectUser);
   }
 
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let roles = route.data['roles'] as Array<string>;
 
-    return this.store.select(fromLogin.selectLoginUser).pipe(
+    return this.store.select(fromLogin.selectUser).pipe(
       map((user) => {
         if (user !== null) {
           return roles.some(r=> user.role.includes(r));

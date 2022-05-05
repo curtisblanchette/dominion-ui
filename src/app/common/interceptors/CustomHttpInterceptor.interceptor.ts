@@ -31,7 +31,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       }
     });
 
-    this.store.select(fromLogin.selectLoginUser).subscribe((user: any) => {
+    this.store.select(fromLogin.selectUser).subscribe((user: any) => {
       if (user) {
         this.loggedUser = user as User;
         this.refreshTokenSubject.next(true);

@@ -61,7 +61,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ) {
 
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
-    this.store.select(fromLogin.selectLoginUser).subscribe((user) => {
+    this.store.select(fromLogin.selectUser).subscribe((user) => {
       if (user) {
         this.loggedUser = user as User
         // TODO will likely have to test for more than the first role

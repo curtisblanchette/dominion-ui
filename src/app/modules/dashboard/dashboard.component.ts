@@ -25,16 +25,16 @@ export interface IDashboardButton {
 })
 export class DashboardComponent implements OnInit {
 
-  public loggedUser!: User;
+  public user!: User;
   public quickStartMenu: IDashboardButton[] = [];
   public supportMenu: IDashboardButton[] = buttons.support.get();
 
   constructor(
     private store: Store<fromLogin.LoginState>
   ) {
-    this.store.select(fromLogin.selectLoginUser).subscribe((user: any) => {
+    this.store.select(fromLogin.selectUser).subscribe((user: any) => {
       if (user) {
-        this.loggedUser = user as User;
+        this.user = user as User;
         this.quickStartMenu = buttons.user.get(user.role);
       }
     });
