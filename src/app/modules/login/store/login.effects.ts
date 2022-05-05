@@ -37,20 +37,22 @@ export class LoginEffects {
         mergeMap((action) => {
 
             return this.loginService.login(action.payload).then((response: any) => {
-              const accessToken = response.accessToken.getJwtToken();
-              const idToken = response.idToken.getJwtToken();
-              const refreshToken = response.refreshToken.getToken();
-              const cognitoGroup = response.idToken.payload['cognito:groups'];
-              const cognitoUsername = response.idToken.payload['cognito:username'];
+              const access_token = response.accessToken.getJwtToken();
+              const id_token = response.idToken.getJwtToken();
+              const refresh_token = response.refreshToken.getToken();
+              const role = response.idToken.payload['cognito:groups'];
+              const email = response.idToken.payload['cognito:email'];
+              const id = response.idToken.payload['cognito:username'];
               const workspaceId = response.idToken.payload['custom:workspaceId'];
-              const user = new User(
-                'assets/img/default-avatar.png',
-                accessToken,
-                idToken,
-                refreshToken,
-                cognitoGroup,
-                cognitoUsername
-              );
+              const user = new User({
+                picture: 'assets/img/default-avatar.png',
+                access_token,
+                id_token,
+                refresh_token,
+                role,
+                id,
+                username: email,
+              });
               localStorage.setItem('user', btoa(JSON.stringify(user)));
               return loginActions.LoginSuccessfulAction({payload: user});
             }).catch(e => {
@@ -99,24 +101,8 @@ export class LoginEffects {
             this.http.get(environment.dominion_api_url + '/users/me').pipe(
               map((res: any) => {
                 // merge the two user records
-                const merged = {...action, ...res};
-                const user = new User(
-                  action.access_token,
-                  action.id_token,
-                  action.refresh_token,
-                  action.role,
-                  res.username,
-                  action.picture,
-                  res.id,
-                  undefined,
-                  undefined,
-                  undefined,
-                  undefined,
-                  undefined,
-                  res.firstName,
-                  res.lastName
-                );
-                this.store.dispatch(loginActions.UpdateUserAction({payload: merged}));
+                const user = new User({...action, ...res});
+                this.store.dispatch(loginActions.UpdateUserAction({payload: user}));
               })
             ).subscribe();
           }
@@ -188,22 +174,12 @@ export class LoginEffects {
           const id_token = session.idToken.getJwtToken();
           const refresh_token = session.refreshToken.getToken();
 
-          const user: User = new User(
-            action.payload.picture,
+          const user: User = new User({
+            ...action.payload,
             access_token,
             id_token,
-            refresh_token,
-            action.payload.role,
-            action.payload.username,
-            action.payload.id,
-            action.payload.language,
-            action.payload.timezone,
-            action.payload.email,
-            action.payload.workspace,
-            action.payload.calendarType,
-            action.payload.firstName,
-            action.payload.lastName
-          );
+            refresh_token
+          });
 
           return loginActions.UpdateUserAction({ payload: user });
         })

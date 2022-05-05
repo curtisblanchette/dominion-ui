@@ -37,21 +37,6 @@ export const selectLogin = createFeatureSelector<LoginState>('login');
 export const selectUser = createSelector(selectLogin, (state: LoginState) => {
     if(!state.user) { return null; }
 
-    return new User(
-      state.user.picture,
-      state.user.access_token,
-      state.user.id_token,
-      state.user.refresh_token,
-      state.user.role,
-      state.user.username,
-      state.user.id,
-      state.user.language,
-      state.user.timezone,
-      state.user.email,
-      state.user.workspace,
-      state.user.calendarType,
-      state.user.firstName,
-      state.user.lastName
-    );
+    return new User(state.user);
 
 });
