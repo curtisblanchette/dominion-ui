@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, of, tap, throwError } from 'rxjs';
+import { map, mergeMap, of, tap, throwError } from 'rxjs';
 
 import * as appActions from '../../../store/app.actions';
 import * as loginActions from './login.actions';
@@ -12,6 +12,8 @@ import { User } from '../models/user';
 import * as fromLogin from './login.reducer';
 import { CognitoService } from '../../../common/cognito/cognito.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class LoginEffects {
@@ -22,7 +24,8 @@ export class LoginEffects {
     private router: Router,
     private store: Store<fromLogin.LoginState>,
     private cognito: CognitoService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private http: HttpClient
   ) {
 
   }
@@ -40,7 +43,6 @@ export class LoginEffects {
               const cognitoGroup = response.idToken.payload['cognito:groups'];
               const cognitoUsername = response.idToken.payload['cognito:username'];
               const workspaceId = response.idToken.payload['custom:workspaceId'];
-
               const user = new User(
                 'assets/img/default-avatar.png',
                 accessToken,
@@ -91,7 +93,16 @@ export class LoginEffects {
       this.actions$.pipe(
         ofType(loginActions.LoginSuccessfulAction),
         map((action: { payload: User }) => action.payload),
-        tap((action) => {
+        tap((action: User) => {
+
+          this.http.get(environment.dominion_api_url + '/users/me').pipe(
+            map((res) => {
+              // merge the two user records
+              const merged = {...action, ...res}
+              this.store.dispatch(loginActions.UpdateUserAction({payload: merged}));
+            })
+          ).subscribe();
+
           switch (action.role[0]) {
             case 'system':
               this.router.navigate(['system'])
@@ -110,7 +121,7 @@ export class LoginEffects {
               break;
           }
         }),
-        mergeMap( async ( action ) => {
+        mergeMap( async ( action: User ) => {
 
           // system users won't get settings yet
           // because settings are workspace specific
@@ -135,8 +146,6 @@ export class LoginEffects {
       ),
     { dispatch: false }
   );
-
-
 
   updateUserSuccess$ = createEffect(
     (): any =>

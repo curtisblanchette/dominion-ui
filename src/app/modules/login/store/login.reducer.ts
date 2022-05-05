@@ -28,8 +28,6 @@ export const reducer = createReducer(
   on(loginActions.LoginSuccessfulAction, (state, {payload}) => ({...state, user: payload, error: null})),
   on(loginActions.LoginErrorAction, (state, {error}) => ({...state, user: null, error: error})),
   on(loginActions.UpdateUserAction, (state, {payload}) => ({...state, user: payload, error: null})),
-  on(loginActions.SetAgentRecord, (state, {payload}) => ({...state, agent: payload})),
-  on(loginActions.SetWorkspaceRecord, (state, {payload}) => ({...state, workspace: payload})),
   on(loginActions.LogoutAction, (state) => ({...state, user: null, agent: null, workspace: null})),
   on(loginActions.RefreshTokenAction, (state) => ({...state}))
 );

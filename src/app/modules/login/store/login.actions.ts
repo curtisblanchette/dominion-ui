@@ -5,9 +5,8 @@ export const ActionTypes = {
     LOGIN: '[Login] Login',
     LOGIN_SUCCESSFUL: '[Login] Login Successful',
     LOGIN_ERROR:'[Login] Login Error',
+    FETCH_USER: '[Login] Fetch User Record',
     UPDATE_RECORD:'[Login] Update User',
-    SET_AGENT_RECORD: '[Login] Set agent record (if exists)',
-    SET_WORKSPACE_RECORD: '[Login] Set workspace record',
     LOGOUT: '[Login] Logout',
     REFRESH_TOKEN: '[Login] Refresh Token'
 };
@@ -35,16 +34,6 @@ export const LoginErrorAction = createAction(
 
 export const UpdateUserAction = createAction(
     ActionTypes.UPDATE_RECORD,
-    props<{ payload: User }>()
-)
-
-export const SetAgentRecord = createAction(
-    ActionTypes.SET_AGENT_RECORD,
-    props<{ payload: User }>()
-);
-
-export const SetWorkspaceRecord = createAction(
-    ActionTypes.SET_WORKSPACE_RECORD,
     props<{ payload: User }>()
 );
 
