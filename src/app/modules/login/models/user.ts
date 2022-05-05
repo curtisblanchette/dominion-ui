@@ -42,8 +42,8 @@ export class User {
     this.timezone = timezone;
     this.email = email;
     this.calendarType = calendarType;
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.firstName = firstName || '';
+    this.lastName = lastName || '';
   }
 
   get fullName(): string {
