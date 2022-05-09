@@ -42,6 +42,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/system/system.module').then(m => m.SystemModule)
   },
   {
+    path: 'data',
+    canActivate: [RoleGuard],
+    data: { roles: ['system', 'admin', 'owner'] },
+    loadChildren: () => import('./modules/data/data.module').then(m => m.DataModule)
+  },
+  {
     path: '**',
     pathMatch : 'full',
     component : PageNotFoundComponent

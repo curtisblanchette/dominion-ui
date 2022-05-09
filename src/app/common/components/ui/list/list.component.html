@@ -1,91 +1,79 @@
-<div class="flex_main_wrapper">
+<div class="list-wrapper">
+  <form [formGroup]="searchForm" id="search-form" class="list-wrapper__form">
+    
+    <div #SearchInput class="list-wrapper__form__fields" [ngStyle]="{'min-width': searchOnly ? '100%' : '50%' }">
+      <fiiz-input id="search" icon="fa-search" formControlName="key" type="text" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
+    </div>
 
-  <p class="dictation">Thank you for calling the Law Offices of Diener Law, this is Miguel, how may I assist you today?</p>
+    <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style="width: 3%;"></div>
 
-  <div class="flex_main_wrapper__filter-container" *ngIf="searchable">
-    <form [formGroup]="searchForm" id="search-form">
-      <div class="filter-input" #SearchInput>
-        <fiiz-input id="search" icon="fa-search" formControlName="key" type="text" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
-      </div>
-    </form>
-  </div>
+    <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style="width: 7%;">
+      <button class="">Edit</button>
+    </div>      
 
-  <ng-container [ngTemplateOutlet]="table" *ngIf="state?.module && data$ | async"></ng-container>
-  <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
-  <ng-container [ngTemplateOutlet]="initial" *ngIf="state?.module && !(loaded$ | async)"></ng-container>
-
-  <ng-template #table>
-    <div class="flex-table">
-      <div class="flex-table__header">
-        <div class="flex-table__cell" style="flex-grow : 10">&nbsp;</div>
-        <div class="flex-table__cell" style="flex-grow : 30">Name</div>
-        <div class="flex-table__cell" style="flex-grow : 30">Phone</div>
-        <div class="flex-table__cell" style="flex-grow : 30">Email</div>
-      </div>
-      <div class="flex-table__body" style="height: calc(100% - 38px); overflow-x: hidden;">
-        <div class="flex-table__row"
-             tabindex="0" #row
-             (mousedown)="onClick($event, item)"
-             (focusin)="onFocusIn($event, item)"
-             (focusout)="onFocusOut($event)"
-             [ngClass]="{'active': this.flowService.cache[this.module]?.id === item.id}"
-             *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: (count$ | async) }; let i = index;">
-          <label [for]="item.id" style="display: flex; width: 100%;">
-            <div class="flex-table__cell" style="flex-grow : 10;">
-              <div style="align-self: center; justify-content: center;">
-                <input name="recordId" id="{{item.id}}" [checked]="flowService.cache[module]?.id === item?.id" [value]="item?.id" type="radio">
-                <span class="customRadio"></span>
-              </div>
-            </div>
-            <div class="flex-table__cell" style="flex-grow : 30;">
-              <div style="align-self: start;">{{item.firstName}} {{item.lastName}}</div>
-            </div>
-            <div class="flex-table__cell" style="flex-grow : 30;">
-              <div style="align-self: start;">{{item.phone}}</div>
-            </div>
-            <div class="flex-table__cell" style="flex-grow : 30;">
-              <div style="align-self: start;">{{item.email}}</div>
-            </div>
-          </label>
-        </div>
-      </div>
-      <div class="flex-table__footer">
-        <pagination-controls
-          previousLabel="Prev"
-          nextLabel="Next"
-          responsive="true"
-          directionLinks="true"
-          autoHide="true"
-          screenReaderPaginationLabel="Pagination"
-          screenReaderPageLabel="page"
-          screenReaderCurrentLabel="You're on page"
-          maxSize="5"
-          (pageChange)="handlePageChange($event)">
-        </pagination-controls>
+    <div *ngIf="!searchOnly && menuItems.length" class="list-wrapper__form__fields" style="width: 10%;">
+      <div style="position: absolute; z-index: 1;">
+        <fiiz-dropdown
+          type="button"
+          [items]="menuItems"
+          position="bottom-right"
+          title="Actions"
+        ></fiiz-dropdown>
       </div>
     </div>
 
-  </ng-template>
-
-  <ng-template #noDataFound>
-    <div class="message-block" style="padding-top: 5%;">
-      We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
-    </div>
-    <div class="message-block">
-      <span>Try another search term or create a new lead.</span>
-    </div>
-    <div class="message-block" style="padding-top: 4%;">
+    <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style="width: 20%;">
       <button class="primary">Create New Lead</button>
     </div>
-  </ng-template>
 
-  <ng-template #initial>
-    <div class="message-block" style="padding-top: 5%;">
-      Search {{ pluralModuleName }}
-    </div>
-    <div class="message-block">
-      <span>You can search by name, phone number or email.</span>
-    </div>
-  </ng-template>
+  </form>
+</div>
 
+<div class="flex-table">
+  <div class="flex-table__header">
+    <div class="flex-table__cell" style="flex-grow : 10">&nbsp;</div>
+    <div class="flex-table__cell" style="flex-grow : 30">Name</div>
+    <div class="flex-table__cell" style="flex-grow : 30">Phone</div>
+    <div class="flex-table__cell" style="flex-grow : 30">Email</div>
+  </div>
+  <div class="flex-table__body" style="height: calc(100% - 38px); overflow-x: hidden;">
+    <div class="flex-table__row"
+          tabindex="0" #row
+          (mousedown)="onClick($event, item)"
+          (focusin)="onFocusIn($event, item)"
+          (focusout)="onFocusOut($event)"          
+          *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: (count$ | async) }; let i = index;">
+      <label [for]="item.id" style="display: flex; width: 100%;">
+        <div class="flex-table__cell" style="flex-grow : 10;">
+          <div style="align-self: center; justify-content: center;">
+            <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
+            <span class="customRadio"></span>
+          </div>
+        </div>
+        <div class="flex-table__cell" style="flex-grow : 30;">
+          <div style="align-self: start;">{{item.firstName}} {{item.lastName}}</div>
+        </div>
+        <div class="flex-table__cell" style="flex-grow : 30;">
+          <div style="align-self: start;">{{item.phone}}</div>
+        </div>
+        <div class="flex-table__cell" style="flex-grow : 30;">
+          <div style="align-self: start;">{{item.email}}</div>
+        </div>
+      </label>
+    </div>
+  </div>
+  <div class="flex-table__footer">
+    <pagination-controls
+      previousLabel="Prev"
+      nextLabel="Next"
+      responsive="true"
+      directionLinks="true"
+      autoHide="true"
+      screenReaderPaginationLabel="Pagination"
+      screenReaderPageLabel="page"
+      screenReaderCurrentLabel="You're on page"
+      maxSize="5"
+      (pageChange)="handlePageChange($event)">
+    </pagination-controls>
+  </div>
 </div>

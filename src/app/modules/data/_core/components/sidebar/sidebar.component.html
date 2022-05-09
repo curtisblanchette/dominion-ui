@@ -1,0 +1,6 @@
+<section class="sidebar">
+    <div class="sidebar__item" [ngClass]="{'active': selected === module.path }" tabindex="0" *ngFor="let module of modules;" (click)="navigate(module.path)">
+        <div class="sidebar__item__icon fa fa-{{module.icon}}"></div>
+        <div class="sidebar__item__title">{{module.label }}</div>
+    </div>
+</section>

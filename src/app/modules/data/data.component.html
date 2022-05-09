@@ -1,0 +1,15 @@
+<div class="flow-layout">
+    <div class="flow-layout__main">
+        
+        <section class="flow-layout__sidebar">
+            <div>
+                <app-sidebar (onSelect)="goToModule($event)"></app-sidebar>
+            </div>
+        </section>
+
+        <section class="flow-layout__content">
+            <router-outlet name="aux"></router-outlet>            
+        </section>
+
+    </div>
+</div>
