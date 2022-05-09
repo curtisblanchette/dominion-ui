@@ -1,15 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
+import { FlowService } from '../../../flow.service';
 
 @Component({
   selector: 'flow-list',
-  template: `
-    <p class="dictation">Thank you for calling the Law Offices of Diener Law, this is Miguel, how may I assist you today?</p>
-    <fiiz-list></fiiz-list>
-  `,
-  styleUrls: ['../_base.scss']
+  templateUrl: './flow-list.component.html' ,
+  styleUrls: ['../_base.scss','./flow-list.component.scss']
 })
-export class FlowListComponent {
-  constructor() {
+export class FlowListComponent implements OnDestroy {
 
+  constructor( public flowService: FlowService ) {}
+
+  public ngOnDestroy(): void {
+    
   }
+
+  public EmitValues( value:any ){
+    console.log('Emitted Values ', value);
+  }
+
 }

@@ -24,6 +24,7 @@ import { reducer } from './store/app.reducer';
 import { AppEffects } from './store/app.effects';
 import { ToastrModule } from 'ngx-toastr';
 import { ErrorInterceptor } from './common/interceptors/Error.interceptor';
+import { DataModule } from './modules/data/data.module';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ErrorInterceptor } from './common/interceptors/Error.interceptor';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
+    DataModule
   ],
   providers: [
     {

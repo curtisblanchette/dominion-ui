@@ -1,24 +1,24 @@
-import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input, ViewChildren, QueryList, Renderer2 } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { fromEvent, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
-import { EntityCollectionServiceFactory, EntityServices } from '@ngrx/data';
+import { EntityCollectionServiceFactory} from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { IDropDownMenuItem } from '../dropdown/dropdown';
 
 @Component({
   selector: 'fiiz-list',
   templateUrl: 'list.component.html',
-  styleUrls: ['../../../../modules/flow/_core/step-components/_base.scss', 'list.component.scss']
+  styleUrls: ['list.component.scss']
 })
-export class FiizListComponent extends EntityCollectionComponentBase implements OnDestroy, AfterViewInit {
+export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
 
   public searchForm!: FormGroup;
-  @Input() searchable: boolean = true;
+  private SearchInput: ElementRef;
 
   // Pagination
   public perPage: number = 5;
@@ -26,35 +26,34 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public offset: number = 0;
   public totalRecords: number = 0;
   public selected: Lead | Contact | Event | Deal | null;
-  private SearchInput: ElementRef;
 
+  @Input('searchOnly') searchOnly: boolean;
+  @Input('moduleName') moduleName: boolean;
+  @Input('menuItems') menuItems:IDropDownMenuItem[] = [];
   @ViewChild('SearchInput') set content(content: ElementRef) {
     if (content) {
       this.SearchInput = content;
     }
   }
   @ViewChildren('row') rows: QueryList<ElementRef>
+  
+  @Output('values') values: EventEmitter<any> = new EventEmitter();
+  @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     private router: Router,
-    private renderer: Renderer2,
-    private entityServices: EntityServices,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     public flowService: FlowService
-  ) {
-    super(router, entityCollectionServiceFactory);
-
+  ) {    
+    super(router, entityCollectionServiceFactory);    
     if (this.data$) {
       this.data$.subscribe((res: Lead[]) => {
-        console.log(res);
         if (!this.loading$ && this.loaded$ && res.length === 0) {
           // we only want to query if the cache doesn't return a record
         }
       });
     }
-
 
     let form: { [key: string]: FormControl } = {};
     form['key'] = new FormControl('', Validators.required);
@@ -64,28 +63,37 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public onClick($event: any, record: any) {
     $event.preventDefault();
     if (this.selected?.id === record.id) {
-      this.flowService.cache[this.module] = null;
+      // this.flowService.cache[this.module] = null;
+      this.values.emit( { 'moduleName' : this.module, 'record' : record} );
       this.selected = null;
       return;
     }
     this.selected = record;
-    this.flowService.addToCache(this.module, record);
+    console.log('this.selected',this.selected);
+    // this.flowService.addToCache(this.module, record);
+    this.values.emit( { 'moduleName' : this.module, 'record' : record} );
   }
 
   public onFocusOut($event: any) {
     $event.preventDefault();
-    this.flowService.cache[this.module] = null;
+    // this.flowService.cache[this.module] = null;
+    this.values.emit( { 'moduleName' : this.module, 'record' : null } );
     this.selected = null;
   }
 
   public onFocusIn($event: any, record: any) {
     $event.preventDefault();
     this.selected = record;
-    this.flowService.addToCache(this.module, record);
+    // this.flowService.addToCache(this.module, record);
+    this.values.emit( { 'moduleName' : this.module, 'record' : record} );
   }
 
   public ngOnDestroy() {
     console.log(`[${this.module}] List Component Destroyed`);
+  }
+
+  public ngOnInit(){
+    
   }
 
   get pluralModuleName() {
@@ -101,7 +109,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       map((event: any) => {
         return event.target.value;
       }),
-      filter(res => res.length > 2),
+      // filter(res => res.length > 2),
       debounceTime(250),
       distinctUntilChanged()
     ).subscribe((text: string) => {
@@ -120,6 +128,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       console.warn('Form not valid');
       return of([]);
     }
+  }
+
+  public performAction( value:any ){
+    console.log('value to emit', value);
+    this.btnValue.emit(value);
   }
 
   public handlePageChange(pageNo: number) {
