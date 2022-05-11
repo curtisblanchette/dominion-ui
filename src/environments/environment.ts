@@ -8,7 +8,7 @@ export const environment = {
   support_url: 'https://desk.zoho.com/portal/4iizportal/home',
   cognito_userPoolId : 'us-east-1_vdnTDARJY',
   cognito_clientId : '39o4fsufibd00thi5c2a60o2bg',
-  acting_for: '01772871-f877-4ee2-930a-39f768cdc11e'
+  // acting_for: '01772871-f877-4ee2-930a-39f768cdc11e'
 };
 
 /*

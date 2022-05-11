@@ -2,8 +2,8 @@
 
     <p class="dictation">Thank you for calling the Law Offices of Diener Law, this is Miguel, how may I assist you today?</p>
 
-    <fiiz-list [searchOnly] ="true" moduleName="Leads" (values)="EmitValues($event)"></fiiz-list>
-    
+    <fiiz-list [options]="{searchable: true, editable: false, module: 'Leads'}" (values)="EmitValues($event)"></fiiz-list>
+
     <!-- <ng-container [ngTemplateOutlet]="table" *ngIf="state?.module && data$ | async"></ng-container> -->
     <!-- <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container> -->
     <!-- <ng-container [ngTemplateOutlet]="initial" *ngIf="state?.module && !(loaded$ | async)"></ng-container> -->
@@ -28,5 +28,5 @@
             <span>You can search by name, phone number or email.</span>
         </div>
     </ng-template>
-    
+
 </div>

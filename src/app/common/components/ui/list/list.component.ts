@@ -10,6 +10,12 @@ import { EntityCollectionServiceFactory} from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown/dropdown';
 
+export interface IListOptions {
+  searchable: boolean;
+  editable: boolean;
+  module: string;
+}
+
 @Component({
   selector: 'fiiz-list',
   templateUrl: 'list.component.html',
@@ -17,8 +23,8 @@ import { IDropDownMenuItem } from '../dropdown/dropdown';
 })
 export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
 
-  public searchForm!: FormGroup;
-  private SearchInput: ElementRef;
+  public searchForm: FormGroup;
+  // private SearchInput: ElementRef;
 
   // Pagination
   public perPage: number = 5;
@@ -27,66 +33,73 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public totalRecords: number = 0;
   public selected: Lead | Contact | Event | Deal | null;
 
-  @Input('searchOnly') searchOnly: boolean;
-  @Input('moduleName') moduleName: boolean;
-  @Input('loadInital') loadInital: boolean = false;
-  @Input('menuItems') menuItems:IDropDownMenuItem[] = [];
-  @ViewChild('SearchInput') set content(content: ElementRef) {
-    if (content) {
-      this.SearchInput = content;
-    }
-  }
-  @ViewChildren('row') rows: QueryList<ElementRef>
-  
+  // @ViewChild('SearchInput') searchInput: ElementRef;
+  @ViewChildren('row') rows: QueryList<ElementRef>;
+
+  @Input('options') options: IListOptions = { searchable: true, editable: false, module: 'lead'};
+  @Input('loadInitial') loadInitial: boolean = false;
+
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
+
+  public actionItems: IDropDownMenuItem[] = [
+    {
+      label: 'Delete',
+      icon: 'fa-solid fa-trash',
+      emitterValue : 'object'
+    },
+    {
+      label: 'Something',
+      icon: 'fa-brands fa-500px',
+      emitterValue : 'so-something'
+    }
+  ];
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     public flowService: FlowService
-  ) {    
-    super(router, entityCollectionServiceFactory);    
+  ) {
+    super(router, entityCollectionServiceFactory);
     if (this.data$) {
       this.data$.subscribe((res: Lead[]) => {
         if (!this.loading$ && this.loaded$ && res.length === 0) {
           // we only want to query if the cache doesn't return a record
         }
       });
-    }    
+    }
 
     let form: { [key: string]: FormControl } = {};
-    form['key'] = new FormControl('', Validators.required);
+    form['search'] = new FormControl('', Validators.required);
     this.searchForm = this.fb.group(form);
+
   }
 
   public onClick($event: any, record: any) {
     $event.preventDefault();
+
     if (this.selected?.id === record.id) {
-      // this.flowService.cache[this.module] = null;
-      this.values.emit( { 'moduleName' : this.module, 'record' : record} );
+      this.values.emit( { 'module' : this.module, 'record' : record });
       this.selected = null;
       return;
     }
+
     this.selected = record;
     console.log('this.selected',this.selected);
-    // this.flowService.addToCache(this.module, record);
-    this.values.emit( { 'moduleName' : this.module, 'record' : record} );
+    this.values.emit( { 'module' : this.module, 'record' : record });
   }
 
   public onFocusOut($event: any) {
     $event.preventDefault();
-    // this.flowService.cache[this.module] = null;
-    this.values.emit( { 'moduleName' : this.module, 'record' : null } );
+    this.values.emit( { 'module' : this.module, 'record' : null });
     this.selected = null;
   }
 
   public onFocusIn($event: any, record: any) {
     $event.preventDefault();
     this.selected = record;
-    // this.flowService.addToCache(this.module, record);
-    this.values.emit( { 'moduleName' : this.module, 'record' : record} );
+    this.values.emit( { 'module' : this.module, 'record' : record} );
   }
 
   public ngOnDestroy() {
@@ -94,11 +107,9 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngOnInit(){
-    if( this.loadInital ){
-      const pattern = { q : '' };
-      this._dynamicService.setFilter(pattern);
-      this._dynamicService.getWithQuery(pattern);
-    }
+    const pattern = { q : '' };
+    this._dynamicService.setFilter(pattern);
+    this._dynamicService.getWithQuery(pattern);
   }
 
   get pluralModuleName() {
@@ -110,23 +121,35 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngAfterViewInit() {
-    fromEvent(this.SearchInput.nativeElement.querySelector('input'), 'keyup').pipe(
-      map((event: any) => {
-        return event.target.value;
-      }),
-      // filter(res => res.length > 2),
-      debounceTime(250),
-      distinctUntilChanged()
-    ).subscribe((text: string) => {
-      this.searchInModule();
-    });
+    if(this.searchForm !== null) {
+      // @ts-ignore
+      this.searchForm.get('search').valueChanges.pipe(
+        // filter(res => res.length > 2),
+        debounceTime(250),
+        distinctUntilChanged()
+      ).subscribe((text: string) => {
+        this.searchInModule();
+      });
+    }
+
+    //
+    // fromEvent(this.searchForm.controls.nativeElement, 'keyup').pipe(
+    //   map((event: any) => {
+    //     return event.target.value;
+    //   }),
+    //   // filter(res => res.length > 2),
+    //   debounceTime(250),
+    //   distinctUntilChanged()
+    // ).subscribe((text: string) => {
+    //   this.searchInModule();
+    // });
   }
 
 
   public async searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
-      const pattern = { q: formValues.key.toLowerCase() };
+      const pattern = { q: formValues.search.toLowerCase() };
       this._dynamicService.setFilter(pattern); // this modifies filteredEntities$ subset
       this._dynamicService.getWithQuery(pattern); // this performs an API call
       await this.udpatePaginationParams();

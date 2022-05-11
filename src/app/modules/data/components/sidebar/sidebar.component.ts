@@ -11,15 +11,15 @@ import { menuAnimation, arrowAnimation } from './sidebar.animation';
 export class SidebarComponent implements OnInit {
 
   public selected:string;
-  
+
   @Output('onSelect') onSelect: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChildren('menuGroup') menuGroup: QueryList<ElementRef>;
 
   public menu:Array<any> = [
     {
-      'label' : 'Modules',
-      'childrens' : [
+      label : 'Modules',
+      children : [
         {
           label : 'Leads',
           path : 'lead',
@@ -27,30 +27,40 @@ export class SidebarComponent implements OnInit {
         },
         {
           label : 'Contacts',
-          path : 'Contact',
+          path : 'contact',
           icon : 'fa fa-address-book '
         },
         {
           label : 'Deals',
-          path : 'deals',
+          path : 'deal',
           icon : 'fa fa-address-book '
         },
         {
           label : 'Events',
-          path : 'events',
+          path : 'event',
           icon : 'fa fa-address-book '
         },
         {
           label : 'Calls',
-          path : 'calls',
+          path : 'call',
+          icon : 'fa fa-address-book '
+        },
+        {
+          label : 'Campaign',
+          path : 'campaign',
+          icon : 'fa fa-address-book '
+        },
+        {
+          label : 'Lead Source',
+          path : 'leadSource',
           icon : 'fa fa-address-book '
         },
       ]
     },
 
     {
-      'label' : 'Other Modules',
-      'childrens' : [
+      label : 'Other Modules',
+      children : [
         {
           label : 'Other',
           path : 'other',

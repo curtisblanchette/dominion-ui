@@ -1,3 +1,3 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 
-import * as dataActiond from './data.actions';
+import * as dataActions from './data.actions';

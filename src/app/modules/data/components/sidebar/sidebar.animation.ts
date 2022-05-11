@@ -1,15 +1,15 @@
-import { animate, style, transition, trigger, state, group } from '@angular/animations';
+import { animate, style, transition, trigger, state } from '@angular/animations';
 
 export const menuAnimation = trigger('menu-slider',[
     state("false", style({ height: "55px"}) ),
-    state("true", style({ height: "auto" }) ),    
+    state("true", style({ height: "auto" }) ),
     transition("false => true", [
         style({ height: 55 }),
         animate("0.3s ease-out", style({height : '*'})),
     ]),
     transition("true => false", [
         style({ height: "*"}),
-        animate("0.3s ease-out", style({height: 55 }))        
+        animate("0.3s ease-out", style({height: 55 }))
     ]),
 ]);
 

@@ -1,142 +1,129 @@
 @import '~src/assets/css/variables';
 
-.list-wrapper {
+.list-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  align-content: center;
 
-	display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: nowrap;
-    align-content: center;
 
-	&__form{
+  &__fields {
+    display: flex;
+    width: 100%;
 
-		display: flex;
-		flex-direction: row;
-		flex-wrap: nowrap;
-		justify-content: flex-start;
-		align-items: flex-start;
-		width: 100%;
-		align-content: center;
+    fiiz-input {
+      width: 100%;
+    }
 
-		&__fields {
-			padding: 0px 15px 1px 0px;
-			.filter-input {
-				fiiz-input {
-					margin-bottom: 20px;
-				}
-		  	}
-		  	.filter-dropdown {
-				fiiz-dropdown {
-			  		select {
-						height: 44px;
-			  		}
-				}
-		  	}
-		}
-	}
+    * {
+      min-width: fit-content;
+    }
+  }
 }
 
 .flex-table {
 
-	&__header {
-		justify-content: center;
-		flex-wrap: nowrap;
-		align-content: center;
-		align-items: flex-end;
-		color: #80CBC2;
-	}
+  &__header {
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: flex-end;
+    color: #80CBC2;
+  }
 
-	&__row {
-		justify-content: center;
-		flex-wrap: nowrap;
-		align-content: center;
-		align-items: stretch;
-		cursor: pointer!important;
+  &__row {
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: stretch;
+    cursor: pointer !important;
 
-		&:focus {
-			box-shadow: none;
-			outline: none;
-		}
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
 
-		&.active {
-			position: relative;
+    &.active {
+      position: relative;
 
-			&:before {
-				display: block;
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				background: rgba(255,255,255, .02);
-			}
-		}
-	}
+      &:before {
+        display: block;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, .02);
+      }
+    }
+  }
 
-	&__cell {
+  &__cell {
 
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-		align-items: flex-start;
-		justify-content: flex-start;
-		font-weight: 400;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-weight: 400;
 
-		& span.customRadio {
-		display: none;
-		}
+    & span.customRadio {
+      display: none;
+    }
 
 
-		& input[type="radio"] {
-		width: 20px;
-		height: 20px;
-		margin: 0;
-		cursor: default;
-		visibility: hidden;
-		}
+    & input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      cursor: default;
+      visibility: hidden;
+    }
 
-		& input[type="radio"] + span.customRadio {
-		display: inline-block;
-		width: 20px;
-		height: 20px;
-		background-color: rgb(255 255 255 / 10%);
-		margin: 0 0 0 -16px;
-		border-radius: 50%;
-		box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.8);
-		pointer-events: none;
-		position:relative;
-		}
+    & input[type="radio"] + span.customRadio {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: rgb(255 255 255 / 10%);
+      margin: 0 0 0 -16px;
+      border-radius: 50%;
+      box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.8);
+      pointer-events: none;
+      position: relative;
+    }
 
-		& input[type="radio"] + span.customRadio::after {
-		content: '.';
-		color: transparent;
-		position: absolute;
-		display: block;
-		scale: 0;
-		width: 12px;
-		height: 12px;
-		top: 4px;
-		left: 4px;
-		opacity: 1;
-		border-radius: 50%;
-		transition: .2s;
-		}
+    & input[type="radio"] + span.customRadio::after {
+      content: '.';
+      color: transparent;
+      position: absolute;
+      display: block;
+      scale: 0;
+      width: 12px;
+      height: 12px;
+      top: 4px;
+      left: 4px;
+      opacity: 1;
+      border-radius: 50%;
+      transition: .2s;
+    }
 
-		& input[type="radio"]:checked + span.customRadio::after {
-		opacity: 1;
-		scale: 1;
-		background-color: #80CBC2;
-		box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
-		}
+    & input[type="radio"]:checked + span.customRadio::after {
+      opacity: 1;
+      scale: 1;
+      background-color: #80CBC2;
+      box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+    }
 
-	}
+  }
 
-	&__footer {
-		flex-direction: row-reverse;
-		justify-content: space-between;
-		align-content: center;
-		flex-wrap: wrap;
-		align-items: center;
-	}
+  &__footer {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+  }
 
 }

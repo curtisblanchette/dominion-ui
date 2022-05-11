@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 
 @Component({
     templateUrl: './data.component.html',
-    styleUrls: ['./data.component.scss']
+    styleUrls: ['../../../assets/css/_container.scss', './data.component.scss']
 })
 export class DataComponent implements OnInit, OnDestroy {
 
@@ -39,7 +39,9 @@ export class DataComponent implements OnInit, OnDestroy {
 
     public renderComponent( module:string ) {
         return this.router.navigate(['/data/module', {outlets: {'aux': [`${module}`]}}], {
-            state: {'module' : module}
+            state: {
+              module : module
+            }
         });
     }
 

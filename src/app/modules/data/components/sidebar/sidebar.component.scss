@@ -1,6 +1,6 @@
-@import '~src/assets/css/variables';
-@import '~src/assets/css/mixins';
-@import '~src/assets/css/functions';
+@import '../../../../../assets/css/variables';
+@import '../../../../../assets/css/mixins';
+@import '../../../../../assets/css/functions';
 
 .sidebar {
 
@@ -11,9 +11,9 @@
 
     &__parent{
         padding-left: 5px;
-        overflow: hidden;        
+        overflow: hidden;
     }
-      
+
     &__header{
         font-weight: 500;
         background-color: shade(#172B46, 15);
@@ -29,28 +29,28 @@
     }
 
     &__item {
-       
+
         color: #1D3555;
         display: flex;
         cursor: pointer;
         line-height: 50px;
-    
+
         &__icon {
             font-size: 24px;
             width: 84px;
             text-align: center;
             line-height: 50px;
         }
-    
+
         &__title {
             font-size: 18px;
             font-weight: 500;
         }
-    
+
         &:active, &.active {
             color: #C6CEED;
         }
-    
+
         &:focus {
             @include focusRing($focusring, $focusring-moz-mac);
         }

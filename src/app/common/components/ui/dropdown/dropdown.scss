@@ -5,14 +5,16 @@
   width: 50px;
 }
 
+:host {
+  position: relative;
+}
 .fiiz-dropdown-button {
-
-  box-shadow: 0px 4px 13px rgb(0 0 0 / 60%);
   height: 34px;
   z-index: 1;
   width: 100%;
 
   button {
+    box-shadow: $form-control-shadow;
     background-color: #172B46;
     color: #C6CEED;
 

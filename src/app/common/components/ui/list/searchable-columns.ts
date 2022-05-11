@@ -1,5 +1,5 @@
 import { DropdownItem } from '../forms';
-import { ModuleType } from '../../../../modules/flow/_core/classes/flow.moduleTypes';
+import { ModuleType } from '../../../../modules/flow/_core';
 
 const modules = new Map([
   [ModuleType.CONTACT, [
@@ -16,11 +16,13 @@ const modules = new Map([
   [ModuleType.DEAL, [
     {id: 'name', label: 'Name'}
   ]],
+  [ModuleType.CALL, [
+    {id: 'name', label: 'Name'}
+  ]],
   [ModuleType.CAMPAIGN, [
     {id: 'name', label: 'Name'}
-  ]]
+  ]],
+
 ]);
 
-export function getSearchableColumns(module: ModuleType): DropdownItem[] {
-    return modules.get(module)!;
-}
+export const getSearchableColumns = (module: ModuleType): DropdownItem[] => modules.get(module)!;

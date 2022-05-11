@@ -1,5 +1,6 @@
 import { EntityMetadataMap } from '@ngrx/data';
 import { Lead } from '@4iiz/corev2';
+import { environment } from '../../environments/environment';
 
 const entityMetadata: EntityMetadataMap = {
   contact: {},
@@ -16,18 +17,28 @@ const entityMetadata: EntityMetadataMap = {
       })
     }
   },
+  call: {},
   deal: {},
-  event: {}
+  event: {},
+  campaign: {},
+  leadSource: {},
 }
 
 export const pluralNames = {
   contact: 'contacts',
   lead: 'leads',
   deal: 'deals',
-  event: 'events'
+  call: 'calls',
+  event: 'events',
+  campaign: 'campaigns',
+  leadSource: 'leadSources'
 }
 
 export const entityConfig = {
   entityMetadata,
   pluralNames
+}
+
+export const uriOverrides: { [key: string]: string } = {
+  leadSource: 'lead-sources',
 }

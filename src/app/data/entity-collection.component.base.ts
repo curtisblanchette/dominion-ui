@@ -1,4 +1,4 @@
-import { ModuleType } from '../modules/flow/_core/classes/flow.moduleTypes';
+import { ModuleType } from '../modules/flow/_core';
 import { Lead } from '@4iiz/corev2';
 import { Router } from '@angular/router';
 import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
