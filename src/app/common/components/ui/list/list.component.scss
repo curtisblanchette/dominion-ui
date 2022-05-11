@@ -55,23 +55,23 @@
 		cursor: pointer!important;
 
 		&:focus {
-		box-shadow: none;
-		outline: none;
+			box-shadow: none;
+			outline: none;
 		}
 
 		&.active {
-		position: relative;
+			position: relative;
 
-		&:before {
-			display: block;
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(255,255,255, .02);
-		}
+			&:before {
+				display: block;
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(255,255,255, .02);
+			}
 		}
 	}
 
@@ -140,20 +140,3 @@
 	}
 
 }
-
-// & .message-block {
-// 	display: flex;
-// 	align-items: center;
-// 	flex-direction: row;
-// 	flex-wrap: nowrap;
-// 	justify-content: center;
-// 	align-content: center;
-// 	font-weight: bold;
-// 	font-size: 18px;
-
-// 	span {
-// 		font-size: 14px;
-// 		color: #A7B2D2;
-// 		font-weight: 400;
-// 	}
-// }

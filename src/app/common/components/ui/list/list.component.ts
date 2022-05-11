@@ -29,6 +29,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   @Input('searchOnly') searchOnly: boolean;
   @Input('moduleName') moduleName: boolean;
+  @Input('loadInital') loadInital: boolean = false;
   @Input('menuItems') menuItems:IDropDownMenuItem[] = [];
   @ViewChild('SearchInput') set content(content: ElementRef) {
     if (content) {
@@ -53,7 +54,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
           // we only want to query if the cache doesn't return a record
         }
       });
-    }
+    }    
 
     let form: { [key: string]: FormControl } = {};
     form['key'] = new FormControl('', Validators.required);
@@ -93,7 +94,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngOnInit(){
-    
+    if( this.loadInital ){
+      const pattern = { q : '' };
+      this._dynamicService.setFilter(pattern);
+      this._dynamicService.getWithQuery(pattern);
+    }
   }
 
   get pluralModuleName() {
@@ -118,15 +123,24 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
 
-  public searchInModule() {
+  public async searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
       const pattern = { q: formValues.key.toLowerCase() };
       this._dynamicService.setFilter(pattern); // this modifies filteredEntities$ subset
       this._dynamicService.getWithQuery(pattern); // this performs an API call
+      await this.udpatePaginationParams();
     } else {
       console.warn('Form not valid');
       return of([]);
+    }
+  }
+
+  public async udpatePaginationParams(){
+    if (this.data$) {
+      this.data$.subscribe((res: Lead[]) => {
+        this.totalRecords = res.length;
+      });
     }
   }
 

@@ -42,7 +42,7 @@
           (mousedown)="onClick($event, item)"
           (focusin)="onFocusIn($event, item)"
           (focusout)="onFocusOut($event)"          
-          *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: (count$ | async) }; let i = index;">
+          *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: totalRecords }; let i = index;">
       <label [for]="item.id" style="display: flex; width: 100%;">
         <div class="flex-table__cell" style="flex-grow : 10;">
           <div style="align-self: center; justify-content: center;">

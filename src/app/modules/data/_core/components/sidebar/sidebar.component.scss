@@ -1,5 +1,6 @@
 @import '~src/assets/css/variables';
 @import '~src/assets/css/mixins';
+@import '~src/assets/css/functions';
 
 .sidebar {
 
@@ -7,20 +8,38 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    margin-top: $navbar-height + 10;
+
+    &__parent{
+        padding-left: 5px;
+        overflow: hidden;        
+    }
       
+    &__header{
+        font-weight: 500;
+        background-color: shade(#172B46, 15);
+        box-shadow : 0px 3px 10px rgb(0 0 0 / 60%);
+        list-style: none;
+        padding: 9px 9px 15px 9px;
+        font-size: 16px;
+        cursor: pointer;
+
+        & i {
+            float: right;
+        }
+    }
+
     &__item {
        
         color: #1D3555;
         display: flex;
         cursor: pointer;
-        line-height: 76px;
+        line-height: 50px;
     
         &__icon {
             font-size: 24px;
             width: 84px;
             text-align: center;
-            line-height: 76px;
+            line-height: 50px;
         }
     
         &__title {

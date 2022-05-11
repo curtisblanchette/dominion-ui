@@ -21,6 +21,7 @@
       background: #0A1930;
       height: 100%;
       flex: 1;
+      padding-right: 1.5%;
   
       fiiz-tab-nav {
         margin: 16px 0;
@@ -36,10 +37,12 @@
     &__content {
       display: flex;
       flex-direction: column;
-      flex: 3.5;
-      justify-content: space-around;
+      flex: 4.5;
+      justify-content: flex-start;
       overflow: hidden;
-      position: relative;
+      align-items: stretch;
+      align-content: stretch;
+      padding-top: 1%;
     }
   
     // &__controls {
