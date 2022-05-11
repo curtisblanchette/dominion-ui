@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.6.22 (2022-05-11)
+
+
+### Bug Fixes
+
+* **II-2661:** add routing to edit ([531385a](https://github.com/4iiz/dominion-ui/commit/531385aca43d0b92578f32ae2a12530fcc27905d))
+
 ### 1.6.21 (2022-05-05)
 
 ### 1.6.20 (2022-05-05)
