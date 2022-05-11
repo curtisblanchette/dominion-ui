@@ -18,7 +18,6 @@ export class DataComponent implements OnInit, OnDestroy {
             console.log('here');
             this.router.navigate(['/data/module/']);
         }
-
     }
 
     public async ngOnInit() {
@@ -44,11 +43,10 @@ export class DataComponent implements OnInit, OnDestroy {
                 searchable: true,
                 editable: true,
                 perPage: 50,
-                columns: []
+                columns: [],
               },
               module : module
             }
         });
     }
-
 }

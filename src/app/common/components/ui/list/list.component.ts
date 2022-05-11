@@ -36,6 +36,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   @Input('options') options: IListOptions = { searchable: true, editable: false, perPage: 10, columns: [] };
   @Input('loadInitial') loadInitial: boolean = false;
+  @Input('onCreate') onCreate: Function;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
 
@@ -115,6 +116,14 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     }
 
     return '';
+  }
+
+  onCreateNew() {
+    this.router.navigate(['/data/module', { outlets: {'aux': ['edit']}}], {
+      state: {
+        module: this.state.module
+      }
+    });
   }
 
   public ngAfterViewInit() {

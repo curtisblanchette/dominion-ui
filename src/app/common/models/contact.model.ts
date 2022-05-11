@@ -1,32 +1,44 @@
+import { Validators } from '@angular/forms';
+
 export const ContactModel = {
   firstName: {
     label: 'First Name',
     type: String,
     defaultValue: '',
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   lastName: {
     label: 'Last Name',
     type: String,
     defaultValue: '',
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   phone: {
     label: 'Phone',
     type: String,
     defaultValue: '',
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   email: {
     label: 'Email',
     type: String,
     defaultValue: '',
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   leadId: {
     label: 'Lead Id',
     type: String,
     defaultValue: '',
-    required: true
+    validators: [
+      Validators.required
+    ]
   }
 }

@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { entityConfig } from '../../../../data/entity-metadata';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { models } from '../../../models';
 
 @Component({
   selector: 'fiiz-data',
@@ -22,17 +23,18 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     private fb: FormBuilder
   ) {
     super(router, entityCollectionServiceFactory);
+    this.buildForm(models[this.module]);
 
     this.data$.subscribe(data => {
       if(data.length > 1) {
-        this.buildForm(data[0]);
+
       }
     })
   }
 
   public ngOnInit() {
     if (Object.keys(entityConfig.entityMetadata).includes(this.module)) {
-      this.getData();
+      // this.getData();
     } else {
       throw new Error(`There's no such thing as '${this.module}'`);
     }
@@ -42,12 +44,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this._dynamicService.getByKey(this.flowService.cache[this.module].id);
   }
 
-  private buildForm(data: any) {
+  private buildForm(model: { [key: string]: any }) {
     let form : { [key:string] : FormControl } = {};
-    for (const key of Object.keys(data)) {
-      if(!['createdAt', 'updatedAt'].includes(key)) {
-        form[key] = new FormControl((<any>data)[key], Validators.required);
-      }
+
+    for (const [key, control] of Object.entries(model)) {
+      form[key] = new FormControl((<any>model)[control.defaultValue], control.validators);
     }
     this.form = this.fb.group(form);
   }

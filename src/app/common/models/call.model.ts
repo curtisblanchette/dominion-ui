@@ -1,61 +1,73 @@
+import { Validators } from '@angular/forms';
+
 export const CallModel = {
   startTime: {
     type: Date,
     defaultValue: new Date(),
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   direction: {
     label: 'Direction',
     type: String,
     defaultValue: 'inbound',
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   outcome: {
     label: 'Outcome',
     type: String,
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   type: {
     label: 'Type',
     type: String,
     defaultValue: 'Sales Consultation',
-    required: true,
+    validators: [
+      Validators.required
+    ]
   },
   status: {
     label: 'Status',
     type: String,
     defaultValue: 'Answered',
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   dialledNumber: {
     label: 'Dialled Number',
     type: String,
     defaultValue: null,
-    required: false
+    validators: []
   },
   dealId: {
     label: 'Deal Id',
     type: String,
     defaultValue: null,
-    required: false
+    validators: []
   },
   description: {
     label: 'Description',
     type: String,
     defaultValue: null,
-    required: false
+    validators: []
   },
   leadId: {
     label: 'Lead Id',
     type: String,
     defaultValue: null,
-    required: false
+    validators: []
   },
   trackingNumber: {
     label: 'Tracking Number',
     type: String,
     defaultValue: null,
-    required: false
+    validators: []
   }
 }

@@ -2,12 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DataComponent } from './data.component';
 import { FiizListComponent } from '../../common/components/ui/list/list.component';
+import { FiizDataComponent } from '../../common/components/ui/data/data.component';
 
 const routes: Routes = [
   {
     path: 'module',
     component: DataComponent,
     children: [
+      {
+        path: 'edit',
+        component: FiizDataComponent,
+        outlet: 'aux'
+      },
       {
         path: 'lead',
         component: FiizListComponent,

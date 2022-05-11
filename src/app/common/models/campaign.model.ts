@@ -1,4 +1,4 @@
-export const LeadSourceModel = {
+export const CampaignModel = {
   name: {
     label: 'Name',
     type: String,
