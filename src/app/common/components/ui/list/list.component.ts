@@ -1,12 +1,12 @@
-import { Component, ElementRef, AfterViewInit, ViewChild, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, ElementRef, AfterViewInit, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { fromEvent, of } from 'rxjs';
+import { of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
-import { EntityCollectionServiceFactory} from '@ngrx/data';
+import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
 

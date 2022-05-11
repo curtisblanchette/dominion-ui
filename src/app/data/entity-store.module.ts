@@ -1,5 +1,21 @@
-import { DefaultDataServiceConfig, DefaultDataServiceFactory, EntityCollectionReducerMethodsFactory, EntityDataModule, EntityDataService, HttpUrlGenerator, PersistenceResultHandler } from '@ngrx/data';
-import { NgModule } from '@angular/core';
+import {
+  DefaultDataServiceConfig,
+  DefaultDataServiceFactory,
+  DefaultPersistenceResultHandler,
+  EntityAction,
+  EntityCollection,
+  EntityCollectionReducerMethods,
+  EntityCollectionReducerMethodsFactory,
+  EntityCollectionReducerMethodMap,
+  EntityDefinitionService,
+  EntityDefinition,
+  EntityDataModule,
+  EntityDataService,
+  HttpUrlGenerator,
+  PersistenceResultHandler
+} from '@ngrx/data';
+import { Action } from '@ngrx/store';
+import { NgModule, Injectable } from '@angular/core';
 import { entityConfig } from './entity-metadata';
 import { CustomDataService } from './custom.dataservice';
 import { PluralHttpUrlGenerator } from './plural.httpUrlGenerator';
@@ -10,8 +26,6 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
   timeout: 3000 // request timeout
 };
 
-import { Action } from '@ngrx/store';
-import { EntityAction, DefaultPersistenceResultHandler } from '@ngrx/data';
 
 @Injectable()
 export class AdditionalPersistenceResultHandler extends DefaultPersistenceResultHandler {
@@ -28,12 +42,14 @@ export class AdditionalPersistenceResultHandler extends DefaultPersistenceResult
   }
 }
 
-import { EntityCollection, EntityDefinition, EntityCollectionReducerMethods } from '@ngrx/data';
-
 export class AdditionalEntityCollectionReducerMethods<T> extends EntityCollectionReducerMethods<T> {
-  constructor(public override entityName: string, public override definition: EntityDefinition<T>) {
+  constructor(
+    public override entityName: string,
+    public override definition: EntityDefinition<T>
+  ) {
     super(entityName, definition);
   }
+
   protected override queryManySuccess(
     collection: EntityCollection<T>,
     action: EntityAction<T[]>
@@ -47,12 +63,13 @@ export class AdditionalEntityCollectionReducerMethods<T> extends EntityCollectio
   }
 }
 
-import { Injectable } from "@angular/core";
-import { EntityDefinitionService, EntityCollectionReducerMethodMap } from '@ngrx/data';
-
 @Injectable()
 export class AdditionalEntityCollectionReducerMethodsFactory {
-  constructor(private entityDefinitionService: EntityDefinitionService) { }
+  constructor(
+    private entityDefinitionService: EntityDefinitionService
+  ) {
+  }
+
   create<T>(entityName: string): EntityCollectionReducerMethodMap<T> {
     const definition = this.entityDefinitionService.getDefinition<T>(entityName);
     const methodsClass = new AdditionalEntityCollectionReducerMethods(entityName, definition);
@@ -63,8 +80,8 @@ export class AdditionalEntityCollectionReducerMethodsFactory {
 @NgModule({
   providers: [
     CustomDataService,
-    { provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig},
-    { provide: HttpUrlGenerator, useClass: PluralHttpUrlGenerator},
+    {provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig},
+    {provide: HttpUrlGenerator, useClass: PluralHttpUrlGenerator},
     {
       provide: PersistenceResultHandler,
       useClass: AdditionalPersistenceResultHandler
@@ -72,10 +89,10 @@ export class AdditionalEntityCollectionReducerMethodsFactory {
     {
       provide: EntityCollectionReducerMethodsFactory,
       useClass: AdditionalEntityCollectionReducerMethodsFactory
-    },
+    }
   ],
   imports: [
-    EntityDataModule.forRoot(entityConfig),
+    EntityDataModule.forRoot(entityConfig)
   ]
 })
 export class EntityStoreModule {

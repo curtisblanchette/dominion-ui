@@ -15,7 +15,6 @@
   },
   "private": true,
   "dependencies": {
-    "@4iiz/corev2": "0.0.105",
     "@angular/animations": "~13.2.0",
     "@angular/cdk": "^13.2.6",
     "@angular/common": "~13.2.0",

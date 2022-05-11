@@ -12,7 +12,7 @@ export class FlowListComponent implements OnDestroy {
   constructor( public flowService: FlowService ) {}
 
   public ngOnDestroy(): void {
-    
+
   }
 
   public EmitValues( value:any ){
