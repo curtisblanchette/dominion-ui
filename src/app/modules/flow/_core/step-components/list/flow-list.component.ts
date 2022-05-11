@@ -7,6 +7,7 @@ import { FlowService } from '../../../flow.service';
   styleUrls: ['../_base.scss','./flow-list.component.scss']
 })
 export class FlowListComponent implements OnDestroy {
+  state: any;
 
   constructor( public flowService: FlowService ) {}
 

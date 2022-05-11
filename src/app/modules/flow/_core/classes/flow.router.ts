@@ -5,12 +5,12 @@ export class FlowRouter extends FlowNode {
   public conditions: FlowCondition[];
 
   constructor(
-    id: string | null,
     nodeText: string,
     nodeIcon: string,
-    conditions: FlowCondition[]
+    conditions: FlowCondition[],
+    id?: string,
   ) {
-    super(id, nodeText, nodeIcon);
+    super(nodeText, nodeIcon, id);
     this.conditions = conditions;
   }
 
@@ -20,7 +20,7 @@ export class FlowRouter extends FlowNode {
 
   serialize() {
     const data: FlowRouter = { ...cloneDeep(this)};
-    return new FlowRouter(data.id, data.nodeText, data.nodeIcon, data.conditions);
+    return new FlowRouter(data.nodeText, data.nodeIcon, data.conditions, data.id);
   }
 
   deserialize() {

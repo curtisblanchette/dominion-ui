@@ -8,12 +8,13 @@ import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { EntityCollectionServiceFactory} from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
-import { IDropDownMenuItem } from '../dropdown/dropdown';
+import { IDropDownMenuItem } from '../dropdown';
 
 export interface IListOptions {
   searchable: boolean;
   editable: boolean;
-  module: string;
+  perPage: number;
+  columns: string[];
 }
 
 @Component({
@@ -24,21 +25,17 @@ export interface IListOptions {
 export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
 
   public searchForm: FormGroup;
-  // private SearchInput: ElementRef;
 
   // Pagination
-  public perPage: number = 5;
   public page: number = 1;
   public offset: number = 0;
   public totalRecords: number = 0;
   public selected: Lead | Contact | Event | Deal | null;
 
-  // @ViewChild('SearchInput') searchInput: ElementRef;
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
-  @Input('options') options: IListOptions = { searchable: true, editable: false, module: 'lead'};
+  @Input('options') options: IListOptions = { searchable: true, editable: false, perPage: 10, columns: [] };
   @Input('loadInitial') loadInitial: boolean = false;
-
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
 
@@ -71,7 +68,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     }
 
     let form: { [key: string]: FormControl } = {};
-    form['search'] = new FormControl('', Validators.required);
+    form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
 
   }
@@ -121,28 +118,17 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngAfterViewInit() {
-    if(this.searchForm !== null) {
-      // @ts-ignore
-      this.searchForm.get('search').valueChanges.pipe(
-        // filter(res => res.length > 2),
-        debounceTime(250),
-        distinctUntilChanged()
-      ).subscribe((text: string) => {
-        this.searchInModule();
-      });
-    }
-
-    //
-    // fromEvent(this.searchForm.controls.nativeElement, 'keyup').pipe(
-    //   map((event: any) => {
-    //     return event.target.value;
-    //   }),
-    //   // filter(res => res.length > 2),
-    //   debounceTime(250),
-    //   distinctUntilChanged()
-    // ).subscribe((text: string) => {
-    //   this.searchInModule();
-    // });
+    // @ts-ignore
+    this.searchForm.get('search').valueChanges.pipe(
+      map(action => {
+        console.log(action)
+        return action;
+      }),
+      debounceTime(250),
+      distinctUntilChanged()
+    ).subscribe((text: string) => {
+      this.searchInModule();
+    });
   }
 
 
@@ -174,7 +160,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public handlePageChange(pageNo: number) {
     this.page = pageNo;
-    this.offset = this.perPage * (this.page - 1);
+    this.offset = this.options.perPage * (this.page - 1);
   }
 
 

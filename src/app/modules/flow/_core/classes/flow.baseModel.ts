@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 
 export class FlowBaseModel {
-  public id: string;
+  public id?: string | undefined;
 
   constructor(
-    id: string | null
+    id: string | undefined
   ) {
     if(!id) {
       this.id = uuidv4();

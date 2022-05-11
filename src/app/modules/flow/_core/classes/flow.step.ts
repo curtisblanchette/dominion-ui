@@ -4,19 +4,22 @@ import { cloneDeep } from 'lodash';
 
 export class FlowStep extends FlowNode {
 
+  public override id?: string;
+  public override nodeText: string;
+  public override nodeIcon: string;
   public component: FlowComponentType
   public data: any;
 
   constructor(
-    id: string | null,
-    nodeText: string,
-    nodeIcon: string,
-    component: FlowComponentType,
-    data?: any
+    data: Omit<FlowStep, 'serialize' | 'deserialize' | 'apply' | 'save'>
   ) {
-    super(id, nodeText, nodeIcon);
-    this.component = component;
-    this.data = data;
+    super(data.nodeText, data.nodeIcon, data.id);
+    this.component = data.component;
+    this.data = data.data;
+  }
+
+  apply(data: FlowStep) {
+    Object.assign(this, data);
   }
 
   public save() {
@@ -25,7 +28,7 @@ export class FlowStep extends FlowNode {
 
   serialize() {
     const data: FlowStep = { ...cloneDeep(this) };
-    return new FlowStep(data.id, data.nodeText, data.nodeIcon, data.component, data.data);
+    return new FlowStep( data);
   }
 
   deserialize() {

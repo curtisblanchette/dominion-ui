@@ -42,19 +42,57 @@ export class FlowService {
   }
 
   public create() {
-    const existingLead = new FlowStep(null, 'Existing Lead?', 'address-book', FlowComponentType.LIST, { title: 'Search Leads', module: ModuleType.LEAD } );
-    const newLead = new FlowStep(null, 'New Lead', 'address-book', FlowComponentType.DATA, { title: 'Create a New Lead', firstName: 'Curtis', lastName: 'Blanchette', phone: '+12507183166', email: 'curtis@4iiz.com', module: ModuleType.LEAD } )
-    const appointment = new FlowStep(null, 'Set Appointment', 'calendar', FlowComponentType.EVENT,  { title : 'Set an Appointment', module: ModuleType.EVENT } );
+    const existingLead = new FlowStep({
+        nodeText: 'Existing Lead',
+        nodeIcon: 'address-book',
+        component: FlowComponentType.LIST,
+        data: {
+          title: 'Search Leads',
+          module: ModuleType.LEAD,
+          options: {
+            searchable: true,
+            editable: true,
+            perPage: 10,
+            columns: []
+          }
+        }
+    });
 
-    const leadSelected = new FlowCondition(null,() => {
+    const newLead = new FlowStep({
+        nodeText: 'New Lead',
+        nodeIcon: 'address-book',
+        component: FlowComponentType.DATA,
+        data: {
+          title: 'Create a New Lead',
+          firstName: 'Curtis',
+          lastName: 'Blanchette',
+          phone: '+12507183166',
+          email: 'curtis@4iiz.com',
+          module: ModuleType.LEAD
+        }
+      });
+
+    const appointment = new FlowStep({
+      nodeText: 'Set Appointment',
+      nodeIcon: 'calendar',
+      component: FlowComponentType.EVENT,
+      data: {
+        title : 'Set an Appointment',
+        module: ModuleType.EVENT
+      }
+    });
+
+    const leadSelected = new FlowCondition(() => {
       return this.cache[ModuleType.EVENT]
     }, appointment);
-    const leadNotSelected = new FlowCondition(null,() => {
+
+    const leadNotSelected = new FlowCondition(() => {
       return !this.cache[ModuleType.LEAD]
     }, newLead);
-    const existingLeadRouter = new FlowRouter(null,'Router 1', '',[leadSelected, leadNotSelected]);
 
-    const leadSearch_to_existingLeadRouter = new FlowLink(null, existingLead, existingLeadRouter);
+    const existingLeadRouter = new FlowRouter('Router 1', '',[leadSelected, leadNotSelected]);
+
+    const leadSearch_to_existingLeadRouter = new FlowLink(existingLead, existingLeadRouter);
 
     this.addStep(existingLead)
         // .addStep(newLead)
@@ -88,7 +126,10 @@ export class FlowService {
       }
 
       const clone = [...this.stepHistory];
-      clone.push(this.currentStep.id);
+      if(this.currentStep.id){
+        clone.push(this.currentStep.id);
+      }
+
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
 
       await this.renderComponent(<FlowStep>step);

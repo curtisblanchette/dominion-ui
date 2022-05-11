@@ -2,31 +2,7 @@
 
     <p class="dictation">Thank you for calling the Law Offices of Diener Law, this is Miguel, how may I assist you today?</p>
 
-    <fiiz-list [options]="{searchable: true, editable: false, module: 'Leads'}" (values)="EmitValues($event)"></fiiz-list>
+    <fiiz-list [options]="{searchable: true, editable: false, perPage: 10, columns: []}" (values)="EmitValues($event)"></fiiz-list>
 
-    <!-- <ng-container [ngTemplateOutlet]="table" *ngIf="state?.module && data$ | async"></ng-container> -->
-    <!-- <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container> -->
-    <!-- <ng-container [ngTemplateOutlet]="initial" *ngIf="state?.module && !(loaded$ | async)"></ng-container> -->
-
-    <ng-template #noDataFound>
-        <div class="message-block" style="padding-top: 5%;">
-            We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
-        </div>
-        <div class="message-block">
-            <span>Try another search term or create a new lead.</span>
-        </div>
-        <div class="message-block" style="padding-top: 4%;">
-            <button class="primary">Create New Lead</button>
-        </div>
-    </ng-template>
-
-    <ng-template #initial>
-        <div class="message-block" style="padding-top: 5%;">
-            Search {{ pluralModuleName }}
-        </div>
-        <div class="message-block">
-            <span>You can search by name, phone number or email.</span>
-        </div>
-    </ng-template>
 
 </div>

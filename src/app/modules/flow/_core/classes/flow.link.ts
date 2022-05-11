@@ -6,9 +6,9 @@ export class FlowLink extends FlowBaseModel {
   public to: FlowStep | FlowRouter;
 
   constructor(
-    id: string | null,
     from: FlowStep,
-    to: FlowStep | FlowRouter
+    to: FlowStep | FlowRouter,
+    id?: string,
   ) {
     super(id);
     this.from = from;

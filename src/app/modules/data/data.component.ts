@@ -38,8 +38,14 @@ export class DataComponent implements OnInit, OnDestroy {
     }
 
     public renderComponent( module:string ) {
-        return this.router.navigate(['/data/module', {outlets: {'aux': [`${module}`]}}], {
+        return this.router.navigate(['/data/module', { outlets: {'aux': [`${module}`]}}], {
             state: {
+              options: {
+                searchable: true,
+                editable: true,
+                perPage: 50,
+                columns: []
+              },
               module : module
             }
         });

@@ -27,7 +27,7 @@
           (mousedown)="onClick($event, item)"
           (focusin)="onFocusIn($event, item)"
           (focusout)="onFocusOut($event)"
-          *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: totalRecords }; let i = index;">
+          *ngFor="let item of data$ | async | paginate: { itemsPerPage: options.perPage, currentPage: page, totalItems: totalRecords }; let i = index;">
         <div class="flex-table__cell" style="flex: 0.15;">
           <div>
             <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
@@ -60,3 +60,29 @@
     </pagination-controls>
   </div>
 </div>
+
+<!-- <ng-container [ngTemplateOutlet]="table" *ngIf="state?.module && data$ | async"></ng-container> -->
+<!-- <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container> -->
+<!-- <ng-container [ngTemplateOutlet]="initial" *ngIf="state?.module && !(loaded$ | async)"></ng-container> -->
+
+
+<ng-template #noDataFound>
+  <div class="message-block" style="padding-top: 5%;">
+    We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
+  </div>
+  <div class="message-block">
+    <span>Try another search term or create a new lead.</span>
+  </div>
+  <div class="message-block" style="padding-top: 4%;">
+    <button class="primary">Create New Lead</button>
+  </div>
+</ng-template>
+
+<ng-template #initial>
+  <div class="message-block" style="padding-top: 5%;">
+    Search {{ pluralModuleName }}
+  </div>
+  <div class="message-block">
+    <span>You can search by name, phone number or email.</span>
+  </div>
+</ng-template>
