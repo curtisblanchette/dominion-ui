@@ -1,25 +1,25 @@
 <div class="list-wrapper">
   <form [formGroup]="searchForm" id="search-form" class="list-wrapper__form">
     
-    <div #SearchInput class="list-wrapper__form__fields" [ngStyle]="{'min-width': searchOnly ? '100%' : '50%' }">
+    <div #SearchInput class="list-wrapper__form__fields" style="flex: 1;">
       <fiiz-input id="search" icon="fa-search" formControlName="key" type="text" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
     </div>
 
-    <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style="width: 3%;"></div>
+    <!-- <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style=""></div> -->
 
-    <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style="width: 7%;">
+    <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style="">
       <button class="">Edit</button>
     </div>      
 
-    <div *ngIf="!searchOnly && menuItems.length" class="list-wrapper__form__fields" style="width: 10%;">
-      <div style="position: absolute; z-index: 1;">
+    <div *ngIf="!searchOnly && menuItems.length" class="list-wrapper__form__fields" style="position: relative;">
+      <!-- <div style="position: absolute; z-index: 1;"> -->
         <fiiz-dropdown
           type="button"
           [items]="menuItems"
           position="bottom-right"
           title="Actions"
         ></fiiz-dropdown>
-      </div>
+      <!-- </div> -->
     </div>
 
     <div *ngIf="!searchOnly" class="list-wrapper__form__fields" style="width: 20%;">
@@ -31,35 +31,33 @@
 
 <div class="flex-table">
   <div class="flex-table__header">
-    <div class="flex-table__cell" style="flex-grow : 10">&nbsp;</div>
-    <div class="flex-table__cell" style="flex-grow : 30">Name</div>
-    <div class="flex-table__cell" style="flex-grow : 30">Phone</div>
-    <div class="flex-table__cell" style="flex-grow : 30">Email</div>
+    <div class="flex-table__cell" style="flex: 0.15;">&nbsp;</div>
+    <div class="flex-table__cell">Name</div>
+    <div class="flex-table__cell">Phone</div>
+    <div class="flex-table__cell">Email</div>
   </div>
-  <div class="flex-table__body" style="height: calc(100% - 38px); overflow-x: hidden;">
+  <div class="flex-table__body" style="overflow-x: hidden;">
     <div class="flex-table__row"
           tabindex="0" #row
           (mousedown)="onClick($event, item)"
           (focusin)="onFocusIn($event, item)"
           (focusout)="onFocusOut($event)"          
           *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: totalRecords }; let i = index;">
-      <label [for]="item.id" style="display: flex; width: 100%;">
-        <div class="flex-table__cell" style="flex-grow : 10;">
-          <div style="align-self: center; justify-content: center;">
+        <div class="flex-table__cell" style="flex: 0.15;">
+          <div>
             <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
             <span class="customRadio"></span>
           </div>
         </div>
-        <div class="flex-table__cell" style="flex-grow : 30;">
-          <div style="align-self: start;">{{item.firstName}} {{item.lastName}}</div>
+        <div class="flex-table__cell">
+          <div>{{item.fullName}}</div>
         </div>
-        <div class="flex-table__cell" style="flex-grow : 30;">
-          <div style="align-self: start;">{{item.phone}}</div>
+        <div class="flex-table__cell">
+          <div>{{item.phone}}</div>
         </div>
-        <div class="flex-table__cell" style="flex-grow : 30;">
-          <div style="align-self: start;">{{item.email}}</div>
+        <div class="flex-table__cell">
+          <div>{{item.email}}</div>
         </div>
-      </label>
     </div>
   </div>
   <div class="flex-table__footer">
