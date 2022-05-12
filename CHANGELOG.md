@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.7.0 (2022-05-12)
+
+
+### Features
+
+* **develop:** model saves working with NGRX/data ([71faeef](https://github.com/4iiz/dominion-ui/commit/71faeef259a24186081734778ce604289f4a9ce9))
+
 ### 1.6.22 (2022-05-11)
 
 
