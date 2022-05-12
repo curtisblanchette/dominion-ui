@@ -3,7 +3,7 @@ import { Validators } from '@angular/forms';
 export const ContactModel = {
   firstName: {
     label: 'First Name',
-    type: String,
+    type: 'text',
     defaultValue: '',
     validators: [
       Validators.required
@@ -11,7 +11,7 @@ export const ContactModel = {
   },
   lastName: {
     label: 'Last Name',
-    type: String,
+    type: 'text',
     defaultValue: '',
     validators: [
       Validators.required
@@ -19,7 +19,7 @@ export const ContactModel = {
   },
   phone: {
     label: 'Phone',
-    type: String,
+    type: 'text',
     defaultValue: '',
     validators: [
       Validators.required
@@ -27,7 +27,7 @@ export const ContactModel = {
   },
   email: {
     label: 'Email',
-    type: String,
+    type: 'text',
     defaultValue: '',
     validators: [
       Validators.required
@@ -35,7 +35,7 @@ export const ContactModel = {
   },
   leadId: {
     label: 'Lead Id',
-    type: String,
+    type: 'text',
     defaultValue: '',
     validators: [
       Validators.required

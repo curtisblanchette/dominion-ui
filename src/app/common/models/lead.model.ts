@@ -3,7 +3,7 @@ import { Validators } from '@angular/forms';
 export const LeadModel = {
   firstName: {
     label: 'First Name',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -11,7 +11,7 @@ export const LeadModel = {
   },
   lastName: {
     label: 'Last Name',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -19,7 +19,7 @@ export const LeadModel = {
   },
   phone: {
     label: 'Phone Number',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -27,15 +27,23 @@ export const LeadModel = {
   },
   email: {
     label: 'Email Address',
-    type: String,
+    type: 'text',
     defaultValue: null,
+    validators: [
+      Validators.required
+    ]
+  },
+  status: {
+    label: 'Status',
+    type: 'text',
+    defaultValue: 'No Set',
     validators: [
       Validators.required
     ]
   },
   state: {
     label: 'State',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -43,7 +51,7 @@ export const LeadModel = {
   },
   practiceAreaId: {
     label: 'Practice Area Id',
-    type: Number,
+    type: 'number',
     defaultValue: null,
     validators: [
       Validators.required
@@ -51,13 +59,13 @@ export const LeadModel = {
   },
   campaignId: {
     label: 'Campaign Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   leadSourceId: {
     label: 'Lead Source Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },

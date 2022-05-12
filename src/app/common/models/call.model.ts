@@ -2,7 +2,8 @@ import { Validators } from '@angular/forms';
 
 export const CallModel = {
   startTime: {
-    type: Date,
+    label: 'Start Time',
+    type: 'date-picker',
     defaultValue: new Date(),
     validators: [
       Validators.required
@@ -10,7 +11,7 @@ export const CallModel = {
   },
   direction: {
     label: 'Direction',
-    type: String,
+    type: 'text',
     defaultValue: 'inbound',
     validators: [
       Validators.required
@@ -18,7 +19,7 @@ export const CallModel = {
   },
   outcome: {
     label: 'Outcome',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -26,7 +27,7 @@ export const CallModel = {
   },
   type: {
     label: 'Type',
-    type: String,
+    type: 'text',
     defaultValue: 'Sales Consultation',
     validators: [
       Validators.required
@@ -34,7 +35,7 @@ export const CallModel = {
   },
   status: {
     label: 'Status',
-    type: String,
+    type: 'text',
     defaultValue: 'Answered',
     validators: [
       Validators.required
@@ -42,31 +43,31 @@ export const CallModel = {
   },
   dialledNumber: {
     label: 'Dialled Number',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   dealId: {
     label: 'Deal Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   description: {
     label: 'Description',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   leadId: {
     label: 'Lead Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   trackingNumber: {
     label: 'Tracking Number',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   }

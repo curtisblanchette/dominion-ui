@@ -3,7 +3,7 @@ import { Validators } from '@angular/forms';
 export const DealModel = {
   name: {
     label: 'Name',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -11,7 +11,7 @@ export const DealModel = {
   },
   practiceArea: {
     label: 'Practice Area',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -19,7 +19,7 @@ export const DealModel = {
   },
   contactId: {
     label: 'Contact Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -27,7 +27,7 @@ export const DealModel = {
   },
   campaignId: {
     label: 'Campaign Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -35,7 +35,7 @@ export const DealModel = {
   },
   leadSourceId: {
     label: 'Lead Source Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -43,7 +43,7 @@ export const DealModel = {
   },
   leadId: {
     label: 'Lead Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -51,7 +51,7 @@ export const DealModel = {
   },
   stage: {
     label: 'State',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -59,49 +59,49 @@ export const DealModel = {
   },
   noSetOn: {
     label: 'No Set On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   },
   setAppointmentOn: {
     label: 'Set Appointment On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   },
   noShowOn: {
     label: 'No Show On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   },
   hireScheduledOn: {
     label: 'Hire Scheduled On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   },
   noHireOn: {
     label: 'No Hire On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   },
   hiredOn: {
     label: 'Hired On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   },
   unqualifiedOn: {
     label: 'Unqualified On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   },
   lostOn: {
     label: 'Lost On',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: []
   }

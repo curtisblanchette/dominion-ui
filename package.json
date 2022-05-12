@@ -13,8 +13,13 @@
     "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}}\"",
     "test": "ng test"
   },
+  "browser": {
+    "fs": false,
+    "crypto": false
+  },
   "private": true,
   "dependencies": {
+    "@4iiz/corev2": "0.0.107",
     "@angular/animations": "~13.2.0",
     "@angular/cdk": "^13.2.6",
     "@angular/common": "~13.2.0",

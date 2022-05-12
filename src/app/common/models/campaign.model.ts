@@ -1,50 +1,68 @@
+import { Validators } from '@angular/forms';
+
 export const CampaignModel = {
   name: {
     label: 'Name',
-    type: String,
+    type: 'text',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   status: {
     label: 'Status',
-    type: String,
+    inputType: 'text',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   audience: {
     label: 'Audience',
-    type: String,
+    type: 'text',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   type: {
     label: 'Type',
-    type: String,
+    type: 'text',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   trackingNumber: {
     label: 'Tracking Number',
-    type: String,
+    type: 'text',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   startDate: {
     label: 'Start Date',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   endDate: {
     label: 'End Date',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   },
   leadSourceId: {
     label: 'Lead Source Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
-    required: true
+    validators: [
+      Validators.required
+    ]
   }
 }

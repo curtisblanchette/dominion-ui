@@ -2,11 +2,7 @@ import { EntityMetadataMap } from '@ngrx/data';
 import { Call, Campaign, Contact, Deal, Event, Lead, LeadSource } from '@4iiz/corev2';
 
 const entityMetadata: EntityMetadataMap = {
-  contact: {
-    additionalCollectionState: {
-      // attributes: Contact.rawAttributes
-    }
-  },
+  contact: {},
   lead: {
     filterFn: (entities: Lead[], pattern: { q: string }) => {
       return entities.filter((entity: any) => {
@@ -19,35 +15,12 @@ const entityMetadata: EntityMetadataMap = {
         return fields.find(field => field.includes(pattern.q));
       })
     },
-    additionalCollectionState: {
-      // attributes: Lead.getAttributes()
-    }
   },
-  call: {
-    additionalCollectionState: {
-      // attributes: Call.getAttributes()
-    }
-  },
-  deal: {
-    additionalCollectionState: {
-      // attributes: Deal.getAttributes()
-    }
-  },
-  event: {
-    additionalCollectionState: {
-      // attributes: Event.getAttributes()
-    }
-  },
-  campaign: {
-    additionalCollectionState: {
-      // attributes: Campaign.getAttributes()
-    }
-  },
-  leadSource: {
-    additionalCollectionState: {
-      // attributes: LeadSource.getAttributes()
-    }
-  },
+  call: {},
+  deal: {},
+  event: {},
+  campaign: {},
+  leadSource: {},
 }
 
 export const pluralNames = {

@@ -12,12 +12,12 @@ import {
   EntityDataModule,
   EntityDataService,
   HttpUrlGenerator,
-  PersistenceResultHandler
+  PersistenceResultHandler, DefaultDataService
 } from '@ngrx/data';
 import { Action } from '@ngrx/store';
 import { NgModule, Injectable } from '@angular/core';
 import { entityConfig } from './entity-metadata';
-import { CustomDataService } from './custom.dataservice';
+import { CustomDataService, CustomDataServiceFactory } from './custom.dataservice';
 import { PluralHttpUrlGenerator } from './plural.httpUrlGenerator';
 import { environment } from '../../environments/environment';
 
@@ -33,7 +33,9 @@ export class AdditionalPersistenceResultHandler extends DefaultPersistenceResult
     const actionHandler = super.handleSuccess(originalAction);
     return (data: any) => {
       const action = actionHandler.call(this, data);
-      if (action && data) {
+      // check for rows, collection or not
+      // single entity adds/updates should remain unchanged
+      if (action && data && data.rows) {
         (action as any).payload.count = data.count;
         (action as any).payload.data = data.rows;
       }
@@ -79,17 +81,12 @@ export class AdditionalEntityCollectionReducerMethodsFactory {
 
 @NgModule({
   providers: [
-    CustomDataService,
-    {provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig},
-    {provide: HttpUrlGenerator, useClass: PluralHttpUrlGenerator},
-    {
-      provide: PersistenceResultHandler,
-      useClass: AdditionalPersistenceResultHandler
-    },
-    {
-      provide: EntityCollectionReducerMethodsFactory,
-      useClass: AdditionalEntityCollectionReducerMethodsFactory
-    }
+    { provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig },
+    { provide: DefaultDataService, useClass: CustomDataService },
+    { provide: DefaultDataServiceFactory, useClass: CustomDataServiceFactory },
+    { provide: HttpUrlGenerator, useClass: PluralHttpUrlGenerator },
+    { provide: PersistenceResultHandler, useClass: AdditionalPersistenceResultHandler },
+    { provide: EntityCollectionReducerMethodsFactory, useClass: AdditionalEntityCollectionReducerMethodsFactory }
   ],
   imports: [
     EntityDataModule.forRoot(entityConfig)

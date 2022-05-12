@@ -5,12 +5,12 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { entityConfig } from '../../../../data/entity-metadata';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
-import { models } from '../../../models';
+import { DominionType, models } from '../../../models';
 
 @Component({
   selector: 'fiiz-data',
   templateUrl: './data.component.html',
-  styleUrls: ['../../../../modules/flow/_core/step-components/_base.scss', './data.component.scss'],
+  styleUrls: ['./data.component.scss'],
 })
 export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
 
@@ -45,7 +45,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   private buildForm(model: { [key: string]: any }) {
-    let form : { [key:string] : FormControl } = {};
+    let form: { [key: string]: FormControl } = {};
 
     for (const [key, control] of Object.entries(model)) {
       form[key] = new FormControl((<any>model)[control.defaultValue], control.validators);
@@ -64,13 +64,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public saveData() {
-    // remove null values from form
-    let o = Object.fromEntries(Object.entries(this.form.value).filter(([_, v]) => v != null));
-    this._dynamicService.update(o);
-    this.flowService.addToCache(this.module, o);
+    this._dynamicService.add(<DominionType>this.form.value);
+    this.flowService.addToCache(this.module, this.form.value);
   }
 
   public ngOnDestroy() {
-    this.saveData();
+    // this.saveData();
   }
 }

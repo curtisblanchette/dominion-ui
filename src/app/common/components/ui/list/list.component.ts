@@ -9,6 +9,7 @@ import * as pluralize from 'pluralize';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
+import { DominionType } from '../../../models';
 
 export interface IListOptions {
   searchable: boolean;
@@ -61,7 +62,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory);
     if (this.data$) {
-      this.data$.subscribe((res: Lead[]) => {
+      this.data$.subscribe((res: Partial<DominionType>[]) => {
         if (!this.loading$ && this.loaded$ && res.length === 0) {
           // we only want to query if the cache doesn't return a record
         }
@@ -156,7 +157,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public async udpatePaginationParams(){
     if (this.data$) {
-      this.data$.subscribe((res: Lead[]) => {
+      this.data$.subscribe((res: Partial<DominionType>[]) => {
         this.totalRecords = res.length;
       });
     }

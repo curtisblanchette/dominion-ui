@@ -3,7 +3,7 @@ import { Validators } from '@angular/forms';
 export const LeadSourceModel = {
   name: {
     label: 'Name',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -11,7 +11,7 @@ export const LeadSourceModel = {
   },
   status: {
     label: 'Status',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -19,7 +19,7 @@ export const LeadSourceModel = {
   },
   channel: {
     label: 'Channel',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required

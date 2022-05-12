@@ -3,7 +3,7 @@ import { Validators } from '@angular/forms';
 export const EventModel = {
   title: {
     label: 'Title',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -11,7 +11,7 @@ export const EventModel = {
   },
   description: {
     label: 'Description',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -19,7 +19,7 @@ export const EventModel = {
   },
   contactId: {
     label: 'Contact Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -27,7 +27,7 @@ export const EventModel = {
   },
   startTime: {
     label: 'Start Time',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: [
       Validators.required
@@ -35,7 +35,7 @@ export const EventModel = {
   },
   endTime: {
     label: 'End Time',
-    type: Date,
+    type: 'date-picker',
     defaultValue: null,
     validators: [
       Validators.required
@@ -43,7 +43,7 @@ export const EventModel = {
   },
   type: {
     label: 'Type',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required
@@ -51,25 +51,25 @@ export const EventModel = {
   },
   leadId: {
     label: 'Lead Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   dealId: {
     label: 'Deal Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   officeId: {
     label: 'Office Id',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   },
   outcome: {
     label: 'Outcome',
-    type: String,
+    type: 'text',
     defaultValue: null,
     validators: []
   }
