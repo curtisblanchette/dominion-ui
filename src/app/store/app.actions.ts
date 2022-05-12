@@ -6,6 +6,8 @@ export const ActionTypes = {
   CLEAR_SETTINGS: '[App] Clear Settings',
   GET_ROLES: '[App] Get Roles',
   SET_ROLES: '[App] Set Roles',
+  GET_LOOKUPS: '[App] Get Lookups',
+  SET_LOOKUPS: '[App] Set Lookups',
   CLEAR_ROLES: '[App] Clear Roles',
   INITIALIZED: '[App] State Initialized',
 };
@@ -18,6 +20,16 @@ export const SetSettingsAction = createAction(
   ActionTypes.SET_SETTINGS,
   props<{ payload: any }>()
 );
+
+export const GetLookupsAction = createAction(
+  ActionTypes.GET_LOOKUPS,
+);
+
+export const SetLookupsAction = createAction(
+  ActionTypes.SET_LOOKUPS,
+  props<{ payload: any }>()
+);
+
 
 export const ClearSettingsAction = createAction(
   ActionTypes.CLEAR_SETTINGS,

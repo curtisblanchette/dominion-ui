@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
+import { IModel } from './index';
 
-export const LeadSourceModel = {
+export const LeadSourceModel: {[key: string]: IModel} = {
   name: {
     label: 'Name',
     type: 'text',

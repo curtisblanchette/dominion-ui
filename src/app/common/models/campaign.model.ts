@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
+import { IModel } from './index';
 
-export const CampaignModel = {
+export const CampaignModel: {[key: string]: IModel} = {
   name: {
     label: 'Name',
     type: 'text',
@@ -11,7 +12,7 @@ export const CampaignModel = {
   },
   status: {
     label: 'Status',
-    inputType: 'text',
+    type: 'text',
     defaultValue: null,
     validators: [
       Validators.required

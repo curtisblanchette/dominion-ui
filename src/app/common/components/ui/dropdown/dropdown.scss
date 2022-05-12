@@ -14,7 +14,7 @@
   width: 100%;
 
   button {
-    box-shadow: $form-control-shadow;
+    @include elevate(1);
     background-color: #172B46;
     color: #C6CEED;
 

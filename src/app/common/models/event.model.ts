@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
+import { IModel } from './index';
 
-export const EventModel = {
+export const EventModel: {[key: string]: IModel} = {
   title: {
     label: 'Title',
     type: 'text',

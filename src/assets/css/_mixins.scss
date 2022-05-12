@@ -196,3 +196,13 @@
   color: #C6CEED;
   outline: none;
 }
+
+
+@mixin elevate($level) {
+  @if($level == 1) {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .22);
+  } @else if $level == 2 {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .22);
+  }
+
+}

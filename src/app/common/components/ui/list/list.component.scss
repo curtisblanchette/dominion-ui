@@ -1,5 +1,10 @@
 @import '~src/assets/css/variables';
-
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position:relative;
+}
 .list-actions {
   display: flex;
   flex-direction: row;
@@ -25,6 +30,13 @@
 }
 
 .flex-table {
+
+  height: calc(100% - 58px);
+  position: absolute;
+  top: 58px;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   &__header {
     justify-content: center;

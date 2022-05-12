@@ -17,7 +17,6 @@ export class FlowService {
   public currentStep: FlowStep;
   public stepHistory: string[];
 
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -51,9 +50,17 @@ export class FlowService {
           module: ModuleType.LEAD,
           options: {
             searchable: true,
-            editable: true,
-            perPage: 10,
+            editable: false,
+            perPage: 50,
             columns: []
+          },
+          onCreate: {
+            route: ['/flow/f', {outlets: {'aux': ['edit']}}],
+            extras: {
+              state: {
+                module: module
+              }
+            }
           }
         }
     });

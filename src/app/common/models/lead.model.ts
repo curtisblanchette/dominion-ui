@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
+import { IModel } from './index';
 
-export const LeadModel = {
+export const LeadModel: {[key: string]: IModel} = {
   firstName: {
     label: 'First Name',
     type: 'text',
@@ -51,7 +52,8 @@ export const LeadModel = {
   },
   practiceAreaId: {
     label: 'Practice Area Id',
-    type: 'number',
+    type: 'dropdown',
+    referencesLookup: 'practiceAreas',
     defaultValue: null,
     validators: [
       Validators.required

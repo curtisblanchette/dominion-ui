@@ -1,11 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { entityConfig } from '../../../../data/entity-metadata';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { DominionType, models } from '../../../models';
+import { catchError, Observable, tap, throwError } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { DropdownItem } from '../../interfaces/dropdownitem.interface';
+
+import * as fromApp from '../../../../store/app.reducer'
 
 @Component({
   selector: 'fiiz-data',
@@ -15,8 +20,14 @@ import { DominionType, models } from '../../../models';
 export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
 
   public form: FormGroup;
+  public controlData: any;
+  public practiceAreas$: Observable<DropdownItem[]>;
+
+  @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
+  @Output('onFailure') onFailure: EventEmitter<Error> = new EventEmitter<Error>();
 
   constructor(
+    private store: Store<fromApp.AppState>,
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     private flowService: FlowService,
@@ -24,6 +35,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory);
     this.buildForm(models[this.module]);
+    this.practiceAreas$ = this.store.select(fromApp.selectPracticeAreas);
 
     this.data$.subscribe(data => {
       if(data.length > 1) {
@@ -51,24 +63,36 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       form[key] = new FormControl((<any>model)[control.defaultValue], control.validators);
     }
     this.form = this.fb.group(form);
+    this.controlData = this.getControlData(this.form, model);
   }
 
-  public getFormControls() {
-    const controlNames = [];
-    for(const key of Object.keys(this.form.controls)) {
+  public getControlData(formGroup: FormGroup, model: any) {
+    const controls = [];
+    for(const key of Object.keys(formGroup.controls)) {
       if(key !== 'id') {
-        controlNames.push(key);
+        controls.push({
+          key,
+          ...model[key]
+        });
       }
     }
-    return controlNames;
+    return controls;
   }
 
   public saveData() {
-    this._dynamicService.add(<DominionType>this.form.value);
-    this.flowService.addToCache(this.module, this.form.value);
+    if (this.form.valid) {
+      const payload = this.form.value;
+
+      if(payload.hasOwnProperty('practiceAreaId')) {
+        payload.practiceAreaId = payload.practiceAreaId.id;
+      }
+
+      this._dynamicService.add(<DominionType>payload);
+    } else {
+
+    }
   }
 
   public ngOnDestroy() {
-    // this.saveData();
   }
 }

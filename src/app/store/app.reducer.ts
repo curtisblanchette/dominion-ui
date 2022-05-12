@@ -4,13 +4,13 @@ import { INestedSetting } from './app.effects';
 
 export interface AppState {
   settings: any;
-  roles: any;
+  lookups: any;
   initialized: boolean;
 }
 
 export const initialState: AppState = {
   settings: localStorage.getItem('settings') && JSON.parse(localStorage.getItem('settings') || '') || null,
-  roles: localStorage.getItem('roles') && JSON.parse(localStorage.getItem('roles') || '' ) || null,
+  lookups: localStorage.getItem('lookups') && JSON.parse(localStorage.getItem('lookups') || '' ) || null,
   initialized: localStorage.getItem('initialized') && JSON.parse(localStorage.getItem('initialized') || 'false' ) || false
 };
 
@@ -20,8 +20,9 @@ export const reducer = createReducer(
   on(appActions.SetSettingsAction, (state, {payload}) => ({ ...state, settings: payload })),
   on(appActions.ClearSettingsAction, (state) => ({ ...state, settings: null })),
 
-  on(appActions.GetRolesAction, (state) => ({ ...state })),
-  on(appActions.SetRolesAction, (state, {payload}) => ({ ...state, roles: payload })),
+  on(appActions.GetLookupsAction, (state) => ({ ...state })),
+  on(appActions.SetLookupsAction, (state, {payload}) => ({ ...state, lookups: payload })),
+
   on(appActions.ClearRolesAction, (state) => ({ ...state, roles: null })),
   on(appActions.AppInitializedAction, (state) => ({...state, initialized: true}))
 );
@@ -32,7 +33,10 @@ export const selectSettings = createSelector(selectApp, (state: AppState) => sta
 export const selectSettingGroup = (group: string) => createSelector(selectSettings, (settings: {[key: string]: INestedSetting}) => settings[group] || {});
 export const selectSettingByKey = (name: string) => createSelector(selectSettings, (settings: {[key: string]: INestedSetting}) => findByKey(settings, name));
 
-export const selectRoles = createSelector(selectApp, (state: AppState) => state.roles);
+export const selectLookups = createSelector(selectApp, (state: AppState) => state.lookups);
+export const selectRoles = createSelector(selectApp, (state: AppState) => state.lookups.roles);
+export const selectPracticeAreas = createSelector(selectApp, (state: AppState) => state.lookups.practiceAreas);
+
 export const selectInitialized = createSelector(selectApp, (state: AppState) => state.initialized);
 
 const findByKey = (obj: any, kee: string): any => {

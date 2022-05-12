@@ -6,8 +6,18 @@ import { EventModel } from './event.model';
 import { LeadSourceModel } from './leadSource.model';
 import { LeadModel } from './lead.model';
 import { Call, Campaign, Contact, Deal, Event, ICall, ICallDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, Lead, LeadSource } from '@4iiz/corev2';
+import { Validators } from '@angular/forms';
 
-export const models = {
+export interface IModel {
+  label: string;
+  type: 'text' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'date-picker',
+  referencesLookup?: string;
+  defaultValue: any;
+  validators: Validators[]
+}
+
+
+export const models: {[key: string]: any} = {
   call: CallModel,
   campaign: CampaignModel,
   deal: DealModel,

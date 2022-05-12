@@ -4,56 +4,57 @@
 
 .sidebar {
 
-    flex: 1;
-    height: 100%;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &__parent {
+    padding-left: 5px;
+    overflow: hidden;
+  }
+
+  &__header {
+    @include elevate(1);
+    font-weight: 500;
+    background-color: shade(#172B46, 15);
+
+    list-style: none;
+    padding: 9px 9px 15px 9px;
+    font-size: 16px;
+    cursor: pointer;
+
+    & i {
+      float: right;
+    }
+  }
+
+  &__item {
+
+    color: #1D3555;
     display: flex;
-    flex-direction: column;
+    cursor: pointer;
+    line-height: 50px;
 
-    &__parent{
-        padding-left: 5px;
-        overflow: hidden;
+    &__icon {
+      font-size: 24px;
+      width: 84px;
+      text-align: center;
+      line-height: 50px;
     }
 
-    &__header{
-        font-weight: 500;
-        background-color: shade(#172B46, 15);
-        box-shadow : 0px 3px 10px rgb(0 0 0 / 60%);
-        list-style: none;
-        padding: 9px 9px 15px 9px;
-        font-size: 16px;
-        cursor: pointer;
-
-        & i {
-            float: right;
-        }
+    &__title {
+      font-size: 18px;
+      font-weight: 500;
     }
 
-    &__item {
-
-        color: #1D3555;
-        display: flex;
-        cursor: pointer;
-        line-height: 50px;
-
-        &__icon {
-            font-size: 24px;
-            width: 84px;
-            text-align: center;
-            line-height: 50px;
-        }
-
-        &__title {
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-        &:active, &.active {
-            color: #C6CEED;
-        }
-
-        &:focus {
-            @include focusRing($focusring, $focusring-moz-mac);
-        }
+    &:active, &.active {
+      color: #C6CEED;
     }
+
+    &:focus {
+      @include focusRing($focusring, $focusring-moz-mac);
+    }
+  }
 
 }

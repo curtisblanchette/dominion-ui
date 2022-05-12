@@ -5,6 +5,8 @@ import * as appActions from './app.actions';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ISettingResponse } from '@4iiz/corev2';
+import { Store } from '@ngrx/store';
+import { AppState } from './app.reducer';
 
 export interface INestedSetting {
   [key: string]: { value: any; unit: string; }
@@ -15,7 +17,8 @@ export class AppEffects {
 
   constructor(
     private actions$: Actions,
-    private http: HttpClient
+    private http: HttpClient,
+    private store: Store<AppState>
   ) {
 
   }
@@ -58,28 +61,23 @@ export class AppEffects {
     )
   );
 
-  getRoles$ = createEffect((): any =>
+  getLookups$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(appActions.GetRolesAction),
-      mergeMap(async () => {
-        let res = await firstValueFrom(this.http.get(environment.dominion_api_url + '/roles')) as any;
+      ofType(appActions.GetLookupsAction),
+      mergeMap(async() => {
+        let practiceAreas = await firstValueFrom(this.http.get(environment.dominion_api_url + '/practice-areas')) as any;
+        let roles = await firstValueFrom(this.http.get(environment.dominion_api_url + '/roles')) as any;
 
         // transform it into a DropdownItem[]
-        res = res.map((r: any) => ({id: r.id, label: r.name }));
+        roles = roles.map((r: any) => ({id: r.id, label: r.name }));
+        practiceAreas = practiceAreas.map((r: any) => ({id: r.id, label: r.name }));
 
-        localStorage.setItem('roles', JSON.stringify(res));
-        return appActions.SetRolesAction({ payload: res });
-      })
-    )
-  );
-
-  onSetRoles$ = createEffect((): any =>
-    this.actions$.pipe(
-      ofType(appActions.SetRolesAction),
-      mergeMap(async () => {
+        localStorage.setItem('lookups', JSON.stringify({ roles, practiceAreas }));
+        this.store.dispatch(appActions.SetLookupsAction({ payload: { roles, practiceAreas } }) );
         return appActions.AppInitializedAction();
+
       })
-    )
-  );
+    ), { dispatch: true }
+  )
 
 }

@@ -39,7 +39,7 @@
     box-sizing: border-box;
     margin: 0;
     border: none;
-    box-shadow: $form-control-shadow;
+    @include elevate(1);
     border-radius: $input-border-radius;
     -moz-appearance: none;
     -webkit-appearance: none;

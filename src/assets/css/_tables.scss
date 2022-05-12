@@ -1,8 +1,12 @@
 @import '~src/assets/css/variables';
 
+
 .flex-table {
-  margin-bottom: 2em;
+  //margin-bottom: 2em;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &__header {
     display: flex;
@@ -29,7 +33,8 @@
   }
 
   &__body {
-    overflow: scroll;
+    overflow-y: scroll;
+    height: 100%;
   }
 
   &__row {

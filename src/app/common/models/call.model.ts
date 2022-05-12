@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
+import { IModel } from './index';
 
-export const CallModel = {
+export const CallModel: {[key: string]: IModel} = {
   startTime: {
     label: 'Start Time',
     type: 'date-picker',

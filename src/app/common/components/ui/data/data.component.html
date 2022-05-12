@@ -5,8 +5,15 @@
   <div *ngIf="data$ | async as data">
     <h3>{{state.title}}</h3>
     <form [formGroup]="form" (ngSubmit)="saveData()">
-      <fiiz-input *ngFor="let control of getFormControls()" [type]="control.type" [label]="control" [formControlName]="control"></fiiz-input>
-      <input type="submit" class="primary" value="Create {{state.module}}">
+
+      <ng-container *ngFor="let control of controlData">
+        <fiiz-input *ngIf="control.type === 'text'" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
+        <fiiz-select *ngIf="control.type === 'dropdown'" [items]="practiceAreas$" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
+      </ng-container>
+
+
+
+      <input type="submit" class="primary" value="Create {{state.module}}" [disabled]="!this.form.valid">
     </form>
 
 

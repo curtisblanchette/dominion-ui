@@ -36,8 +36,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
   @Input('options') options: IListOptions = { searchable: true, editable: false, perPage: 10, columns: [] };
+
   @Input('loadInitial') loadInitial: boolean = false;
-  @Input('onCreate') onCreate: Function;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
 
@@ -61,6 +61,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     public flowService: FlowService
   ) {
     super(router, entityCollectionServiceFactory);
+
+    if(!this.options) {
+      this.options = this.state.options
+    }
+
     if (this.data$) {
       this.data$.subscribe((res: Partial<DominionType>[]) => {
         if (!this.loading$ && this.loaded$ && res.length === 0) {
@@ -120,11 +125,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   onCreateNew() {
-    this.router.navigate(['/data/module', { outlets: {'aux': ['edit']}}], {
-      state: {
-        module: this.state.module
-      }
-    });
+    this.router.navigate(this.state.onCreate.route, this.state.onCreate.extras);
   }
 
   public ngAfterViewInit() {
@@ -170,7 +171,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public handlePageChange(pageNo: number) {
     this.page = pageNo;
-    this.offset = this.options.perPage * (this.page - 1);
+    this.offset = this.state.options.perPage * (this.page - 1);
   }
 
 
