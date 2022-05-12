@@ -1,7 +1,7 @@
 <section class="sidebar">
     <ul #menuGroup class="sidebar__parent" *ngFor="let items of menu; let i = index" id="group{{i}}" [@menu-slider]="items.state" >
         <li class="sidebar__header" (click)="toggleMenu(i)" >
-            {{items.label}} <i [@arrow-slider]="items.state" class="fa-solid fa-caret-down" ></i>
+            {{items.label}} <i [@arrow-slider]="items.state" class="fa-solid fa-caret-down"></i>
         </li>
         <li class="sidebar__item" *ngFor="let item of items.children" [ngClass]="{'active': selected === item.path }" tabindex="0" (click)="navigate(item.path)">
             <i class="sidebar__item__icon {{item.icon}}"></i>

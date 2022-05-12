@@ -1,16 +1,13 @@
 <form [formGroup]="searchForm" class="list-actions">
   <div  class="list-actions__fields">
     <fiiz-input #SearchInput icon="fa-search" formControlName="search" type="text" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
-    &nbsp;
     <button class="stroked" *ngIf="state.options.editable">Edit</button>
-    &nbsp;
     <fiiz-dropdown
       type="button"
       *ngIf="state.options.editable"
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-    &nbsp;
     <button class="primary" (click)="onCreateNew()">Create New {{state.module}}</button>
   </div>
 </form>
