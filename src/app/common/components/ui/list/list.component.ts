@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
-import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
+import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
-import { DominionType } from '../../../models';
+import { models, DominionType, defaultListColumns } from '../../../models';
 
 export interface IListOptions {
   searchable: boolean;
@@ -31,7 +31,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public page: number = 1;
   public offset: number = 0;
   public totalRecords: number = 0;
-  public selected: Lead | Contact | Event | Deal | null;
+  public selected: Call | Lead | Contact | Deal | Event | User | null;
+  public columns: { id: string; label: string; }[] = [];
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
@@ -63,7 +64,14 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     super(router, entityCollectionServiceFactory);
 
     if(!this.options) {
-      this.options = this.state.options
+      this.options = this.state.options;
+    }
+
+    // set the default visible columns
+    for(const [key, value] of Object.entries(models[this.module]) ) {
+      if(defaultListColumns[this.module].includes(key)) {
+        this.columns.push({id: key, label: (<any>value).label});
+      }
     }
 
     if (this.data$) {

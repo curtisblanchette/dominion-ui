@@ -18,6 +18,10 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
+  fullName: {
+    label: 'Full Name',
+    type: 'virtual'
+  },
   phone: {
     label: 'Phone Number',
     type: 'text',

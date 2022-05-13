@@ -10,6 +10,14 @@ export const DealModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
+  stage: {
+    label: 'State',
+    type: 'text',
+    defaultValue: null,
+    validators: [
+      Validators.required
+    ]
+  },
   practiceArea: {
     label: 'Practice Area',
     type: 'text',
@@ -44,14 +52,6 @@ export const DealModel: {[key: string]: IModel} = {
   },
   leadId: {
     label: 'Lead Id',
-    type: 'text',
-    defaultValue: null,
-    validators: [
-      Validators.required
-    ]
-  },
-  stage: {
-    label: 'State',
     type: 'text',
     defaultValue: null,
     validators: [
