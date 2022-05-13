@@ -11,16 +11,18 @@ export const DealModel: {[key: string]: IModel} = {
     ]
   },
   stage: {
-    label: 'State',
-    type: 'text',
+    label: 'Stage',
+    type: 'dropdown',
+    service: 'dealStage',
     defaultValue: null,
     validators: [
       Validators.required
     ]
   },
-  practiceArea: {
+  practiceAreaId: {
     label: 'Practice Area',
-    type: 'text',
+    type: 'dropdown',
+    service: 'practiceArea',
     defaultValue: null,
     validators: [
       Validators.required

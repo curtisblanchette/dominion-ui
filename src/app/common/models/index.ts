@@ -18,7 +18,7 @@ export interface IModel {
 }
 
 export const defaultListColumns: {[key: string]: string[]} = {
-  call: ['name', 'type', 'direction'],
+  call: ['createdAt', 'type', 'direction', 'outcome', 'status', 'dialledNumber'],
   campaign: ['name'],
   deal: ['name', 'stage', 'createdAt', 'contactId'],
   contact: ['fullName', 'phone', 'email'],

@@ -40,7 +40,8 @@ export const LeadModel: {[key: string]: IModel} = {
   },
   status: {
     label: 'Status',
-    type: 'text',
+    type: 'dropdown',
+    service: 'leadStatus',
     defaultValue: 'No Set',
     validators: [
       Validators.required
@@ -55,7 +56,7 @@ export const LeadModel: {[key: string]: IModel} = {
     ]
   },
   practiceAreaId: {
-    label: 'Practice Area Id',
+    label: 'Practice Area',
     type: 'dropdown',
     service: 'practiceArea',
     defaultValue: null,
