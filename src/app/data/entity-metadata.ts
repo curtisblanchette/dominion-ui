@@ -48,6 +48,7 @@ export const pluralNames = {
   leadStatus: 'leadStatuses',
   callOutcome: 'callOutcomes',
   callType: 'callTypes',
+  callStatus: 'callStatuses',
   dealStage: 'dealStages',
   eventOutcome: 'eventOutcomes',
   eventType: 'eventType'
@@ -62,6 +63,8 @@ export const uriOverrides: { [key: string]: string } = {
   leadSource: 'lead-sources',
   practiceArea: 'practice-areas',
   leadStatus: 'lead-statuses',
+  callStatus: 'call-statuses',
+  callType: 'call-types',
   callOutcome: 'call-outcomes',
   dealStage: 'deal-stages',
   eventOutcome: 'event-outcomes',

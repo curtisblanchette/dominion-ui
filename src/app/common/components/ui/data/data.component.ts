@@ -93,10 +93,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (this.form.valid) {
       const payload = this.form.value;
 
-      if(payload.hasOwnProperty('practiceAreaId')) {
-        payload.practiceAreaId = payload.practiceAreaId.id;
-      }
-
       this._dynamicService.add(<DominionType>payload);
     } else {
 
