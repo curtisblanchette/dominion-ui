@@ -2,6 +2,10 @@ import { Component, forwardRef, HostBinding, Input, OnInit, HostListener } from 
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable } from 'rxjs';
 import { DropDownAnimation } from '../../dropdown';
+import { EntityCollectionServiceFactory } from '@ngrx/data';
+import { Router } from '@angular/router';
+import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
+import { ModuleType } from '../../../../../modules/flow/_core';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -22,9 +26,8 @@ export interface DropdownItem {
     DropDownAnimation
   ]
 })
-export class FiizSelectComponent implements ControlValueAccessor, OnInit {
+export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit {
   public selected!: any;
-
 
   @Input('items') items$: Observable<DropdownItem[]>;
   @Input('label') public label: string | number | boolean | undefined;
@@ -34,6 +37,7 @@ export class FiizSelectComponent implements ControlValueAccessor, OnInit {
   @Input('autofocus') autofocus = false;
   @Input('position') position:string = 'bottom-right';
   @Input('showDefault') showDefault!: boolean;
+  @Input('module') override module: ModuleType;
 
   @HostBinding('attr.disabled')
   isDisabled = false;
@@ -55,7 +59,10 @@ export class FiizSelectComponent implements ControlValueAccessor, OnInit {
   onTouched: Function = () => {};
 
   constructor(
+    public router: Router,
+    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
   ) {
+    super(router, entityCollectionServiceFactory);
   }
 
   async ngOnInit() {
@@ -73,7 +80,11 @@ export class FiizSelectComponent implements ControlValueAccessor, OnInit {
     this.default = item.id;
   }
 
-  async ngAfterViewInit() {}
+  async ngAfterViewInit() {
+      if(this.module) {
+        this._dynamicService.load();
+      }
+  }
 
   writeValue(value: DropdownItem) {
 

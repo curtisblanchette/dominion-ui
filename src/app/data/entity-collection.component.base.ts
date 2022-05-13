@@ -19,11 +19,10 @@ export class EntityCollectionComponentBase {
     router: Router,
     entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
-    this.state = router.getCurrentNavigation()!.extras.state;
-    this.module = this.state?.module;
+    this.state = router.getCurrentNavigation()?.extras.state || {};
+    this.module = this.state?.module || this.module;
     this.type = types[this.module];
     if (this.module) {
-      // TODO this type "Lead" should be dynamic
       this._dynamicService = this.createService(this.type, entityCollectionServiceFactory);
       this.data$ = this._dynamicService.filteredEntities$;
       this.loading$ = this._dynamicService.loading$;

@@ -8,7 +8,7 @@
 
       <ng-container *ngFor="let control of controlData">
         <fiiz-input *ngIf="control.type === 'text'" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
-        <fiiz-select *ngIf="control.type === 'dropdown'" [items]="practiceAreas$" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
+        <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
       </ng-container>
 
 

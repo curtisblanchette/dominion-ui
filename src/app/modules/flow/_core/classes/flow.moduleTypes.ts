@@ -5,5 +5,7 @@ export enum ModuleType {
     CALL = 'call',
     EVENT = 'event',
     CAMPAIGN = 'campaign',
-    LEAD_SOURCE = 'leadSource'
+    LEAD_SOURCE = 'leadSource',
+    ROLE = 'role',
+    PRACTICE_AREA = 'practiceArea'
 }

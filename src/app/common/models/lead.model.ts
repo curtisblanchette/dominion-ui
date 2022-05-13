@@ -53,7 +53,7 @@ export const LeadModel: {[key: string]: IModel} = {
   practiceAreaId: {
     label: 'Practice Area Id',
     type: 'dropdown',
-    referencesLookup: 'practiceAreas',
+    service: 'practiceArea',
     defaultValue: null,
     validators: [
       Validators.required

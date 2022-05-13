@@ -5,13 +5,14 @@ import { DealModel } from './deal.model';
 import { EventModel } from './event.model';
 import { LeadSourceModel } from './leadSource.model';
 import { LeadModel } from './lead.model';
-import { Call, Campaign, Contact, Deal, Event, ICall, ICallDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, Lead, LeadSource } from '@4iiz/corev2';
+import { Call, Campaign, Contact, Deal, Event, ICall, ICallDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, IPracticeAreaDTO, Lead, LeadSource, LK_PracticeArea } from '@4iiz/corev2';
 import { Validators } from '@angular/forms';
+import { IPracticeArea } from '@4iiz/corev2/dist/models/client/PracticeArea/PracticeArea';
 
 export interface IModel {
   label: string;
   type: 'text' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'date-picker',
-  referencesLookup?: string;
+  service?: string;
   defaultValue: any;
   validators: Validators[]
 }
@@ -44,4 +45,5 @@ export type DominionType =
   Contact | IContact | IContactDTO |
   Event | IEvent | IEventDTO |
   Lead | ILead | ILeadDTO |
-  LeadSource | ILeadSource | ILeadSourceDTO;
+  LeadSource | ILeadSource | ILeadSourceDTO |
+  LK_PracticeArea | IPracticeArea | IPracticeAreaDTO;
