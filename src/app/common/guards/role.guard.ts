@@ -26,7 +26,7 @@ export class RoleGuard implements CanActivate {
     return this.store.select(fromLogin.selectUser).pipe(
       map((user) => {
         if (user !== null) {
-          return roles.some(r=> user.role.includes(r));
+          return roles.some(r=> user.roles.includes(r));
         } else {
           console.warn( 'Login Required, or user has insufficient privileges.');
           return false

@@ -40,7 +40,7 @@ export class LoginEffects {
               const access_token = response.accessToken.getJwtToken();
               const id_token = response.idToken.getJwtToken();
               const refresh_token = response.refreshToken.getToken();
-              const role = response.idToken.payload['cognito:groups'];
+              const roles = response.idToken.payload['cognito:groups'];
               const email = response.idToken.payload['cognito:email'];
               const id = response.idToken.payload['cognito:username'];
               const workspaceId = response.idToken.payload['custom:workspaceId'];
@@ -49,7 +49,7 @@ export class LoginEffects {
                 access_token,
                 id_token,
                 refresh_token,
-                role,
+                roles,
                 id,
                 username: email,
               });
@@ -90,6 +90,23 @@ export class LoginEffects {
     { dispatch: false }
   );
 
+  getUser$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.GetUserAction),
+        map((action: any) => action.payload ),
+        mergeMap((user: User) =>{
+          return this.http.get(environment.dominion_api_url + '/users/me').pipe(
+            map((res: any) => {
+              // merge the two user records
+              res.roles = res.roles.map((role: {id: string, name: string}) => role.name);
+              return loginActions.UpdateUserAction({payload: new User({...user, ...res })});
+            })
+          );
+        })
+      )
+  );
+
   loginSuccess$ = createEffect(
     (): any =>
       this.actions$.pipe(
@@ -97,18 +114,7 @@ export class LoginEffects {
         map((action: { payload: User }) => action.payload),
         tap((action: User) => {
 
-          if(!action.role.includes('system')) {
-            this.http.get(environment.dominion_api_url + '/users/me').pipe(
-              map((res: any) => {
-                // merge the two user records
-                const user = new User({...action, ...res});
-                this.store.dispatch(loginActions.UpdateUserAction({payload: user}));
-              })
-            ).subscribe();
-          }
-
-
-          switch (action.role[0]) {
+          switch (action.roles[0]) {
             case 'system':
               this.router.navigate(['system'])
               break;
@@ -131,7 +137,8 @@ export class LoginEffects {
           // system users won't get settings yet
           // because settings are workspace specific
           // system users will fetch app settings when switching workspaces
-          if(!action.role.includes('system')) {
+          if(!action.roles.includes('system')) {
+            this.store.dispatch(loginActions.GetUserAction({payload: action}));
             return appActions.GetSettingsAction();
           }
           return appActions.ClearSettingsAction();

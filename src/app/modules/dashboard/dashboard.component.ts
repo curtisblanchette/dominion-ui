@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit {
     this.store.select(fromLogin.selectUser).subscribe((user: any) => {
       if (user) {
         this.user = user as User;
-        this.quickStartMenu = buttons.user.get(user.role);
+        this.quickStartMenu = buttons.user.get(user.roles);
       }
     });
   }
