@@ -1,6 +1,6 @@
 import { Component, forwardRef, HostBinding, Input, OnInit, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { DropDownAnimation } from '../../dropdown';
 import { EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
@@ -29,7 +29,7 @@ export interface DropdownItem {
 export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit {
   public selected!: any;
 
-  @Input('items') items$: Observable<DropdownItem[]>;
+  @Input('items') items$: Observable<DropdownItem[]> = of([]);
   @Input('label') public label: string | number | boolean | undefined;
   @Input('id') id!: string;
   @Input('size') size!: 'small' | 'large';
@@ -81,9 +81,7 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   }
 
   async ngAfterViewInit() {
-      if(this.module) {
-        this._dynamicService.load();
-      }
+
   }
 
   writeValue(value: DropdownItem) {
