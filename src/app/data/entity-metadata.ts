@@ -21,6 +21,9 @@ const entityMetadata: EntityMetadataMap = {
   event: {},
   campaign: {},
   leadSource: {},
+  role: {},
+  practiceArea: {},
+  leadStatus: {}
 }
 
 export const pluralNames = {
@@ -30,7 +33,10 @@ export const pluralNames = {
   call: 'calls',
   event: 'events',
   campaign: 'campaigns',
-  leadSource: 'leadSources'
+  leadSource: 'leadSources',
+  role: 'roles',
+  practiceArea: 'practiceAreas',
+  leadStatus: 'leadStatuses'
 }
 
 export const entityConfig = {
@@ -40,4 +46,6 @@ export const entityConfig = {
 
 export const uriOverrides: { [key: string]: string } = {
   leadSource: 'lead-sources',
+  practiceArea: 'practice-areas',
+  leadStatus: 'lead-statuses'
 }
