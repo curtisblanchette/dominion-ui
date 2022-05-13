@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Contact, Deal, Event, Lead } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
-import { EntityCollectionServiceFactory } from '@ngrx/data';
+import { EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
 
@@ -29,12 +29,13 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   // Pagination
   public page: number = 1;
   public offset: number = 0;
-  public totalRecords: number = 0;
+  public totalRecords: number = 50;
+  public perPage:number = 5;
   public selected: Lead | Contact | Event | Deal | null;
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
-  @Input('options') options: IListOptions = { searchable: true, editable: false, perPage: 10, columns: [] };
+  @Input('options') options: IListOptions = { searchable: true, editable: false, perPage: this.perPage, columns: [] };
   @Input('loadInitial') loadInitial: boolean = false;
   @Input('onCreate') onCreate: Function;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
@@ -84,7 +85,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     }
 
     this.selected = record;
-    console.log('this.selected',this.selected);
     this.values.emit( { 'module' : this.module, 'record' : record });
   }
 
@@ -105,9 +105,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngOnInit(){
-    const pattern = { q : '' };
-    this._dynamicService.setFilter(pattern);
-    this._dynamicService.getWithQuery(pattern);
+    this.getData();
   }
 
   get pluralModuleName() {
@@ -144,22 +142,32 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public async searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
-      const pattern = { q: formValues.search.toLowerCase() };
-      this._dynamicService.setFilter(pattern); // this modifies filteredEntities$ subset
-      this._dynamicService.getWithQuery(pattern); // this performs an API call
-      await this.udpatePaginationParams();
+      // const pattern = { q: formValues.search.toLowerCase() };
+      await this.getData( formValues.search.toLowerCase() );
+      // const pattern = `q=${formValues.search.toLowerCase()}&limit=10&page=0`;
+      // this._dynamicService.setFilter(pattern); // this modifies filteredEntities$ subset
+      // this._dynamicService.getWithQuery(pattern); // this performs an API call
+      // await this.udpatePaginationParams();
     } else {
       console.warn('Form not valid');
       return of([]);
     }
   }
 
-  public async udpatePaginationParams(){
-    if (this.data$) {
-      this.data$.subscribe((res: Lead[]) => {
-        this.totalRecords = res.length;
-      });
+  public async getData( searchkey:string = '' ){
+    const params:QueryParams = {
+      page : this.page.toString(),
+      limit : this.perPage.toString()
+    };
+
+    if( searchkey ){
+      params['q'] = searchkey;
     }
+
+    this._dynamicService.setFilter(params); // this modifies filteredEntities$ subset
+    this._dynamicService.getWithQuery(params); // this performs an API call
+    // this.totalRecords = this._dynamicService['totalCount'];
+    // console.log('this.totalRecords',this.totalRecords);
   }
 
   public performAction( value:any ){
@@ -169,7 +177,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public handlePageChange(pageNo: number) {
     this.page = pageNo;
-    this.offset = this.options.perPage * (this.page - 1);
+    this.getData();
   }
 
 

@@ -17,7 +17,7 @@ import {
 import { Action } from '@ngrx/store';
 import { NgModule, Injectable } from '@angular/core';
 import { entityConfig } from './entity-metadata';
-import { CustomDataService } from './custom.dataservice';
+import { CustomDataService, CustomDataServiceFactory } from './custom.dataservice';
 import { PluralHttpUrlGenerator } from './plural.httpUrlGenerator';
 import { environment } from '../../environments/environment';
 
@@ -79,7 +79,8 @@ export class AdditionalEntityCollectionReducerMethodsFactory {
 
 @NgModule({
   providers: [
-    CustomDataService,
+    // CustomDataService,
+    {provide: DefaultDataServiceFactory, useClass: CustomDataServiceFactory},
     {provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig},
     {provide: HttpUrlGenerator, useClass: PluralHttpUrlGenerator},
     {
