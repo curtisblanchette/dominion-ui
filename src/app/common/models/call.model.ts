@@ -20,7 +20,8 @@ export const CallModel: {[key: string]: IModel} = {
   },
   outcome: {
     label: 'Outcome',
-    type: 'text',
+    type: 'dropdown',
+    service: 'callOutcome',
     defaultValue: null,
     validators: [
       Validators.required
@@ -28,7 +29,8 @@ export const CallModel: {[key: string]: IModel} = {
   },
   type: {
     label: 'Type',
-    type: 'text',
+    type: 'dropdown',
+    service: 'callType',
     defaultValue: 'Sales Consultation',
     validators: [
       Validators.required
@@ -36,7 +38,8 @@ export const CallModel: {[key: string]: IModel} = {
   },
   status: {
     label: 'Status',
-    type: 'text',
+    type: 'dropdown',
+    service: 'callStatus',
     defaultValue: 'Answered',
     validators: [
       Validators.required

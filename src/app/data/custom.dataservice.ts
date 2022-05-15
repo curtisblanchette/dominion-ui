@@ -2,7 +2,7 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, EntityCollectionDataService, HttpUrlGenerator, QueryParams } from '@ngrx/data';
 import { DominionType } from '../common/models';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { map, tap, Observable } from 'rxjs';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
@@ -28,6 +28,38 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     return super.add(data);
   }
 
+  override getAll(): Observable<T[]> {
+
+    if(['role', 'practiceArea', 'leadStatus', 'callType', 'callStatus', 'callOutcome', 'eventOutcome', 'eventType', 'dealStage'].includes(this.entityName)) {
+      return super.getAll().pipe(map(this.toDropdownItems));
+    }
+    return super.getAll();
+  }
+
+  override getById(id: string | number): Observable<T> {
+    return super.getById(id);
+  }
+  //
+  // override getWithQuery(params: string | QueryParams): Observable<T[]> {
+  //   return super.getWithQuery(params);
+  // }
+
+  override getWithQuery(queryParams: string | QueryParams): Observable<any> {
+    const qParams = typeof queryParams === 'string' ? { fromString: queryParams } : { fromObject: queryParams };
+    const params = new HttpParams(qParams);
+
+    return this.execute('GET', this.entitiesUrl, undefined, { params }).pipe(
+      tap(response => {
+        this.totalRecords = response['count'];
+      })
+    );
+  }
+
+  toDropdownItems(items: {[key:string]: any}[]): any {
+    // return { ...hero, dateLoaded: new Date() };
+    return items.map((item: any) => { return { id: item.id, label: item.name }});
+  }
+
   removeNulls(obj: any): any {
     return Object.fromEntries(
       Object.entries(obj)
@@ -35,17 +67,8 @@ export class CustomDataService<T> extends DefaultDataService<T> {
         .map(([k, v]) => [k, v === Object(v) ? this.removeNulls(v) : v])
     );
   }
-  
-  override getWithQuery(queryParams: string | QueryParams): Observable<any> {
-    const qParams = typeof queryParams === 'string' ? { fromString: queryParams } : { fromObject: queryParams };
-    const params = new HttpParams(qParams);
-    
-    return this.execute('GET', this.entitiesUrl, undefined, { params }).pipe(
-      tap(response => {
-        this.totalRecords = response['count'];
-      })
-    );
-  }
+
+
 
    totalCount() {
     return this.totalRecords;

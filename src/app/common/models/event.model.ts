@@ -44,7 +44,8 @@ export const EventModel: {[key: string]: IModel} = {
   },
   type: {
     label: 'Type',
-    type: 'text',
+    type: 'dropdown',
+    service: 'eventType',
     defaultValue: null,
     validators: [
       Validators.required
@@ -70,7 +71,8 @@ export const EventModel: {[key: string]: IModel} = {
   },
   outcome: {
     label: 'Outcome',
-    type: 'text',
+    type: 'dropdown',
+    service: 'eventOutcome',
     defaultValue: null,
     validators: []
   }

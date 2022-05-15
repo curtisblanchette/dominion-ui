@@ -4,6 +4,7 @@ import { User } from '../models/user';
 export const ActionTypes = {
     LOGIN: '[Login] Login',
     LOGIN_SUCCESSFUL: '[Login] Login Successful',
+    GET_USER: '[Login] Get User',
     LOGIN_ERROR:'[Login] Login Error',
     FETCH_USER: '[Login] Fetch User Record',
     UPDATE_RECORD:'[Login] Update User',
@@ -25,6 +26,11 @@ export const LoginAction = createAction(
 export const LoginSuccessfulAction = createAction(
     ActionTypes.LOGIN_SUCCESSFUL,
     props<{ payload: User }>()
+);
+
+export const GetUserAction = createAction(
+  ActionTypes.GET_USER,
+  props<{ payload: User }>()
 );
 
 export const LoginErrorAction = createAction(

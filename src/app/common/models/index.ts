@@ -11,12 +11,21 @@ import { IPracticeArea } from '@4iiz/corev2/dist/models/client/PracticeArea/Prac
 
 export interface IModel {
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'date-picker',
+  type: 'text' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'date-picker' | 'virtual',
   service?: string;
-  defaultValue: any;
-  validators: Validators[]
+  defaultValue?: any;
+  validators?: Validators[]
 }
 
+export const defaultListColumns: {[key: string]: string[]} = {
+  call: ['createdAt', 'type', 'direction', 'outcome', 'status', 'dialledNumber'],
+  campaign: ['name'],
+  deal: ['name', 'stage', 'createdAt', 'contactId'],
+  contact: ['fullName', 'phone', 'email'],
+  event: ['title', 'type', 'startTime', 'endTime'],
+  lead: ['fullName', 'phone', 'email'],
+  leadSource: ['name', 'status']
+}
 
 export const models: {[key: string]: any} = {
   call: CallModel,

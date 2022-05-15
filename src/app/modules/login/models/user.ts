@@ -2,7 +2,7 @@ export class User {
   access_token: string;
   id_token: string;
   refresh_token: string;
-  role: string;
+  roles: string;
   username: string;
   picture: string;
   id?: string;
@@ -13,22 +13,16 @@ export class User {
   calendarType?: string;
   firstName?: string;
   lastName?: string;
+  fullName?: string;
 
   constructor(
-    data: Omit<User, 'fullName' | 'apply'>
+    data: Omit<User, 'apply'>
   ) {
     this.apply(data);
   }
 
-  public apply(data:  Omit<User,'fullName' | 'apply'>): void {
+  public apply(data:  Omit<User, 'apply'>): void {
      Object.assign(this, data);
-  }
-
-  get fullName(): string {
-    if(this.role.includes('system')){
-      return 'System Administrator';
-    }
-    return (this.firstName || '') + ' ' + (this.lastName || '');
   }
 
 }

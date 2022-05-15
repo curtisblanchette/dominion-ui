@@ -65,7 +65,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       if (user) {
         this.loggedUser = user as User
         // TODO will likely have to test for more than the first role
-        this.menu = this.menu.filter(item => item.roles.includes(user.role[0]));
+        this.menu = this.menu.filter(item => item.roles.includes(user.roles[0]));
       } else {
         this.loggedUser = null;
       }

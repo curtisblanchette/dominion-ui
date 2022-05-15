@@ -15,9 +15,7 @@
 <div class="flex-table">
   <div class="flex-table__header">
     <div class="flex-table__cell" style="flex: 0.15;">&nbsp;</div>
-    <div class="flex-table__cell">Name</div>
-    <div class="flex-table__cell">Phone</div>
-    <div class="flex-table__cell">Email</div>
+    <div class="flex-table__cell" *ngFor="let column of columns">{{column.label}}</div>
   </div>
   <div class="flex-table__body">
     <div class="flex-table__row"
@@ -32,15 +30,10 @@
             <span class="customRadio"></span>
           </div>
         </div>
-        <div class="flex-table__cell">
-          <div>{{item.fullName}}</div>
+        <div class="flex-table__cell" *ngFor="let column of columns">
+          <div>{{item[column.id]}}</div>
         </div>
-        <div class="flex-table__cell">
-          <div>{{item.phone}}</div>
-        </div>
-        <div class="flex-table__cell">
-          <div>{{item.email}}</div>
-        </div>
+
     </div>
   </div>
   <div class="flex-table__footer">
