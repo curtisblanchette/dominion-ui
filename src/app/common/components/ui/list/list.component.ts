@@ -10,12 +10,13 @@ import { EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
 import { DominionType } from '../../../models';
+import { getColumns } from './display-columns';
 
 export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   perPage: number;
-  columns: string[];
+  columns: Array<Object>;
 }
 
 @Component({
@@ -29,10 +30,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   // Pagination
   public page: number = 1;
-  public offset: number = 0;
-  public totalRecords: number = 50;
   public perPage:number = 5;
+  public totalRecords: number = 50;  
   public selected: Lead | Contact | Event | Deal | null;
+
+  public columns:Array<Object> = [];
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
@@ -110,6 +112,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngOnInit(){
+    this.getDisplayColumns();
     this.getData();
   }
 
@@ -150,9 +153,16 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     }
   }
 
+  public getDisplayColumns(){
+    if( !this.columns.length ){
+      this.columns = getColumns(this.state?.module);
+    }
+  }
+
   public async getData( searchkey:string = '' ){
+    const page = this.page - 1; 
     const params:QueryParams = {
-      page : this.page.toString(),
+      page : page.toString(),
       limit : this.perPage.toString()
     };
 

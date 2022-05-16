@@ -4,13 +4,13 @@ import { Call, Campaign, Contact, Deal, Event, Lead, LeadSource } from '@4iiz/co
 const entityMetadata: EntityMetadataMap = {
   contact: {},
   lead: {
-    filterFn: (entities: Lead[], pattern: QueryParams | string ) => {
+    filterFn: (entities: any, pattern: QueryParams | string ) => {
       let start:number = 0;
       let end:number = 0;
       if( typeof pattern !== 'string'){
         const limit:number = Number( pattern['limit'] );
         const page:number = Number( pattern['page'] );
-        start = limit * (page - 1);
+        start = limit * page;
         end = start + limit;
       }
       if( end > 0 ){

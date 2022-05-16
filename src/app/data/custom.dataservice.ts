@@ -2,7 +2,7 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, EntityCollectionDataService, HttpUrlGenerator, QueryParams } from '@ngrx/data';
 import { DominionType } from '../common/models';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, map } from 'rxjs';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
@@ -43,8 +43,10 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     return this.execute('GET', this.entitiesUrl, undefined, { params }).pipe(
       tap(response => {
         this.totalRecords = response['count'];
-      })
+      }),
+      map((res: any) => res)
     );
+
   }
 
    totalCount() {
@@ -62,7 +64,7 @@ export class CustomDataServiceFactory extends DefaultDataServiceFactory {
     http: HttpClient,
     httpUrlGenerator: HttpUrlGenerator,
     @Optional() config?: DefaultDataServiceConfig
-  ) {
+  ) {    
     super(http, httpUrlGenerator, config);
   }
 
