@@ -30,14 +30,22 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
 export class AdditionalPersistenceResultHandler extends DefaultPersistenceResultHandler {
   override handleSuccess(originalAction: EntityAction): (data: any) => Action {
     const actionHandler = super.handleSuccess(originalAction);
+    const page = originalAction.payload.data?.page! || 0;
     return (data: any) => {
       const action = actionHandler.call(this, data);
       // check for rows, collection or not
       // single entity adds/updates should remain unchanged
+      console.log('action before', action);
       if (action && data && data.rows) {
+
+        const entities = data.rows;
+        const meta = [{ 'count' : data.count, 'page' : page }];
+        const merge = [ ...meta, ...entities ];
+
         (action as any).payload.count = data.count;
-        (action as any).payload.data = data.rows;
-      }
+        (action as any).payload.data = merge;
+        (action as any).payload.page = page;
+      }      
       return action;
     };
   }
@@ -59,6 +67,7 @@ export class AdditionalEntityCollectionReducerMethods<T> extends EntityCollectio
     if (action.payload as any) {
       (ec as any).count = (action.payload as any).count;
       (ec as any).data = (action.payload as any).data;
+      (ec as any).page = (action.payload as any).page;
     }
     return ec;
   }

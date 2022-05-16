@@ -10,14 +10,12 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
 import { models, defaultListColumns } from '../../../models';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../../store/app.reducer';
 
 export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   perPage: number;
-  columns: string[];
+  columns: Array<Object>;
 }
 
 @Component({

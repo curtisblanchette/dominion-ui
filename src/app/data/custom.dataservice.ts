@@ -2,7 +2,7 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, EntityCollectionDataService, HttpUrlGenerator, QueryParams } from '@ngrx/data';
 import { DominionType } from '../common/models';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
