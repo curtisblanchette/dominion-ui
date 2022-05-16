@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { EntityCollectionServiceFactory } from '@ngrx/data';
+import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { entityConfig } from '../../../../data/entity-metadata';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { DominionType, models } from '../../../models';
@@ -30,17 +30,12 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     private store: Store<fromApp.AppState>,
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    private dataServiceFactory: DefaultDataServiceFactory,
     private flowService: FlowService,
     private fb: FormBuilder
   ) {
-    super(router, entityCollectionServiceFactory);
+    super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.buildForm(models[this.module]);
-
-    this.data$.subscribe(data => {
-      if(data.length > 1) {
-
-      }
-    })
   }
 
   public ngOnInit() {
@@ -63,7 +58,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public getData(key?: string) {
-    this._dynamicService.getByKey(this.flowService.cache[this.module].id);
+    this._dynamicCollectionService.getByKey(this.flowService.cache[this.module].id);
   }
 
   private buildForm(model: { [key: string]: any }) {

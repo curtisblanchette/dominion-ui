@@ -26,7 +26,6 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
   timeout: 3000 // request timeout
 };
 
-
 @Injectable()
 export class AdditionalPersistenceResultHandler extends DefaultPersistenceResultHandler {
   override handleSuccess(originalAction: EntityAction): (data: any) => Action {

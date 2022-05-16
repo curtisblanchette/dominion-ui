@@ -41,7 +41,7 @@ export class DataComponent implements OnInit, OnDestroy {
         options: {
           searchable: true,
           editable: true,
-          perPage: 50,
+          perPage: 5,
           columns: []
         },
         module: module,

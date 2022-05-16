@@ -2,7 +2,7 @@ import { Component, OnDestroy } from "@angular/core";
 import { FlowService } from "../../../flow.service";
 import { Router } from "@angular/router";
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
-import { EntityCollectionServiceFactory } from '@ngrx/data';
+import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 
 @Component({
   selector: 'flow-text',
@@ -16,9 +16,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   constructor(
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    private dataServiceFactory: DefaultDataServiceFactory,
     private flowService: FlowService
   ) {
-    super(router, entityCollectionServiceFactory)
+    super(router, entityCollectionServiceFactory, dataServiceFactory)
     this.data = this.router.getCurrentNavigation()!.extras.state;
   }
 

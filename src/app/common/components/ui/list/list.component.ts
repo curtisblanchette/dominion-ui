@@ -1,15 +1,17 @@
 import { Component, ElementRef, AfterViewInit, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, Subject, takeUntil } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
-import { EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
+import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
-import { models, DominionType, defaultListColumns } from '../../../models';
+import { models, defaultListColumns } from '../../../models';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../store/app.reducer';
 
 export interface IListOptions {
   searchable: boolean;
@@ -26,11 +28,11 @@ export interface IListOptions {
 export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
 
   public searchForm: FormGroup;
+  public destroyed$: Subject<any> = new Subject<any>();
 
   // Pagination
   public page: number = 1;
   public offset: number = 0;
-  public totalRecords: number = 50;
   public perPage:number = 5;
   public selected: Call | Lead | Contact | Deal | Event | User | null;
   public columns: { id: string; label: string; }[] = [];
@@ -59,9 +61,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     private fb: FormBuilder,
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    private dataServiceFactory: DefaultDataServiceFactory,
     public flowService: FlowService
   ) {
-    super(router, entityCollectionServiceFactory);
+    super(router, entityCollectionServiceFactory, dataServiceFactory);
 
     if(!this.options) {
       this.options = this.state.options;
@@ -72,14 +75,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       if(defaultListColumns[this.module].includes(key)) {
         this.columns.push({id: key, label: (<any>value).label});
       }
-    }
-
-    if (this.data$) {
-      this.data$.subscribe((res: Partial<DominionType>[]) => {
-        if (!this.loading$ && this.loaded$ && res.length === 0) {
-          // we only want to query if the cache doesn't return a record
-        }
-      });
     }
 
     let form: { [key: string]: FormControl } = {};
@@ -115,6 +110,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public ngOnDestroy() {
     console.log(`[${this.module}] List Component Destroyed`);
+    this.destroyed$.next(true);
   }
 
   public ngOnInit(){
@@ -168,8 +164,9 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['q'] = searchkey;
     }
 
-    this._dynamicService.setFilter(params); // this modifies filteredEntities$ subset
-    this._dynamicService.getWithQuery(params); // this performs an API call
+    // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
+    /** Proxy to the underlying dataService to do some processing */
+    this.getWithQuery(params).pipe(takeUntil(this.destroyed$)).subscribe(); // this performs an API call
   }
 
   public performAction( value:any ){
@@ -179,7 +176,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public handlePageChange(pageNo: number) {
     this.page = pageNo;
-    this.getData();
+    this.searchInModule();
   }
 
 

@@ -4,20 +4,20 @@ import { Call, Campaign, Contact, Deal, Event, Lead, LeadSource } from '@4iiz/co
 const entityMetadata: EntityMetadataMap = {
   contact: {},
   lead: {
-    filterFn: (entities: Lead[], pattern: QueryParams | string ) => {
-      let start:number = 0;
-      let end:number = 0;
-      if( typeof pattern !== 'string'){
-        const limit:number = Number( pattern['limit'] );
-        const page:number = Number( pattern['page'] );
-        start = limit * (page - 1);
-        end = start + limit;
+    filterFn: (entities: Lead[], pattern: { q: string } ) => {
+      if(pattern.q) {
+        return entities.filter((entity: any) => {
+          const fields = [
+            entity.firstName.toLowerCase(),
+            entity.lastName.toLowerCase(),
+            entity.phone.toLowerCase(),
+            entity.email.toLowerCase()
+          ];
+          return fields.find(field => field.includes(pattern.q));
+        })
       }
-      if( end > 0 ){
-        return entities.slice(start, end);
-      } else {
-        return entities;
-      }
+      return entities;
+
     },
   },
   call: {},

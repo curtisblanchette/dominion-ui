@@ -1,13 +1,14 @@
 import { Inject, Injectable, Optional } from '@angular/core';
 import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, EntityCollectionDataService, HttpUrlGenerator, QueryParams } from '@ngrx/data';
 import { DominionType } from '../common/models';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, tap, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, Observable, of } from 'rxjs';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
 
-  private totalRecords:number = 0;
+  public data$: Observable<DominionType[]>;
+  public count$: Observable<number>;
 
   constructor(
     @Inject('entityName') entityName: string,
@@ -39,20 +40,9 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   override getById(id: string | number): Observable<T> {
     return super.getById(id);
   }
-  //
-  // override getWithQuery(params: string | QueryParams): Observable<T[]> {
-  //   return super.getWithQuery(params);
-  // }
 
-  override getWithQuery(queryParams: string | QueryParams): Observable<any> {
-    const qParams = typeof queryParams === 'string' ? { fromString: queryParams } : { fromObject: queryParams };
-    const params = new HttpParams(qParams);
-
-    return this.execute('GET', this.entitiesUrl, undefined, { params }).pipe(
-      tap(response => {
-        this.totalRecords = response['count'];
-      })
-    );
+  override getWithQuery(params: string | QueryParams): Observable<T[]> {
+    return super.getWithQuery(params);
   }
 
   toDropdownItems(items: {[key:string]: any}[]): any {
@@ -66,12 +56,6 @@ export class CustomDataService<T> extends DefaultDataService<T> {
         .filter(([_, v]) => v != null)
         .map(([k, v]) => [k, v === Object(v) ? this.removeNulls(v) : v])
     );
-  }
-
-
-
-   totalCount() {
-    return this.totalRecords;
   }
 
 }

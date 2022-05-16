@@ -1,8 +1,7 @@
 import { Component, forwardRef, HostBinding, Input, OnInit, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable, of } from 'rxjs';
-import { DropDownAnimation } from '../../dropdown';
-import { EntityCollectionServiceFactory } from '@ngrx/data';
+import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { ModuleType } from '../../../../../modules/flow/_core';
@@ -58,8 +57,9 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   constructor(
     public router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    private dataServiceFactory: DefaultDataServiceFactory,
   ) {
-    super(router, entityCollectionServiceFactory);
+    super(router, entityCollectionServiceFactory, dataServiceFactory);
   }
 
   async ngOnInit() {

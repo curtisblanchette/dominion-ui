@@ -23,7 +23,7 @@
           (mousedown)="onClick($event, item)"
           (focusin)="onFocusIn($event, item)"
           (focusout)="onFocusOut($event)"
-          *ngFor="let item of data$ | async | paginate: { itemsPerPage: state.options.perPage, currentPage: page, totalItems: totalRecords }; let i = index;">
+          *ngFor="let item of data$ | async | paginate: { itemsPerPage: state.options.perPage, currentPage: page, totalItems: count$ | async }; ">
         <div class="flex-table__cell" style="flex: 0.15;">
           <div>
             <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">

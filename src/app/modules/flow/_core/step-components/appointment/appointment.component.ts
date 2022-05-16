@@ -1,6 +1,6 @@
 import { Component, OnInit, Renderer2, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { Router } from '@angular/router';
-import { EntityCollectionServiceFactory } from '@ngrx/data';
+import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
 import * as dayjs from 'dayjs';
 import { IEvent } from '@4iiz/corev2';
@@ -30,11 +30,12 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   constructor(
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    private dataServiceFactory: DefaultDataServiceFactory,
     public flowService: FlowService,
     public store:Store<fromApp.AppState>,
     public renderer:Renderer2
   ) {
-    super(router, entityCollectionServiceFactory);
+    super(router, entityCollectionServiceFactory, dataServiceFactory);
 
     if (this.data$) {
       this.data$.subscribe((res: any) => {
@@ -62,7 +63,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   async getData( startDate: string, endDate: string ) {
 
       const pattern = { startDate, endDate };
-      this._dynamicService.setFilter(pattern);
+      // this._dynamicCollectionService.setFilter(pattern);
       this._dynamicService.getWithQuery(pattern);
   }
 
