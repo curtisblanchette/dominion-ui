@@ -3,6 +3,7 @@ import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory
 import { DominionType } from '../common/models';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
@@ -14,6 +15,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     @Inject('entityName') entityName: string,
     http: HttpClient,
     httpUrlGenerator: HttpUrlGenerator,
+    private toastr: ToastrService,
     config?: DefaultDataServiceConfig,
   ) {
     super(
@@ -26,7 +28,14 @@ export class CustomDataService<T> extends DefaultDataService<T> {
 
   override add(entity: Partial<DominionType>) {
     const data = this.removeNulls(entity);
-    return super.add(data);
+    const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
+
+    return super.add(data).pipe(
+      map((res: any) => {
+        this.toastr.success(`${entityLabel} Created`);
+        return res;
+      })
+    );
   }
 
   override getAll(): Observable<T[]> {
@@ -68,6 +77,7 @@ export class CustomDataServiceFactory extends DefaultDataServiceFactory {
   constructor(
     http: HttpClient,
     httpUrlGenerator: HttpUrlGenerator,
+    private toastr: ToastrService,
     @Optional() config?: DefaultDataServiceConfig
   ) {
     super(http, httpUrlGenerator, config);
@@ -78,6 +88,7 @@ export class CustomDataServiceFactory extends DefaultDataServiceFactory {
       entityName,
       this.http,
       this.httpUrlGenerator,
+      this.toastr,
       this.config
     );
   }

@@ -38,7 +38,7 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  status: {
+  statusId: {
     label: 'Status',
     type: 'dropdown',
     service: 'leadStatus',

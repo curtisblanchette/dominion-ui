@@ -87,7 +87,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (this.form.valid) {
       const payload = this.form.value;
 
-      this._dynamicService.add(<DominionType>payload);
+      this._dynamicCollectionService.add(<DominionType>payload);
     } else {
 
     }
