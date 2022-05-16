@@ -53,7 +53,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       const service = dropdown.createService(dropdown.module, this.entityCollectionServiceFactory);
       service.load();
       dropdown.items$ = service.filteredEntities$ as any;
-      console.log(dropdown);
     });
   }
 
