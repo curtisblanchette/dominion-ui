@@ -1,27 +1,24 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-import { environment } from 'src/environments/environment';
+export type LoadingType = 'ring' | 'dual-ring' | 'ripple' | 'branded';
 
 @Component({
-  selector: 'app-loading',
+  selector: 'fiiz-loading',
   templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss']
+  styleUrls: [
+    './ring.scss',
+    './dual-ring.scss',
+    './ripple.scss',
+    './loading.component.scss'
+  ]
 })
 export class LoadingComponent {
 
-  @Input('canTryAgain') canTryAgain = false;
+  @Input('type') type: LoadingType = 'ripple'
   @Input('hasError') hasError: boolean | undefined;
   @Input('errorHTML') errorHTML: string | undefined;
-  @Output('tryAgainFn') tryAgainFn: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
 
-  tryAgain() {
-    this.tryAgainFn.emit();
-  }
-
-  get supportUrl() {
-    return environment.support_url;
-  }
 
 }

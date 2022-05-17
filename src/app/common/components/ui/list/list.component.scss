@@ -4,6 +4,31 @@
   flex-direction: column;
   height: 100%;
   position:relative;
+
+  .message-block {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: center;
+    font-weight: bold;
+    font-size: 18px;
+
+    span {
+      font-size: 14px;
+      color: #A7B2D2;
+      font-weight: 400;
+    }
+  }
+
+  fiiz-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
 }
 .list-actions {
   display: flex;
@@ -78,17 +103,16 @@
   &__cell {
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    align-items: flex-start;
     justify-content: flex-start;
     font-weight: 400;
     align-items : center;
 
-    & span.customRadio {
+    span.customRadio {
       display: none;
     }
 
 
-    & input[type="radio"] {
+    input[type="radio"] {
       width: 20px;
       height: 20px;
       margin: 0;
@@ -96,7 +120,7 @@
       visibility: hidden;
     }
 
-    & input[type="radio"] + span.customRadio {
+    input[type="radio"] + span.customRadio {
       display: inline-block;
       width: 20px;
       height: 20px;
@@ -108,7 +132,7 @@
       position: relative;
     }
 
-    & input[type="radio"] + span.customRadio::after {
+    input[type="radio"] + span.customRadio::after {
       content: '.';
       color: transparent;
       position: absolute;
@@ -123,7 +147,7 @@
       transition: .2s;
     }
 
-    & input[type="radio"]:checked + span.customRadio::after {
+    input[type="radio"]:checked + span.customRadio::after {
       opacity: 1;
       scale: 1;
       background-color: #80CBC2;

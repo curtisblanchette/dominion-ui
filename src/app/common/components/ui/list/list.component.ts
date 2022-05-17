@@ -31,7 +31,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   // Pagination
   public page: number = 1;
   public offset: number = 0;
-  public perPage:number = 5;
+  public perPage:number = 25;
   public selected: Call | Lead | Contact | Deal | Event | User | null;
   public columns: { id: string; label: string; }[] = [];
 

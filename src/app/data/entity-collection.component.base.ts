@@ -15,9 +15,9 @@ export class EntityCollectionComponentBase {
   public state: any;
 
   public count$: Observable<number> = of(0);
-  public data$: Observable<any> = of([]);
-  public loaded$: Observable<boolean>;
-  public loading$: Observable<boolean>;
+  public data$: Observable<DominionType[]> = of([]);
+  public loading$: Observable<boolean> = of(false);
+  public loaded$: Observable<boolean> = of(true);
 
   public response$: Observable<any>;
 
@@ -41,10 +41,14 @@ export class EntityCollectionComponentBase {
   }
 
   public getWithQuery(params: { [key: string]: any}): Observable<any> {
+    this.loaded$ = of(false);
+    this.loading$ = of(true);
     return this._dynamicService.getWithQuery(params).pipe(
       map((res: any) => {
         this.count$ = of(res.count);
         this.data$ = of(res.rows);
+        this.loaded$ = of(true);
+        this.loading$ = of(false);
         return res;
       })
     );

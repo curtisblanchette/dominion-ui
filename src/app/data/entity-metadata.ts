@@ -4,21 +4,21 @@ import { Call, Campaign, Contact, Deal, Event, Lead, LeadSource } from '@4iiz/co
 const entityMetadata: EntityMetadataMap = {
   contact: {},
   lead: {
-    filterFn: (entities: Lead[], pattern: { q: string } ) => {
-      if(pattern.q) {
-        return entities.filter((entity: any) => {
-          const fields = [
-            entity.firstName.toLowerCase(),
-            entity.lastName.toLowerCase(),
-            entity.phone.toLowerCase(),
-            entity.email.toLowerCase()
-          ];
-          return fields.find(field => field.includes(pattern.q));
-        })
-      }
-      return entities;
-
-    },
+    // filterFn: (entities: Lead[], pattern: { q: string } ) => {
+    //   if(pattern.q) {
+    //     return entities.filter((entity: any) => {
+    //       const fields = [
+    //         entity.firstName.toLowerCase(),
+    //         entity.lastName.toLowerCase(),
+    //         entity.phone.toLowerCase(),
+    //         entity.email.toLowerCase()
+    //       ];
+    //       return fields.find(field => field.includes(pattern.q));
+    //     })
+    //   }
+    //   return entities;
+    //
+    // },
   },
   call: {},
   deal: {},

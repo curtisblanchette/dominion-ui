@@ -12,18 +12,49 @@
   </div>
 </form>
 
-<div class="flex-table">
-  <div class="flex-table__header">
-    <div class="flex-table__cell" style="flex: 0.15;">&nbsp;</div>
-    <div class="flex-table__cell" *ngFor="let column of columns">{{column.label}}</div>
+<ng-container [ngTemplateOutlet]="main" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length"></ng-container>
+<ng-container [ngTemplateOutlet]="loading" *ngIf="state?.module && (loading$ | async)"></ng-container>
+<ng-container [ngTemplateOutlet]="noDataFound" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
+<ng-container [ngTemplateOutlet]="initial" *ngIf="state?.module && !(loaded$ | async) && !(loading$ | async)"></ng-container>
+
+<ng-template #loading>
+  <fiiz-loading type="ripple"></fiiz-loading>
+</ng-template>
+
+<ng-template #noDataFound>
+  <div class="message-block" style="padding-top: 5%;">
+    We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
   </div>
-  <div class="flex-table__body">
-    <div class="flex-table__row"
-          tabindex="0" #row
-          (mousedown)="onClick($event, item)"
-          (focusin)="onFocusIn($event, item)"
-          (focusout)="onFocusOut($event)"
-          *ngFor="let item of data$ | async | paginate: { itemsPerPage: state.options.perPage, currentPage: page, totalItems: count$ | async }; ">
+  <div class="message-block">
+    <span>Try another search term or create a new lead.</span>
+  </div>
+  <div class="message-block" style="padding-top: 4%;">
+    <button class="primary" (click)="onCreateNew()">Create New Lead</button>
+  </div>
+</ng-template>
+
+<ng-template #initial>
+  <div class="message-block" style="padding-top: 5%;">
+    Search {{ pluralModuleName }}
+  </div>
+  <div class="message-block">
+    <span>You can search by name, phone number or email.</span>
+  </div>
+</ng-template>
+
+<ng-template #main>
+  <div class="flex-table">
+    <div class="flex-table__header">
+      <div class="flex-table__cell" style="flex: 0.15;">&nbsp;</div>
+      <div class="flex-table__cell" *ngFor="let column of columns">{{column.label}}</div>
+    </div>
+    <div class="flex-table__body">
+      <div class="flex-table__row"
+           tabindex="0" #row
+           (mousedown)="onClick($event, item)"
+           (focusin)="onFocusIn($event, item)"
+           (focusout)="onFocusOut($event)"
+           *ngFor="let item of data$ | async | paginate: { itemsPerPage: state.options.perPage, currentPage: page, totalItems: count$ | async }; ">
         <div class="flex-table__cell" style="flex: 0.15;">
           <div>
             <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
@@ -40,46 +71,21 @@
           </ng-template>
         </div>
 
+      </div>
     </div>
-  </div>
-  <div class="flex-table__footer">
-    <pagination-controls
-      previousLabel="Prev"
-      nextLabel="Next"
-      responsive="true"
-      directionLinks="true"
-      autoHide="true"
-      screenReaderPaginationLabel="Pagination"
-      screenReaderPageLabel="page"
-      screenReaderCurrentLabel="You're on page"
-      maxSize="5"
-      (pageChange)="handlePageChange($event)">
-    </pagination-controls>
-  </div>
-</div>
-
-<!-- <ng-container [ngTemplateOutlet]="table" *ngIf="state?.module && data$ | async"></ng-container> -->
-<!-- <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container> -->
-<!-- <ng-container [ngTemplateOutlet]="initial" *ngIf="state?.module && !(loaded$ | async)"></ng-container> -->
-
-
-<ng-template #noDataFound>
-  <div class="message-block" style="padding-top: 5%;">
-    We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
-  </div>
-  <div class="message-block">
-    <span>Try another search term or create a new lead.</span>
-  </div>
-  <div class="message-block" style="padding-top: 4%;">
-    <button class="primary">Create New Lead</button>
-  </div>
-</ng-template>
-
-<ng-template #initial>
-  <div class="message-block" style="padding-top: 5%;">
-    Search {{ pluralModuleName }}
-  </div>
-  <div class="message-block">
-    <span>You can search by name, phone number or email.</span>
+    <div class="flex-table__footer">
+      <pagination-controls
+        previousLabel="Prev"
+        nextLabel="Next"
+        responsive="true"
+        directionLinks="true"
+        autoHide="true"
+        screenReaderPaginationLabel="Pagination"
+        screenReaderPageLabel="page"
+        screenReaderCurrentLabel="You're on page"
+        maxSize="5"
+        (pageChange)="handlePageChange($event)">
+      </pagination-controls>
+    </div>
   </div>
 </ng-template>
