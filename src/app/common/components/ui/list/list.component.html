@@ -31,7 +31,13 @@
           </div>
         </div>
         <div class="flex-table__cell" *ngFor="let column of columns">
-          <div>{{item[column.id]}}</div>
+          <div *ngIf=" (item[column.id] | typeOf) == 'string'; then str else obj"></div>
+          <ng-template #str>
+            {{ item[column.id] }}
+          </ng-template>
+          <ng-template #obj>
+            {{ item[column.id].name }}
+          </ng-template>
         </div>
 
     </div>
