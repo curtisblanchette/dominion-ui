@@ -8,15 +8,14 @@ import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfa
 export class EntityCollectionComponentBase {
 
   public _dynamicCollectionService: EntityCollectionService<DominionType>;
-
   public _dynamicService: EntityCollectionDataService<DominionType>;
 
   public module: ModuleType;
   public type: any;
   public state: any;
 
-  public count$: Observable<number>;
-  public data$: Observable<any>;
+  public count$: Observable<number> = of(0);
+  public data$: Observable<any> = of([]);
   public loaded$: Observable<boolean>;
   public loading$: Observable<boolean>;
 

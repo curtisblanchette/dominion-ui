@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ViewChildren, ElementRef, QueryList } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChildren, ElementRef, QueryList, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
@@ -8,19 +8,22 @@ import { IEvent } from '@4iiz/corev2';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { FlowService } from '../../../flow.service';
 import * as fromApp from '../../../../../store/app.reducer';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'flow-appointment',
   templateUrl: './appointment.component.html',
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
-export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit {
+export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
+
+  public destroyed$: Subject<any> = new Subject<any>();
 
   public timeZone:any = 'America/New_York';
 	public duration:any = 30;
 	public dayStart:any = 7;
 	public dayEnd:any = 23;
+
 
   public timeSlots:Array<any> = [];
   public selectedBtnId:string;
@@ -37,14 +40,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    if (this.data$) {
-      this.data$.subscribe((res: any) => {
-        if (!this.loading$ && this.loaded$ && res.length === 0) {
-          // we only want to query if the cache doesn't return a record
-        }
-      });
-    }
-
   }
 
   async ngOnInit(): Promise<any> {
@@ -56,18 +51,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.dayEnd = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('day_end')));
     this.timeZone = await firstValueFrom(this.store.select(fromApp.selectSettingByKey('timezone')));
 
-    await this.getData( startDate, endDate );
-    await this.createTimeSlots();
-  }
-
-  async getData( startDate: string, endDate: string ) {
-
-      const pattern = { startDate, endDate };
-      // this._dynamicCollectionService.setFilter(pattern);
-      this._dynamicService.getWithQuery(pattern);
-  }
-
-  public async createTimeSlots(){
     this.data$.subscribe((data: any) => {
       let bookedSlots:Array<any> = [];
       let freeSlots:Array<any> = [];
@@ -91,6 +74,26 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       let day:string = dayjs().format('dddd MMMM D, YYYY');
       this.timeSlots.push( {[day] : freeSlots} );
     });
+
+    await this.getData( startDate, endDate );
+  }
+
+
+
+  public ngOnDestroy() {
+    console.log(`[${this.module}] List Component Destroyed`);
+    this.destroyed$.next(true);
+  }
+
+  async getData( startDate: string, endDate: string ) {
+
+      const pattern = { startDate, endDate };
+      // this._dynamicCollectionService.setFilter(pattern);
+      this.getWithQuery(pattern).pipe(takeUntil(this.destroyed$)).subscribe();
+  }
+
+  public async createTimeSlots(){
+
   }
 
   public setEventTime( event:any ){
