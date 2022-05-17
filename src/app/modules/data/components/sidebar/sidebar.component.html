@@ -3,9 +3,13 @@
         <li class="sidebar__header" (click)="toggleMenu(i)" >
             {{items.label}} <i [@arrow-slider]="items.state" class="fa-solid fa-caret-down"></i>
         </li>
-        <li class="sidebar__item" *ngFor="let item of items.children" [ngClass]="{'active': selected === item.path }" tabindex="0" (click)="navigate(item.path)">
+        <li>
+
+          <a class="sidebar__item" (click)="onClick(item)"  *ngFor="let item of items.children" >
             <i class="sidebar__item__icon {{item.icon}}"></i>
             {{item.label}}
+          </a>
+
         </li>
     </ul>
 </section>

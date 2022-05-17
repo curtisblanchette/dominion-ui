@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     },
     {
       name: 'Data',
-      path: 'data/module',
+      path: 'data',
       roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     },
     {

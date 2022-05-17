@@ -23,7 +23,7 @@ body {
 }
 
 a {
-  color: $text1;
+  color: $text1!important;
 
   &:focus {
     @include focusRing($focusring, $focusring-moz-mac);

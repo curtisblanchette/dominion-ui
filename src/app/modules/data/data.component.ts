@@ -15,12 +15,12 @@ export class DataComponent implements OnInit, OnDestroy {
   ) {
     if (this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
       console.log('here');
-      this.router.navigate(['/data/module/']);
+      this.router.navigate(['/data/']);
     }
   }
 
   public async ngOnInit() {
-    // this.renderComponent('lead');
+    this.renderComponent('lead');
   }
 
   public ngOnDestroy(): void {
@@ -31,22 +31,18 @@ export class DataComponent implements OnInit, OnDestroy {
     console.log('$event', $event);
   }
 
-  public goToModule(module: string) {
-    this.renderComponent(module);
-  }
-
   public renderComponent(module: string) {
-    return this.router.navigate(['/data/module', {outlets: {'aux': [`${module}`]}}], {
+    return this.router.navigate(['/data', {outlets: {'aux': [`${module}`]}}], {
       state: {
         options: {
           searchable: true,
           editable: true,
-          perPage: 5,
+          perPage: 25,
           columns: []
         },
         module: module,
         onCreate: {
-          route: ['/data/module', {outlets: {'aux': ['edit']}}],
+          route: ['/data', {outlets: {'aux': ['edit']}}],
           extras: {
             state: {
               module: module

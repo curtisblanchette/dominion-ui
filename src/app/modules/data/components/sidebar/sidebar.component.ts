@@ -57,7 +57,6 @@ export class SidebarComponent implements OnInit {
         },
       ]
     },
-
     {
       label : 'Other Modules',
       children : [
@@ -71,7 +70,7 @@ export class SidebarComponent implements OnInit {
 
   ];
 
-  constructor( private router : Router, private render:Renderer2 ) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.menu = this.menu.map((item) => {
@@ -91,9 +90,9 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  public navigate( module:string ){
-    this.selected = module;
-    this.onSelect.next(module);
+  public onClick(item:string) {
+    this.selected = item;
+    this.onSelect.next(item);
   }
 
 }

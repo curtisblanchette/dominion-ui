@@ -6,7 +6,7 @@ import { FiizDataComponent } from '../../common/components/ui/data/data.componen
 
 const routes: Routes = [
   {
-    path: 'module',
+    path: '',
     component: DataComponent,
     children: [
       {
