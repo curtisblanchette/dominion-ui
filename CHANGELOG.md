@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.8.0 (2022-05-17)
+
+
+### Features
+
+* **develop:** data.module sidebar and routing improvements ([af29bab](https://github.com/4iiz/dominion-ui/commit/af29bab1e2f6b103b79eef50bfc4cb19695d4198))
+
 ### 1.7.13 (2022-05-17)
 
 ### 1.7.12 (2022-05-17)
