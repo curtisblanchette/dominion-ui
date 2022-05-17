@@ -1,5 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Renderer2, ElementRef, ViewChild, ViewChildren, QueryList } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Output, EventEmitter, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { menuAnimation, arrowAnimation } from './sidebar.animation';
 
 @Component({
@@ -18,7 +17,7 @@ export class SidebarComponent implements OnInit {
 
   public menu:Array<any> = [
     {
-      label : 'Modules',
+      label : 'Standard',
       children : [
         {
           label : 'Leads',
@@ -58,7 +57,7 @@ export class SidebarComponent implements OnInit {
       ]
     },
     {
-      label : 'Other Modules',
+      label : 'Custom',
       children : [
         {
           label : 'Other',

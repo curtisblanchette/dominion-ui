@@ -1,15 +1,22 @@
-<section class="sidebar">
-    <ul #menuGroup class="sidebar__parent" *ngFor="let items of menu; let i = index" id="group{{i}}" [@menu-slider]="items.state" >
-        <li class="sidebar__header" (click)="toggleMenu(i)" >
-            {{items.label}} <i [@arrow-slider]="items.state" class="fa-solid fa-caret-down"></i>
-        </li>
-        <li>
+<nav class="sidebar">
+  <ul #menuGroup class="sidebar__parent" *ngFor="let items of menu; let i = index" id="group{{i}}"
+      [@menu-slider]="items.state">
 
-          <a class="sidebar__item" (click)="onClick(item)"  *ngFor="let item of items.children" >
-            <i class="sidebar__item__icon {{item.icon}}"></i>
-            {{item.label}}
-          </a>
+    <li class="sidebar__header" (click)="toggleMenu(i)">
+      {{items.label}} <i [@arrow-slider]="items.state" class="fa-solid fa-caret-down"></i>
+    </li>
 
-        </li>
-    </ul>
-</section>
+    <li *ngFor="let item of items.children">
+
+      <a tabindex="0" class="sidebar__item"
+         [routerLink]="[ item.path ]"
+         (click)="onClick(item)"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: true}">
+        <!--            <i class="sidebar__item__icon {{item.icon}}"></i>-->
+        {{item.label}}
+      </a>
+
+    </li>
+  </ul>
+</nav>

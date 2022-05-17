@@ -2,60 +2,64 @@
 @import '../../../../../assets/css/mixins';
 @import '../../../../../assets/css/functions';
 
-.sidebar {
+:host {
+  .sidebar {
 
-  flex: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  &__parent {
-    margin: 0;
-    padding-left: 5px;
-    overflow: hidden;
-  }
-
-  &__header {
-    @include elevate(1);
-    font-weight: 500;
-    background-color: shade(#172B46, 15);
-
-    list-style: none;
-    padding: 9px 9px 15px 9px;
-    font-size: 16px;
-    cursor: pointer;
-
-    & i {
-      float: right;
-    }
-  }
-
-  &__item {
-
-    color: #1D3555;
+    flex: 1;
+    height: 100%;
     display: flex;
-    cursor: pointer;
-    line-height: 50px;
+    flex-direction: column;
 
-    &__icon {
-      font-size: 24px;
-      width: 84px;
-      text-align: center;
+    &__parent {
+      margin: 0;
+      padding-left: 5px;
+      overflow: hidden;
+    }
+
+    &__header {
+      @include elevate(1);
+      background: $slate3;
+      font-weight: 400;
+      line-height: 1em;
+      list-style: none;
+      padding: 1.25em;
+      font-size: 14px;
+      cursor: pointer;
+
+      &:hover {
+
+      }
+
+      & i {
+        float: right;
+      }
+    }
+
+    &__item {
+      display: block;
+      cursor: pointer;
       line-height: 50px;
-    }
+      padding-left: 25px;
 
-    &__title {
-      font-size: 18px;
-      font-weight: 500;
-    }
+      &__icon {
+        font-size: 24px;
+        width: 84px;
+        text-align: center;
+        line-height: 50px;
+      }
 
-    &:active, &.active {
-      color: #C6CEED;
-    }
+      &__title {
+        font-size: 18px;
+        font-weight: 500;
+      }
 
-    &:focus {
-      @include focusRing($focusring, $focusring-moz-mac);
+      &.active {
+        color: $text1;
+      }
+
+      &:focus {
+        @include focusRing($focusring, $focusring-moz-mac);
+      }
     }
   }
-
 }

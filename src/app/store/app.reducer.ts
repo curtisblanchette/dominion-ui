@@ -6,6 +6,7 @@ export interface AppState {
   settings: any;
   lookups: any;
   initialized: boolean;
+
 }
 
 export const initialState: AppState = {
@@ -25,6 +26,7 @@ export const reducer = createReducer(
 
   on(appActions.ClearRolesAction, (state) => ({ ...state, roles: null })),
   on(appActions.AppInitializedAction, (state) => ({...state, initialized: true}))
+
 );
 
 export const selectApp = createFeatureSelector<AppState>('app');

@@ -1,7 +1,7 @@
 import { Component, ElementRef, AfterViewInit, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { of, Subject, takeUntil } from 'rxjs';
+import { Observable, of, Subject, take, takeUntil } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
@@ -10,6 +10,12 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
 import { models, defaultListColumns } from '../../../models';
+import { AppState } from '../../../../store/app.reducer';
+import { Store } from '@ngrx/store';
+import * as dataActions from '../../../../modules/data/store/data.actions';
+import * as fromData from '../../../../modules/data/store/data.reducer';
+import { DropdownItem } from '../forms';
+
 
 export interface IListOptions {
   searchable: boolean;
@@ -28,16 +34,18 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public searchForm: FormGroup;
   public destroyed$: Subject<any> = new Subject<any>();
 
+  public perPageOptions$: Observable<DropdownItem[]> = of([{id: 25, label: '25' }, {id: 50, label: '50'}, {id: 100, label: '100'}]);
+
   // Pagination
+  public perPage: number;
   public page: number = 1;
   public offset: number = 0;
-  public perPage:number = 25;
   public selected: Call | Lead | Contact | Deal | Event | User | null;
   public columns: { id: string; label: string; }[] = [];
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
-  @Input('options') options: IListOptions = { searchable: true, editable: false, perPage: this.perPage, columns: [] };
+  @Input('options') options: IListOptions;
   @Input('loadInitial') loadInitial: boolean = false;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
@@ -56,6 +64,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ];
 
   constructor(
+    private store: Store<AppState>,
     private fb: FormBuilder,
     private router: Router,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
@@ -79,6 +88,13 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
 
+    this.store.select(fromData.selectPerPage).subscribe(
+      res => {
+        this.searchInModule();
+        this.options.perPage = res;
+      }
+    );
+
   }
 
   public onClick($event: any, record: any) {
@@ -94,6 +110,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.values.emit( { 'module' : this.module, 'record' : record });
   }
 
+  public onPerPageChange($event: any) {
+    this.store.dispatch(dataActions.SetPerPageAction({payload: parseInt($event.target.value, 0)}));
+  }
+
   public onFocusOut($event: any) {
     $event.preventDefault();
     this.values.emit( { 'module' : this.module, 'record' : null });
@@ -103,7 +123,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public onFocusIn($event: any, record: any) {
     $event.preventDefault();
     this.selected = record;
-    this.values.emit( { 'module' : this.module, 'record' : record} );
+    this.values.emit( { 'module' : this.module, 'record' : record } );
   }
 
   public ngOnDestroy() {
@@ -154,8 +174,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public async getData( searchkey:string = '' ){
     const params:QueryParams = {
-      page : this.page.toString(),
-      limit : this.perPage.toString()
+      page: this.page.toString(),
+      limit: this.options.perPage.toString()
     };
 
     if( searchkey ){
@@ -164,7 +184,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
     // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
     /** Proxy to the underlying dataService to do some processing */
-    this.getWithQuery(params).pipe(takeUntil(this.destroyed$)).subscribe(); // this performs an API call
+    this.getWithQuery(params).pipe(take(1)).subscribe(); // this performs an API call
   }
 
   public performAction( value:any ){

@@ -1,5 +1,5 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
 <select [id]="id" class="fiiz-select-component {{size}}" [autofocus]="autofocus" (change)="changed($event)" [disabled]="isDisabled">
 	<option value="" selected [hidden]="!showDefault">Select an option.</option>
-	<option [value]="item.id" *ngFor="let item of items$ | async" [selected]="item.id === selected?.id" [disabled]="item.disabled">{{item.label}}</option>
+	<option *ngFor="let item of items$ | async" [value]="item.id" [selected]="item.id === selected?.id" [disabled]="item.disabled">{{item.label}}</option>
 </select>

@@ -9,7 +9,7 @@ export const ActionTypes = {
   GET_LOOKUPS: '[App] Get Lookups',
   SET_LOOKUPS: '[App] Set Lookups',
   CLEAR_ROLES: '[App] Clear Roles',
-  INITIALIZED: '[App] State Initialized',
+  INITIALIZED: '[App] State Initialized'
 };
 
 export const GetSettingsAction = createAction(
@@ -51,3 +51,4 @@ export const ClearRolesAction = createAction(
 export const AppInitializedAction = createAction(
   ActionTypes.INITIALIZED,
 );
+
