@@ -16,6 +16,7 @@
     .flex-table__cell {
       flex: 1;
       font-weight: 700;
+      padding: 1em 0;
 
       > div {
         padding: 5px;
@@ -110,7 +111,7 @@
 .flex-table.striped {
   .flex-table__row {
     &:nth-child(2n+1) {
-      background: #f9f9f9;
+      background: rgba(255,255,255, .02);
     }
   }
 }
@@ -124,7 +125,7 @@ table.fiiz-table {
   width: 100%;
 
   &.striped tr:nth-child(2n){
-    background: #FAFAFA;
+    background: rgba(255,255,255, .02);
   }
 
   tr {

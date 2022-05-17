@@ -9,7 +9,7 @@ import * as pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
-import { models, defaultListColumns } from '../../../models';
+import { models, defaultListColumns, DominionType } from '../../../models';
 import { AppState } from '../../../../store/app.reducer';
 import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
@@ -144,7 +144,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   onCreateNew() {
-    this.router.navigate(this.state.onCreate.route, this.state.onCreate.extras);
+    this.edit(null);
+  }
+
+  public edit(record: DominionType | null) {
+    this.state.editPath.extras.state.record = record;
+    this.router.navigate(this.state.editPath.route, this.state.editPath.extras);
   }
 
   public ngAfterViewInit() {

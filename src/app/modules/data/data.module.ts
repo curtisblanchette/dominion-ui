@@ -9,6 +9,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/data.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { FlowEffects } from '../flow/store/flow.effects';
+import { NavigationService } from '../../common/navigation.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,9 @@ import { FlowEffects } from '../flow/store/flow.effects';
     FiizUIModule,
     DataRouting
   ],
-  providers: []
+  providers: [
+    NavigationService,
+  ]
 })
 export class DataModule {
 }

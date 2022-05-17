@@ -116,8 +116,9 @@ input[type=submit] {
     transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
 
     &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 1px 5px rgba(0, 0, 0, .11);
+      background: rgba(0,0,0, .15)!important;
+      border: 1px solid shade($blue3, 25);
+      color:  shade($blue3, 25);
     }
 
     &:focus {

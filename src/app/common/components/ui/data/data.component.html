@@ -11,7 +11,11 @@
         <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
       </ng-container>
 
-      <input type="submit" class="primary" value="Create {{state.module}}" [disabled]="!this.form.valid">
+      <div class="controls">
+        <button (click)="navigation.back()" type="button">Cancel</button>
+        <input type="submit" class="primary" [value]="buttonTitle" [disabled]="!this.form.valid">
+      </div>
+
     </form>
 
 </ng-template>

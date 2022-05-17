@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { entityConfig } from '../../../../data/entity-metadata';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
@@ -10,11 +10,12 @@ import { Store } from '@ngrx/store';
 
 import * as fromApp from '../../../../store/app.reducer'
 import { FiizSelectComponent } from '../forms';
+import { NavigationService } from '../../../navigation.service';
 
 @Component({
   selector: 'fiiz-data',
   templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss'],
+  styleUrls: ['./data.component.scss']
 })
 export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
 
@@ -32,7 +33,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     private dataServiceFactory: DefaultDataServiceFactory,
     private flowService: FlowService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public navigation: NavigationService
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.buildForm(models[this.module]);
@@ -54,6 +56,16 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       service.load();
       dropdown.items$ = service.filteredEntities$ as any;
     });
+    if (this.state.record) {
+      const properties = Object.keys(models[this.module]);
+      Object.keys(this.state.record).forEach(prop => {
+        if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName') {
+          delete this.state.record[prop];
+        }
+      });
+      this.form.addControl('id', new FormControl('', Validators.required));
+      this.form.setValue(this.state.record);
+    }
   }
 
   public getData(key?: string) {
@@ -64,7 +76,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     let form: { [key: string]: FormControl } = {};
 
     for (const [key, control] of Object.entries(model)) {
-      form[key] = new FormControl((<any>model)[control.defaultValue], control.validators);
+      if (control.type !== 'virtual') {
+        form[key] = new FormControl((<any>model)[control.defaultValue], control.validators);
+      }
+
     }
     this.form = this.fb.group(form);
     this.controlData = this.getControlData(this.form, model);
@@ -72,8 +87,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public getControlData(formGroup: FormGroup, model: any) {
     const controls = [];
-    for(const key of Object.keys(formGroup.controls)) {
-      if(key !== 'id') {
+    for (const key of Object.keys(formGroup.controls)) {
+      if (key !== 'id') {
         controls.push({
           key,
           ...model[key]
@@ -87,10 +102,18 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (this.form.valid) {
       const payload = this.form.value;
 
-      this._dynamicCollectionService.add(<DominionType>payload);
-    } else {
+      if (this.state.record) {
+        this._dynamicCollectionService.update(<DominionType>payload);
+        return this.navigation.back();
+      }
 
+      this._dynamicCollectionService.add(<DominionType>payload);
+      return this.navigation.back();
     }
+  }
+
+  get buttonTitle() {
+    return this.state.record ? `Save ${this.state.module}` : `Create ${this.state.module}`;
   }
 
   public ngOnDestroy() {

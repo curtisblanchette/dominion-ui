@@ -50,11 +50,12 @@ export class DataComponent implements OnInit, OnDestroy {
       state: {
         options: this.listOptions,
         module: module,
-        onCreate: {
+        editPath: {
           route: ['/data', {outlets: {'aux': ['edit']}}],
           extras: {
             state: {
-              module: module
+              module: module,
+              record: null
             }
           }
         }

@@ -54,11 +54,11 @@ export class FlowService {
             perPage: 50,
             columns: []
           },
-          onCreate: {
+          editPath: {
             route: ['/flow/f', {outlets: {'aux': ['edit']}}],
             extras: {
               state: {
-                module: module
+                module: module,
               }
             }
           }

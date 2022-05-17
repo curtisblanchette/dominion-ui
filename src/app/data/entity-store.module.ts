@@ -35,7 +35,6 @@ export class AdditionalPersistenceResultHandler extends DefaultPersistenceResult
       const action = actionHandler.call(this, data);
       // check for rows, collection or not
       // single entity adds/updates should remain unchanged
-      console.log('action before', action);
       if (action && data && data.rows) {
 
         const entities = data.rows;
@@ -45,7 +44,7 @@ export class AdditionalPersistenceResultHandler extends DefaultPersistenceResult
         (action as any).payload.count = data.count;
         (action as any).payload.data = merge;
         (action as any).payload.page = page;
-      }      
+      }
       return action;
     };
   }
