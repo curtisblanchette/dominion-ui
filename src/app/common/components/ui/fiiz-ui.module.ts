@@ -23,6 +23,7 @@ import { FiizDropDownComponent } from './dropdown';
 import { FiizListComponent } from './list/list.component';
 import { FiizDataComponent } from './data/data.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SharedModule } from '../../../modules/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     FormsModule,
     RouterModule,
     NgxPaginationModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
     // DirectivesModule
   ],
   exports: [
