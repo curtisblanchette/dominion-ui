@@ -55,12 +55,14 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngAfterViewInit() {
+
+    // instantiate dataService for each dropdown and set options
     this.dropdowns.forEach(dropdown => {
-      // instantiate the data services and retrieve data for each dropdown. set the items
       const service = dropdown.createService(dropdown.module, this.entityCollectionServiceFactory);
       service.load();
       dropdown.items$ = service.filteredEntities$ as any;
     });
+
     if (this.state.record) {
       const properties = Object.keys(models[this.module]);
       Object.keys(this.state.record).forEach(prop => {

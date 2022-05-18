@@ -40,7 +40,7 @@
   align-content: center;
 
 
-  &__fields {
+  &__controls {
     display: flex;
     width: 100%;
     gap: 10px;
@@ -50,11 +50,13 @@
       width: 100%;
     }
 
-    fiiz-dropdow button { margin-bottom: 0!important; }
-
     * {
-      margin-bottom: 0;
+      margin-bottom: 0!important;
       min-width: fit-content;
+    }
+
+    button {
+      text-transform: capitalize;
     }
   }
 }

@@ -39,7 +39,6 @@ input[type=submit] {
   font-size: 14px;
   font-weight: 500;
   padding: 0 1.5em;
-  margin-bottom: 10px;
   height: 44px;
   line-height: 44px;
   cursor: pointer;
@@ -80,12 +79,12 @@ input[type=submit] {
 
   //////////////////////// COLORS
   &.primary, &.active {
-    background: $blue3;
+    background: shade($blue3, 10%);
     color: #051323;
     font-weight: 600;
 
     &:hover {
-      background: shade($blue3, 15%);
+      background: $blue3;
     }
 
     &:active {
@@ -108,17 +107,18 @@ input[type=submit] {
   }
 
   &.stroked {
-    border: 1px solid $blue3;
-    color: $blue3;
-    background: none!important;
+    background: rgba(0,0,0, .15)!important;
+    border: 1px solid shade($blue3, 15);
+    color:  shade($blue3, 15);
     position: relative;
     transform: translateY(0);
     transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
+    line-height: 42px;
 
     &:hover {
-      background: rgba(0,0,0, .15)!important;
-      border: 1px solid shade($blue3, 25);
-      color:  shade($blue3, 25);
+      border: 1px solid $blue3;
+      color: $blue3;
+      background: none!important;
     }
 
     &:focus {
