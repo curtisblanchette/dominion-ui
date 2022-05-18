@@ -31,7 +31,7 @@
   </div>
   <div class="flex-table__footer">
     <div class="per-page">
-      Per Page: <fiiz-select size="small" [items]="perPageOptions$" (change)="onPerPageChange($event)" [ngModel]="options.perPage"></fiiz-select>
+      Per Page: <fiiz-select size="small" [items]="perPageOptions$" (change)="onPerPageChange($event)" [ngModel]="perPage$ | async"></fiiz-select>
     </div>
 
     <pagination-controls
@@ -82,7 +82,7 @@
            (mousedown)="onClick($event, item)"
            (focusin)="onFocusIn($event, item)"
            (focusout)="onFocusOut($event)"
-           *ngFor="let item of data$ | async | paginate: { itemsPerPage: options.perPage, currentPage: page, totalItems: count$ | async }; ">
+           *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async }; ">
         <div class="flex-table__cell" style="flex: 0.2; justify-content:space-around;">
 
           <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">

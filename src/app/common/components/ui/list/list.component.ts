@@ -1,7 +1,7 @@
 import { Component, ElementRef, AfterViewInit, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, of, Subject, take, takeUntil } from 'rxjs';
+import { firstValueFrom, Observable, of, Subject, take } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
@@ -19,7 +19,6 @@ import { DropdownItem } from '../forms';
 export interface IListOptions {
   searchable: boolean;
   editable: boolean;
-  perPage: number;
   columns: Array<Object>;
 }
 
@@ -37,6 +36,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   // Pagination
   public perPage: number;
+  public perPage$: Observable<number>;
   public page: number = 1;
   public offset: number = 0;
   public selected: Call | Lead | Contact | Deal | Event | User | null;
@@ -84,12 +84,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
 
-    this.store.select(fromData.selectPerPage).pipe(takeUntil(this.destroyed$)).subscribe(
-      res => {
-        this.searchInModule();
-        this.options.perPage = res;
-      }
-    );
+    this.perPage$ = this.store.select(fromData.selectPerPage).pipe(map(value => {
+      this.perPage = value; // ngx-pagination doesn't like observable itemsPerPage
+      this.searchInModule();
+      return value;
+    }));
 
   }
 
@@ -128,7 +127,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngOnInit(){
-    this.getData();
+
   }
 
   get pluralModuleName() {
@@ -163,20 +162,20 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
 
-  public async searchInModule() {
+  public searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
-      await this.getData( formValues.search.toLowerCase() );
+      this.getData( formValues.search.toLowerCase() );
     } else {
       console.warn('Form not valid');
       return of([]);
     }
   }
 
-  public async getData( searchkey:string = '' ){
+  public async getData( searchkey:string = '' ) {
     const params:QueryParams = {
       page: this.page.toString(),
-      limit: this.options.perPage.toString()
+      limit: (await firstValueFrom(this.store.select(fromData.selectPerPage))).toString()
     };
 
     if( searchkey ){
