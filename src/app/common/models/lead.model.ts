@@ -1,7 +1,9 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
+import { timestamps } from './_timestamps.model';
 
 export const LeadModel: {[key: string]: IModel} = {
+  ...timestamps,
   firstName: {
     label: 'First Name',
     type: 'text',

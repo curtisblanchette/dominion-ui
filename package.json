@@ -37,7 +37,7 @@
     "@tinymce/tinymce-angular": "^6.0.1",
     "@types/pluralize": "0.0.29",
     "amazon-cognito-identity-js": "^5.2.8",
-    "dayjs": "^1.11.1",
+    "dayjs": "^1.11.2",
     "intl-tel-input": "^17.0.16",
     "lodash": "^4.17.21",
     "ngx-pagination": "^5.1.1",

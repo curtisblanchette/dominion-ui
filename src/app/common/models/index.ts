@@ -8,23 +8,34 @@ import { LeadModel } from './lead.model';
 import { Call, Campaign, Contact, Deal, Event, ICall, ICallDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, IPracticeAreaDTO, Lead, LeadSource, LK_PracticeArea } from '@4iiz/corev2';
 import { Validators } from '@angular/forms';
 import { IPracticeArea } from '@4iiz/corev2/dist/models/client/PracticeArea/PracticeArea';
+import { DropdownItem } from '../components/ui/forms';
 
 export interface IModel {
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'date-picker' | 'virtual',
+  type: 'text' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'date-picker' | 'virtual' | 'timestamp',
   service?: string;
   defaultValue?: any;
   validators?: Validators[]
 }
 
-export const defaultListColumns: {[key: string]: string[]} = {
+const defaultListColumns: {[key: string]: string[]} = {
   call: ['createdAt', 'type', 'direction', 'outcome', 'status', 'dialledNumber'],
-  campaign: ['name'],
+  campaign: ['name', 'createdAt'],
   deal: ['name', 'stage', 'createdAt', 'contactId'],
   contact: ['fullName', 'phone', 'email'],
   event: ['title', 'type', 'startTime', 'endTime'],
   lead: ['fullName', 'phone', 'email'],
   leadSource: ['name', 'status']
+}
+
+export const getColumnsForModule = (module: string): DropdownItem[] => {
+  const columns = [];
+  for(const [key, value] of Object.entries(models[module]) ) {
+    if(defaultListColumns[module].includes(key)) {
+      columns.push({id: key, label: (<any>value).label});
+    }
+  }
+  return columns;
 }
 
 export const models: {[key: string]: any} = {

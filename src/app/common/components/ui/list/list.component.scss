@@ -44,12 +44,16 @@
     display: flex;
     width: 100%;
     gap: 10px;
+    margin-bottom: 20px;
 
     fiiz-input {
       width: 100%;
     }
 
+    fiiz-dropdow button { margin-bottom: 0!important; }
+
     * {
+      margin-bottom: 0;
       min-width: fit-content;
     }
   }

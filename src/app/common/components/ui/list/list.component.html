@@ -90,13 +90,12 @@
 
         </div>
         <div class="flex-table__cell" *ngFor="let column of columns">
-          <div *ngIf=" (item[column.id] | typeOf) == 'string'; then str else obj"></div>
-          <ng-template #str>
-            {{ item[column.id] }}
-          </ng-template>
-          <ng-template #obj>
-            {{ item[column.id].name }}
-          </ng-template>
+          <ng-container [ngSwitch]="(item[column.id] | typeOf)">
+            <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date }}</ng-container>
+            <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
+            <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
+            <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
+          </ng-container>
         </div>
 
       </div>

@@ -1,7 +1,7 @@
 import { Component, ElementRef, AfterViewInit, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, of, Subject, take, takeUntil } from 'rxjs';
+import { Observable, of, Subject, take } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
@@ -9,13 +9,12 @@ import * as pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
-import { models, defaultListColumns, DominionType } from '../../../models';
+import { DominionType, getColumnsForModule } from '../../../models';
 import { AppState } from '../../../../store/app.reducer';
 import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
 import * as fromData from '../../../../modules/data/store/data.reducer';
 import { DropdownItem } from '../forms';
-
 
 export interface IListOptions {
   searchable: boolean;
@@ -41,7 +40,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public page: number = 1;
   public offset: number = 0;
   public selected: Call | Lead | Contact | Deal | Event | User | null;
-  public columns: { id: string; label: string; }[] = [];
+  public columns: DropdownItem[] = [];
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
@@ -77,12 +76,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.options = this.state.options;
     }
 
-    // set the default visible columns
-    for(const [key, value] of Object.entries(models[this.module]) ) {
-      if(defaultListColumns[this.module].includes(key)) {
-        this.columns.push({id: key, label: (<any>value).label});
-      }
-    }
+    // get default visible columns
+    this.columns = getColumnsForModule(this.module);
 
     let form: { [key: string]: FormControl } = {};
     form['search'] = new FormControl('');
