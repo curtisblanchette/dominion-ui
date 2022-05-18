@@ -193,7 +193,7 @@
   /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
   box-shadow: $override;
   box-shadow: $override-moz-mac;
-  color: #C6CEED;
+  color: $text1;
   outline: none;
 }
 

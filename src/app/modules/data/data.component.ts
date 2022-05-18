@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { DataState } from './store/data.reducer';
 import { Store } from '@ngrx/store';
 import * as fromData from './store/data.reducer';
@@ -12,7 +12,8 @@ import { IListOptions } from '../../common/components/ui/list/list.component';
 })
 export class DataComponent implements OnInit, OnDestroy {
 
-  public destroyed = new Subject<any>();
+  public destroyed$: Subject<boolean> = new Subject<boolean>();
+
   private listOptions: IListOptions = {
     searchable: true,
     editable: true,
@@ -28,9 +29,9 @@ export class DataComponent implements OnInit, OnDestroy {
       console.log('here');
       this.router.navigate(['/data/']);
     }
-    this.store.select(fromData.selectPerPage).subscribe(perPage => {
-      this.listOptions.perPage = perPage;
-    });
+    // this.store.select(fromData.selectPerPage).pipe(takeUntil(this.destroyed$)).subscribe(perPage => {
+    //   this.listOptions.perPage = perPage;
+    // });
   }
 
   public async ngOnInit() {
@@ -38,7 +39,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    console.log('Yes I\'m Destroyed');
+    this.destroyed$.next(true);
   }
 
   public onActivate($event: any) {

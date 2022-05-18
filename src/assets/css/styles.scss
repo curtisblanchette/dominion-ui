@@ -26,14 +26,14 @@ body {
 
 a {
   text-decoration: none;
-  color: shade($text1, 15)!important;
+  color: $text1!important;
 
   &:focus {
     @include focusRing($focusring, $focusring-moz-mac);
   }
 
   &:hover, &.active {
-    color: $text1!important;
+    color: white!important;
   }
 }
 

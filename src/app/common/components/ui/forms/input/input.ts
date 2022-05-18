@@ -85,9 +85,9 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
 
   changed($event:any) {
     this.value =  $event;
-    this.intlTelInput.setNumber(this.value.toString());
 
     if(this.intlTelInput) {
+      this.intlTelInput.setNumber(this.value.toString());
       this.onChange(this.phoneNumber);
     } else {
       this.onChange(this.value);

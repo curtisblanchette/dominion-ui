@@ -13,7 +13,7 @@
 
       <div class="controls">
         <button (click)="navigation.back()" type="button">Cancel</button>
-        <input type="submit" class="primary" [value]="buttonTitle" [disabled]="!this.form.valid">
+        <button #submit type="submit" class="primary">{{submitText}}</button>
       </div>
 
     </form>

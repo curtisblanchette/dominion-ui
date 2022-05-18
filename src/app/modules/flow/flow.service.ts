@@ -51,7 +51,7 @@ export class FlowService {
           options: {
             searchable: true,
             editable: false,
-            perPage: 50,
+            perPage: 25,
             columns: []
           },
           editPath: {

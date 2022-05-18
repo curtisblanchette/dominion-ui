@@ -28,7 +28,7 @@ export class FlowStep extends FlowNode {
 
   serialize() {
     const data: FlowStep = { ...cloneDeep(this) };
-    return new FlowStep( data);
+    return new FlowStep(data);
   }
 
   deserialize() {

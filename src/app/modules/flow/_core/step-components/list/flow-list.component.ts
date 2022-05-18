@@ -15,7 +15,6 @@ export class FlowListComponent implements OnDestroy {
     public flowService: FlowService
   ) {
     this.state = router.getCurrentNavigation()!.extras.state;
-    console.log(this);
   }
 
   public ngOnDestroy(): void {

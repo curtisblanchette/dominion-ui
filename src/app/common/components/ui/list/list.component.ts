@@ -1,7 +1,7 @@
 import { Component, ElementRef, AfterViewInit, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, of, Subject, take } from 'rxjs';
+import { Observable, of, Subject, take, takeUntil } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
@@ -73,7 +73,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
     if(!this.options) {
-      this.options = this.state.options;
+      /** route state is immutable so we gotta clone it */
+      this.options = Object.assign({}, this.state.options);
     }
 
     // get default visible columns
@@ -83,7 +84,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
 
-    this.store.select(fromData.selectPerPage).subscribe(
+    this.store.select(fromData.selectPerPage).pipe(takeUntil(this.destroyed$)).subscribe(
       res => {
         this.searchInModule();
         this.options.perPage = res;

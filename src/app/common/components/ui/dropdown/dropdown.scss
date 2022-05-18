@@ -18,7 +18,7 @@
   button {
     @include elevate(1);
     background-color: $slate4;
-    color: #C6CEED;
+    color: $text1;
 
     &:hover {
       background-color: shade($slate4, 15);
@@ -62,7 +62,7 @@
       }
 
       &.selected {
-        background-color: #C6CEED;
+        background-color: $text1;
         font-weight: bold;
 
         a {

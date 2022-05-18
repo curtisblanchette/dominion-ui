@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Inject, OnDestroy, OnInit, Output, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import * as fromApp from '../../../../store/app.reducer'
 import { FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'fiiz-data',
@@ -21,7 +22,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public form: FormGroup;
   public controlData: any;
+  public submitText: string;
 
+  @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
@@ -34,9 +37,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     private dataServiceFactory: DefaultDataServiceFactory,
     private flowService: FlowService,
     private fb: FormBuilder,
-    public navigation: NavigationService
+    public navigation: NavigationService,
+    public changeDetector: ChangeDetectorRef
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
+    this.submitText = this.state.record ? `Save ${this.state.module}` : `Create ${this.state.module}`;
     this.buildForm(models[this.module]);
   }
 
@@ -66,6 +71,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.form.addControl('id', new FormControl('', Validators.required));
       this.form.setValue(this.state.record);
     }
+
+    this.form.valueChanges.pipe(
+      debounceTime(250),
+    ).subscribe((text: string) => {
+      this.submit.nativeElement.setAttribute('disabled', !this.form.valid);
+      this.changeDetector.detectChanges();
+    });
   }
 
   public getData(key?: string) {
@@ -110,10 +122,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this._dynamicCollectionService.add(<DominionType>payload);
       return this.navigation.back();
     }
-  }
-
-  get buttonTitle() {
-    return this.state.record ? `Save ${this.state.module}` : `Create ${this.state.module}`;
   }
 
   public ngOnDestroy() {
