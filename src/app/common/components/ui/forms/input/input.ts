@@ -1,5 +1,6 @@
-import { Component, forwardRef, HostBinding, Input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import * as intlTelInput from 'intl-tel-input';
 
 @Component({
   selector: 'fiiz-input',
@@ -11,7 +12,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     multi: true
   }]
 })
-export class FiizInputComponent implements ControlValueAccessor {
+export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
 
   @HostBinding('class.has-label')
   @Input('label') public label: string | undefined;
@@ -28,10 +29,15 @@ export class FiizInputComponent implements ControlValueAccessor {
   @Input('disabled') disabled = false;
 
   @Input('autofocus') autofocus = false;
+
+  @ViewChild('inputElement', { read: ElementRef }) inputElement: ElementRef;
+
   // @HostBinding('attr.disabled')
   // isDisabled = false;
 
   value: number | string = 0;
+
+  intlTelInput?: any;
 
   onChange: (value: any) => void = () => {};
   onTouched: Function = () => {};
@@ -40,10 +46,29 @@ export class FiizInputComponent implements ControlValueAccessor {
 
   ) {
 
+
   }
+
+  public ngAfterViewInit() {
+    if(this.type === 'tel') {
+      this.inputElement.nativeElement.setAttribute('type', 'tel');
+      this.inputElement.nativeElement.setAttribute('pattern', '^[- +()]*[0-9][- +()0-9]*$');
+
+      this.intlTelInput = intlTelInput(this.inputElement.nativeElement, {
+        // any initialization options go here
+        utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/utils.js',
+        preferredCountries: ['US', 'MX', 'CA']
+      });
+    }
+  }
+
 
   writeValue(value: number) {
     this.value = value;
+
+    if(this.intlTelInput) {
+      this.intlTelInput.setNumber(value.toString());
+    }
   }
 
   registerOnChange(fn: any) {
@@ -59,9 +84,23 @@ export class FiizInputComponent implements ControlValueAccessor {
   }
 
   changed($event:any) {
-    this.value = $event;
+    this.value =  $event;
+    this.intlTelInput.setNumber(this.value.toString());
 
-    this.onChange(this.value);
+    if(this.intlTelInput) {
+      this.onChange(this.phoneNumber);
+    } else {
+      this.onChange(this.value);
+    }
+
     this.onTouched();
+  }
+
+  get phoneNumber() {
+    if (this.intlTelInput && this.intlTelInput.getNumber()) {
+      return this.intlTelInput.getNumber();
+    } else {
+      return '';
+    }
   }
 }

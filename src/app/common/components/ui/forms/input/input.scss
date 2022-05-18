@@ -11,6 +11,11 @@
     color: rgba(198, 203, 237, .62);
   }
 
+
+.iti input {
+  padding-left: 48px;
+}
+
   &.ng-invalid {
     input {
       // border-bottom: 2px solid red;
@@ -80,7 +85,7 @@
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    background-color: #172B46;
+    background-color: $slate4;
     cursor: text;
 
     &.has-icon {

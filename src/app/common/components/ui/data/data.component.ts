@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Inject, OnDestroy, OnInit, Output, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -59,7 +59,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (this.state.record) {
       const properties = Object.keys(models[this.module]);
       Object.keys(this.state.record).forEach(prop => {
-        if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName') {
+        if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
           delete this.state.record[prop];
         }
       });
@@ -76,7 +76,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     let form: { [key: string]: FormControl } = {};
 
     for (const [key, control] of Object.entries(model)) {
-      if (control.type !== 'virtual') {
+      if (!['virtual', 'timestamp'].includes(control.type)) {
         form[key] = new FormControl((<any>model)[control.defaultValue], control.validators);
       }
 

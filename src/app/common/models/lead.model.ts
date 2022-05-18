@@ -26,7 +26,7 @@ export const LeadModel: {[key: string]: IModel} = {
   },
   phone: {
     label: 'Phone Number',
-    type: 'text',
+    type: 'tel',
     defaultValue: null,
     validators: [
       Validators.required
@@ -34,10 +34,11 @@ export const LeadModel: {[key: string]: IModel} = {
   },
   email: {
     label: 'Email Address',
-    type: 'text',
+    type: 'email',
     defaultValue: null,
     validators: [
-      Validators.required
+      Validators.required,
+      Validators.email
     ]
   },
   statusId: {

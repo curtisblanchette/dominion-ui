@@ -5,7 +5,7 @@
 .tox-editor-header,
 .tox-toolbar__primary,
 .tox-edit-area iframe {
-  background-color: #172B46!important;
+  background-color: $slate4!important;
 }
 
 .mce-content-body {
@@ -17,5 +17,5 @@
 }
 
 .tox-tbtn:hover {
-  background-color: shade(#172B46, 25)!important;
+  background-color: shade($slate4, 25)!important;
 }

@@ -37,7 +37,8 @@ export const ContactModel: {[key: string]: IModel} = {
     type: 'text',
     defaultValue: '',
     validators: [
-      Validators.required
+      Validators.required,
+      Validators.email
     ]
   },
   leadId: {

@@ -1,0 +1,25 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/functions';
+@import '~src/assets/css/mixins';
+
+.iti {
+  width: 100%!important;
+
+  input {
+    padding-left: 52px!important;
+  }
+
+  &__country-list {
+    background: $slate4;
+    border: none;
+    border-radius: 8px;
+    margin-top: 5px;
+    @include elevate(2);
+  }
+
+  &__divider {
+    border-bottom: 1px solid tint($slate4, 15);
+  }
+}
+
+

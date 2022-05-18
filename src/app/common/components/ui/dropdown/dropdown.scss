@@ -1,7 +1,6 @@
 @import '~src/assets/css/variables';
 @import '~src/assets/css/functions';
-
-
+@import '~src/assets/css/mixins';
 
 :host {
   position: relative;
@@ -18,11 +17,11 @@
 
   button {
     @include elevate(1);
-    background-color: #172B46;
+    background-color: $slate4;
     color: #C6CEED;
 
     &:hover {
-      background-color: shade(#172B46, 15);
+      background-color: shade($slate4, 15);
     }
   }
 
@@ -30,8 +29,8 @@
     position: absolute;
     z-index: 1;
     list-style: none;
-    background-color: #172B46;
-    box-shadow: 0 4px 13px rgb(0 0 0 / 60%);
+    background-color: $slate4;
+    @include elevate(2);
     padding: 0;
     margin: 0;
     border-radius: $button-border-radius;
