@@ -1,0 +1,10 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/functions';
+@import '~src/assets/css/mixins';
+
+dp-day-calendar {
+  button {
+    border: none;
+    background: none;
+  }
+}

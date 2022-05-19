@@ -6,6 +6,8 @@
 :host {
   overflow: hidden;
 
+
+
   fiiz-loading {
     width: 44px;
     height: 44px;
@@ -15,6 +17,7 @@
   button,
   input[type=submit] {
     display: flex;
+    min-width: 0;
     align-items: center;
     justify-content: flex-start;
     gap: 1em;
@@ -28,6 +31,11 @@
     line-height: 44px;
     cursor: pointer;
     transition: background .1s ease-in-out, width .25s ease-out;
+
+
+    &.full-width {
+      justify-content:space-around;
+    }
 
     &:hover {
       background: shade($grey1, 10%);
@@ -114,13 +122,8 @@
     //////////////////////// END COLORS
 
 
-    //////////////////////// STYLES
-
 
     //////////////////////// LAYOUT
-    &.full-width {
-      width: 100%;
-    }
 
     &:disabled {
       cursor: not-allowed;
@@ -136,7 +139,6 @@
 
   // Added by primary.directive.ts
   &.primary {
-
     button {
       background: shade($blue3, 10%);
       color: #051323;

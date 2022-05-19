@@ -8,7 +8,7 @@
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-    <fiiz-button primary (click)="onCreateNew()">Create New {{state.module}}</fiiz-button>
+    <fiiz-button stroked (click)="onCreateNew()">Create New {{state.module}}</fiiz-button>
   </div>
 </form>
 
@@ -60,7 +60,7 @@
     <span>Try another search term or create a new lead.</span>
   </div>
   <div class="message-block" style="padding-top: 4%;">
-    <button class="primary" (click)="onCreateNew()">Create New Lead</button>
+    <fiiz-button stroked (click)="onCreateNew()">Create New Lead</fiiz-button>
   </div>
 </ng-template>
 

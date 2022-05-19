@@ -65,8 +65,8 @@ export const EventModel: {[key: string]: IModel} = {
     defaultValue: null,
     validators: []
   },
-  outcome: {
-    label: 'Outcome',
+  outcomeId: {
+    label: 'Outcome Id',
     type: 'dropdown',
     service: 'eventOutcome',
     defaultValue: null,

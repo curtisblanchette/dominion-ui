@@ -1,5 +1,7 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
 <div class="input-wrapper" [ngClass]="{'disabled': isDisabled}">
-	<input id="{{id}}" type="text" [disabled]="isDisabled" [fiizMinDate]="min" [fiizMaxDate]="max" [value]="value" [(ngModel)]="value" (ngModelChange)="changed($event)" [autofocus]="autofocus" fiizDatePicker required/>
+  <dp-date-picker [(ngModel)]="value" [minDate]="min" (ngModelChange)="changed($event)" [autofocus]="autofocus" required></dp-date-picker>
+
+  <!--	<input id="{{id}}" type="text" [disabled]="isDisabled" [fiizMinDate]="min" [fiizMaxDate]="max"  fiizDatePicker required/>-->
 </div>
 

@@ -28,6 +28,7 @@ import { FiizButtonComponent } from './button/button';
 import { FiizStrokedDirective } from './button/stroked.directive';
 import { FiizWarningDirective } from './button/warning.directive';
 import { FiizPrimaryDirective } from './button/primary.directive';
+import { DpDatePickerModule } from 'ng2-date-picker';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { FiizPrimaryDirective } from './button/primary.directive';
     RouterModule,
     NgxPaginationModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    DpDatePickerModule
     // DirectivesModule
   ],
   exports: [

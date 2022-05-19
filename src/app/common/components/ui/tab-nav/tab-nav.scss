@@ -21,7 +21,9 @@
       text-transform: uppercase;
       font-weight: 500;
       color: $slate1;
+      line-height: 32px;
       box-shadow: none;
+      cursor: pointer;
 
       &.active {
         color: #77BEB7;

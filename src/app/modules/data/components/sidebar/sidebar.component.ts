@@ -45,12 +45,12 @@ export class SidebarComponent implements OnInit {
           icon : 'fa fa-address-book '
         },
         {
-          label : 'Campaign',
+          label : 'Campaigns',
           path : 'campaign',
           icon : 'fa fa-address-book '
         },
         {
-          label : 'Lead Source',
+          label : 'Lead Sources',
           path : 'leadSource',
           icon : 'fa fa-address-book '
         },
