@@ -14,14 +14,8 @@
   z-index: 1;
   width: 100%;
 
-  button {
-    @include elevate(1);
-    background-color: $slate4;
-    color: $text1;
+  fiiz-button {
 
-    &:hover {
-      background-color: shade($slate4, 15);
-    }
   }
 
   &__content {

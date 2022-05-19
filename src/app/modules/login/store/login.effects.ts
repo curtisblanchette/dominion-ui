@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, of, tap, throwError } from 'rxjs';
+import { firstValueFrom, map, mergeMap, tap, throwError } from 'rxjs';
 
 import * as appActions from '../../../store/app.actions';
 import * as loginActions from './login.actions';
@@ -13,10 +13,12 @@ import * as fromLogin from './login.reducer';
 import { CognitoService } from '../../../common/cognito/cognito.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class LoginEffects {
+
+  private httpNoAuth: HttpClient;
 
   constructor(
     private actions$: Actions,
@@ -25,9 +27,10 @@ export class LoginEffects {
     private store: Store<fromLogin.LoginState>,
     private cognito: CognitoService,
     private toastr: ToastrService,
-    private http: HttpClient
+    private http: HttpClient,
+    private httpBackend: HttpBackend,
   ) {
-
+    this.httpNoAuth = new HttpClient(httpBackend);
   }
 
   login$ = createEffect(
@@ -170,6 +173,24 @@ export class LoginEffects {
       ),
     { dispatch: false }
   );
+
+  acceptInvitation$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.AcceptInvitationAction),
+        mergeMap(async (action) => {
+
+          await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${action.code.id}`, action.payload));
+
+          return loginActions.LoginAction( { payload: {
+            username: action.code.email,
+            password: action.payload.password,
+            remember_me: 'yes'
+          }});
+
+        })
+      )
+  )
 
   refreshToken$ = createEffect(
     (): any =>

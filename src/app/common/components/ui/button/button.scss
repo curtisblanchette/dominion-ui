@@ -1,0 +1,224 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
+@import '~src/assets/css/functions';
+
+
+:host {
+  overflow: hidden;
+
+  fiiz-loading {
+    width: 44px;
+    height: 44px;
+  }
+
+  // default styling
+  button,
+  input[type=submit] {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1em;
+    border: none;
+    background: $grey1;
+    border-radius: $button-border-radius;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0 1.5em;
+    height: 44px;
+    line-height: 44px;
+    cursor: pointer;
+    transition: background .1s ease-in-out, width .25s ease-out;
+
+    &:hover {
+      background: shade($grey1, 10%);
+    }
+
+    &:active {
+      background: shade($grey1, 20%);
+    }
+
+    &:focus {
+      /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
+      @include focusRing($focusring, $focusring-moz-mac);
+    }
+
+
+    //////////////////////// SIZES
+    &.large {
+      height: 40px;
+      line-height: 40px;
+    }
+
+    &.small {
+      height: 30px;
+      line-height: 30px;
+    }
+
+    &.x-small {
+      font-size: 12px;
+      height: 24px;
+      line-height: 24px;
+    }
+
+    //////////////////////// END SIZES
+
+    //////////////////////// COLORS
+    &.primary, &.active {
+      background: shade($blue3, 10%);
+      color: #051323;
+      font-weight: 600;
+
+      &:hover {
+        background: $blue3;
+      }
+
+      &:active {
+        background: shade($blue3, 25%);
+      }
+    }
+
+    &.secondary {
+      background: $blue4;
+      color: #051323;
+      font-weight: 600;
+
+      &:hover {
+        background: shade($blue4, 15%);
+      }
+
+      &:active {
+        background: shade($blue4, 25%);
+      }
+    }
+
+
+    &.transparent {
+      background: transparent;
+      box-shadow: none;
+      font-weight: 400;
+
+      &:hover {
+        background: rgba(0, 0, 0, .05) !important;
+      }
+
+      &:active {
+        background: rgba(0, 0, 0, .15) !important;
+      }
+    }
+
+    &.outline {
+      background: none;
+      border: 1px solid rgba(0, 0, 0, .2);
+    }
+
+    //////////////////////// END COLORS
+
+
+    //////////////////////// STYLES
+
+
+    //////////////////////// LAYOUT
+    &.full-width {
+      width: 100%;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: .5 !important;
+    }
+
+    &.link {
+
+    }
+
+    //////////////////////// END LAYOUT
+  }
+
+  // Added by primary.directive.ts
+  &.primary {
+
+    button {
+      background: shade($blue3, 10%);
+      color: #051323;
+      font-weight: 600;
+
+      &:hover {
+        background: $blue3;
+      }
+
+      &:active {
+        background: shade($blue3, 25%);
+      }
+    }
+  }
+
+  // Added by stroked.directive.ts
+  &.stroked {
+    button {
+      background: rgba(0, 0, 0, .15);
+      border: 1px solid shade($blue3, 15);
+      color: shade($blue3, 15);
+      position: relative;
+      transform: translateY(0);
+      transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
+      line-height: 42px;
+
+      &:hover {
+        border: 1px solid $blue3;
+        color: $blue3;
+        background: none !important;
+      }
+
+      &:focus {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+    }
+  }
+
+  // added by warning.directive.ts
+  &.warning {
+
+    button {
+      background: $red0;
+      color: #051323;
+      font-weight: 600;
+
+      &:hover {
+        background: shade($red0, 15%);
+      }
+
+      &:active {
+        background: shade($red0, 25%);
+      }
+    }
+  }
+
+  // composite of warning and stroked
+  &.stroked.warning {
+    button {
+      border: 1px solid shade($red0, 10%);
+      color: shade($red0, 10%);
+      background: none !important;
+
+      &:hover {
+        border: 1px solid $red0;
+        color: $red0;
+        background: rgba(0, 0, 0, .15) !important;
+      }
+    }
+  }
+
+  &.dropdown {
+    button {
+      width: 100%;
+      @include elevate(1);
+      background-color: $slate4;
+      color: $text1;
+
+      &:hover {
+        background-color: shade($slate4, 15);
+      }
+    }
+  }
+}

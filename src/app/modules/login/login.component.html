@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isLoading" [ngTemplateOutlet]="getTemplate() || loadingTemplate" [ngTemplateOutletContext]="{loadingText: loadingMessage}"></ng-container>
+<ng-container [ngTemplateOutlet]="getTemplate() || loadingTemplate" [ngTemplateOutletContext]="{loadingText: loadingMessage}"></ng-container>
 
 <ng-template #loginTemplate>
   <form [formGroup]="loginForm" (ngSubmit)="login()" id="login-form" >
@@ -7,6 +7,7 @@
       id="username"
       formControlName="username"
       type="text"
+      required
       placeholder="Username">
     </fiiz-input>
 
@@ -19,17 +20,18 @@
       minlength="12">
     </fiiz-input>
 
-    <input type="submit" class="primary large" value="Let's Go!" [disabled]="disable" >
+    <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$ | async" [disabled]="(isLoading$ | async) || loginForm.invalid">Let's Go!</fiiz-button>
+<!--    <input type="submit" class="primary large" value="Let's Go!" [disabled]="isLoading$ | async">-->
 
     <!-- <button class="forgot-password transparent large" type="button" (click)="updateShowForm('forgot-password')">Forgot password?</button> -->
-    <div style="color:red; margin: 0 0 0 54px;" *ngIf="hasError">{{errorMessage}}</div>
+    <div style="color:red; margin: 0 0 0 54px;" *ngIf="error$ | async">{{errorMessage}}</div>
   </form>
 </ng-template>
 
 <ng-template #newUserTemplate>
-  <form (ngSubmit)="createUser()" [formGroup]="newUserForm" id="new-user-form" name="new-user-form">
+  <form (ngSubmit)="acceptInvitation()" [formGroup]="newUserForm" id="new-user-form" name="new-user-form">
 
-    <ng-container [ngTemplateOutlet]="isLoading ? loadingTemplate : newUserTemplate"
+    <ng-container [ngTemplateOutlet]="(isLoading$ | async) ? loadingTemplate : newUserTemplate"
                   [ngTemplateOutletContext]="{loadingText: 'Checking Invitation...'}"></ng-container>
 
     <ng-template #newUserTemplate>
@@ -73,7 +75,7 @@
              class="primary"
              id="create-user-btn"
              value="Complete Registration"
-             [disabled]="disable">
+             [disabled]="isLoading$ | async">
 
     </ng-template>
 
@@ -84,7 +86,7 @@
 
 
 <ng-template #loadingTemplate let-loadingText="loadingText">
-  <app-loading>{{loadingText}}</app-loading>
+  <fiiz-loading>{{loadingText}}</fiiz-loading>
 </ng-template>
 
 

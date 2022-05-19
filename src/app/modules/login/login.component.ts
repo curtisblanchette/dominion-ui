@@ -7,9 +7,8 @@ import * as fromLogin from './store/login.reducer';
 import * as loginActions from './store/login.actions';
 import { ActivatedRoute } from '@angular/router';
 import { HttpBackend, HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { checkPasswords } from './login.validators';
-import { firstValueFrom } from 'rxjs';
+import {  Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 export interface Ilogin{
@@ -38,9 +37,8 @@ export class LoginComponent implements OnInit {
   public loginForm!: FormGroup;
   public newUserForm!: FormGroup;
   public invitationCode: { id: string; workspaceId: string; email: string;};
-  public isLoading: boolean = false;
-  public hasError: boolean = false;
-  public disable: boolean = false;
+  public isLoading$: Observable<boolean>;
+  public error$: Observable<any>;
   public errorMessage!: string;
   public loadingMessage!: string;
 
@@ -48,7 +46,6 @@ export class LoginComponent implements OnInit {
   @ViewChild('loginTemplate') loginTemplate: TemplateRef<any>;
   @ViewChild('newUserTemplate') newUserTemplate: TemplateRef<any>;
 
-  private httpNoAuth: HttpClient;
 
   constructor(
     private loginService: LoginService,
@@ -59,12 +56,14 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
-    this.httpNoAuth = new HttpClient(httpBackend);
+
+    this.isLoading$ = this.store.select(fromLogin.loading);
+    this.error$ = this.store.select(fromLogin.error);
   }
 
   ngOnInit(): void {
     let formGroup: { [key: string]: FormControl } = {};
-    formGroup['username'] = new FormControl('', Validators.required);
+    formGroup['username'] = new FormControl('', [Validators.required, Validators.email]);
     formGroup['password'] = new FormControl('', Validators.required);
     formGroup['remember_me'] = new FormControl('');
     this.loginForm = this.fb.group(formGroup);
@@ -89,7 +88,7 @@ export class LoginComponent implements OnInit {
 
   }
 
-  getTemplate() {
+  public getTemplate(): TemplateRef<any> {
     let template = this.loadingTemplate;
 
     switch(this.showForm) {
@@ -99,42 +98,36 @@ export class LoginComponent implements OnInit {
       case 'login':
         template = this.loginTemplate
         break;
-
     }
     return template;
   }
 
   public async login() {
-    this.disable = true;
     if (this.loginForm.valid) {
         await this.loginTheUser( this.loginForm.value );
     } else {
       this.toastr.error('', 'Invalid Form.');
-      this.disable = false;
     }
   }
 
   public async loginTheUser( loginData:Ilogin ){
     this.store.dispatch(loginActions.LoginAction({payload: loginData }));
-    this.store.select(fromLogin.selectLoginError).subscribe( res => {
-      if( res !== null ){
-        this.disable = false;
-      }
-    });
   }
 
-  public async createUser() {
-    this.disable = true;
+  public async acceptInvitation() {
+
     if(this.newUserForm.valid) {
-      await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${this.invitationCode.id}`, this.newUserForm.value));
+      this.store.dispatch(loginActions.AcceptInvitationAction({code: this.invitationCode, payload: this.newUserForm.value}));
+
       this.toastr.success('Logging you in...', 'User Created!');
+      // await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${this.invitationCode.id}`, this.newUserForm.value));
+
       // perform login
       await this.loginTheUser( {username: this.invitationCode.email, password: this.newUserForm.controls['password'].value, remember_me: 'yes'} );
     } else {
       this.toastr.error('', 'Invalid Form.');
-      this.disable = false;
     }
-    
+
   }
 
 }

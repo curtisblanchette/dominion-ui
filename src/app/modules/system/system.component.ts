@@ -1,16 +1,11 @@
 import { Component, OnDestroy } from '@angular/core';
-import { firstValueFrom, map, Observable, Subscription, take } from 'rxjs';
+import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromSystem from './store/system.reducer';
 import * as fromApp from '../../store/app.reducer';
-import * as appActions from '../../store/app.actions';
 import * as systemActions from './store/system.actions';
 import { DropdownItem } from '../../common/components/ui/forms';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { filter } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-system',
@@ -26,15 +21,17 @@ export class SystemComponent implements OnDestroy {
   public initialized$: Subscription;
   public _initialized = false;
 
+  public loading$: Observable<boolean>;
+
   constructor(
     private store: Store<fromSystem.SystemState>,
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private toastr: ToastrService
+    private fb: FormBuilder
+
   ) {
     this.workspaces$ = this.store.select(fromSystem.selectWorkspaces);
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
     this.roles$ = this.store.select(fromApp.selectRoles);
+    this.loading$ = this.store.select(fromSystem.loading);
 
     /** initialized means that the AppState has been successfully populated */
     this.initialized$ = this.store.select(fromApp.selectInitialized).subscribe(val => {
@@ -67,12 +64,9 @@ export class SystemComponent implements OnDestroy {
       roleId: this.userInviteForm.controls['role'].value.id,
       email: this.userInviteForm.controls['email'].value
     }
-
-    await firstValueFrom(this.http.post(environment.dominion_api_url + '/invitations', payload));
-    this.toastr.success('', 'Invite Sent!');
+    this.store.dispatch(systemActions.SendInvitationAction({payload}));
   }
 
   ngOnDestroy() {
-    // this.appInitialized$.unsubscribe();
   }
 }

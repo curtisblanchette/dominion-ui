@@ -8,8 +8,7 @@
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-<!--    <button class="stroked small" *ngIf="state.options.editable">Edit</button>-->
-    <button class="primary" (click)="onCreateNew()">Create New {{state.module}}</button>
+    <fiiz-button primary (click)="onCreateNew()">Create New {{state.module}}</fiiz-button>
   </div>
 </form>
 
