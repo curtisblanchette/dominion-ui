@@ -73,13 +73,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.form.addControl('id', new FormControl('', Validators.required));
       this.form.setValue(this.state.record);
     }
-
-    this.form.valueChanges.pipe(
-      debounceTime(250),
-    ).subscribe((text: string) => {
-      this.submit.nativeElement.setAttribute('disabled', !this.form.valid);
-      this.changeDetector.detectChanges();
-    });
   }
 
   public getData(key?: string) {

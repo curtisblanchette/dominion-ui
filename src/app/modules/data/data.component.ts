@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { DataState } from './store/data.reducer';
 import { Store } from '@ngrx/store';
-import * as fromData from './store/data.reducer';
 import { IListOptions } from '../../common/components/ui/list/list.component';
 
 @Component({
@@ -14,12 +13,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   public destroyed$: Subject<boolean> = new Subject<boolean>();
 
-  private listOptions: IListOptions = {
-    searchable: true,
-    editable: true,
-    columns: [],
-    perPage: 0
-  };
+  private listOptions: IListOptions;
 
   constructor(
     private store: Store<DataState>,
@@ -29,12 +23,15 @@ export class DataComponent implements OnInit, OnDestroy {
       console.log('here');
       this.router.navigate(['/data/']);
     }
-    // this.store.select(fromData.selectPerPage).pipe(takeUntil(this.destroyed$)).subscribe(perPage => {
-    //   this.listOptions.perPage = perPage;
-    // });
+    this.listOptions = {
+      searchable: true,
+      editable: true,
+      columns: [],
+    };
   }
 
   public async ngOnInit() {
+
     this.renderComponent('lead');
   }
 
@@ -50,6 +47,7 @@ export class DataComponent implements OnInit, OnDestroy {
     return this.router.navigate(['/data', {outlets: {'aux': [`${module}`]}}], {
       state: {
         options: this.listOptions,
+        page: 1,
         module: module,
         editPath: {
           route: ['/data', {outlets: {'aux': ['edit']}}],

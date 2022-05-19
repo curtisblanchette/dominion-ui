@@ -44,7 +44,7 @@ export const EventModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  type: {
+  typeId: {
     label: 'Type',
     type: 'dropdown',
     service: 'eventType',
@@ -52,12 +52,6 @@ export const EventModel: {[key: string]: IModel} = {
     validators: [
       Validators.required
     ]
-  },
-  leadId: {
-    label: 'Lead Id',
-    type: 'text',
-    defaultValue: null,
-    validators: []
   },
   dealId: {
     label: 'Deal Id',
