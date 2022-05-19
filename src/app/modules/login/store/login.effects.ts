@@ -60,7 +60,7 @@ export class LoginEffects {
                 case 'UserNotFoundException':
                 case 'NotAuthorizedException': {
                   this.toastr.error('', 'Invalid username or password.');
-                  return of(loginActions.LoginErrorAction({error: e}));
+                  return loginActions.LoginErrorAction({error: e.message});
                 }
                 default:
                   return throwError(e);

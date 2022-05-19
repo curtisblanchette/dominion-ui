@@ -12,6 +12,12 @@ import { checkPasswords } from './login.validators';
 import { firstValueFrom } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
+export interface Ilogin{
+  username:string,
+  password:string,
+  remember_me:string
+}
+
 
 @Component({
   templateUrl: './login.component.html',
@@ -28,23 +34,13 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent implements OnInit {
 
-  public credentials: any = {
-    username: null,
-    password: null
-  };
-
-  public newUser: any = {
-    username: null,
-    password: null,
-    password2: null
-  }
-
   public showForm: string = 'login';
   public loginForm!: FormGroup;
   public newUserForm!: FormGroup;
   public invitationCode: { id: string; workspaceId: string; email: string;};
   public isLoading: boolean = false;
   public hasError: boolean = false;
+  public disable: boolean = false;
   public errorMessage!: string;
   public loadingMessage!: string;
 
@@ -108,27 +104,37 @@ export class LoginComponent implements OnInit {
     return template;
   }
 
-  public login() {
+  public async login() {
+    this.disable = true;
     if (this.loginForm.valid) {
-      this.loadingMessage = `Validating credentials...`;
-
-      this.store.dispatch(loginActions.LoginAction({payload: this.loginForm.value}));
+        await this.loginTheUser( this.loginForm.value );
     } else {
-      console.warn('Invalid Form');
+      this.toastr.error('', 'Invalid Form.');
+      this.disable = false;
     }
   }
 
+  public async loginTheUser( loginData:Ilogin ){
+    this.store.dispatch(loginActions.LoginAction({payload: loginData }));
+    this.store.select(fromLogin.selectLoginError).subscribe( res => {
+      if( res !== null ){
+        this.disable = false;
+      }
+    });
+  }
+
   public async createUser() {
+    this.disable = true;
     if(this.newUserForm.valid) {
       await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${this.invitationCode.id}`, this.newUserForm.value));
       this.toastr.success('Logging you in...', 'User Created!');
-
       // perform login
-      this.store.dispatch(loginActions.LoginAction({payload: {username: this.invitationCode.email, password: this.newUserForm.controls['password'].value, remember_me: 'yes'}}))
+      await this.loginTheUser( {username: this.invitationCode.email, password: this.newUserForm.controls['password'].value, remember_me: 'yes'} );
     } else {
-      console.warn('Invalid Form');
+      this.toastr.error('', 'Invalid Form.');
+      this.disable = false;
     }
-
+    
   }
 
 }

@@ -4,6 +4,7 @@ import * as loginActions from './login.actions';
 
 export interface LoginState {
   user: User | null;
+  error:any
 }
 
 /**
@@ -19,7 +20,8 @@ function getUserInitialState() {
 }
 
 export const initialState: LoginState = {
-  user: getUserInitialState()
+  user: getUserInitialState(),
+  error: null
 };
 
 export const reducer = createReducer(
@@ -40,3 +42,7 @@ export const selectUser = createSelector(selectLogin, (state: LoginState) => {
     return new User(state.user);
 
 });
+
+export const selectLoginError = createSelector(selectLogin, (state) => {
+  return state.error;
+})
