@@ -24,6 +24,10 @@ import { FiizListComponent } from './list/list.component';
 import { FiizDataComponent } from './data/data.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../../../modules/shared/shared.module';
+import { FiizButtonComponent } from './button/button';
+import { FiizStrokedDirective } from './button/stroked.directive';
+import { FiizWarningDirective } from './button/warning.directive';
+import { FiizPrimaryDirective } from './button/primary.directive';
 
 @NgModule({
   declarations: [
@@ -41,8 +45,12 @@ import { SharedModule } from '../../../modules/shared/shared.module';
     FiizDatePickerDirective,
     FiizMinDateDirective,
     FiizMaxDateDirective,
+    FiizStrokedDirective,
+    FiizPrimaryDirective,
+    FiizWarningDirective,
     AutofocusDirective,
     ProgressBarComponent,
+    FiizButtonComponent,
     FiizBigButtonComponent,
     FiizSelectComponent,
     FiizDropDownComponent,
@@ -73,8 +81,12 @@ import { SharedModule } from '../../../modules/shared/shared.module';
     FiizDatePickerDirective,
     FiizMinDateDirective,
     FiizMaxDateDirective,
+    FiizStrokedDirective,
+    FiizPrimaryDirective,
+    FiizWarningDirective,
     AutofocusDirective,
     ProgressBarComponent,
+    FiizButtonComponent,
     FiizBigButtonComponent,
     FiizSelectComponent,
     FiizDropDownComponent,

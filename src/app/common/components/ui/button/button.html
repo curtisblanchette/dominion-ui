@@ -1,0 +1,6 @@
+<button #el [class]="class" [type]="type" [disabled]="isDisabled || loading">
+  <ng-container *ngIf="!loading">
+    <ng-content></ng-content>
+  </ng-container>
+  <fiiz-loading *ngIf="loading"></fiiz-loading>
+</button>

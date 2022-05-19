@@ -2,14 +2,17 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, EntityCollectionDataService, HttpUrlGenerator, QueryParams } from '@ngrx/data';
 import { DominionType } from '../common/models';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, mergeMap, Observable, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { delay } from 'rxjs/operators';
+import { Update } from '@ngrx/entity';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
 
   public data$: Observable<DominionType[]>;
   public count$: Observable<number>;
+
 
   constructor(
     @Inject('entityName') entityName: string,
@@ -30,12 +33,25 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     const data = this.removeNulls(entity);
     const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
 
-    return super.add(data).pipe(
-      map((res: any) => {
-        this.toastr.success(`${entityLabel} Created`);
-        return res;
-      })
+    /**
+      * Use this dummy observable to add arbitrary delays to requests
+      * sometimes they are too fast for what you're testing
+      */
+    return of('dummy-delay').pipe(
+      // delay(2000),
+      mergeMap(() => super.add(data)),
+      tap((res: any) => this.toastr.success(`${entityLabel} Created`))
     );
+  }
+
+  override update(entity: Update<T>) {
+    const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
+
+    return of('dummy-delay').pipe(
+      // delay(2000),
+      mergeMap(() => super.update(entity)),
+      tap((res: any) => this.toastr.success(`${entityLabel} Updated`))
+    )
   }
 
   override getAll(): Observable<T[]> {

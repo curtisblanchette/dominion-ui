@@ -11,7 +11,6 @@ import { Store } from '@ngrx/store';
 import * as fromApp from '../../../../store/app.reducer'
 import { FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'fiiz-data',
@@ -105,18 +104,24 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     return controls;
   }
 
-  public saveData() {
+  public saveData(): void {
     if (this.form.valid) {
+      this.form.disable();
+
       const payload = this.form.value;
 
       if (this.state.record) {
-        this._dynamicCollectionService.update(<DominionType>payload);
-        return this.navigation.back();
+        return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(()=>this.form.enable());
       }
 
-      this._dynamicCollectionService.add(<DominionType>payload);
-      return this.navigation.back();
+      return this._dynamicCollectionService.add(<DominionType>payload).subscribe().add(()=>this.resetForm());
+
     }
+  }
+
+  private resetForm() {
+    this.form.reset();
+    this.form.enable();
   }
 
   public ngOnDestroy() {
