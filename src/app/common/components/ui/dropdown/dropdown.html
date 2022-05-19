@@ -1,15 +1,15 @@
 <div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title }" >
-    <button>
+    <fiiz-button class="dropdown">
         {{title}}
         <i class="fa-solid fa-caret-down"></i>
-    </button>
+    </fiiz-button>
     <ul class="fiiz-dropdown-button__content fiiz-dropdown-button-{{position}}" *ngIf="showDropDowns" [@dropDownMenu] [ngSwitch]="type" >
 
         <ng-template [ngIf]="type === 'button'" >
             <li *ngFor="let item of items; let i = index; let last = last" [ngClass]="{'divider': !last}">
-                <button (click)="emitTheValue(item.emitterValue)">
+                <fiiz-button class="dropdown" (click)="emitTheValue(item.emitterValue)">
                     <i [class]="item.icon"></i> {{ item.label }}
-                </button>
+                </fiiz-button>
             </li>
         </ng-template>
 

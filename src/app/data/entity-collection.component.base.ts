@@ -34,7 +34,7 @@ export class EntityCollectionComponentBase {
       this._dynamicService = dataServiceFactory.create(this.module);
 
       // this.data$ = this._dynamicCollectionService.filteredEntities$;
-      // this.loading$ = this._dynamicCollectionService.loading$;
+      this.loading$ = this._dynamicCollectionService.loading$;
       // this.loaded$ = this._dynamicCollectionService.loaded$;
       // this.count$ = this._dynamicCollectionService.count$; <-- ** always returns the filteredEntities$.length (not the collectionState.count)
     }

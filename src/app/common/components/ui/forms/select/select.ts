@@ -109,7 +109,7 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
 
   async changed($event:any) {
     this.selected = await firstValueFrom(this.items$).then(items => items.find(item => item.id == $event.target.value));
-    this.onChange(this.selected);
+    this.onChange(this.selected.id);
     this.onTouched();
   }
 }

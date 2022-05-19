@@ -4,8 +4,8 @@ import { DominionType } from '../common/models';
 import { HttpClient } from '@angular/common/http';
 import { map, mergeMap, Observable, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { Update } from '@ngrx/entity';
 import { delay } from 'rxjs/operators';
+import { Update } from '@ngrx/entity';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
