@@ -44,11 +44,12 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   }
 
   override update(entity: Update<T>) {
+    const data = this.removeNulls(entity);
     const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
 
     return of('dummy-delay').pipe(
       // delay(2000),
-      mergeMap(() => super.update(entity)),
+      mergeMap(() => super.update(data)),
       tap((res: any) => this.toastr.success(`${entityLabel} Updated`))
     )
   }

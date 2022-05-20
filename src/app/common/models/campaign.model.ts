@@ -46,7 +46,7 @@ export const CampaignModel: {[key: string]: IModel} = {
   },
   startDate: {
     label: 'Start Date',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: [
       Validators.required
@@ -54,7 +54,7 @@ export const CampaignModel: {[key: string]: IModel} = {
   },
   endDate: {
     label: 'End Date',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: [
       Validators.required

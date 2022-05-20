@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import * as fromApp from '../../../../store/app.reducer'
 import { FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'fiiz-data',
@@ -65,6 +66,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (this.state.record) {
       const properties = Object.keys(models[this.module]);
       Object.keys(this.state.record).forEach(prop => {
+
+        if(dayjs(this.state.record[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
+          this.state.record[prop] = dayjs(this.state.record[prop]).format();
+        }
+
         if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
           delete this.state.record[prop];
         }
@@ -84,6 +90,19 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     for (const [key, control] of Object.entries(model)) {
       if (!['virtual', 'timestamp'].includes(control.type)) {
         form[key] = new FormControl((<any>model)[control.defaultValue], control.validators);
+      }
+
+      if (['day', 'daytime'].includes(control.type)) {
+        form[key] = new FormControl({value: undefined, disabled: control.disabled}, [
+          ...control.validators,
+          // (control: any) => {
+          //   return dayjs(control.value, 'DD-MM-YYYY').isBefore(dayjs()) ? {minDate: 'minDate Invalid'} : undefined
+          // },
+          // control => this.validationMaxDate && this.config &&
+          // dayjs(control.value, 'DD-MM-YYYY' || DemoComponent.getDefaultFormatByMode(this.pickerMode))
+          //   .isAfter(this.validationMaxDate)
+          //   ? {maxDate: 'maxDate Invalid'} : undefined
+        ])
       }
 
     }
@@ -111,10 +130,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       const payload = this.form.value;
 
       if (this.state.record) {
-        return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(()=>this.form.enable());
+        return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
       }
 
-      return this._dynamicCollectionService.add(<DominionType>payload).subscribe().add(()=>this.resetForm());
+      return this._dynamicCollectionService.add(<DominionType>payload).subscribe().add(() => this.resetForm());
 
     }
   }

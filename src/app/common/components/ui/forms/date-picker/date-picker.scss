@@ -14,13 +14,18 @@
     }
   }
 
+  &.has-label {
+    margin-top: 30px;
+    color: rgba(198, 203, 237, .62);
+  }
+
   label {
     text-transform: uppercase;
     font-size: 10px;
     margin-bottom: 0;
     position: absolute;
-    left:0;
-    top: -14px;
+    top: -20px;
+    left: 16px;
   }
 
   .input-wrapper {
@@ -40,7 +45,7 @@
       font-size: 12px;
       content: '\f133';
       display: block;
-      bottom: 12px;
+      bottom: 10px;
       right: 10px;
     }
 
@@ -54,25 +59,6 @@
 
 
   input {
-    width: 100%;
-    display: block;
-    font-size: 12px;
-    font-family: Roboto, sans-serif;
-    font-weight: 500;
-    color: $text1;
-    line-height: 44px;
-    box-sizing: border-box;
-    margin: 0;
-    border: none;
-    @include elevate(1);
-    border-radius: $input-border-radius;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: $slate4;;
-    cursor: pointer;
-    padding: 0;
-
 
     &:focus {
       /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */

@@ -6,7 +6,7 @@ export const CallModel: {[key: string]: IModel} = {
   ...timestamps,
   startTime: {
     label: 'Start Time',
-    type: 'date-picker',
+    type: 'daytime',
     defaultValue: new Date(),
     validators: [
       Validators.required

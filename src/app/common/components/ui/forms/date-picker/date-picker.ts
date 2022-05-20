@@ -1,5 +1,7 @@
 import { Component, EventEmitter, forwardRef, HostBinding, Input, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {Dayjs} from 'dayjs';
+import { IDatePickerConfig } from 'ng2-date-picker/lib/date-picker/date-picker-config.model';
 
 @Component({
   selector: 'fiiz-date-picker',
@@ -13,8 +15,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class FiizDatePickerComponent implements ControlValueAccessor {
 
-  @Input('label') label!: string;
+
+  @HostBinding('class.has-label')
+  @Input('label') public label: string | number | boolean | undefined;
+
   @Input('id') id!: string;
+  @Input('mode') mode: "day"|"month"|"time"|"daytime";
 
   @Input('min') min!: string;
   @Input('max') max!: Date | string;
@@ -25,7 +31,11 @@ export class FiizDatePickerComponent implements ControlValueAccessor {
 
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 
-  value!: string;
+  @Input('config') config: IDatePickerConfig = {
+    showGoToCurrent: false
+  };
+
+  value!: string | Dayjs;
 
   onChange: (value: any) => void = () => {};
   onTouched: Function = () => {};
@@ -34,7 +44,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor {
   ) {
   }
 
-  writeValue(value: string) {
+  writeValue(value: any) {
     this.value = value;
   }
 
@@ -50,12 +60,15 @@ export class FiizDatePickerComponent implements ControlValueAccessor {
     this.isDisabled = disabled;
   }
 
-  changed(value: any) {
-    this.value = value;
+  changed(value: Dayjs) {
+    if(value){
+      this.value = value;
 
-    this.onChange(this.value);
-    this.change.emit(this.value);
-    this.onTouched();
+      this.onChange(this.value.format());
+      this.change.emit(this.value.format());
+      this.onTouched();
+    }
+
   }
 
 }

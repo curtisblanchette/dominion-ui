@@ -28,10 +28,13 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   public destroyed$: Subject<boolean> = new Subject<boolean>();
 
   @Input('items') items$: Observable<DropdownItem[]> = of([]);
+
+  @HostBinding('class.has-label')
   @Input('label') public label: string | number | boolean | undefined;
+
   @Input('id') id!: string;
   @Input('size') size!: 'small' | 'large';
-  @Input('default') default:string | number | boolean;
+  @Input('default') default: string | number | boolean | undefined;
   @Input('autofocus') autofocus = false;
   @Input('position') position:string = 'bottom-right';
   @Input('showDefault') showDefault!: boolean;

@@ -12,7 +12,7 @@ export const DealModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  stage: {
+  stageId: {
     label: 'Stage',
     type: 'dropdown',
     service: 'dealStage',
@@ -64,49 +64,49 @@ export const DealModel: {[key: string]: IModel} = {
   },
   noSetOn: {
     label: 'No Set On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   },
   setAppointmentOn: {
     label: 'Set Appointment On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   },
   noShowOn: {
     label: 'No Show On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   },
   hireScheduledOn: {
     label: 'Hire Scheduled On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   },
   noHireOn: {
     label: 'No Hire On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   },
   hiredOn: {
     label: 'Hired On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   },
   unqualifiedOn: {
     label: 'Unqualified On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   },
   lostOn: {
     label: 'Lost On',
-    type: 'date-picker',
+    type: 'day',
     defaultValue: null,
     validators: []
   }

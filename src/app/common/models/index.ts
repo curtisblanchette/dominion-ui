@@ -12,7 +12,7 @@ import { DropdownItem } from '../components/ui/forms';
 
 export interface IModel {
   label: string;
-  type: 'text' | 'email' | 'tel' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'date-picker' | 'virtual' | 'timestamp',
+  type: 'text' | 'email' | 'tel' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'day' | 'daytime' | 'virtual' | 'timestamp',
   service?: string;
   defaultValue?: any;
   validators?: Validators[]

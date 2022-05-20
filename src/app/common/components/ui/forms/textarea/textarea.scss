@@ -55,9 +55,7 @@
     resize: none;
 
     &:focus {
-      /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-      box-shadow: none!important;
-      outline: none;
+     @include focusRing($focusring, $focusring-moz-mac);
     }
 
     &:after {

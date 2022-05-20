@@ -3,7 +3,7 @@
 
   <ng-container *ngFor="let control of controlData">
     <fiiz-input *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
-    <fiiz-date-picker *ngIf="control.type === 'date-picker'" [label]="control.label" [formControlName]="control.key"></fiiz-date-picker>
+    <fiiz-date-picker *ngIf="['day', 'daytime'].includes(control.type)" [mode]="control.type" [label]="control.label" [formControlName]="control.key"></fiiz-date-picker>
     <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
   </ng-container>
 

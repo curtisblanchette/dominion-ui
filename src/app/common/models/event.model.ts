@@ -30,7 +30,7 @@ export const EventModel: {[key: string]: IModel} = {
   },
   startTime: {
     label: 'Start Time',
-    type: 'date-picker',
+    type: 'daytime',
     defaultValue: null,
     validators: [
       Validators.required
@@ -38,7 +38,7 @@ export const EventModel: {[key: string]: IModel} = {
   },
   endTime: {
     label: 'End Time',
-    type: 'date-picker',
+    type: 'daytime',
     defaultValue: null,
     validators: [
       Validators.required

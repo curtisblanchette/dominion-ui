@@ -2,9 +2,227 @@
 @import '~src/assets/css/functions';
 @import '~src/assets/css/mixins';
 
-dp-day-calendar {
-  button {
-    border: none;
-    background: none;
+@mixin containerStyle() {
+  position: relative;
+  z-index: 2;
+  @include elevate(4);
+  border: none !important;
+  background: $slate4 !important;
+  border-radius: $input-border-radius !important;
+
+  &:hover {
+    z-index:3;
   }
 }
+
+@mixin selectedStyle() {
+  background: tint($green0, 25)!important;
+  color: shade($green0, 95)!important;
+  font-weight: 600;
+  border-radius: 4px!important;
+
+  &:hover {
+    background: tint($green0, 15)!important;
+  }
+}
+
+dp-day-time-calendar {
+  display: flex !important;
+  gap: 5px;
+}
+
+dp-day-calendar {
+  padding: 12px;
+  @include containerStyle();
+
+  .dp-day-calendar-container {
+    background: none !important;
+  }
+
+  .dp-calendar-day {
+    color: $text1;
+    border: none;
+    background: none;
+
+    &.dp-selected {
+      @include selectedStyle();
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, .35) !important;
+    }
+  }
+
+  dp-calendar-nav {
+
+    .dp-nav-header-btn {
+      padding: 0;
+      background: none;
+      border: none;
+    }
+
+    .dp-calendar-nav-left,
+    .dp-calendar-nav-right {
+      line-height: 24px !important;
+      border-radius: 4px;
+      border: none;
+      color: $text1;
+      background: rgba(0, 0, 0, .35);
+      padding: 0;
+      width: 30px !important;
+
+      &:hover {
+        background: rgba(0, 0, 0, .5) !important;
+      }
+
+      &:before {
+        left: 2px;
+      }
+    }
+
+    .dp-calendar-nav-right:before {
+      left: -2px;
+    }
+  }
+
+}
+
+dp-month-calendar {
+
+  .dp-month-calendar-container {
+    background: none !important;
+  }
+
+  .dp-current-month {
+    @include selectedStyle();
+  }
+
+  button.dp-calendar-month {
+    color: $text1;
+    background: none;
+    border: none;
+    border-radius: 6px;
+
+    &:not(.dp-current-month):hover {
+      background: rgba(0, 0, 0, .25) !important;
+    }
+  }
+}
+
+dp-time-select {
+  padding: 12px;
+  display: block;
+  height: 100%;
+
+  @include containerStyle();
+
+  .dp-time-select-container {
+    background: none !important;
+  }
+
+  .dp-time-select-controls {
+    background: none !important;
+    display: flex;
+    flex-direction: row;
+
+    .dp-time-select-control {
+      display: flex;
+      flex-direction: column;
+      flex-basis: content;
+      align-self: center;
+    }
+
+  }
+  .dp-time-select-separator {
+    margin: 0!important;
+  }
+
+  .dp-time-select-control-up,
+  .dp-time-select-control-down {
+    width: 30px!important;
+    height: 25px!important;
+    padding: 0;
+    margin: 0!important;
+    background: rgba(0, 0, 0, .35);
+    color: $text1;
+    border: none;
+    border-radius: 4px;;
+
+    &:hover {
+      background: rgba(0,0,0,.50);
+    }
+  }
+}
+
+.dp-picker-input {
+  width: 100%;
+  display: block;
+  font-size: 14px;
+  font-family: Roboto, sans-serif;
+  font-weight: 500;
+  color: $text1;
+  line-height: 44px;
+  box-sizing: border-box;
+  margin: 0;
+  border: none;
+  @include elevate(1);
+  border-radius: $input-border-radius;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: $slate4 !important;
+  cursor: pointer;
+  padding: 0 16px !important;
+
+  &:focus {
+    @include focusRing($focusring, $focusring-moz-mac);
+  }
+}
+
+.dp-picker-input {
+  @include elevate(1);
+  line-height: 44px;
+  padding: 0;
+  border: none;
+  margin: 0;
+  border-radius: $input-border-radius !important;
+}
+
+.dp-popup {
+  top: 5px;
+  @include elevate(2);
+  background: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
+
+.dp-calendar-nav-container,
+.dp-calendar-wrapper {
+  border: none !important;
+}
+
+.dp-calendar-weekday:first-child {
+  border-left: none !important;
+}
+
+.dp-calendar-weekday {
+  font-size: 12px;
+  border-left: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, .10) !important;
+}
+
+
+.dp-nav-header-btn {
+  color: tint($green0, 25);
+}
+
+
+.dp-nav-btns-container {
+  display: flex !important;
+  gap: 5px !important;
+  right: 0 !important;
+}
+
+
+
