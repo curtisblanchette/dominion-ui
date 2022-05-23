@@ -1,5 +1,20 @@
 <div *ngIf="data">
   <h3>{{data.title}}</h3>
-  {{data.body}}
-  <div *ngFor="let lead of leads$ | async">{{lead.id}}</div>
+  {{data.body}}  
+  <div [ngSwitch]="data.template">
+    <ng-template [ngSwitchCase]="'call-type'">
+      <form [formGroup]="form" (ngSubmit)="formSubmit()" >
+        <input type="radio" formControlName="call_type" value="inbound" ngDefaultControl /> Inbound
+        <input type="radio" formControlName="call_type" value="outbound" ngDefaultControl /> Outbound
+      </form>
+    </ng-template>
+    
+    <ng-template [ngSwitchCase]="'other-template'">
+      
+    </ng-template>
+    
+    <ng-template ngSwitchDefault>This would  be a default template</ng-template>
+  </div>
+  
+
 </div>

@@ -21,6 +21,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   @ViewChild(FlowComponent) flow: FlowComponent;
   @ViewChild(FlowTimelineComponent) timeline: FlowTimelineComponent;
 
+  public flowForm:any;
+
   public tinymceOptions = {
     branding: false,
     menubar: false,
@@ -64,19 +66,31 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public async ngOnInit() {
-    await this.flowService.start();
+    await this.flowService.start();    
   }
 
   public onActivate($event: any) {
-
+    if( $event.form ){
+      this.flowForm = $event.form;
+      const data = this.flowService.getCurrentStepData();
+      if( data ){
+        this.flowForm.patchValue(data);
+      }
+    }
   }
 
-  public onNext(): Promise<any> {
-    this.animationIndex++;
-    return this.flowService.next();
+  public onNext() {
+    if( this.flowForm.valid ){
+      const formData = this.flowForm.value;
+      this.animationIndex++;
+      return this.flowService.next( formData );
+    } else {
+      alert('InValid');
+    }
+    
   }
 
-  public onBack(): Promise<any> {
+  public onBack():Promise<any> {
     this.animationIndex--;
     return this.flowService.back();
   }

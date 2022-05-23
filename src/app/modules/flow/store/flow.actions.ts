@@ -5,6 +5,7 @@ export const ActionTypes = {
   ADD_STEP: '[Flow] Add FlowStep',
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
+  ADD_VARIABLES: '[Flow] Add Variables',
   SET_CURRENT_STEP: '[Flow] Set Current Step',
   SET_STEP_HISTORY: '[Flow] Set Step History',
   GO_TO_STEP: '[Flow] Go to step',
@@ -45,3 +46,7 @@ export const ResetAction = createAction(
   ActionTypes.RESET
 );
 
+export const AddVariablesAction = createAction(
+  ActionTypes.ADD_VARIABLES,
+  props<{ payload: any }>()
+);
