@@ -81,13 +81,12 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public onNext() {
     if( this.flowForm.valid ){
-      const formData = this.flowForm.value;
+      const formData = this.flowForm.value;      
       this.animationIndex++;
       return this.flowService.next( formData );
     } else {
       alert('InValid');
-    }
-    
+    }    
   }
 
   public onBack():Promise<any> {

@@ -102,15 +102,11 @@ export class FlowService {
     });
 
     const selectedCallType = new FlowCondition(async () => {
-      console.log('In Inbound');
       return await this.getVariable('call_type') === 'inbound';
-      // return true;
     }, existingLead);
 
     const selectedCallType1 = new FlowCondition(async () => {
-      console.log('In Outbound');
       return await this.getVariable('call_type') === 'outbound';
-      // return false;
     }, newLead);
 
     const callTypeRouter = new FlowRouter( 'Router', '', [ selectedCallType1, selectedCallType ] );
@@ -143,16 +139,9 @@ export class FlowService {
     this
         .addStep(callType)
         .addRouter(callTypeRouter)
-        // .addStep(existingLead)
-        // .addStep(newLead)
-        .addLink(_callTypeLink)        
-        .addLink(callTypeLink)
-        .addLink(callTypeLink1)
-        
-        
-        // .addStep(appointment)
-        // .addRouter(existingLeadRouter)
-        // .addLink(leadSearch_to_existingLeadRouter);
+        .addStep(existingLead)
+        .addStep(newLead)
+        .addLink(_callTypeLink)
   }
 
   public start(): Promise<any> {
@@ -181,7 +170,8 @@ export class FlowService {
     if (step) {
 
       if (step instanceof FlowRouter) {
-        step = (<FlowRouter>step).evaluate();
+        const init = <FlowRouter>step;
+        step = await init.evaluate();        
       }
 
       const clone = [...this.stepHistory];      

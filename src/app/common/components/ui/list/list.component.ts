@@ -157,6 +157,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       debounceTime(250),
       distinctUntilChanged()
     ).subscribe((text: string) => {
+      this.page = 1;
       this.searchInModule();
     });
   }

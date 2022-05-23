@@ -14,8 +14,23 @@ export class FlowRouter extends FlowNode {
     this.conditions = conditions;
   }
 
-  public evaluate(): FlowStep {
-    return <FlowStep>this.conditions.find(condition => condition.evaluate())?.to;
+  public async evaluate():Promise<FlowRouter | FlowStep | undefined> {
+    let step:FlowRouter | FlowStep | undefined = undefined;
+
+    if( this.conditions ){
+      for( const cond of this.conditions){
+        if( await cond.evaluate() ){
+          const to = cond?.to;          
+          if( to ){            
+            step = <FlowStep>to;
+          } else {
+            console.warn('There is error evaluating the next step');
+          }
+          break;
+        }
+      }
+    }
+    return step;
   }
 
   serialize() {
