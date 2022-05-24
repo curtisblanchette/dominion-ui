@@ -138,20 +138,30 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     return '';
   }
 
-  onCreateNew() {
+  onCreateNew() {    
     this.edit(null);
   }
 
   public edit(record: DominionType | null) {
-    this.state.editPath.extras.state.record = record;
-    this.router.navigate(this.state.editPath.route, this.state.editPath.extras);
+    if( "record" in this.state.editPath.extras.state ){
+      this.state.editPath.extras.state.record = record;
+      this.router.navigate(this.state.editPath.route, this.state.editPath.extras);
+    } else {
+      // const extrasClone = { ...this.state.editPath.extras };
+      // const stateClone = { ...this.state.editPath.extras.state };
+      // stateClone.record = record;
+      // stateClone.module = this.state.module;
+      // extrasClone.state = stateClone;
+      // extras = extrasClone;
+      this.router.navigate(this.state.editPath.route, this.state.editPath.extras);
+    }
+    
   }
 
   public ngAfterViewInit() {
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       map(action => {
-        console.log(action)
         return action;
       }),
       debounceTime(250),

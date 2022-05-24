@@ -1,16 +1,16 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FlowService } from "../../../flow.service";
 import { Router } from "@angular/router";
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
-import { FormGroup, FormControl, FormBuilder, Validators } from "@angular/forms";
+import { FormControl, FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: 'flow-text',
   templateUrl: './flow-text.component.html',
   styleUrls: ['../_base.scss', './flow-text.component.scss'],
 })
-export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
+export class FlowTextComponent extends EntityCollectionComponentBase implements OnDestroy {
 
   public data: any;
   public form:any;
@@ -28,14 +28,19 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.initForm();
   }
 
-  public ngOnInit(){
-    
-  }
+  // public ngOnInit(){
+  //   console.log('Flow Text component init');
+  // }
 
   public initForm(){
     if( this.data.template === 'call-type' ){
       const form = {
         call_type : new FormControl('', [Validators.required])
+      };
+      this.form = this.fb.group(form);
+    } else if( this.data.template === 'web-lead' ){
+      const form = {
+        web_lead_options : new FormControl('', [Validators.required])
       };
       this.form = this.fb.group(form);
     }
@@ -51,10 +56,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngOnDestroy() {
-  }
-
-  public ngAfterViewInit(){
-
+    console.log('Flow Text component destroy');
   }
 
 }

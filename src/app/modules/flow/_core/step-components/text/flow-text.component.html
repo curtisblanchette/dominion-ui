@@ -9,8 +9,11 @@
       </form>
     </ng-template>
     
-    <ng-template [ngSwitchCase]="'other-template'">
-      
+    <ng-template [ngSwitchCase]="'web-lead'">
+      <form [formGroup]="form" (ngSubmit)="formSubmit()" >
+        <input type="radio" formControlName="web_lead_options" value="contacts" ngDefaultControl /> Search and List Contacts
+        <input type="radio" formControlName="web_lead_options" value="web_leads" ngDefaultControl /> Search and List Web Leads
+      </form>
     </ng-template>
     
     <ng-template ngSwitchDefault>This would  be a default template</ng-template>

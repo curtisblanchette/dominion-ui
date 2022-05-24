@@ -11,18 +11,21 @@ export class FlowListComponent implements OnDestroy {
   public state: any;
 
   constructor(
-    router: Router,
+    private router: Router,
     public flowService: FlowService
   ) {
     this.state = router.getCurrentNavigation()!.extras.state;
+    console.log('this.state',this.state);
   }
 
   public ngOnDestroy(): void {
-
+    console.log('Flow List component destroy');
   }
 
   public EmitValues( value:any ){
-    console.log('Emitted Values ', value);
+    if( value ){
+      this.flowService.addVariables( {existing_lead : 'yes', existing_lead_record : value} );
+    }
   }
 
 }

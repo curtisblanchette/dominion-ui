@@ -20,7 +20,7 @@ import * as dayjs from 'dayjs';
 })
 export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
 
-  public form: FormGroup;
+  public form: any;
   public controlData: any;
   public submitText: string;
 
@@ -144,5 +144,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public ngOnDestroy() {
+    console.log('data component destroyed');
   }
 }

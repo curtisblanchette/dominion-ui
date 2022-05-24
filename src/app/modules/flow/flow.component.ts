@@ -70,6 +70,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public onActivate($event: any) {
+    console.log($event);
     if( $event.form ){
       this.flowForm = $event.form;
       const data = this.flowService.getCurrentStepData();

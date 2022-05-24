@@ -6,8 +6,8 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first, firstValueFrom, lastValueFrom, map, take } from "rxjs";
-import { tap } from "lodash";
+import { firstValueFrom, take } from "rxjs";
+import * as flowSteps from './flow.steps';
 
 export interface IHistory {
   prevStepId:string;
@@ -50,98 +50,86 @@ export class FlowService {
     this.store.dispatch(flowActions.ResetAction());
   }
 
-  public create() {
+  public create( type?:string ) {
 
-    const callType = new FlowStep({
-      nodeText : 'Call Type',
-      nodeIcon : 'address-book',
-      component : FlowComponentType.TEXT,
-      data : {
-        title : 'How you wanna proceed',
-        body : 'select any one call type',
-        template : 'call-type'
-      }
-    });    
+    flowSteps.callType;    
 
-    const existingLead = new FlowStep({
-        nodeText: 'Existing Lead',
-        nodeIcon: 'address-book',
-        component: FlowComponentType.LIST,
-        data: {
-          title: 'Search Leads',
-          module: ModuleType.LEAD,
-          options: {
-            searchable: true,
-            editable: false,
-            perPage: 25,
-            columns: []
-          },
-          editPath: {
-            route: ['/flow/f', {outlets: {'aux': ['edit']}}],
-            extras: {
-              state: {
-                module: module,
-              }
-            }
-          }
-        }
-    });
-
-    const newLead = new FlowStep({
-        nodeText: 'New Lead',
-        nodeIcon: 'address-book',
-        component: FlowComponentType.DATA,
-        data: {
-          title: 'Create a New Lead',
-          firstName: 'Curtis',
-          lastName: 'Blanchette',
-          phone: '+12507183166',
-          email: 'curtis@4iiz.com',
-          module: ModuleType.LEAD
-        }
-    });
-
-    const selectedCallType = new FlowCondition(async () => {
+    const inboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'inbound';
-    }, existingLead);
+    }, flowSteps.searchNListContacts);
 
-    const selectedCallType1 = new FlowCondition(async () => {
+    const outboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'outbound';
-    }, newLead);
+    }, flowSteps.webLeadsType);
 
-    const callTypeRouter = new FlowRouter( 'Router', '', [ selectedCallType1, selectedCallType ] );
-    const _callTypeLink = new FlowLink( callType, callTypeRouter );
-    const callTypeLink = new FlowLink(existingLead, callTypeRouter);
-    const callTypeLink1 = new FlowLink(newLead, callTypeRouter);
-
-    // const appointment = new FlowStep({
-    //   nodeText: 'Set Appointment',
-    //   nodeIcon: 'calendar',
-    //   component: FlowComponentType.EVENT,
-    //   data: {
-    //     title : 'Set an Appointment',
-    //     module: ModuleType.EVENT
-    //   }
-    // });
-
-    // const leadSelected = new FlowCondition(() => {
-    //   return this.cache[ModuleType.EVENT]
-    // }, appointment);
-
-    // const leadNotSelected = new FlowCondition(() => {
-    //   return !this.cache[ModuleType.LEAD]
-    // }, newLead);
-
-    // const existingLeadRouter = new FlowRouter('Router 1', '',[leadSelected, leadNotSelected]);
-
-    // const leadSearch_to_existingLeadRouter = new FlowLink(existingLead, existingLeadRouter);
+    const callTypeRouter = new FlowRouter( 'Router', '', [ inboundCond, outboundCond ] );
+    const callTypeLink = new FlowLink( flowSteps.callType, callTypeRouter );
 
     this
-        .addStep(callType)
-        .addRouter(callTypeRouter)
-        .addStep(existingLead)
-        .addStep(newLead)
-        .addLink(_callTypeLink)
+      .addStep(flowSteps.callType)  
+      .addRouter(callTypeRouter)
+      .addStep(flowSteps.searchNListContacts)
+      .addStep(flowSteps.webLeadsType)
+      .addLink(callTypeLink);
+
+    switch (type) {
+      case 'inbound':
+        this.createInbound();  
+      break;
+
+      case 'outbound':
+        this.createOutbound();
+      break;
+    
+      default:
+        this.createInbound();
+        this.createOutbound();
+      break;
+    }
+    
+  }
+
+  public createInbound(){ 
+
+    const existingLead_yes = new FlowCondition(async () => {
+      return await this.getVariable('existing_lead') === 'yes';
+    }, flowSteps.selectExistingOpp);
+
+    const existingLead_no = new FlowCondition(async () => {
+      return await this.getVariable('existing_lead') === 'no';
+    }, flowSteps.createNewLead);
+
+    const searchNListContactsRouter = new FlowRouter( 'Router', '', [ existingLead_yes, existingLead_no ] );
+    const searchNListContactsLink = new FlowLink( flowSteps.searchNListContacts, searchNListContactsRouter );
+
+    this
+        .addRouter(searchNListContactsRouter)
+        .addStep(flowSteps.selectExistingOpp)
+        .addStep(flowSteps.createNewLead)
+        .addLink(searchNListContactsLink)
+
+  }
+
+  public createOutbound(){ 
+
+    const webLeads_yes = new FlowCondition(async () => {
+      return await this.getVariable('web_lead_options') === 'web_leads';
+    }, flowSteps.searchNListWebLeads);
+
+    const webLeads_no = new FlowCondition(async () => {
+      return await this.getVariable('web_lead_options') === 'contacts';
+    }, flowSteps.searchNListContacts);
+
+    const webLeadRouter = new FlowRouter( 'Router', '', [ webLeads_yes, webLeads_no ] );
+    const webLeadLink = new FlowLink( flowSteps.webLeadsType, webLeadRouter );
+
+    this
+        .addRouter(webLeadRouter)
+        .addStep(flowSteps.searchNListWebLeads)
+        .addStep(flowSteps.searchNListContacts)
+        .addLink(webLeadLink)
+    
+
   }
 
   public start(): Promise<any> {
@@ -163,8 +151,7 @@ export class FlowService {
     let step: FlowStep | FlowRouter | undefined = link?.to;
 
     if( data ){
-      let allVars = { ...this.variables, ...data };
-      this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
+      this.addVariables(data);
     }
 
     if (step) {
@@ -205,6 +192,13 @@ export class FlowService {
     }
   }
 
+  public addVariables( data:any ){
+    if( data ){
+      let allVars = { ...this.variables, ...data };
+      this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
+    }
+  }
+
   public addToCache(module: ModuleType, data: any) {
     this.cache[module] = data;
   }
@@ -240,9 +234,12 @@ export class FlowService {
     return this;
   }
 
-  public renderComponent(step: FlowStep) {
-    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: step }));
-
+  public async renderComponent(step: FlowStep) {
+    if( await this.getVariable('existing_lead') === 'yes' ){
+      let record = await this.getVariable('existing_lead_record');
+      step.data.options.parentId = record.id;
+    }    
+    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: step }));    
     return this.router.navigate(['/flow/f', {outlets: {'aux': [`${step.component}`]}}], {
       state: step.data
     });
