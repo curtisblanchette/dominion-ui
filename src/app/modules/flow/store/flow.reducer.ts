@@ -55,7 +55,7 @@ export const reducer = createReducer(
   on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: payload })),
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
   on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: <FlowStep>{serialize:()=>{}}})),
-  on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, variables:payload })),
+  on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, variables: payload })),
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');

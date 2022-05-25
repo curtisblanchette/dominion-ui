@@ -5,7 +5,7 @@ import { FlowDataComponent, FlowTextComponent, FlowIntroComponent, FlowListCompo
 
 const routes: Routes = [
   {
-    path: 'f',
+    path: '',
     component: FlowComponent,
     children: [
       {
@@ -25,8 +25,29 @@ const routes: Routes = [
       },
       {
         path: 'list',
-        component: FlowListComponent,
-        outlet: 'aux'
+        component: FlowComponent,
+        children: [
+          {
+            path: 'lead',
+            outlet: 'aux',
+            component: FlowListComponent
+          },
+          {
+            path: 'contact',
+            outlet: 'aux',
+            component: FlowListComponent
+          },
+          {
+            path: 'deal',
+            outlet: 'aux',
+            component:FlowListComponent
+          },
+          {
+            path: 'event',
+            outlet: 'aux',
+            component: FlowListComponent
+          },
+        ]
       },
       {
         path : 'event',

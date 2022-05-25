@@ -59,20 +59,20 @@ export class FlowComponent implements OnInit, OnDestroy {
     // this catches when a user refreshes the page
     // the inner router-outlet is maintained by this component so we have to strip off aux outlet segments
     if(this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
-      this.router.navigate(['flow/f']);
+      this.router.navigate([this.router.routerState.snapshot.url.substring(0, this.router.routerState.snapshot.url.indexOf('(aux:'))]);
     }
 
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
 
   public async ngOnInit() {
-    await this.flowService.start();    
+    await this.flowService.start();
   }
 
-  public onActivate($event: any) {
-    console.log($event);
-    if( $event.form ){
-      this.flowForm = $event.form;
+  public onActivate(component: any) {
+    console.log('Flow Component: ', component);
+    if( component.form ){
+      this.flowForm = component.form;
       const data = this.flowService.getCurrentStepData();
       if( data ){
         this.flowForm.patchValue(data);
@@ -82,12 +82,12 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public onNext() {
     if( this.flowForm.valid ){
-      const formData = this.flowForm.value;      
+      const formData = this.flowForm.value;
       this.animationIndex++;
       return this.flowService.next( formData );
     } else {
       alert('InValid');
-    }    
+    }
   }
 
   public onBack():Promise<any> {

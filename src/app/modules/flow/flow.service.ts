@@ -52,8 +52,6 @@ export class FlowService {
 
   public create( type?:string ) {
 
-    flowSteps.callType;    
-
     const inboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'inbound';
     }, flowSteps.searchNListContacts);
@@ -66,7 +64,7 @@ export class FlowService {
     const callTypeLink = new FlowLink( flowSteps.callType, callTypeRouter );
 
     this
-      .addStep(flowSteps.callType)  
+      .addStep(flowSteps.callType)
       .addRouter(callTypeRouter)
       .addStep(flowSteps.searchNListContacts)
       .addStep(flowSteps.webLeadsType)
@@ -74,22 +72,22 @@ export class FlowService {
 
     switch (type) {
       case 'inbound':
-        this.createInbound();  
+        this.createInbound();
       break;
 
       case 'outbound':
         this.createOutbound();
       break;
-    
+
       default:
         this.createInbound();
         this.createOutbound();
       break;
     }
-    
+
   }
 
-  public createInbound(){ 
+  public createInbound(){
 
     const existingLead_yes = new FlowCondition(async () => {
       return await this.getVariable('existing_lead') === 'yes';
@@ -110,7 +108,7 @@ export class FlowService {
 
   }
 
-  public createOutbound(){ 
+  public createOutbound(){
 
     const webLeads_yes = new FlowCondition(async () => {
       return await this.getVariable('web_lead_options') === 'web_leads';
@@ -128,7 +126,7 @@ export class FlowService {
         .addStep(flowSteps.searchNListWebLeads)
         .addStep(flowSteps.searchNListContacts)
         .addLink(webLeadLink)
-    
+
 
   }
 
@@ -158,10 +156,10 @@ export class FlowService {
 
       if (step instanceof FlowRouter) {
         const init = <FlowRouter>step;
-        step = await init.evaluate();        
+        step = await init.evaluate();
       }
 
-      const clone = [...this.stepHistory];      
+      const clone = [...this.stepHistory];
       if(this.currentStep.id) {
         const history = {
           currentStepId : this.currentStep.id,
@@ -170,7 +168,7 @@ export class FlowService {
         };
         clone.push(history);
       }
-      
+
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
 
       await this.renderComponent(<FlowStep>step);
@@ -238,11 +236,21 @@ export class FlowService {
     if( await this.getVariable('existing_lead') === 'yes' ){
       let record = await this.getVariable('existing_lead_record');
       step.data.options.parentId = record.id;
-    }    
-    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: step }));    
-    return this.router.navigate(['/flow/f', {outlets: {'aux': [`${step.component}`]}}], {
-      state: step.data
-    });
+    }
+    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: step }));
+
+    if(step.data.module) {
+      return this.router.navigate([`/flow/${step.component}`, { outlets: { aux: [step.data.module]}}], {
+        state: step.data,
+        replaceUrl: true
+      });
+    } else {
+      return this.router.navigate(['/flow', { outlets: { aux: [step.component]}}], {
+        state: step.data,
+        replaceUrl: true
+      });
+    }
+
   }
 
   public async getVariable( key?:string ) {

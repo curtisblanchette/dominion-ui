@@ -1,13 +1,11 @@
-import { FlowStep } from "./_core";
-import { FlowComponentType } from "./_core/step-components";
-import { ModuleType } from './_core/classes/flow.moduleTypes';
+import { FlowStep, ModuleType ,FlowComponentType } from './_core';
 
 export const callType = new FlowStep({
     nodeText : 'Call Type',
     nodeIcon : 'address-book',
     component : FlowComponentType.TEXT,
     data : {
-      title : 'How you wanna proceed',
+      title : 'Select a call type',
       body : 'select any one call type',
       template : 'call-type'
     }
@@ -17,7 +15,7 @@ export const webLeadsType = new FlowStep({
     nodeText : 'Web Leads type',
     nodeIcon : 'address-book',
     component : FlowComponentType.TEXT,
-    data : {
+    data: {
       title : 'How you wanna proceed',
       body : 'select any one options below',
       template : 'web-lead'
@@ -38,7 +36,7 @@ export const searchNListContacts = new FlowStep({
         columns: []
       },
       editPath: {
-        route: ['/flow/f', {outlets: {'aux': ['edit']}}],
+        route: ['/flow', {outlets: {'aux': ['edit']}}],
         extras: {
           state: {
             module: module,
@@ -54,20 +52,20 @@ export const createNewLead = new FlowStep({
     component: FlowComponentType.DATA,
     data: {
       title: 'Create a New Lead',
-      firstName: 'Curtis',
-      lastName: 'Blanchette',
-      phone: '+12507183166',
-      email: 'curtis@4iiz.com',
+      // firstName: 'Curtis',
+      // lastName: 'Blanchette',
+      // phone: '+12507183166',
+      // email: 'curtis@4iiz.com',
       module: ModuleType.LEAD
     }
 });
 
 export const selectExistingOpp = new FlowStep({
-  nodeText: 'Select Existing opp',
+  nodeText: 'Opportunities',
   nodeIcon: 'address-book',
   component: FlowComponentType.LIST,
   data: {
-    title: 'Search Contacts',
+    title: 'Opportunities',
     module: ModuleType.DEAL,
     options: {
       searchable: false,
@@ -77,7 +75,7 @@ export const selectExistingOpp = new FlowStep({
       parentId: null
     },
     editPath: {
-      route: ['/flow/f', {outlets: {'aux': ['edit']}}],
+      route: ['/flow', {outlets: {'aux': ['edit']}}],
       extras: {
         state: {
           module: module,
@@ -101,7 +99,7 @@ export const searchNListWebLeads = new FlowStep({
         columns: []
       },
       editPath: {
-        route: ['/flow/f', {outlets: {'aux': ['edit']}}],
+        route: ['/flow', {outlets: {'aux': ['edit']}}],
         extras: {
           state: {
             module: module,
