@@ -8,7 +8,7 @@
         </section>
 
         <section class="flow-layout__content">
-            <router-outlet name="aux"></router-outlet>
+            <router-outlet name="aux" (activate)="onActivate($event)"></router-outlet>
         </section>
 
     </div>

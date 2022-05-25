@@ -47,6 +47,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @Input('options') options: IListOptions;
   @Input('loadInitial') loadInitial: boolean = false;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
+  @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
 
   public actionItems: IDropDownMenuItem[] = [
@@ -96,13 +97,13 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     $event.preventDefault();
 
     if (this.selected?.id === record.id) {
-      this.values.emit( { 'module' : this.module, 'record' : record });
+      this.values.emit( { module: this.module, record: record });
       this.selected = null;
       return;
     }
 
     this.selected = record;
-    this.values.emit( { 'module' : this.module, 'record' : record });
+    this.values.emit( { module: this.module, record: record });
   }
 
   public onPerPageChange($event: any) {
@@ -111,14 +112,14 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public onFocusOut($event: any) {
     $event.preventDefault();
-    this.values.emit( { 'module' : this.module, 'record' : null });
+    this.values.emit( { module: this.module, record: null });
     this.selected = null;
   }
 
   public onFocusIn($event: any, record: any) {
     $event.preventDefault();
     this.selected = record;
-    this.values.emit( { 'module' : this.module, 'record' : record } );
+    this.values.emit( { module: this.module, record: record } );
   }
 
   public ngOnDestroy() {
@@ -138,24 +139,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     return '';
   }
 
-  onCreateNew() {    
-    this.edit(null);
-  }
-
-  public edit(record: DominionType | null) {
-    if( "record" in this.state.editPath.extras.state ){
-      this.state.editPath.extras.state.record = record;
-      this.router.navigate(this.state.editPath.route, this.state.editPath.extras);
-    } else {
-      // const extrasClone = { ...this.state.editPath.extras };
-      // const stateClone = { ...this.state.editPath.extras.state };
-      // stateClone.record = record;
-      // stateClone.module = this.state.module;
-      // extrasClone.state = stateClone;
-      // extras = extrasClone;
-      this.router.navigate(this.state.editPath.route, this.state.editPath.extras);
-    }
-    
+  onCreateNew() {
+    this.onCreate.emit({module: this.state.module, record: {}});
   }
 
   public ngAfterViewInit() {
