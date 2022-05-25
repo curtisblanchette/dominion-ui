@@ -39,6 +39,7 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   @Input('position') position:string = 'bottom-right';
   @Input('showDefault') showDefault!: boolean;
   @Input('module') override module: ModuleType;
+  @Input('remote') remote: boolean = false;
 
   @HostBinding('attr.disabled')
   isDisabled = false;
@@ -75,6 +76,12 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
     this.items$.pipe(takeUntil(this.destroyed$)).subscribe(items => {
       this.selected = items[0];
     });
+
+    if(this.remote) {
+      const service = this.createService(this.module, this.entityCollectionServiceFactory);
+      service.load();
+      this.items$ = service.filteredEntities$ as any;
+    }
   }
 
   ngOnDestroy() {
