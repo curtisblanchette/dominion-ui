@@ -17,14 +17,14 @@ const user = {
       title: 'Inbound Call',
       subtitle: 'Start intake for a caller on the line',
       theme: 'orange',
-      route: '/flow/f',
+      route: '/flow',
       roles: ['system', 'admin', 'owner', 'agent']
     }, {
       icon: 'fa-solid fa-up-long',
       title: 'Outbound Call',
       subtitle: 'Follow up on existing opportunities.',
       theme: 'purple',
-      route: '/flow/f',
+      route: '/flow',
       roles: ['system', 'admin', 'owner', 'agent']
     },
     {
@@ -48,7 +48,7 @@ const user = {
       title: 'Reports',
       subtitle: 'Fill an outcome form for a recent appointment',
       theme: 'pitch',
-      route: '/flow/f',
+      route: '/flow',
       roles: ['system', 'admin', 'owner']
     }
   ]
@@ -62,21 +62,21 @@ const support = {
       title: 'Consultant Courses',
       subtitle: 'Learn something new, or brush up on your skills.',
       theme: 'dark',
-      route: '/flow/f'
+      route: '/flow'
     },
     {
       icon: 'fa-solid fa-bug',
       title: 'Submit a Ticket',
       subtitle: 'Found an issue? Submit a ticket or search for relevant answers.',
       theme: 'dark',
-      route: '/flow/f'
+      route: '/flow'
     },
     {
       icon: 'fa-solid fa-question',
       title: 'Ask the Tribe',
       subtitle: 'Discuss, share and learn from the 4iiz community.',
       theme: 'dark',
-      route: '/flow/f'
+      route: '/flow'
     }
   ]
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { menuAnimation, arrowAnimation } from './sidebar.animation';
+import { sidebarRoutes } from '../../data.routing';
 
 @Component({
   selector: 'app-sidebar',
@@ -15,59 +16,7 @@ export class SidebarComponent implements OnInit {
 
   @ViewChildren('menuGroup') menuGroup: QueryList<ElementRef>;
 
-  public menu:Array<any> = [
-    {
-      label : 'Standard',
-      children : [
-        {
-          label : 'Leads',
-          path : 'lead',
-          icon : 'fa fa-address-book '
-        },
-        {
-          label : 'Contacts',
-          path : 'contact',
-          icon : 'fa fa-address-book '
-        },
-        {
-          label : 'Deals',
-          path : 'deal',
-          icon : 'fa fa-address-book '
-        },
-        {
-          label : 'Events',
-          path : 'event',
-          icon : 'fa fa-address-book '
-        },
-        {
-          label : 'Calls',
-          path : 'call',
-          icon : 'fa fa-address-book '
-        },
-        {
-          label : 'Campaigns',
-          path : 'campaign',
-          icon : 'fa fa-address-book '
-        },
-        {
-          label : 'Lead Sources',
-          path : 'leadSource',
-          icon : 'fa fa-address-book '
-        },
-      ]
-    },
-    {
-      label : 'Custom',
-      children : [
-        {
-          label : 'Other',
-          path : 'other',
-          icon : 'fa fa-address-book '
-        }
-      ]
-    },
-
-  ];
+  public menu:Array<any> = sidebarRoutes;
 
   constructor() { }
 

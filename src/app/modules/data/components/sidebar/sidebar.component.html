@@ -9,7 +9,7 @@
     <li *ngFor="let item of items.children">
 
       <a tabindex="0" class="sidebar__item"
-         [routerLink]="[ item.path ]"
+         [routerLink]="[ '/data/list', {outlets: {aux: [item.path]}} ]"
          (click)="onClick(item)"
          routerLinkActive="active"
          [routerLinkActiveOptions]="{exact: true}">
