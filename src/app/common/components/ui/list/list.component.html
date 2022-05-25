@@ -15,7 +15,10 @@
 <div class="flex-table">
   <div class="flex-table__header">
     <div class="flex-table__cell" style="flex: 0.2;">&nbsp;</div>
-    <div class="flex-table__cell" *ngFor="let column of columns">{{column.label}}</div>
+    <div class="flex-table__cell sortable" (click)="sortListBy(column.id)" *ngFor="let column of columns">
+      {{column.label}}
+      <span class="sort-icons" *ngIf="sortOrgColumn === column.id" ><i [ngClass]="sortDirection ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'"></i></span>
+    </div>
   </div>
   <div class="flex-table__body">
 

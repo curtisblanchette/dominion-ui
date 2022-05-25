@@ -32,6 +32,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public searchForm: FormGroup;
   public destroyed$: Subject<any> = new Subject<any>();
 
+  // Sorting Options
+  public sortColumn:string = 'createdAt'; // Sort by createdAt as default
+  public sortOrgColumn:string = '';
+  public sortDirection:boolean = true; // DESC = true, ASC = false
+
+
   public perPageOptions$: Observable<DropdownItem[]> = of([{id: 25, label: '25' }, {id: 50, label: '50'}, {id: 100, label: '100'}]);
 
   // Pagination
@@ -182,6 +188,16 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['q'] = searchkey;
     }
 
+    if( this.sortColumn ){
+      params['sort_by'] = this.sortColumn;
+    }
+
+    if( this.sortDirection ){
+      params['sort'] = 'DESC';
+    } else {
+      params['sort'] = 'ASC';
+    }
+
     // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
     /** Proxy to the underlying dataService to do some processing */
     this.getWithQuery(params).pipe(take(1)).subscribe(); // this performs an API call
@@ -197,5 +213,18 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.searchInModule();
   }
 
+  public sortListBy( column:string ){
+    if( column === this.sortOrgColumn ){
+      this.sortDirection = !this.sortDirection;
+    } else {
+      this.sortDirection = true;
+    }    
+    this.sortOrgColumn = column;
+    if( column == 'fullName'){
+      column = 'firstName';
+    }
+    this.sortColumn = column;
+    this.searchInModule();
+  }
 
 }
