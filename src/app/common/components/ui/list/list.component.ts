@@ -22,6 +22,11 @@ export interface IListOptions {
   columns: Array<Object>;
 }
 
+export enum SortDirections {
+  ASC,
+  DESC
+}
+
 @Component({
   selector: 'fiiz-list',
   templateUrl: 'list.component.html',
@@ -35,8 +40,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   // Sorting Options
   public sortColumn:string = 'createdAt'; // Sort by createdAt as default
   public sortOrgColumn:string = '';
-  public sortDirection:boolean = true; // DESC = true, ASC = false
-
+  public sortDirection: SortDirections = SortDirections.ASC; // DESC = 1, ASC = 0
+  public sortDirections: any = SortDirections;
 
   public perPageOptions$: Observable<DropdownItem[]> = of([{id: 25, label: '25' }, {id: 50, label: '50'}, {id: 100, label: '100'}]);
 
@@ -215,16 +220,20 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public sortListBy( column:string ){
     if( column === this.sortOrgColumn ){
-      this.sortDirection = !this.sortDirection;
+      this.toggleSort();
     } else {
-      this.sortDirection = true;
-    }    
+      this.sortDirection = SortDirections.DESC;
+    }
     this.sortOrgColumn = column;
-    if( column == 'fullName'){
+    if (column === 'fullName') {
       column = 'firstName';
     }
     this.sortColumn = column;
     this.searchInModule();
+  }
+
+  private toggleSort() {
+    return this.sortDirection = this.sortDirection === SortDirections.DESC ? SortDirections.ASC : SortDirections.DESC;
   }
 
 }
