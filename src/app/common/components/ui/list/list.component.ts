@@ -22,6 +22,11 @@ export interface IListOptions {
   columns: Array<Object>;
 }
 
+export enum SortDirections {
+  ASC,
+  DESC
+}
+
 @Component({
   selector: 'fiiz-list',
   templateUrl: 'list.component.html',
@@ -31,6 +36,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public searchForm: FormGroup;
   public destroyed$: Subject<any> = new Subject<any>();
+
+  // Sorting Options
+  public sortColumn:string = 'createdAt'; // Sort by createdAt as default
+  public sortOrgColumn:string = '';
+  public sortDirection: SortDirections = SortDirections.ASC; // DESC = 1, ASC = 0
+  public sortDirections: any = SortDirections;
 
   public perPageOptions$: Observable<DropdownItem[]> = of([{id: 25, label: '25' }, {id: 50, label: '50'}, {id: 100, label: '100'}]);
 
@@ -182,6 +193,16 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['q'] = searchkey;
     }
 
+    if( this.sortColumn ){
+      params['sort_by'] = this.sortColumn;
+    }
+
+    if( this.sortDirection ){
+      params['sort'] = 'DESC';
+    } else {
+      params['sort'] = 'ASC';
+    }
+
     // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
     /** Proxy to the underlying dataService to do some processing */
     this.getWithQuery(params).pipe(take(1)).subscribe(); // this performs an API call
@@ -197,5 +218,22 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.searchInModule();
   }
 
+  public sortListBy( column:string ){
+    if( column === this.sortOrgColumn ){
+      this.toggleSort();
+    } else {
+      this.sortDirection = SortDirections.DESC;
+    }
+    this.sortOrgColumn = column;
+    if (column === 'fullName') {
+      column = 'firstName';
+    }
+    this.sortColumn = column;
+    this.searchInModule();
+  }
+
+  private toggleSort() {
+    return this.sortDirection = this.sortDirection === SortDirections.DESC ? SortDirections.ASC : SortDirections.DESC;
+  }
 
 }

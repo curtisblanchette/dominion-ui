@@ -19,13 +19,13 @@ export interface IModel {
 }
 
 const defaultListColumns: {[key: string]: string[]} = {
-  call: ['createdAt', 'type', 'direction', 'outcome', 'status', 'dialledNumber'],
+  call: ['type', 'direction', 'outcome', 'status', 'dialledNumber', 'createdAt'],
   campaign: ['name', 'createdAt'],
-  deal: ['name', 'stage', 'createdAt', 'contactId'],
-  contact: ['fullName', 'phone', 'email'],
-  event: ['title', 'type', 'startTime', 'endTime'],
-  lead: ['fullName', 'phone', 'email'],
-  leadSource: ['name', 'status']
+  deal: ['name', 'stage', 'contactId', 'createdAt'],
+  contact: ['fullName', 'phone', 'email', 'createdAt'],
+  event: ['title', 'type', 'startTime', 'endTime', 'createdAt'],
+  lead: ['fullName', 'phone', 'email', 'createdAt'],
+  leadSource: ['name', 'status', 'createdAt']
 }
 
 export const getColumnsForModule = (module: string): DropdownItem[] => {
