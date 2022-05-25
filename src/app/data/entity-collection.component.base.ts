@@ -33,12 +33,13 @@ export class EntityCollectionComponentBase {
       this._dynamicCollectionService = this.createService(this.type, entityCollectionServiceFactory);
       this._dynamicService = dataServiceFactory.create(this.module);
 
-      // this.data$ = this._dynamicCollectionService.filteredEntities$;
+      this.data$ = this._dynamicCollectionService.filteredEntities$;
       this.loading$ = this._dynamicCollectionService.loading$;
-      // this.loaded$ = this._dynamicCollectionService.loaded$;
-      // this.count$ = this._dynamicCollectionService.count$; <-- ** always returns the filteredEntities$.length (not the collectionState.count)
+      this.loaded$ = this._dynamicCollectionService.loaded$;
+      this.count$ = this._dynamicCollectionService.count$; // <-- ** always returns the filteredEntities$.length (not the collectionState.count)
     }
   }
+
 
   public getWithQuery(params: { [key: string]: any}): Observable<any> {
     this.loaded$ = of(false);
