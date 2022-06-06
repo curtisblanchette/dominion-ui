@@ -2,6 +2,7 @@ import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/
 
 import * as flowActions from './flow.actions';
 import { FlowLink, FlowRouter, FlowStep } from '../_core';
+import { cloneDeep } from 'lodash';
 
 export interface FlowState {
   steps: FlowStep[]
@@ -60,7 +61,11 @@ export const reducer = createReducer(
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
 
-export const selectSteps       = createSelector(selectFlow, (flow: FlowState) => flow.steps.map(step => step.serialize()));
+export const selectSteps       = createSelector(selectFlow, (flow: FlowState) => flow.steps.map(step => {
+  // hack to get a mutable object back from store, "specifically the step.component"
+  const clone = cloneDeep(step);
+  return clone.serialize();
+}));
 export const selectRouters     = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
 export const selectLinks       = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
 export const selectCurrentStep = createSelector(selectFlow, (flow: FlowState) => flow.currentStep.serialize());

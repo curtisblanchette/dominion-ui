@@ -1,21 +1,25 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { FlowService } from '../../../flow.service';
 import { Router } from '@angular/router';
+import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
+import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 
 @Component({
   selector: 'flow-list',
   templateUrl: './flow-list.component.html' ,
   styleUrls: ['../_base.scss','./flow-list.component.scss']
 })
-export class FlowListComponent implements OnDestroy {
-  public state: any;
+export class FlowListComponent extends EntityCollectionComponentBase implements OnDestroy {
+
+  @Input('state') override state: any;
 
   constructor(
-    private router: Router,
+    entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    dataServiceFactory: DefaultDataServiceFactory,
+    router: Router,
     public flowService: FlowService
   ) {
-    this.state = router.getCurrentNavigation()!.extras.state;
-    console.log('this.state',this.state);
+    super(router, entityCollectionServiceFactory, dataServiceFactory);
   }
 
   public ngOnDestroy(): void {
@@ -24,7 +28,7 @@ export class FlowListComponent implements OnDestroy {
 
   public EmitValues( value:any ){
     if( value ){
-      this.flowService.addVariables( {existing_lead : 'yes', existing_lead_record : value} );
+      this.flowService.addVariables( {existing_lead : 'yes', existing_lead_record: value });
     }
   }
 

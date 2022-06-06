@@ -7,7 +7,7 @@ export class FlowStep extends FlowNode {
   public override id?: string;
   public override nodeText: string;
   public override nodeIcon: string;
-  public component: FlowComponentType
+  public component: any; // TODO make this type right
   public data: any;
 
   constructor(

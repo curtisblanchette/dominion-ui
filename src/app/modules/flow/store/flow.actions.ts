@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { FlowLink, FlowRouter, FlowStep } from '../_core';
+import { FlowHostDirective } from '../_core/classes/flow.host';
 
 export const ActionTypes = {
   ADD_STEP: '[Flow] Add FlowStep',
@@ -39,7 +40,7 @@ export const SetStepHistoryAction = createAction(
 
 export const GoToStepByIdAction = createAction(
   ActionTypes.GO_TO_STEP,
-  props<{ id: string }>()
+  props<{ id: string, host: FlowHostDirective}>()
 );
 
 export const ResetAction = createAction(

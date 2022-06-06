@@ -6,6 +6,7 @@ import { tap } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
+import { FlowHostDirective } from '../_core/classes/flow.host';
 
 @Injectable()
 export class FlowEffects {
@@ -22,9 +23,9 @@ export class FlowEffects {
   goToStepById$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(flowActions.GoToStepByIdAction),
-      tap((action) => {
+      tap((action: { id: string, host: FlowHostDirective }) => {
         const id = action.id;
-        this.flowService.next();
+        this.flowService.next(action.host);
       })
     ), { dispatch: false }
   );

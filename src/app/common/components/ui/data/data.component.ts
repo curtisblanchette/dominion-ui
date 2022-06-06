@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
-import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
 
@@ -11,6 +10,7 @@ import * as fromApp from '../../../../store/app.reducer'
 import { FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
 @Component({
   selector: 'fiiz-data',
@@ -32,14 +32,15 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   constructor(
     private store: Store<fromApp.AppState>,
-    private router: Router,
     private route: ActivatedRoute,
-    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    private dataServiceFactory: DefaultDataServiceFactory,
+
     private flowService: FlowService,
     private fb: FormBuilder,
     public navigation: NavigationService,
-    public changeDetector: ChangeDetectorRef
+    public changeDetector: ChangeDetectorRef,
+    entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    dataServiceFactory: DefaultDataServiceFactory,
+    router: Router,
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
@@ -69,6 +70,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         this.form.setValue(entity);
       }
 
+      if(this.state.module) {}
       this.submitText = entity ? `Save ${this.state.module}` : `Create ${this.state.module}`;
     });
 
@@ -131,9 +133,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
       const payload = this.form.value;
 
-      if (this.state.record) {
-        return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
-      }
+      // if (this.state.record) {
+      //   return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
+      // }
 
       return this._dynamicCollectionService.add(<DominionType>payload).subscribe().add(() => this.resetForm());
 

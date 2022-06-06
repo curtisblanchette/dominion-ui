@@ -33,7 +33,8 @@ const entityMetadata: EntityMetadataMap = {
   callType: { noChangeTracking: true },
   dealStage: { noChangeTracking: true },
   eventOutcome: { noChangeTracking: true },
-  eventType:  { noChangeTracking: true }
+  eventType:  { noChangeTracking: true },
+  lostReason: { noChangeTracking: true }
 };
 
 
@@ -54,8 +55,10 @@ export const pluralNames = {
   callStatus: 'callStatuses',
   dealStage: 'dealStages',
   eventOutcome: 'eventOutcomes',
-  eventType: 'eventType'
+  eventType: 'eventTypes',
+  lostReason: 'lostReasons',
 }
+
 
 export const entityConfig = {
   entityMetadata,
@@ -71,5 +74,6 @@ export const uriOverrides: { [key: string]: string } = {
   callOutcome: 'call-outcomes',
   dealStage: 'deal-stages',
   eventOutcome: 'event-outcomes',
-  eventType: 'event-types'
+  eventType: 'event-types',
+  lostReason: 'lost-reasons'
 }

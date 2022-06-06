@@ -1,18 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { DataState } from './store/data.reducer';
 import { Store } from '@ngrx/store';
 import { FiizListComponent, IListOptions } from '../../common/components/ui/list/list.component';
 import { FiizDataComponent } from '../../common/components/ui/data/data.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   templateUrl: './data.component.html',
   styleUrls: ['../../../assets/css/_container.scss', './data.component.scss']
 })
-export class DataComponent implements OnInit, OnDestroy {
-
-  public destroyed$: Subject<boolean> = new Subject<boolean>();
+export class DataComponent implements OnInit {
 
   private readonly listOptions: IListOptions;
 
@@ -32,26 +31,20 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   public async ngOnInit() {
-
     this.renderComponent('lead');
-  }
-
-
-  public ngOnDestroy(): void {
-    this.destroyed$.next(true);
   }
 
   public onActivate(componentRef: FiizListComponent | FiizDataComponent){
     // if it's a list, subscribe to the `values` emitter
     if(componentRef instanceof FiizListComponent) {
-      componentRef.values.subscribe(res => {
+      componentRef.values.pipe(untilDestroyed(this)).subscribe(res => {
         this.router.navigate([`/data/edit/${res.record.id}`, { outlets: {'aux': [res.module]} }], {
           state: {
             module: res.module
           }
         });
       })
-      componentRef.onCreate.subscribe(res => {
+      componentRef.onCreate.pipe(untilDestroyed(this)).subscribe(res => {
         this.router.navigate([`/data/edit/new`, { outlets: {'aux': [res.module]} }], {
           state: {
             module: res.module

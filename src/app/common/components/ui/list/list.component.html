@@ -27,13 +27,10 @@
   </div>
   <div class="flex-table__body">
 
-    <ng-container [ngTemplateOutlet]="main"
-                  *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length"></ng-container>
-    <ng-container [ngTemplateOutlet]="loading" *ngIf="state?.module && (loading$ | async)"></ng-container>
-    <ng-container [ngTemplateOutlet]="noDataFound"
-                  *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
-    <ng-container [ngTemplateOutlet]="initial"
-                  *ngIf="state?.module && !(loaded$ | async) && !(loading$ | async)"></ng-container>
+    <ng-container [ngTemplateOutlet]="main" *ngIf="(loaded$ | async) && (data$ | async)?.length"></ng-container>
+    <ng-container [ngTemplateOutlet]="loading" *ngIf="loading$ | async"></ng-container>
+    <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="(loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
+    <ng-container [ngTemplateOutlet]="initial" *ngIf="!(loaded$ | async) && !(loading$ | async)"></ng-container>
 
   </div>
   <div class="flex-table__footer">
@@ -88,7 +85,7 @@
            (mousedown)="onClick($event, item)"
            (focusin)="onFocusIn($event, item)"
            (focusout)="onFocusOut($event)"
-           *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async }; ">
+           *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async } ">
         <div class="flex-table__cell" style="flex: 0.2; justify-content:space-around;">
 
           <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">

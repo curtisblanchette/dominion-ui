@@ -1,10 +1,11 @@
-import { Component, forwardRef, HostBinding, Input, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input, OnInit, HostListener } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { firstValueFrom, Observable, of, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
-import { Router } from '@angular/router';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { ModuleType } from '../../../../../modules/flow/_core';
+import { Router } from '@angular/router';
+import { untilDestroyed, UntilDestroy } from '@ngneat/until-destroy';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -12,6 +13,7 @@ export interface DropdownItem {
   disabled?: boolean;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'fiiz-select',
   templateUrl: './select.html',
@@ -22,10 +24,8 @@ export interface DropdownItem {
     multi: true
   }],
 })
-export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit, OnDestroy {
+export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit {
   public selected!: any;
-
-  public destroyed$: Subject<boolean> = new Subject<boolean>();
 
   @Input('items') items$: Observable<DropdownItem[]> = of([]);
 
@@ -61,11 +61,17 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   onTouched: Function = () => {};
 
   constructor(
-    public router: Router,
-    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    private dataServiceFactory: DefaultDataServiceFactory,
+    router: Router,
+    entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    dataServiceFactory: DefaultDataServiceFactory,
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
+
+    if(this.remote) {
+      const service = this.createService(this.module, entityCollectionServiceFactory);
+      service.load();
+      this.items$ = service.filteredEntities$ as any;
+    }
   }
 
   async ngOnInit() {
@@ -73,19 +79,11 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
       this.label = this.default;
     }
 
-    this.items$.pipe(takeUntil(this.destroyed$)).subscribe(items => {
+    this.items$.pipe(untilDestroyed(this)).subscribe(items => {
       this.selected = items[0];
     });
 
-    if(this.remote) {
-      const service = this.createService(this.module, this.entityCollectionServiceFactory);
-      service.load();
-      this.items$ = service.filteredEntities$ as any;
-    }
-  }
 
-  ngOnDestroy() {
-    this.destroyed$.next(true);
   }
 
   public toggle() {

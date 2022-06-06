@@ -50,6 +50,15 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
+  lostReasonId: {
+    label: 'Lost: Reason',
+    type: 'dropdown',
+    service: 'lostReason',
+    defaultValue: null,
+    validators: [
+      Validators.required
+    ]
+  },
   state: {
     label: 'State',
     type: 'text',

@@ -4,15 +4,18 @@ import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionSer
 import { map, Observable, of } from 'rxjs';
 import { DominionType, types } from '../common/models';
 import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfaces';
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { AfterContentInit, Inject, Input } from '@angular/core';
 
-export class EntityCollectionComponentBase {
+@UntilDestroy()
+export class EntityCollectionComponentBase implements AfterContentInit {
+
 
   public _dynamicCollectionService: EntityCollectionService<DominionType>;
   public _dynamicService: EntityCollectionDataService<DominionType>;
 
   public module: ModuleType;
   public type: any;
-  public state: any;
 
   public count$: Observable<number> = of(0);
   public data$: Observable<DominionType[]> = of([]);
@@ -20,26 +23,33 @@ export class EntityCollectionComponentBase {
   public loaded$: Observable<boolean> = of(true);
 
   public response$: Observable<any>;
+  @Input('state') state: any;
 
   constructor(
     router: Router,
-    entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    dataServiceFactory: DefaultDataServiceFactory
+    @Inject(EntityCollectionServiceFactory) private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    @Inject(DefaultDataServiceFactory) private dataServiceFactory: DefaultDataServiceFactory
   ) {
-    this.state = router.getCurrentNavigation()?.extras.state || {};
-    this.module = this.state?.module || this.module;
-    this.type = types[this.module];
-    if (this.module) {
-      this._dynamicCollectionService = this.createService(this.type, entityCollectionServiceFactory);
-      this._dynamicService = dataServiceFactory.create(this.module);
-
-      this.data$ = this._dynamicCollectionService.filteredEntities$;
-      this.loading$ = this._dynamicCollectionService.loading$;
-      this.loaded$ = this._dynamicCollectionService.loaded$;
-      this.count$ = this._dynamicCollectionService.count$; // <-- ** always returns the filteredEntities$.length (not the collectionState.count)
-    }
+    this.state = router.getCurrentNavigation()?.extras.state || this.state;
+    this.module = this.state?.module;
+    console.log(this.state);
   }
 
+  public ngAfterContentInit() {
+    console.log(this.module);
+    this.type = types[this.module];
+
+
+    if (this.module) {
+      this._dynamicCollectionService = this.createService(this.type, this.entityCollectionServiceFactory);
+      this._dynamicService = this.dataServiceFactory.create(this.module);
+
+      // this.data$ = this._dynamicCollectionService.filteredEntities$;
+      this.loading$ = this._dynamicCollectionService.loading$;
+      // this.loaded$ = this._dynamicCollectionService.loaded$;
+      // this.count$ = this._dynamicCollectionService.count$; <-- ** always returns the filteredEntities$.length (not the collectionState.count)
+    }
+  }
 
   public getWithQuery(params: { [key: string]: any}): Observable<any> {
     this.loaded$ = of(false);

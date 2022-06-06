@@ -1,30 +1,30 @@
-import { FlowCondition, FlowConditionOperators, FlowLink, FlowRouter, FlowStep } from "./_core";
-import { Injectable } from "@angular/core";
-import { FlowComponentType } from "./_core/step-components";
-import { ModuleType } from './_core/classes/flow.moduleTypes';
+import { FlowCondition, FlowLink, FlowRouter, FlowStep, ModuleType } from './_core';
+import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, take } from "rxjs";
+import { firstValueFrom, take } from 'rxjs';
+import { FlowHostDirective } from './_core/classes/flow.host';
+
 import * as flowSteps from './flow.steps';
 
 export interface IHistory {
-  prevStepId:string;
-  currentStepId:string;
-  data:any;
+  prevStepId: string;
+  currentStepId: string;
+  data: any;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class FlowService {
   public cache: { [key: string]: any } = {};
 
-  public steps: FlowStep[];
-  public routers: FlowRouter[];
-  public links: FlowLink[];
+  public steps: FlowStep[] = [];
+  public routers: FlowRouter[] = [];
+  public links: FlowLink[] = [];
   public currentStep: FlowStep;
-  public stepHistory: any[];
-  public variables: { [ key:string ] : any };
+  public stepHistory: any[] = [];
+  public variables: { [key: string]: any };
 
   constructor(
     private router: Router,
@@ -32,125 +32,120 @@ export class FlowService {
     private store: Store<fromFlow.FlowState>
   ) {
 
-      this.store.select(fromFlow.selectFlow).subscribe(state => {
-        this.steps = state.steps;
-        this.routers = state.routers;
-        this.links = state.links;
-        this.currentStep = state.currentStep;
-        this.stepHistory = state.stepHistory;
-        this.variables = state.variables;
-      });
+    this.store.select(fromFlow.selectFlow).subscribe(state => {
+      this.steps = state.steps;
+      this.routers = state.routers;
+      this.links = state.links;
+      this.currentStep = state.currentStep;
+      this.stepHistory = state.stepHistory;
+      this.variables = state.variables;
+    });
   }
 
-  get _currentStep() {
-    return this.currentStep;
-  }
+
 
   public reset() {
     this.store.dispatch(flowActions.ResetAction());
   }
 
-  public create( type?:string ) {
+  public create(type?: string) {
 
+
+    const callType = flowSteps.callType();
     const inboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'inbound';
-    }, flowSteps.searchNListContacts);
+    },flowSteps.searchNListContacts());
 
     const outboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'outbound';
-    }, flowSteps.webLeadsType);
+    }, flowSteps.webLeadsType());
 
-    const callTypeRouter = new FlowRouter( 'Router', '', [ inboundCond, outboundCond ] );
-    const callTypeLink = new FlowLink( flowSteps.callType, callTypeRouter );
+    const callTypeRouter = new FlowRouter('Router', '', [inboundCond, outboundCond]);
+    const callTypeLink = new FlowLink(callType, callTypeRouter);
 
     this
-      .addStep(flowSteps.callType)
+      .addStep(callType)
       .addRouter(callTypeRouter)
-      .addStep(flowSteps.searchNListContacts)
-      .addStep(flowSteps.webLeadsType)
+      .addStep(flowSteps.searchNListContacts())
+      .addStep(flowSteps.webLeadsType())
       .addLink(callTypeLink);
 
     switch (type) {
       case 'inbound':
         this.createInbound();
-      break;
+        break;
 
       case 'outbound':
         this.createOutbound();
-      break;
+        break;
 
       default:
         this.createInbound();
         this.createOutbound();
-      break;
+        break;
     }
 
   }
 
-  public createInbound(){
+  public createInbound() {
 
     const existingLead_yes = new FlowCondition(async () => {
       return await this.getVariable('existing_lead') === 'yes';
-    }, flowSteps.selectExistingOpp);
+    }, flowSteps.selectExistingOpp());
 
     const existingLead_no = new FlowCondition(async () => {
       return await this.getVariable('existing_lead') === 'no';
-    }, flowSteps.createNewLead);
+    }, flowSteps.createNewLead());
 
-    const searchNListContactsRouter = new FlowRouter( 'Router', '', [ existingLead_yes, existingLead_no ] );
-    const searchNListContactsLink = new FlowLink( flowSteps.searchNListContacts, searchNListContactsRouter );
+    const searchNListContactsRouter = new FlowRouter('Router', '', [existingLead_yes, existingLead_no]);
+    const searchNListContactsLink = new FlowLink(flowSteps.searchNListContacts(), searchNListContactsRouter);
 
     this
-        .addRouter(searchNListContactsRouter)
-        .addStep(flowSteps.selectExistingOpp)
-        .addStep(flowSteps.createNewLead)
-        .addLink(searchNListContactsLink)
+      .addRouter(searchNListContactsRouter)
+      .addStep(flowSteps.selectExistingOpp())
+      .addStep(flowSteps.createNewLead())
+      .addLink(searchNListContactsLink)
 
   }
 
-  public createOutbound(){
+  public createOutbound() {
 
     const webLeads_yes = new FlowCondition(async () => {
       return await this.getVariable('web_lead_options') === 'web_leads';
-    }, flowSteps.searchNListWebLeads);
+    }, flowSteps.searchNListWebLeads());
 
     const webLeads_no = new FlowCondition(async () => {
       return await this.getVariable('web_lead_options') === 'contacts';
-    }, flowSteps.searchNListContacts);
+    }, flowSteps.searchNListContacts());
 
-    const webLeadRouter = new FlowRouter( 'Router', '', [ webLeads_yes, webLeads_no ] );
-    const webLeadLink = new FlowLink( flowSteps.webLeadsType, webLeadRouter );
+    const webLeadRouter = new FlowRouter('Router', '', [webLeads_yes, webLeads_no]);
+    const webLeadLink = new FlowLink(flowSteps.webLeadsType(), webLeadRouter);
 
     this
-        .addRouter(webLeadRouter)
-        .addStep(flowSteps.searchNListWebLeads)
-        .addStep(flowSteps.searchNListContacts)
-        .addLink(webLeadLink)
-
+      .addRouter(webLeadRouter)
+      .addStep(flowSteps.searchNListWebLeads())
+      .addStep(flowSteps.searchNListContacts())
+      .addLink(webLeadLink)
 
   }
 
-  public start(): Promise<any> {
+  public start(host: FlowHostDirective): Promise<any> {
     this.create();
     const firstStep: FlowStep = this.steps[0];
-    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: firstStep }));
-    return this.renderComponent(firstStep);
+    this.store.dispatch(flowActions.SetCurrentStepAction({payload: firstStep}));
+    return this.renderComponent(host, firstStep);
   }
 
-  public async goTo(id: string) {
+  public async goTo(host: FlowHostDirective, id: string) {
     const step = this.steps.find(x => x.id === id);
-    await this.renderComponent(<FlowStep>step);
+    await this.renderComponent(host, <FlowStep>step);
   }
 
-  public async next( data?:any ) {
+  public async next(host: FlowHostDirective) {
     // find a link where the "from" is equal to "currentStep"
     const link = this.links.find(link => link.from.id === this.currentStep.id);
 
     let step: FlowStep | FlowRouter | undefined = link?.to;
-
-    if( data ){
-      this.addVariables(data);
-    }
 
     if (step) {
 
@@ -159,40 +154,41 @@ export class FlowService {
         step = await init.evaluate();
       }
 
-      const clone = [...this.stepHistory];
-      if(this.currentStep.id) {
+      const clonedHistory = [...this.stepHistory];
+      if (this.currentStep.id) {
         const history = {
-          currentStepId : this.currentStep.id,
-          prevStepId : null,
-          data : data || null
+          currentStepId: this.currentStep.id,
+          prevStepId: null,
+          data: null
         };
-        clone.push(history);
+        clonedHistory.push(history);
       }
 
-      this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
+      this.store.dispatch(flowActions.SetStepHistoryAction({payload: clonedHistory}));
+      await this.renderComponent(host, <FlowStep>step);
 
-      await this.renderComponent(<FlowStep>step);
+
     } else {
       console.warn('No step found to transition to.');
     }
   }
 
-  public async back() {
+  public async back(host: FlowHostDirective) {
     const clone = [...this.stepHistory];
     const previousStep = clone.pop();
     const step = this.steps.find(step => step.id === previousStep.currentStepId);
     // this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
     // console.log('Back Step', step);
-    if(step)  {
-      await this.renderComponent(<FlowStep>step);
+    if (step) {
+      await this.renderComponent(host, <FlowStep>step);
     } else {
       console.warn('No step found to transition to.');
     }
   }
 
-  public addVariables( data:any ){
-    if( data ){
-      let allVars = { ...this.variables, ...data };
+  public addVariables(data: any) {
+    if (data) {
+      let allVars = {...this.variables, ...data};
       this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
     }
   }
@@ -205,12 +201,12 @@ export class FlowService {
     return this.cache[module];
   }
 
-  public getCurrentStepData(){
+  public getCurrentStepData() {
     const clone = [...this.stepHistory];
-    if( clone.length ){
+    if (clone.length) {
       const previousStep = clone.pop().currentStepId;
-      const stepFound = this.stepHistory.find( step => step.currentStepId == previousStep );
-      if( stepFound && stepFound.data ){
+      const stepFound = this.stepHistory.find(step => step.currentStepId == previousStep);
+      if (stepFound && stepFound.data) {
         return stepFound.data;
       }
     }
@@ -218,43 +214,42 @@ export class FlowService {
   }
 
   public addStep(step: FlowStep) {
-    this.store.dispatch(flowActions.AddStepAction({ payload: step }));
+    // this.steps.push(step);
+    this.store.dispatch(flowActions.AddStepAction({payload: step}));
     return this;
   }
 
   public addRouter(router: FlowRouter) {
-    this.store.dispatch(flowActions.AddRouterAction({ payload: router }));
+    // this.routers.push(router);
+    this.store.dispatch(flowActions.AddRouterAction({payload: router}));
     return this;
   }
 
   public addLink(link: FlowLink) {
-    this.store.dispatch(flowActions.AddLinkAction({ payload: link }));
+    // this.links.push(link);
+    this.store.dispatch(flowActions.AddLinkAction({payload: link}));
     return this;
   }
 
-  public async renderComponent(step: FlowStep) {
-    if( await this.getVariable('existing_lead') === 'yes' ){
+  public async renderComponent(host: FlowHostDirective, step: FlowStep) {
+    if (await this.getVariable('existing_lead') === 'yes') {
       let record = await this.getVariable('existing_lead_record');
       step.data.options.parentId = record.id;
     }
-    this.store.dispatch(flowActions.SetCurrentStepAction({ payload: step }));
+    // this.currentStep = step;
+    this.store.dispatch(flowActions.SetCurrentStepAction({payload: step}));
 
-    if(step.data.module) {
-      return this.router.navigate([`/flow/${step.component}`, { outlets: { aux: [step.data.module]}}], {
-        state: step.data,
-        replaceUrl: true
-      });
-    } else {
-      return this.router.navigate(['/flow', { outlets: { aux: [step.component]}}], {
-        state: step.data,
-        replaceUrl: true
-      });
-    }
+    const viewContainerRef = host.viewContainerRef;
+    viewContainerRef.clear();
 
+
+    const componentRef = viewContainerRef.createComponent<any>(step.component);
+    componentRef.instance.state = step.data;
+    return componentRef;
   }
 
-  public async getVariable( key?:string ) {
-    if( key ){
+  public async getVariable(key?: string) {
+    if (key) {
       return await firstValueFrom(this.store.select(fromFlow.selectVariablesByKey(key)).pipe(take(1)));
     } else {
       return await firstValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));

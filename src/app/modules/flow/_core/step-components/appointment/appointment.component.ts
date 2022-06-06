@@ -1,5 +1,4 @@
-import { Component, OnInit, Renderer2, ViewChildren, ElementRef, QueryList, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Renderer2, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
 import * as dayjs from 'dayjs';
@@ -8,16 +7,17 @@ import { IEvent } from '@4iiz/corev2';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { FlowService } from '../../../flow.service';
 import * as fromApp from '../../../../../store/app.reducer';
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'flow-appointment',
   templateUrl: './appointment.component.html',
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
-export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
-
-  public destroyed$: Subject<any> = new Subject<any>();
+export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit {
 
   public timeZone:any = 'America/New_York';
 	public duration:any = 30;
@@ -32,8 +32,8 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   constructor(
     private router: Router,
-    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    private dataServiceFactory: DefaultDataServiceFactory,
+    entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    dataServiceFactory: DefaultDataServiceFactory,
     public flowService: FlowService,
     public store:Store<fromApp.AppState>,
     public renderer:Renderer2
@@ -78,18 +78,11 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     await this.getData( startDate, endDate );
   }
 
-
-
-  public ngOnDestroy() {
-    console.log(`[${this.module}] List Component Destroyed`);
-    this.destroyed$.next(true);
-  }
-
   async getData( startDate: string, endDate: string ) {
 
       const pattern = { startDate, endDate };
       // this._dynamicCollectionService.setFilter(pattern);
-      this.getWithQuery(pattern).pipe(takeUntil(this.destroyed$)).subscribe();
+      this.getWithQuery(pattern).pipe(untilDestroyed(this)).subscribe();
   }
 
   public async createTimeSlots(){

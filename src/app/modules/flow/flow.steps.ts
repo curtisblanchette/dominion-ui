@@ -1,55 +1,54 @@
-import { FlowStep, ModuleType ,FlowComponentType } from './_core';
+import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent } from './_core';
 
-export const callType = new FlowStep({
-    nodeText : 'Call Type',
-    nodeIcon : 'address-book',
-    component : FlowComponentType.TEXT,
+export const callType = () => {
+  return new FlowStep({
+    nodeText: 'Call Type',
+    nodeIcon: 'address-book',
+    component: FlowTextComponent,
     data : {
       title : 'Select a call type',
       body : 'select any one call type',
       template : 'call-type'
     }
-});
+  });
+};
 
-export const webLeadsType = new FlowStep({
-    nodeText : 'Web Leads type',
-    nodeIcon : 'address-book',
-    component : FlowComponentType.TEXT,
+export const webLeadsType = () => {
+  return new FlowStep({
+    nodeText: 'Web Leads type',
+    nodeIcon: 'address-book',
+    component: FlowTextComponent,
     data: {
       title : 'How you wanna proceed',
       body : 'select any one options below',
       template : 'web-lead'
     }
-});
+  });
+};
 
-export const searchNListContacts = new FlowStep({
-    nodeText: 'Search Contacts',
+export const searchNListContacts = () => {
+  return new FlowStep({
+    nodeText: 'Search Leads',
     nodeIcon: 'address-book',
-    component: FlowComponentType.LIST,
+    component: FlowListComponent,
     data: {
-      title: 'Search Contacts',
-      module: ModuleType.CONTACT,
+      title: 'Lead List',
+      module: ModuleType.LEAD,
       options: {
         searchable: true,
         editable: false,
         perPage: 25,
         columns: []
-      },
-      editPath: {
-        route: ['/flow', {outlets: {'aux': ['edit']}}],
-        extras: {
-          state: {
-            module: module,
-          }
-        }
       }
     }
-});
+  })
+};
 
-export const createNewLead = new FlowStep({
+export const createNewLead = () => {
+  return new FlowStep({
     nodeText: 'Collect Lead Info',
     nodeIcon: 'address-book',
-    component: FlowComponentType.DATA,
+    component: FlowDataComponent,
     data: {
       title: 'Create a New Lead',
       // firstName: 'Curtis',
@@ -58,37 +57,33 @@ export const createNewLead = new FlowStep({
       // email: 'curtis@4iiz.com',
       module: ModuleType.LEAD
     }
-});
+  });
+};
 
-export const selectExistingOpp = new FlowStep({
-  nodeText: 'Opportunities',
-  nodeIcon: 'address-book',
-  component: FlowComponentType.LIST,
-  data: {
-    title: 'Opportunities',
-    module: ModuleType.DEAL,
-    options: {
-      searchable: false,
-      editable: false,
-      perPage: 25,
-      columns: [],
-      parentId: null
-    },
-    editPath: {
-      route: ['/flow', {outlets: {'aux': ['edit']}}],
-      extras: {
-        state: {
-          module: module,
-        }
+export const selectExistingOpp = () => {
+  return new FlowStep({
+    nodeText: 'Opportunities',
+    nodeIcon: 'address-book',
+    component: FlowListComponent,
+    data: {
+      title: 'Opportunities',
+      module: ModuleType.DEAL,
+      options: {
+        searchable: false,
+        editable: false,
+        perPage: 25,
+        columns: [],
+        parentId: null
       }
     }
-  }
-});
+  });
+};
 
-export const searchNListWebLeads = new FlowStep({
+export const searchNListWebLeads = () => {
+  return new FlowStep({
     nodeText: 'Search Web Leads',
     nodeIcon: 'address-book',
-    component: FlowComponentType.LIST,
+    component: FlowListComponent,
     data: {
       title: 'Search and List Web Leads',
       module: ModuleType.LEAD,
@@ -97,14 +92,7 @@ export const searchNListWebLeads = new FlowStep({
         editable: false,
         perPage: 25,
         columns: []
-      },
-      editPath: {
-        route: ['/flow', {outlets: {'aux': ['edit']}}],
-        extras: {
-          state: {
-            module: module,
-          }
-        }
       }
     }
-});
+  });
+};
