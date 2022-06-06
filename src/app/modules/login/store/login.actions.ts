@@ -10,7 +10,8 @@ export const ActionTypes = {
   UPDATE_RECORD: '[Login] Update User',
   LOGOUT: '[Login] Logout',
   REFRESH_TOKEN: '[Login] Refresh Token',
-  ACCEPT_INVITATION: '[Login] Accept Invitation'
+  ACCEPT_INVITATION: '[Login] Accept Invitation',
+  INVITATION_ERROR: '[Login] Invitation Error'
 };
 
 export interface ILoginCredentials {
@@ -72,4 +73,8 @@ export const AcceptInvitationAction = createAction(
 export const RefreshTokenAction = createAction(
   ActionTypes.REFRESH_TOKEN,
   props<{ payload: User }>()
+);
+
+export const InvitationErrorAction = createAction(
+  ActionTypes.INVITATION_ERROR
 );

@@ -35,6 +35,7 @@ export const reducer = createReducer(
   on(loginActions.LogoutAction, (state) => ({...state, user: null, agent: null, workspace: null})),
   on(loginActions.RefreshTokenAction, (state) => ({...state})),
   on(loginActions.AcceptInvitationAction, (state) => ({ ...state, loading: true })),
+  on(loginActions.InvitationErrorAction, (state) => ({...state, loading:false}))
 );
 
 export const selectLogin = createFeatureSelector<LoginState>('login');

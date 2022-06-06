@@ -21,7 +21,8 @@ export const reducer = createReducer(
   on(systemActions.SetWorkspacesAction, (state, {payload}) => ({ ...state, workspaces: payload })),
   on(systemActions.SetActingForAction, (state, { id }) => ({ ...state, actingFor: id })),
   on(systemActions.SendInvitationAction, (state) => ({...state, loading: true})),
-  on(systemActions.SendInvitationSuccessAction, (state) => ({...state, loading: false}))
+  on(systemActions.SendInvitationSuccessAction, (state) => ({...state, loading: false})),
+  on(systemActions.SendInvitationErrorAction, (state) => ({...state, loading: false}))
 );
 
 export const selectSystem = createFeatureSelector<SystemState>('system');

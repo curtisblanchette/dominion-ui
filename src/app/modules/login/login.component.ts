@@ -118,12 +118,6 @@ export class LoginComponent implements OnInit {
 
     if(this.newUserForm.valid) {
       this.store.dispatch(loginActions.AcceptInvitationAction({code: this.invitationCode, payload: this.newUserForm.value}));
-
-      this.toastr.success('Logging you in...', 'User Created!');
-      // await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${this.invitationCode.id}`, this.newUserForm.value));
-
-      // perform login
-      await this.loginTheUser( {username: this.invitationCode.email, password: this.newUserForm.controls['password'].value, remember_me: 'yes'} );
     } else {
       this.toastr.error('', 'Invalid Form.');
     }

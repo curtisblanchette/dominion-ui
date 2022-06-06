@@ -51,8 +51,12 @@ export class SystemEffects {
     this.actions$.pipe(
       ofType(systemActions.SendInvitationAction),
       mergeMap(async action => {
-        await firstValueFrom(this.http.post(environment.dominion_api_url + '/invitations', action.payload));
-        return systemActions.SendInvitationSuccessAction({email: action.payload.email})
+        const response:any = await firstValueFrom(this.http.post(environment.dominion_api_url + '/invitations', action.payload));
+        if( response.status && response.status !== 200 ){
+          return systemActions.SendInvitationErrorAction();
+        } else {
+          return systemActions.SendInvitationSuccessAction({email: action.payload.email});
+        }
       })
     ));
 
@@ -62,6 +66,12 @@ export class SystemEffects {
       tap((action: {  email: string }) => {
         this.toastr.success(action.email, 'An invitation was sent to');
       })
+    ), { dispatch: false }
+  )
+
+  onSendInvitationError$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(systemActions.SendInvitationErrorAction)
     ), { dispatch: false }
   )
 
