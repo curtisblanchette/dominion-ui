@@ -31,8 +31,7 @@
 <ng-template #newUserTemplate>
   <form (ngSubmit)="acceptInvitation()" [formGroup]="newUserForm" id="new-user-form" name="new-user-form">
 
-    <ng-container [ngTemplateOutlet]="(isLoading$ | async) ? loadingTemplate : newUserTemplate"
-                  [ngTemplateOutletContext]="{loadingText: 'Checking Invitation...'}"></ng-container>
+    <ng-container [ngTemplateOutlet]="(isLoading$ | async) ? loadingTemplate : newUserTemplate" [ngTemplateOutletContext]="{loadingText: 'Checking Invitation...'}"></ng-container>
 
     <ng-template #newUserTemplate>
       <h2>New User</h2>
@@ -70,12 +69,8 @@
         required
         minlength="12">
       </fiiz-input>
-
-      <input type="submit"
-             class="primary"
-             id="create-user-btn"
-             value="Complete Registration"
-             [disabled]="isLoading$ | async">
+      
+      <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$ | async" [disabled]="(isLoading$ | async) || newUserForm.invalid">Complete Registration</fiiz-button>
 
     </ng-template>
 
@@ -86,7 +81,9 @@
 
 
 <ng-template #loadingTemplate let-loadingText="loadingText">
-  <fiiz-loading>{{loadingText}}</fiiz-loading>
+  <div class="loader">
+    <fiiz-loading>{{loadingText}}</fiiz-loading>
+  </div>
 </ng-template>
 
 

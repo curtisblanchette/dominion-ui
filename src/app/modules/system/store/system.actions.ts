@@ -6,7 +6,8 @@ export const ActionTypes = {
   SET_WORKSPACES: '[System] Set Workspaces',
   SET_ACTING_FOR: '[System] Set Acting For',
   SEND_INVITATION: '[System] Send Invitation',
-  SEND_INVITATION_SUCCESS: '[System] Invitation Sent Successfully'
+  SEND_INVITATION_SUCCESS: '[System] Invitation Sent Successfully',
+  INVITATION_ERROR: '[System] Invation Error'
 };
 
 export const GetWorkspacesAction = createAction(
@@ -31,4 +32,8 @@ export const SendInvitationAction = createAction(
 export const SendInvitationSuccessAction = createAction(
   ActionTypes.SEND_INVITATION_SUCCESS,
   props<{ email: string; }>()
+);
+
+export const SendInvitationErrorAction = createAction(
+  ActionTypes.INVITATION_ERROR
 );
