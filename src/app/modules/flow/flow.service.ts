@@ -8,6 +8,7 @@ import { firstValueFrom, take } from 'rxjs';
 import { FlowHostDirective } from './_core/classes/flow.host';
 
 import * as flowSteps from './flow.steps';
+import { untilDestroyed } from '@ngneat/until-destroy';
 
 export interface IHistory {
   prevStepId: string;
@@ -42,15 +43,11 @@ export class FlowService {
     });
   }
 
-
-
   public reset() {
     this.store.dispatch(flowActions.ResetAction());
   }
 
   public create(type?: string) {
-
-
     const callType = flowSteps.callType();
     const inboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'inbound';
@@ -244,8 +241,7 @@ export class FlowService {
 
 
     const componentRef = viewContainerRef.createComponent<any>(step.component);
-    componentRef.instance.state = step.data;
-    return componentRef;
+    componentRef.instance.data = step.data;
   }
 
   public async getVariable(key?: string) {

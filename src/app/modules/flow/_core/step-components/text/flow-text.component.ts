@@ -14,7 +14,6 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 })
 export class FlowTextComponent extends EntityCollectionComponentBase {
 
-  public data: any;
   public form: any;
   public fields: Array<any> = [];
 

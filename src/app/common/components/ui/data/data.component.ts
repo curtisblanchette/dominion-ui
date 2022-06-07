@@ -70,8 +70,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         this.form.setValue(entity);
       }
 
-      if(this.state.module) {}
-      this.submitText = entity ? `Save ${this.state.module}` : `Create ${this.state.module}`;
+      if(this.data.module) {}
+      this.submitText = entity ? `Save ${this.data.module}` : `Create ${this.data.module}`;
     });
 
   }
@@ -147,7 +147,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.form.enable();
   }
 
-  public ngOnDestroy() {
+  public override ngOnDestroy() {
     console.log('data component destroyed');
   }
 }

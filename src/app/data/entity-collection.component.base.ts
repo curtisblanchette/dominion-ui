@@ -5,11 +5,10 @@ import { map, Observable, of } from 'rxjs';
 import { DominionType, types } from '../common/models';
 import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfaces';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { AfterContentInit, Inject, Input } from '@angular/core';
+import { AfterContentInit, Inject, Input, OnDestroy } from '@angular/core';
 
 @UntilDestroy()
-export class EntityCollectionComponentBase implements AfterContentInit {
-
+export class EntityCollectionComponentBase implements AfterContentInit, OnDestroy {
 
   public _dynamicCollectionService: EntityCollectionService<DominionType>;
   public _dynamicService: EntityCollectionDataService<DominionType>;
@@ -23,22 +22,20 @@ export class EntityCollectionComponentBase implements AfterContentInit {
   public loaded$: Observable<boolean> = of(true);
 
   public response$: Observable<any>;
-  @Input('state') state: any;
+  @Input('data') public data: any;
 
   constructor(
     router: Router,
     @Inject(EntityCollectionServiceFactory) private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     @Inject(DefaultDataServiceFactory) private dataServiceFactory: DefaultDataServiceFactory
   ) {
-    this.state = router.getCurrentNavigation()?.extras.state || this.state;
-    this.module = this.state?.module;
-    console.log(this.state);
+    this.data = router.getCurrentNavigation()?.extras.state || this.data;
   }
 
   public ngAfterContentInit() {
-    console.log(this.module);
-    this.type = types[this.module];
+    this.module = this.data?.module;
 
+    this.type = types[this.data.module];
 
     if (this.module) {
       this._dynamicCollectionService = this.createService(this.type, this.entityCollectionServiceFactory);
@@ -50,6 +47,11 @@ export class EntityCollectionComponentBase implements AfterContentInit {
       // this.count$ = this._dynamicCollectionService.count$; <-- ** always returns the filteredEntities$.length (not the collectionState.count)
     }
   }
+
+  ngOnDestroy() {
+    console.log('component destroyed');
+  }
+
 
   public getWithQuery(params: { [key: string]: any}): Observable<any> {
     this.loaded$ = of(false);

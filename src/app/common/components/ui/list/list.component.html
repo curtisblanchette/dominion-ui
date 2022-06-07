@@ -4,11 +4,11 @@
                 placeholder="Search {{pluralModuleName}}..."></fiiz-input>
     <fiiz-dropdown
       type="button"
-      *ngIf="state.options.editable"
+      *ngIf="data.options.editable"
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-    <fiiz-button stroked (click)="onCreateNew()">Create New {{state.module}}</fiiz-button>
+    <fiiz-button stroked (click)="onCreateNew()">Create New {{data.module}}</fiiz-button>
   </div>
 </form>
 
@@ -59,7 +59,7 @@
 
 <ng-template #noDataFound>
   <div class="message-block" style="padding-top: 5%;">
-    We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
+    We could not find a {{data.module}} with the term "{{searchForm.value.key}}"
   </div>
   <div class="message-block">
     <span>Try another search term or create a new lead.</span>

@@ -101,5 +101,6 @@ export class EntityStoreModule {
     private dataServiceFactory: DefaultDataServiceFactory
   ) {
     entityDataService.registerService('lead', this.dataServiceFactory.create('lead'));
+    entityDataService.registerService('deal', this.dataServiceFactory.create('deal'));
   }
 }

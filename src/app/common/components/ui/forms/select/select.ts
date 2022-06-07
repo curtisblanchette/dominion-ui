@@ -95,9 +95,6 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
     this.default = item.id;
   }
 
-  async ngAfterViewInit() {
-
-  }
 
   async writeValue(value: string) {
     this.selected = await firstValueFrom(this.items$).then(items => items.find(item => item.id == value));

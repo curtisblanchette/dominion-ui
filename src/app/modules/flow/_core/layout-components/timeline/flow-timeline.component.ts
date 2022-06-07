@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from '../../../store/flow.reducer';
 import * as flowActions from '../../../store/flow.actions';
-import { FlowStep } from '../../classes/flow.step';
+import { FlowStep } from '../../classes';
 import { Observable } from 'rxjs';
 
 

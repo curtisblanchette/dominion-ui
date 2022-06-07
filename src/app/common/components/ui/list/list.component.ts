@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, take } from 'rxjs';
@@ -14,8 +14,6 @@ import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
 import * as fromData from '../../../../modules/data/store/data.reducer';
 import { DropdownItem } from '../forms';
-import { ModuleType } from '../../../../modules/flow/_core';
-import { ComponentStateBase } from '../../../class.component-state-base';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
@@ -58,6 +56,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
+  @Input('data') public override data: any;
   @Input('options') options: IListOptions;
   @Input('loadInitial') loadInitial: boolean = false;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
@@ -87,23 +86,17 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    if(!this.options || !this.state?.options) {
-      /** route state is immutable so we gotta clone it */
-
-      this.state = {
-        options: {
-          searchable: true,
-          editable: false,
-          columns: []
-        }
-      }
-    }
-
-    if(!this.module) {
-      this.module = ModuleType.LEAD;
-    }
-    // get default visible columns
-    this.columns = getColumnsForModule(this.module);
+    // if(!this.options || !this.data?.options) {
+    //   /** route state is immutable so we gotta clone it */
+    //
+    //   this.data = {
+    //     options: {
+    //       searchable: true,
+    //       editable: false,
+    //       columns: []
+    //     }
+    //   }
+    // }
 
 
     let form: { [key: string]: FormControl } = {};
@@ -116,6 +109,29 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       return value;
     }));
 
+  }
+
+  public ngOnInit() {
+
+  }
+
+
+  ngAfterViewInit() {
+    this.columns = getColumnsForModule(super.module);
+
+    console.log(this.data);
+    // @ts-ignore
+    this.searchForm.get('search').valueChanges.pipe(
+      untilDestroyed(this),
+      map(action => {
+        return action;
+      }),
+      debounceTime(250),
+      distinctUntilChanged()
+    ).subscribe((text: string) => {
+      this.page = 1;
+      this.searchInModule();
+    });
   }
 
   public onClick($event: any, record: any) {
@@ -147,37 +163,19 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.values.emit( { module: this.module, record: record } );
   }
 
-  public ngOnInit(){
-
-  }
 
   get pluralModuleName() {
-    if (this.state?.module) {
-      return pluralize(this.state.module);
+    if (this.data?.module) {
+      return pluralize(this.data.module);
     }
 
     return '';
   }
 
   onCreateNew() {
-    this.onCreate.emit({module: this.state.module, record: {}});
+    this.onCreate.emit({module: this.data.module, record: {}});
   }
 
-  public ngAfterViewInit() {
-    console.log(this.state);
-    // @ts-ignore
-    this.searchForm.get('search').valueChanges.pipe(
-      untilDestroyed(this),
-      map(action => {
-        return action;
-      }),
-      debounceTime(250),
-      distinctUntilChanged()
-    ).subscribe((text: string) => {
-      this.page = 1;
-      this.searchInModule();
-    });
-  }
 
 
   public searchInModule() {
