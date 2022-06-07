@@ -1,52 +1,53 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 
 import * as flowActions from './flow.actions';
-import { FlowLink, FlowRouter, FlowStep } from '../_core';
+import { FlowClassMap, FlowCurrentStep, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../_core';
 import { cloneDeep } from 'lodash';
 
 export interface FlowState {
   steps: FlowStep[]
   routers: FlowRouter[]
   links: FlowLink[],
-  currentStep: FlowStep,
-  stepHistory: any,
-  variables: { [ key:string ] : any },
-  valid:boolean
+  currentStep: FlowCurrentStep | undefined,
+  stepHistory: FlowStepHistoryEntry[]
 }
 
 // need to serialize/deserialize the step/flow/router objects
-function getInitialStateByKey(key: string): FlowStep | FlowStep[] | FlowRouter[] | FlowLink[] | null {
+function getInitialStateByKey(key: string): (FlowStep|FlowRouter|FlowLink)[] | FlowCurrentStep | undefined {
   let state = localStorage.getItem(key);
 
   if (state) {
-    const data = JSON.parse(state);
-    const items = [];
-    let classMap: { [key: string]: any } = {
-      steps: FlowStep,
-      links: FlowLink,
-      routers: FlowRouter,
-      currentStep: FlowStep
-    };
+    const data: any = JSON.parse(state);
+    let items: (FlowStep|FlowLink|FlowRouter)[] = [];
 
-    if(key == 'currentStep') {
-      return new classMap[key](...data);
-    } else {
-      items.push(new classMap[key](...data));
+    switch(key) {
+      case 'steps': // @ts-ignore
+        items.push(new FlowClassMap.STEP(...data)); break;
+      case 'links': // @ts-ignore
+        items.push(new FlowClassMap.LINK(...data)); break;
+      case 'routers': // @ts-ignore
+        items.push(new FlowClassMap.ROUTER(...data)); break;
+      case 'currentStep': {
+        const { step, variables, valid } = data;
+
+        return <FlowCurrentStep>{
+          step: new FlowClassMap.STEP(step),
+          variables,
+          valid,
+          serialize: ()=>{}
+        };
+      }
     }
-
     return items;
   }
-  return key === 'currentStep' ? <FlowStep>{serialize:()=>{}} : [];
 }
 
 export const initialState: FlowState = {
   steps: <FlowStep[]>getInitialStateByKey('steps'),
   routers: <FlowRouter[]>getInitialStateByKey('routers'),
   links: <FlowLink[]>getInitialStateByKey('links'),
-  currentStep: <FlowStep>getInitialStateByKey('currentStep'),
+  currentStep: getInitialStateByKey('currentStep') as FlowCurrentStep | undefined,
   stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]'),
-  variables : {},
-  valid : false
 };
 
 export const reducer = createReducer(
@@ -54,32 +55,49 @@ export const reducer = createReducer(
   on(flowActions.AddStepAction, (state, { payload }) => ({ ...state, steps: [ ...state.steps, payload ]})),
   on(flowActions.AddLinkAction, (state, { payload }) => ({ ...state, links: [ ...state.links, payload ]})),
   on(flowActions.AddRouterAction, (state, { payload }) => ({ ...state, routers: [ ...state.routers, payload ]})),
-  on(flowActions.SetCurrentStepAction, (state, { payload }) => ({ ...state, currentStep: payload })),
-  on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: payload })),
+  on(flowActions.UpdateCurrentStepAction, (state, { ...payload }) => ({ ...state, currentStep: { ...state.currentStep, ...payload } })),
+  on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: { ...state.stepHistory, ...payload } })),
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
-  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: <FlowStep>{serialize:()=>{}}})),
+  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: undefined})),
   on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, variables: payload })),
-  on(flowActions.addValidAction, (state, { payload }) => ({ ...state, valid: payload })),
+  on(flowActions.SetValidityAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, valid: payload } })),
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
 
-export const selectSteps       = createSelector(selectFlow, (flow: FlowState) => flow.steps.map(step => {
+export const selectSteps = createSelector(selectFlow, (flow: FlowState) => flow.steps.map(step => {
   // hack to get a mutable object back from store, "specifically the step.component"
   const clone = cloneDeep(step);
   return clone.serialize();
 }));
-export const selectRouters     = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
-export const selectLinks       = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
-export const selectCurrentStep = createSelector(selectFlow, (flow: FlowState) => flow.currentStep.serialize());
-export const selectStepHistory = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
-export const selectVariables = createSelector(selectFlow, (flow: FlowState) => flow.variables);
-export const selectValid = createSelector(selectFlow, (flow: FlowState) => flow.valid);
 
-export const selectStepById   = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id));
-export const selectRouterById = (id: string) => createSelector(selectRouters, (entities: FlowRouter[]) => entities.filter((item: FlowRouter) => item.id === id));
-export const selectLinkById   = (id: string) => createSelector(selectLinks, (entities: FlowLink[]) => entities.find((item: FlowLink) =>  item.to.id === id ));
-export const selectAllVariables = () => createSelector(selectVariables, (vars:{ [ key:string ] : any } ) => vars );
-export const selectVariablesByKey = (key: string) => createSelector(selectVariables, (vars: { [ key:string ] : any } ) => vars[key]);
-export const selectIsValid = () => createSelector(selectValid, (entity:boolean) => entity);
+export const selectRouters       = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
+export const selectLinks         = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
+export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.serialize ? flow.currentStep.serialize() : undefined);
+export const selectStepHistory   = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
+export const selectAllVariables  = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.stepHistory));
+export const selectVariableByKey  = (key: string) => createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.stepHistory)[key]);
 
+export const selectStepById       = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id));
+export const selectRouterById     = (id: string) => createSelector(selectRouters, (entities: FlowRouter[]) => entities.filter((item: FlowRouter) => item.id === id));
+export const selectLinkById       = (id: string) => createSelector(selectLinks, (entities: FlowLink[]) => entities.find((item: FlowLink) =>  item.to.id === id ));
+
+// export const selectIsValid        = () => createSelector(selectValid, (entity:boolean) => entity);
+
+
+/**
+ * Used to get the current state of flow variables
+ * aggregates from stepHistory state of the flows variables
+ * while maintaining detailed change tracking
+ * @param history
+ */
+function accumulateVariables(history: FlowStepHistoryEntry[]): {[key: string]: string | number | Date } {
+  const items: {[key:string]: any} = {};
+
+  for(const [key, value] of Object.entries(history)) {
+    // @ts-ignore
+    items[history[key].id] = value['variables'];
+  }
+
+  return items;
+}

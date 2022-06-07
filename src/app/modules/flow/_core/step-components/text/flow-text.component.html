@@ -3,14 +3,14 @@
   {{data.body}}
   <ng-container [ngSwitch]="data.template">
     <ng-template [ngSwitchCase]="'call-type'">
-      <form [formGroup]="form" (ngSubmit)="formSubmit()" >
+      <form [formGroup]="form">
         <input type="radio" formControlName="call_type" value="inbound" ngDefaultControl /> Inbound
         <input type="radio" formControlName="call_type" value="outbound" ngDefaultControl /> Outbound
       </form>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'web-lead'">
-      <form [formGroup]="form" (ngSubmit)="formSubmit()" >
+      <form [formGroup]="form">
         <input type="radio" formControlName="web_lead_options" value="contacts" ngDefaultControl /> Search and List Contacts
         <input type="radio" formControlName="web_lead_options" value="web_leads" ngDefaultControl /> Search and List Web Leads
       </form>

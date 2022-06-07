@@ -1,4 +1,4 @@
-import { FlowCondition, FlowLink, FlowRouter, FlowStep, ModuleType } from './_core';
+import { FlowCondition, FlowCurrentStep, FlowLink, FlowRouter, FlowStep, ModuleType } from './_core';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -9,6 +9,7 @@ import { FlowHostDirective } from './_core/classes/flow.host';
 
 import * as flowSteps from './flow.steps';
 import { untilDestroyed } from '@ngneat/until-destroy';
+import { FlowStepHistoryEntry } from './_core/classes/flow.stepHistory';
 
 export interface IHistory {
   prevStepId: string;
@@ -23,9 +24,8 @@ export class FlowService {
   public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
   public links: FlowLink[] = [];
-  public currentStep: FlowStep;
-  public stepHistory: any[] = [];
-  public variables: { [key: string]: any };
+  public currentStep: FlowCurrentStep | undefined;
+  public stepHistory: FlowStepHistoryEntry[];
 
   constructor(
     private router: Router,
@@ -39,7 +39,6 @@ export class FlowService {
       this.links = state.links;
       this.currentStep = state.currentStep;
       this.stepHistory = state.stepHistory;
-      this.variables = state.variables;
     });
   }
 
@@ -129,7 +128,7 @@ export class FlowService {
   public start(host: FlowHostDirective): Promise<any> {
     this.create();
     const firstStep: FlowStep = this.steps[0];
-    this.store.dispatch(flowActions.SetCurrentStepAction({payload: firstStep}));
+    this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: firstStep, variables: [], valid: false }));
     return this.renderComponent(host, firstStep);
   }
 
@@ -140,7 +139,7 @@ export class FlowService {
 
   public async next(host: FlowHostDirective) {
     // find a link where the "from" is equal to "currentStep"
-    const link = this.links.find(link => link.from.id === this.currentStep.id);
+    const link = this.links.find(link => link.from.id === this.currentStep?.step?.id);
 
     let step: FlowStep | FlowRouter | undefined = link?.to;
 
@@ -151,20 +150,18 @@ export class FlowService {
         step = await init.evaluate();
       }
 
-      const clonedHistory = [...this.stepHistory];
-      if (this.currentStep.id) {
-        const history = {
-          currentStepId: this.currentStep.id,
-          prevStepId: null,
-          data: null
+      if(this.currentStep?.step?.id) {
+        const historyEntry: FlowStepHistoryEntry = {
+          id: this.currentStep?.step?.id,
+          variables: this.currentStep?.variables,
+          elapsed: 0 // TODO hook this up to an interval
         };
-        clonedHistory.push(history);
+
+        this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
       }
 
-      this.store.dispatch(flowActions.SetStepHistoryAction({payload: clonedHistory}));
       this.addValidState(false); // Any form should be not valid by default
       await this.renderComponent(host, <FlowStep>step);
-
 
     } else {
       console.warn('No step found to transition to.');
@@ -174,7 +171,7 @@ export class FlowService {
   public async back(host: FlowHostDirective) {
     const clone = [...this.stepHistory];
     const previousStep = clone.pop();
-    const step = this.steps.find(step => step.id === previousStep.currentStepId);
+    const step = this.steps.find(step => step.id === previousStep?.id);
     // this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
     // console.log('Back Step', step);
     if (step) {
@@ -186,13 +183,13 @@ export class FlowService {
 
   public addVariables(data: any) {
     if (data) {
-      let allVars = {...this.variables, ...data};
+      let allVars = {...this.currentStep?.variables, ...data};
       this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
     }
   }
 
   public addValidState( state:boolean ){
-    this.store.dispatch(flowActions.addValidAction({payload:state}));
+    this.store.dispatch(flowActions.SetValidityAction({payload:state}));
   }
 
   public addToCache(module: ModuleType, data: any) {
@@ -206,11 +203,10 @@ export class FlowService {
   public getCurrentStepData() {
     const clone = [...this.stepHistory];
     if (clone.length) {
-      const previousStep = clone.pop().currentStepId;
-      const stepFound = this.stepHistory.find(step => step.currentStepId == previousStep);
-      if (stepFound && stepFound.data) {
-        return stepFound.data;
-      }
+      const previousStepId = clone.pop()?.id;
+      const stepFound = this.steps.find(step => step.id == previousStepId);
+
+      return stepFound?.data;
     }
     return null;
   }
@@ -239,7 +235,7 @@ export class FlowService {
       // step.data.options.parentId = record.id;
     }
     // this.currentStep = step;
-    this.store.dispatch(flowActions.SetCurrentStepAction({payload: step}));
+    this.store.dispatch(flowActions.UpdateCurrentStepAction({ step, valid: false, variables: []  }));
 
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
@@ -251,7 +247,7 @@ export class FlowService {
 
   public async getVariable(key?: string) {
     if (key) {
-      return await firstValueFrom(this.store.select(fromFlow.selectVariablesByKey(key)).pipe(take(1)));
+      return await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(key)).pipe(take(1)));
     } else {
       return await firstValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
     }

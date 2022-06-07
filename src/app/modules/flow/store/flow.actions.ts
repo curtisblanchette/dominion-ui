@@ -1,17 +1,18 @@
 import { createAction, props } from '@ngrx/store';
 import { FlowLink, FlowRouter, FlowStep } from '../_core';
 import { FlowHostDirective } from '../_core/classes/flow.host';
+import { FlowStepHistoryEntry } from '../_core/classes/flow.stepHistory';
 
 export const ActionTypes = {
   ADD_STEP: '[Flow] Add FlowStep',
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
   ADD_VARIABLES: '[Flow] Add Variables',
-  SET_CURRENT_STEP: '[Flow] Set Current Step',
+  UPDATE_CURRENT_STEP: '[Flow] Update Current Step',
   SET_STEP_HISTORY: '[Flow] Set Step History',
   GO_TO_STEP: '[Flow] Go to step',
   RESET: '[Flow] Reset',
-  ADD_VALID: '[Flow] Valid'
+  SET_VALIDITY: '[Flow] Set Validity'
 };
 
 export const AddStepAction = createAction(
@@ -29,14 +30,14 @@ export const AddRouterAction = createAction(
   props<{ payload: FlowRouter }>()
 );
 
-export const SetCurrentStepAction = createAction(
-  ActionTypes.SET_CURRENT_STEP,
-  props<{ payload: FlowStep }>()
+export const UpdateCurrentStepAction = createAction(
+  ActionTypes.UPDATE_CURRENT_STEP,
+  props<{ step?: FlowStep, variables?: {[key: string]: any}, valid?: boolean }>()
 );
 
 export const SetStepHistoryAction = createAction(
   ActionTypes.SET_STEP_HISTORY,
-  props<{ payload: string[] }>()
+  props<{ payload: FlowStepHistoryEntry }>()
 );
 
 export const GoToStepByIdAction = createAction(
@@ -53,7 +54,7 @@ export const AddVariablesAction = createAction(
   props<{ payload: any }>()
 );
 
-export const addValidAction = createAction(
-  ActionTypes.ADD_VALID,
+export const SetValidityAction = createAction(
+  ActionTypes.SET_VALIDITY,
   props<{ payload: boolean }>()
 )

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FlowService } from "./flow.service";
-import { FlowTransitions } from './_core';
+import { FlowStepHistoryEntry, FlowTransitions } from './_core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
@@ -18,7 +18,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   animationIndex = 0;
   tabIndex = 1;
-  stepHistory$: Observable<string[]>;
+  stepHistory$: Observable<FlowStepHistoryEntry[]>;
   valid$: boolean;
 
   public flowForm:any;
@@ -68,7 +68,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public get isValid(){
-    this.store.select(fromFlow.selectIsValid()).subscribe( res => {
+    this.store.select(fromFlow.selectCurrentStep).subscribe( res => {
       this.valid$ = !res;
     });
     return true;
@@ -90,7 +90,7 @@ export class FlowComponent implements OnInit, OnDestroy {
 
   public goTo(id: string): Promise<any> {
     const next = this.flowService.steps.findIndex(x => x.id === id);
-    const current = this.flowService.steps.findIndex(x => x.id === this.flowService.currentStep.id);
+    const current = this.flowService.steps.findIndex(x => x.id === this.flowService?.currentStep?.step?.id);
     next < current ? this.animationIndex-- : this.animationIndex++;
     return this.flowService.goTo(this.flowHost, id);
   }

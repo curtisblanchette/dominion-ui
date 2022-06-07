@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FlowService } from '../../../flow.service';
 import { Router } from '@angular/router';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
@@ -12,19 +12,16 @@ import { UntilDestroy } from '@ngneat/until-destroy';
   templateUrl: './flow-text.component.html',
   styleUrls: ['../_base.scss', './flow-text.component.scss']
 })
-export class FlowTextComponent extends EntityCollectionComponentBase {
+export class FlowTextComponent {
 
+  @Input('data') data: any;
   public form: any;
   public fields: Array<any> = [];
 
   constructor(
-    private router: Router,
-    entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    dataServiceFactory: DefaultDataServiceFactory,
     private flowService: FlowService,
     private fb: FormBuilder
   ) {
-    super(router, entityCollectionServiceFactory, dataServiceFactory);
 
   }
 
