@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { FlowService } from '../../../flow.service';
+import { DominionType } from '../../../../../common/models';
 
 @Component({
   selector: 'flow-list',
@@ -19,10 +20,9 @@ export class FlowListComponent implements OnDestroy {
     console.log('Flow List component destroy');
   }
 
-  public EmitValues( value:any ){
-    if( value ){
-      this.flowService.addVariables( {existing_lead : 'yes', existing_lead_record: value });
-    }
+  public EmitValues( value: {module: string, record: DominionType } ) {
+    this.flowService.setValidity(!!value.record);
+    this.flowService.addVariables( { [value.module]: value.record?.id || null });
   }
 
 }

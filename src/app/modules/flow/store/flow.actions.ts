@@ -1,7 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { FlowLink, FlowRouter, FlowStep } from '../_core';
-import { FlowHostDirective } from '../_core/classes/flow.host';
-import { FlowStepHistoryEntry } from '../_core/classes/flow.stepHistory';
+import { FlowHostDirective, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../_core';
 
 export const ActionTypes = {
   ADD_STEP: '[Flow] Add FlowStep',

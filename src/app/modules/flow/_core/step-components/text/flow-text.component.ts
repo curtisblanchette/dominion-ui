@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FlowService } from '../../../flow.service';
-import { Router } from '@angular/router';
-import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
-import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import * as flowActions from '../../../store/flow.actions';
+import { Store } from '@ngrx/store';
+import { FlowState } from '../../../store/flow.reducer';
 
 @UntilDestroy()
 @Component({
@@ -19,6 +19,7 @@ export class FlowTextComponent {
   public fields: Array<any> = [];
 
   constructor(
+    private store: Store<FlowState>,
     private flowService: FlowService,
     private fb: FormBuilder
   ) {
@@ -46,7 +47,10 @@ export class FlowTextComponent {
 
     this.form.valueChanges.subscribe((value: any) => {
       this.flowService.addVariables(value);
-      this.flowService.addValidState(this.form.valid);
+    });
+
+    this.form.statusChanges.subscribe((value: any) => {
+      this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
     });
   }
 

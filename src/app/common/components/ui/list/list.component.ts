@@ -135,7 +135,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     $event.preventDefault();
 
     if (this.selected?.id === record.id) {
-      this.values.emit( { module: this.module, record: record });
+      this.values.emit( { module: this.module, record: null });
       this.selected = null;
       return;
     }

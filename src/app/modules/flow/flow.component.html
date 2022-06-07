@@ -19,7 +19,7 @@
 <!--      <router-outlet  name="flow" #outlet></router-outlet>-->
       <div class="flow-layout__controls">
         <fiiz-button (click)="onBack()" stroked *ngIf="(stepHistory$ | async)?.length > 0">Back</fiiz-button>
-        <fiiz-button type="submit" [disabled]="isValid && valid$" primary (click)="onNext()" style="margin-left: auto;">Next</fiiz-button>
+        <fiiz-button type="submit" [disabled]="!(valid$ | async)" primary (click)="onNext()" style="margin-left: auto;">Next</fiiz-button>
       </div>
     </section>
 

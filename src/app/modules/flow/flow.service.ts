@@ -47,81 +47,80 @@ export class FlowService {
   }
 
   public create(type?: string) {
+
+    // select call type
     const callType = flowSteps.callType();
+    const searchNListContacts =  flowSteps.searchNListContacts()
+    const webLeadsType = flowSteps.webLeadsType();
+    const searchNListWebLeads = flowSteps.searchNListWebLeads();
+    const createNewLead = flowSteps.createNewLead();
+    const selectExistingOpp = flowSteps.selectExistingOpp()
+
     const inboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'inbound';
-    },flowSteps.searchNListContacts());
+    }, searchNListContacts);
 
     const outboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'outbound';
-    }, flowSteps.webLeadsType());
+    }, webLeadsType);
 
     const callTypeRouter = new FlowRouter('Router', '', [inboundCond, outboundCond]);
     const callTypeLink = new FlowLink(callType, callTypeRouter);
 
-    this
-      .addStep(callType)
-      .addRouter(callTypeRouter)
-      .addStep(flowSteps.searchNListContacts())
-      .addStep(flowSteps.webLeadsType())
-      .addLink(callTypeLink);
-
-    switch (type) {
-      case 'inbound':
-        this.createInbound();
-        break;
-
-      case 'outbound':
-        this.createOutbound();
-        break;
-
-      default:
-        this.createInbound();
-        this.createOutbound();
-        break;
-    }
-
-  }
-
-  public createInbound() {
-
+    // inbound
     const existingLead_yes = new FlowCondition(async () => {
-      return await this.getVariable('existing_lead') === 'yes';
-    }, flowSteps.selectExistingOpp());
+      return await this.getVariable('lead');
+    }, selectExistingOpp);
 
     const existingLead_no = new FlowCondition(async () => {
-      return await this.getVariable('existing_lead') === 'no';
-    }, flowSteps.createNewLead());
+      const lead = await this.getVariable('lead');
+      return lead === null;
+    }, createNewLead);
 
     const searchNListContactsRouter = new FlowRouter('Router', '', [existingLead_yes, existingLead_no]);
-    const searchNListContactsLink = new FlowLink(flowSteps.searchNListContacts(), searchNListContactsRouter);
+    const searchNListContactsLink = new FlowLink(searchNListContacts, searchNListContactsRouter);
 
-    this
-      .addRouter(searchNListContactsRouter)
-      .addStep(flowSteps.selectExistingOpp())
-      .addStep(flowSteps.createNewLead())
-      .addLink(searchNListContactsLink)
 
-  }
-
-  public createOutbound() {
-
+    // outbound
     const webLeads_yes = new FlowCondition(async () => {
       return await this.getVariable('web_lead_options') === 'web_leads';
-    }, flowSteps.searchNListWebLeads());
+    }, searchNListWebLeads);
 
     const webLeads_no = new FlowCondition(async () => {
       return await this.getVariable('web_lead_options') === 'contacts';
-    }, flowSteps.searchNListContacts());
+    }, searchNListContacts);
 
     const webLeadRouter = new FlowRouter('Router', '', [webLeads_yes, webLeads_no]);
-    const webLeadLink = new FlowLink(flowSteps.webLeadsType(), webLeadRouter);
+    const webLeadLink = new FlowLink(webLeadsType, webLeadRouter);
 
     this
-      .addRouter(webLeadRouter)
-      .addStep(flowSteps.searchNListWebLeads())
-      .addStep(flowSteps.searchNListContacts())
-      .addLink(webLeadLink)
+      .addStep(callType)
+      .addRouter(callTypeRouter)
+      .addStep(searchNListContacts)
+      .addStep(webLeadsType)
+      .addLink(callTypeLink);
+
+    // switch (type) {
+    //   case 'inbound':
+
+        this
+          .addRouter(searchNListContactsRouter)
+          .addStep(selectExistingOpp)
+          .addStep(createNewLead)
+          .addLink(searchNListContactsLink)
+
+      //   break;
+      //
+      // case 'outbound':
+
+        this
+          .addRouter(webLeadRouter)
+          .addStep(searchNListWebLeads)
+          .addStep(searchNListContacts)
+          .addLink(webLeadLink)
+    //     break;
+    //
+    // }
 
   }
 
@@ -139,6 +138,7 @@ export class FlowService {
 
   public async next(host: FlowHostDirective) {
     // find a link where the "from" is equal to "currentStep"
+    console.log('currentStep', this.currentStep);
     const link = this.links.find(link => link.from.id === this.currentStep?.step?.id);
 
     let step: FlowStep | FlowRouter | undefined = link?.to;
@@ -160,7 +160,8 @@ export class FlowService {
         this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
       }
 
-      this.addValidState(false); // Any form should be not valid by default
+      // set the initial state to false
+      // this.addValidState(false); // Any form should be not valid by default
       await this.renderComponent(host, <FlowStep>step);
 
     } else {
@@ -181,15 +182,15 @@ export class FlowService {
     }
   }
 
+  public setValidity(value: boolean) {
+    this.store.dispatch(flowActions.SetValidityAction({payload: value}));
+  }
+
   public addVariables(data: any) {
     if (data) {
       let allVars = {...this.currentStep?.variables, ...data};
       this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
     }
-  }
-
-  public addValidState( state:boolean ){
-    this.store.dispatch(flowActions.SetValidityAction({payload:state}));
   }
 
   public addToCache(module: ModuleType, data: any) {
@@ -230,7 +231,8 @@ export class FlowService {
   }
 
   public async renderComponent(host: FlowHostDirective, step: FlowStep) {
-    if (await this.getVariable('existing_lead') === 'yes') {
+    const existingLead = await this.getVariable('existing_lead');
+    if (existingLead === 'yes') {
       // let record = await this.getVariable('existing_lead_record');
       // step.data.options.parentId = record.id;
     }
@@ -246,11 +248,15 @@ export class FlowService {
   }
 
   public async getVariable(key?: string) {
+    let value;
+
     if (key) {
-      return await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(key)).pipe(take(1)));
+       value = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(key)).pipe(take(1)));
     } else {
-      return await firstValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
+      value = await firstValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
     }
+
+    return value;
   }
 
 }

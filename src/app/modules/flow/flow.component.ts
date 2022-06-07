@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FlowService } from "./flow.service";
-import { FlowStepHistoryEntry, FlowTransitions } from './_core';
+import { FlowHostDirective, FlowStepHistoryEntry, FlowTransitions } from './_core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
-import { FlowHostDirective } from './_core/classes/flow.host';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -19,9 +18,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   animationIndex = 0;
   tabIndex = 1;
   stepHistory$: Observable<FlowStepHistoryEntry[]>;
-  valid$: boolean;
-
-  public flowForm:any;
+  valid$: Observable<boolean|undefined>;
 
   public tinymceOptions = {
     branding: false,
@@ -64,15 +61,21 @@ export class FlowComponent implements OnInit, OnDestroy {
       this.router.navigate(['/flow/text']);
     }
 
+    this.valid$ = this.store.select(fromFlow.selectIsValid);
+
+    this.store.select(fromFlow.selectIsValid).subscribe((isValid) => {
+      console.log(isValid);
+    });
+
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
 
-  public get isValid(){
-    this.store.select(fromFlow.selectCurrentStep).subscribe( res => {
-      this.valid$ = !res;
-    });
-    return true;
-  }
+  // public get isValid(){
+  //   this.store.select(fromFlow.selectCurrentStep).subscribe( res => {
+  //     this.valid$ = !res;
+  //   });
+  //   return true;
+  // }
 
   public async ngOnInit() {
     await this.flowService.start(this.flowHost);
