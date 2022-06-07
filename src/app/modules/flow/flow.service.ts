@@ -162,6 +162,7 @@ export class FlowService {
       }
 
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: clonedHistory}));
+      this.addValidState(false); // Any form should be not valid by default
       await this.renderComponent(host, <FlowStep>step);
 
 
@@ -188,6 +189,10 @@ export class FlowService {
       let allVars = {...this.variables, ...data};
       this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
     }
+  }
+
+  public addValidState( state:boolean ){
+    this.store.dispatch(flowActions.addValidAction({payload:state}));
   }
 
   public addToCache(module: ModuleType, data: any) {
@@ -230,8 +235,8 @@ export class FlowService {
 
   public async renderComponent(host: FlowHostDirective, step: FlowStep) {
     if (await this.getVariable('existing_lead') === 'yes') {
-      let record = await this.getVariable('existing_lead_record');
-      step.data.options.parentId = record.id;
+      // let record = await this.getVariable('existing_lead_record');
+      // step.data.options.parentId = record.id;
     }
     // this.currentStep = step;
     this.store.dispatch(flowActions.SetCurrentStepAction({payload: step}));

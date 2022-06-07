@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FlowService } from '../../../flow.service';
 import { Router } from '@angular/router';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
@@ -25,20 +25,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase {
     private fb: FormBuilder
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
-    this.data = {
-        body: 'select any one call type',
-        template: 'call-type',
-        title: 'Select a call type'
-      };
-    if (this.data) {
-      this.initForm();
-    }
 
   }
 
-  // public ngOnInit(){
-  //   console.log('Flow Text component init');
-  // }
+  public ngOnInit(){
+    if (this.data) {
+      this.initForm();
+    }
+  }
 
   public initForm() {
     if (this.data.template === 'call-type') {
@@ -54,8 +48,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase {
     }
 
     this.form.valueChanges.subscribe((value: any) => {
-      console.log(value);
-      this.flowService.addVariables(value)
+      this.flowService.addVariables(value);
+      this.flowService.addValidState(this.form.valid);
     });
   }
 

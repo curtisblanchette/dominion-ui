@@ -10,7 +10,8 @@ export const ActionTypes = {
   SET_CURRENT_STEP: '[Flow] Set Current Step',
   SET_STEP_HISTORY: '[Flow] Set Step History',
   GO_TO_STEP: '[Flow] Go to step',
-  RESET: '[Flow] Reset'
+  RESET: '[Flow] Reset',
+  ADD_VALID: '[Flow] Valid'
 };
 
 export const AddStepAction = createAction(
@@ -51,3 +52,8 @@ export const AddVariablesAction = createAction(
   ActionTypes.ADD_VARIABLES,
   props<{ payload: any }>()
 );
+
+export const addValidAction = createAction(
+  ActionTypes.ADD_VALID,
+  props<{ payload: boolean }>()
+)

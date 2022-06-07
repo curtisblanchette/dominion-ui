@@ -19,6 +19,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   animationIndex = 0;
   tabIndex = 1;
   stepHistory$: Observable<string[]>;
+  valid$: boolean;
 
   public flowForm:any;
 
@@ -64,6 +65,13 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
 
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
+  }
+
+  public get isValid(){
+    this.store.select(fromFlow.selectIsValid()).subscribe( res => {
+      this.valid$ = !res;
+    });
+    return true;
   }
 
   public async ngOnInit() {

@@ -117,8 +117,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   ngAfterViewInit() {
     this.columns = getColumnsForModule(this.module);
-
-    console.log(this.data);
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),

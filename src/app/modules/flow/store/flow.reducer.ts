@@ -10,7 +10,8 @@ export interface FlowState {
   links: FlowLink[],
   currentStep: FlowStep,
   stepHistory: any,
-  variables: { [ key:string ] : any }
+  variables: { [ key:string ] : any },
+  valid:boolean
 }
 
 // need to serialize/deserialize the step/flow/router objects
@@ -44,7 +45,8 @@ export const initialState: FlowState = {
   links: <FlowLink[]>getInitialStateByKey('links'),
   currentStep: <FlowStep>getInitialStateByKey('currentStep'),
   stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]'),
-  variables : {}
+  variables : {},
+  valid : false
 };
 
 export const reducer = createReducer(
@@ -57,6 +59,7 @@ export const reducer = createReducer(
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
   on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: <FlowStep>{serialize:()=>{}}})),
   on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, variables: payload })),
+  on(flowActions.addValidAction, (state, { payload }) => ({ ...state, valid: payload })),
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
@@ -71,10 +74,12 @@ export const selectLinks       = createSelector(selectFlow, (flow: FlowState) =>
 export const selectCurrentStep = createSelector(selectFlow, (flow: FlowState) => flow.currentStep.serialize());
 export const selectStepHistory = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
 export const selectVariables = createSelector(selectFlow, (flow: FlowState) => flow.variables);
+export const selectValid = createSelector(selectFlow, (flow: FlowState) => flow.valid);
 
 export const selectStepById   = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id));
 export const selectRouterById = (id: string) => createSelector(selectRouters, (entities: FlowRouter[]) => entities.filter((item: FlowRouter) => item.id === id));
 export const selectLinkById   = (id: string) => createSelector(selectLinks, (entities: FlowLink[]) => entities.find((item: FlowLink) =>  item.to.id === id ));
 export const selectAllVariables = () => createSelector(selectVariables, (vars:{ [ key:string ] : any } ) => vars );
 export const selectVariablesByKey = (key: string) => createSelector(selectVariables, (vars: { [ key:string ] : any } ) => vars[key]);
+export const selectIsValid = () => createSelector(selectValid, (entity:boolean) => entity);
 

@@ -33,18 +33,20 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   }
 
   public ngAfterContentInit() {
-    this.module = this.data?.module;
+    if( this.data ){
+      this.module = this.data?.module;
 
-    this.type = types[this.data.module];
+      this.type = types[this.data.module];
 
-    if (this.module) {
-      this._dynamicCollectionService = this.createService(this.type, this.entityCollectionServiceFactory);
-      this._dynamicService = this.dataServiceFactory.create(this.module);
+      if (this.module) {
+        this._dynamicCollectionService = this.createService(this.type, this.entityCollectionServiceFactory);
+        this._dynamicService = this.dataServiceFactory.create(this.module);
 
-      // this.data$ = this._dynamicCollectionService.filteredEntities$;
-      this.loading$ = this._dynamicCollectionService.loading$;
-      // this.loaded$ = this._dynamicCollectionService.loaded$;
-      // this.count$ = this._dynamicCollectionService.count$; <-- ** always returns the filteredEntities$.length (not the collectionState.count)
+        // this.data$ = this._dynamicCollectionService.filteredEntities$;
+        this.loading$ = this._dynamicCollectionService.loading$;
+        // this.loaded$ = this._dynamicCollectionService.loaded$;
+        // this.count$ = this._dynamicCollectionService.count$; <-- ** always returns the filteredEntities$.length (not the collectionState.count)
+      }
     }
   }
 
