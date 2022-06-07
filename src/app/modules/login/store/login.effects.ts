@@ -13,7 +13,7 @@ import * as fromLogin from './login.reducer';
 import { CognitoService } from '../../../common/cognito/cognito.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment';
-import { HttpBackend, HttpClient } from '@angular/common/http';
+import { HttpBackend, HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class LoginEffects {
@@ -179,15 +179,20 @@ export class LoginEffects {
       this.actions$.pipe(
         ofType(loginActions.AcceptInvitationAction),
         mergeMap(async (action) => {
-
-          await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${action.code.id}`, action.payload));
-
-          return loginActions.LoginAction( { payload: {
-            username: action.code.email,
-            password: action.payload.password,
-            remember_me: 'yes'
-          }});
-
+          const response = await firstValueFrom(this.httpNoAuth.patch(`${environment.dominion_api_url}/invitations/${action.code.id}`, action.payload)).catch((err:HttpErrorResponse) => {
+            return err;
+          });
+          if( response instanceof HttpErrorResponse ){
+            this.toastr.error(response.error.name || '', response.error.message);
+            return loginActions.InvitationErrorAction();
+          } else {
+            this.toastr.success('Logging you in...', 'User Created!');
+            return loginActions.LoginAction( { payload: {
+              username: action.code.email,
+              password: action.payload.password,
+              remember_me: 'yes'
+            }});
+          }
         })
       )
   )
@@ -214,6 +219,12 @@ export class LoginEffects {
       ),
     {dispatch: true}
   );
+
+  invitationError$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(loginActions.InvitationErrorAction)
+    ), { dispatch: false }
+  )
 
 }
 

@@ -58,10 +58,9 @@ export class SystemComponent implements OnDestroy {
 
   async submitUserInvite() {
     const workspace: any = await firstValueFrom(this.store.select(fromSystem.selectActingFor));
-
     const payload = {
       workspaceId: workspace.id,
-      roleId: this.userInviteForm.controls['role'].value.id,
+      roleId: this.userInviteForm.controls['role'].value,
       email: this.userInviteForm.controls['email'].value
     }
     this.store.dispatch(systemActions.SendInvitationAction({payload}));
