@@ -98,7 +98,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     //   }
     // }
 
-
     let form: { [key: string]: FormControl } = {};
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
@@ -117,7 +116,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
 
   ngAfterViewInit() {
-    this.columns = getColumnsForModule(super.module);
+    this.columns = getColumnsForModule(this.module);
 
     console.log(this.data);
     // @ts-ignore
