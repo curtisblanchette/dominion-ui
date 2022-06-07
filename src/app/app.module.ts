@@ -43,6 +43,11 @@ import { DataModule } from './modules/data/data.module';
     HttpClientModule,
     StoreModule.forRoot({
       app: reducer
+    }, {
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+      }
     }),
     EffectsModule.forRoot([
       AppEffects

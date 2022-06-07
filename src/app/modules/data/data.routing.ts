@@ -4,51 +4,79 @@ import { DataComponent } from './data.component';
 import { FiizListComponent } from '../../common/components/ui/list/list.component';
 import { FiizDataComponent } from '../../common/components/ui/data/data.component';
 
+export const sidebarRoutes = [
+  {
+    label: 'Standard',
+    children: [
+      {
+        label: 'Leads',
+        path: 'lead',
+        icon: 'fa fa-address-book '
+      },
+      {
+        label: 'Contacts',
+        path: 'contact',
+        icon: 'fa fa-address-book '
+      },
+      {
+        label: 'Deals',
+        path: 'deal',
+        icon: 'fa fa-address-book '
+      },
+      {
+        label: 'Events',
+        path: 'event',
+        icon: 'fa fa-address-book '
+      },
+      {
+        label: 'Calls',
+        path: 'call',
+        icon: 'fa fa-address-book '
+      },
+      {
+        label: 'Campaigns',
+        path: 'campaign',
+        icon: 'fa fa-address-book '
+      },
+      {
+        label: 'Lead Sources',
+        path: 'leadSource',
+        icon: 'fa fa-address-book '
+      },
+    ]
+  },
+  {
+    label : 'Other',
+    children: [
+      {
+        path : 'other',
+        icon : 'fa fa-address-book '
+      }
+    ]
+  }
+];
+
 const routes: Routes = [
   {
     path: '',
     component: DataComponent,
     children: [
       {
-        path: 'edit',
-        component: FiizDataComponent,
-        outlet: 'aux'
+        path: 'edit/:id',
+        children: sidebarRoutes[0].children.map(route => ({
+          path: route.path,
+          component: FiizDataComponent,
+          outlet: 'aux',
+        }))
       },
       {
-        path: 'lead',
-        component: FiizListComponent,
-        outlet: 'aux'
-      },
-      {
-        path: 'contact',
-        component: FiizListComponent,
-        outlet: 'aux'
-      },
-      {
-        path: 'call',
-        component: FiizListComponent,
-        outlet: 'aux'
-      },
-      {
-        path: 'deal',
-        component: FiizListComponent,
-        outlet: 'aux'
-      },
-      {
-        path: 'event',
-        component: FiizListComponent,
-        outlet: 'aux'
-      },
-      {
-        path: 'campaign',
-        component: FiizListComponent,
-        outlet: 'aux'
-      },
-      {
-        path: 'leadSource',
-        component: FiizListComponent,
-        outlet: 'aux'
-      },
+        path: 'list',
+        children: sidebarRoutes[0].children.map(route =>({
+          path: route.path,
+          component: FiizListComponent,
+          outlet: 'aux'
+        })),
+      }
     ]
   }
 ];

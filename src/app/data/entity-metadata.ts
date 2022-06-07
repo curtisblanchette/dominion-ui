@@ -1,5 +1,4 @@
-import { EntityMetadataMap, QueryParams } from '@ngrx/data';
-import { Call, Campaign, Contact, Deal, Event, Lead, LeadSource } from '@4iiz/corev2';
+import { EntityMetadataMap } from '@ngrx/data';
 
 const entityMetadata: EntityMetadataMap = {
   contact: {},
@@ -26,15 +25,16 @@ const entityMetadata: EntityMetadataMap = {
   campaign: {},
   leadSource: {},
 
-  role: {},
-  practiceArea: {},
-  leadStatus: {},
-  callOutcome: {},
-  callStatus: {},
-  callType: {},
-  dealStage: {},
-  eventOutcome: {},
-  eventType: {}
+  role: { noChangeTracking: true },
+  practiceArea: { noChangeTracking: true },
+  leadStatus: { noChangeTracking: true },
+  callOutcome: { noChangeTracking: true },
+  callStatus: { noChangeTracking: true },
+  callType: { noChangeTracking: true },
+  dealStage: { noChangeTracking: true },
+  eventOutcome: { noChangeTracking: true },
+  eventType:  { noChangeTracking: true },
+  lostReason: { noChangeTracking: true }
 };
 
 
@@ -55,8 +55,10 @@ export const pluralNames = {
   callStatus: 'callStatuses',
   dealStage: 'dealStages',
   eventOutcome: 'eventOutcomes',
-  eventType: 'eventType'
+  eventType: 'eventTypes',
+  lostReason: 'lostReasons',
 }
+
 
 export const entityConfig = {
   entityMetadata,
@@ -72,5 +74,6 @@ export const uriOverrides: { [key: string]: string } = {
   callOutcome: 'call-outcomes',
   dealStage: 'deal-stages',
   eventOutcome: 'event-outcomes',
-  eventType: 'event-types'
+  eventType: 'event-types',
+  lostReason: 'lost-reasons'
 }

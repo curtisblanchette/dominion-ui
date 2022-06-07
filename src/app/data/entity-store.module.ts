@@ -33,18 +33,14 @@ export class AdditionalPersistenceResultHandler extends DefaultPersistenceResult
     const page = originalAction.payload.data?.page! || 0;
     return (data: any) => {
       const action = actionHandler.call(this, data);
-      // check for rows, collection or not
+      // check for rows | a collection or not
       // single entity adds/updates should remain unchanged
       if (action && data && data.rows) {
-
-        const entities = data.rows;
-        const meta = [{ 'count' : data.count, 'page' : page }];
-        const merge = [ ...meta, ...entities ];
-
         (action as any).payload.count = data.count;
-        (action as any).payload.data = merge;
-        (action as any).payload.page = page;
+        (action as any).payload.data = data.rows;
+        (action as any).payload.page = parseInt(page, 0);
       }
+
       return action;
     };
   }
@@ -105,5 +101,6 @@ export class EntityStoreModule {
     private dataServiceFactory: DefaultDataServiceFactory
   ) {
     entityDataService.registerService('lead', this.dataServiceFactory.create('lead'));
+    entityDataService.registerService('deal', this.dataServiceFactory.create('deal'));
   }
 }

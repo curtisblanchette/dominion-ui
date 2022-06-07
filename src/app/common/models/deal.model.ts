@@ -21,6 +21,15 @@ export const DealModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
+  lostReasonId: {
+    label: 'Lost: Reason',
+    type: 'dropdown',
+    service: 'lostReason',
+    defaultValue: null,
+    validators: [
+      Validators.required
+    ]
+  },
   practiceAreaId: {
     label: 'Practice Area',
     type: 'dropdown',

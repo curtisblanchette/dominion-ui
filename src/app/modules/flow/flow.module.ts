@@ -12,6 +12,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { EffectsModule } from '@ngrx/effects';
 import { FlowEffects } from './store/flow.effects';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { FlowHostDirective } from './_core/classes/flow.host';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     FlowTextComponent,
     FlowDataComponent,
     FlowListComponent,
-    FlowAppointmentComponent
+    FlowAppointmentComponent,
+    FlowHostDirective
   ],
   imports: [
     StoreModule.forFeature('flow', reducer),

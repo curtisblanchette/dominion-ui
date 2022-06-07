@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { FlowService } from "../../../flow.service";
+import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 
 @Component({
   selector: 'flow-intro',
@@ -14,13 +15,14 @@ import { FlowService } from "../../../flow.service";
 export class FlowIntroComponent implements OnDestroy {
 
   public data: any;
-  @Input() module: string;
 
   constructor(
+    private router: Router,
     private flowService: FlowService,
-    private router: Router
+    entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    dataServiceFactory: DefaultDataServiceFactory
   ) {
-    this.data = this.router.getCurrentNavigation()!.extras.state;
+    // this.data = this.router.getCurrentNavigation()!.extras.state;
   }
 
   public save() {

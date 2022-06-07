@@ -15,19 +15,19 @@
       ></fiiz-dropdown>
     </section>
     <section [@slide]="animationIndex" class="flow-layout__content">
-      <router-outlet (activate)="onActivate($event)" name="aux"></router-outlet>
+      <ng-template flowHost></ng-template>
+<!--      <router-outlet  name="flow" #outlet></router-outlet>-->
       <div class="flow-layout__controls">
         <fiiz-button (click)="onBack()" stroked *ngIf="(stepHistory$ | async)?.length > 0">Back</fiiz-button>
         <fiiz-button primary (click)="onNext()" style="margin-left: auto;">Next</fiiz-button>
       </div>
-
     </section>
 
   </div>
 </div>
 
 <ng-template #flowTimeline>
-  <flow-timeline (onSelect)="goTo($event)" ></flow-timeline>
+  <flow-timeline (onSelect)="goTo($event)"></flow-timeline>
 </ng-template>
 
 <ng-template #flowNotes><div>

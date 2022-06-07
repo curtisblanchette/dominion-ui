@@ -4,15 +4,17 @@ import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionSer
 import { map, Observable, of } from 'rxjs';
 import { DominionType, types } from '../common/models';
 import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfaces';
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { AfterContentInit, Inject, Input, OnDestroy } from '@angular/core';
 
-export class EntityCollectionComponentBase {
+@UntilDestroy()
+export class EntityCollectionComponentBase implements AfterContentInit, OnDestroy {
 
   public _dynamicCollectionService: EntityCollectionService<DominionType>;
   public _dynamicService: EntityCollectionDataService<DominionType>;
 
   public module: ModuleType;
   public type: any;
-  public state: any;
 
   public count$: Observable<number> = of(0);
   public data$: Observable<DominionType[]> = of([]);
@@ -20,18 +22,24 @@ export class EntityCollectionComponentBase {
   public loaded$: Observable<boolean> = of(true);
 
   public response$: Observable<any>;
+  @Input('data') public data: any;
 
   constructor(
     router: Router,
-    entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    dataServiceFactory: DefaultDataServiceFactory
+    @Inject(EntityCollectionServiceFactory) private entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    @Inject(DefaultDataServiceFactory) private dataServiceFactory: DefaultDataServiceFactory
   ) {
-    this.state = router.getCurrentNavigation()?.extras.state || {};
-    this.module = this.state?.module || this.module;
-    this.type = types[this.module];
+    this.data = router.getCurrentNavigation()?.extras.state || this.data;
+  }
+
+  public ngAfterContentInit() {
+    this.module = this.data?.module;
+
+    this.type = types[this.data.module];
+
     if (this.module) {
-      this._dynamicCollectionService = this.createService(this.type, entityCollectionServiceFactory);
-      this._dynamicService = dataServiceFactory.create(this.module);
+      this._dynamicCollectionService = this.createService(this.type, this.entityCollectionServiceFactory);
+      this._dynamicService = this.dataServiceFactory.create(this.module);
 
       // this.data$ = this._dynamicCollectionService.filteredEntities$;
       this.loading$ = this._dynamicCollectionService.loading$;
@@ -39,6 +47,11 @@ export class EntityCollectionComponentBase {
       // this.count$ = this._dynamicCollectionService.count$; <-- ** always returns the filteredEntities$.length (not the collectionState.count)
     }
   }
+
+  ngOnDestroy() {
+    console.log('component destroyed');
+  }
+
 
   public getWithQuery(params: { [key: string]: any}): Observable<any> {
     this.loaded$ = of(false);

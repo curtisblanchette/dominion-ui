@@ -36,7 +36,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     },
     {
       name: 'Call Flow',
-      path: 'flow/f',
+      path: 'flow',
       roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     },
     {

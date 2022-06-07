@@ -53,6 +53,9 @@ router-outlet {
     justify-content: space-between;
     width: 100%;
     margin: 0 auto 20px auto;
+    position: relative;
+    z-index: 9;
+
 
     button {
       margin: 0;
@@ -82,7 +85,7 @@ section ng-component {
 
 .fab-button {
   position: absolute;
-  top: calc($navbar-height + 3%);
+  top: calc(#{$navbar-height} + 3%);
   right: calc(100vw - 95%);
   z-index: 1;
 }

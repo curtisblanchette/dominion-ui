@@ -1,6 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { FlowService } from '../../../flow.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'flow-list',
@@ -8,21 +7,22 @@ import { Router } from '@angular/router';
   styleUrls: ['../_base.scss','./flow-list.component.scss']
 })
 export class FlowListComponent implements OnDestroy {
-  public state: any;
+
+  @Input('data') data: any;
 
   constructor(
-    router: Router,
     public flowService: FlowService
   ) {
-    this.state = router.getCurrentNavigation()!.extras.state;
   }
 
   public ngOnDestroy(): void {
-
+    console.log('Flow List component destroy');
   }
 
   public EmitValues( value:any ){
-    console.log('Emitted Values ', value);
+    if( value ){
+      this.flowService.addVariables( {existing_lead : 'yes', existing_lead_record: value });
+    }
   }
 
 }

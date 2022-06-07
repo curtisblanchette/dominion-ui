@@ -1,20 +1,21 @@
-import { Component, ElementRef, AfterViewInit, OnDestroy, Input, Output, ViewChildren, QueryList, EventEmitter, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { firstValueFrom, Observable, of, Subject, take } from 'rxjs';
+import { firstValueFrom, Observable, of, take } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
-import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { IDropDownMenuItem } from '../dropdown';
-import { DominionType, getColumnsForModule } from '../../../models';
+import { getColumnsForModule } from '../../../models';
 import { AppState } from '../../../../store/app.reducer';
 import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
 import * as fromData from '../../../../modules/data/store/data.reducer';
 import { DropdownItem } from '../forms';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
 export interface IListOptions {
   searchable: boolean;
@@ -27,15 +28,15 @@ export enum SortDirections {
   DESC
 }
 
+@UntilDestroy()
 @Component({
   selector: 'fiiz-list',
   templateUrl: 'list.component.html',
   styleUrls: ['list.component.scss']
 })
-export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
+export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit {
 
   public searchForm: FormGroup;
-  public destroyed$: Subject<any> = new Subject<any>();
 
   // Sorting Options
   public sortColumn:string = 'createdAt'; // Sort by createdAt as default
@@ -55,9 +56,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
+  @Input('data') public override data: any;
   @Input('options') options: IListOptions;
   @Input('loadInitial') loadInitial: boolean = false;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
+  @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
 
   public actionItems: IDropDownMenuItem[] = [
@@ -77,19 +80,23 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     private store: Store<AppState>,
     private fb: FormBuilder,
     private router: Router,
-    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    private dataServiceFactory: DefaultDataServiceFactory,
+    entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    dataServiceFactory: DefaultDataServiceFactory,
     public flowService: FlowService
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    if(!this.options) {
-      /** route state is immutable so we gotta clone it */
-      this.options = Object.assign({}, this.state.options);
-    }
-
-    // get default visible columns
-    this.columns = getColumnsForModule(this.module);
+    // if(!this.options || !this.data?.options) {
+    //   /** route state is immutable so we gotta clone it */
+    //
+    //   this.data = {
+    //     options: {
+    //       searchable: true,
+    //       editable: false,
+    //       columns: []
+    //     }
+    //   }
+    // }
 
     let form: { [key: string]: FormControl } = {};
     form['search'] = new FormControl('');
@@ -103,17 +110,40 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   }
 
+  public ngOnInit() {
+
+  }
+
+
+  ngAfterViewInit() {
+    this.columns = getColumnsForModule(this.module);
+
+    console.log(this.data);
+    // @ts-ignore
+    this.searchForm.get('search').valueChanges.pipe(
+      untilDestroyed(this),
+      map(action => {
+        return action;
+      }),
+      debounceTime(250),
+      distinctUntilChanged()
+    ).subscribe((text: string) => {
+      this.page = 1;
+      this.searchInModule();
+    });
+  }
+
   public onClick($event: any, record: any) {
     $event.preventDefault();
 
     if (this.selected?.id === record.id) {
-      this.values.emit( { 'module' : this.module, 'record' : record });
+      this.values.emit( { module: this.module, record: record });
       this.selected = null;
       return;
     }
 
     this.selected = record;
-    this.values.emit( { 'module' : this.module, 'record' : record });
+    this.values.emit( { module: this.module, record: record });
   }
 
   public onPerPageChange($event: any) {
@@ -122,55 +152,29 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public onFocusOut($event: any) {
     $event.preventDefault();
-    this.values.emit( { 'module' : this.module, 'record' : null });
+    this.values.emit( { module: this.module, record: null });
     this.selected = null;
   }
 
   public onFocusIn($event: any, record: any) {
     $event.preventDefault();
     this.selected = record;
-    this.values.emit( { 'module' : this.module, 'record' : record } );
+    this.values.emit( { module: this.module, record: record } );
   }
 
-  public ngOnDestroy() {
-    console.log(`[${this.module}] List Component Destroyed`);
-    this.destroyed$.next(true);
-  }
-
-  public ngOnInit(){
-
-  }
 
   get pluralModuleName() {
-    if (this.state?.module) {
-      return pluralize(this.state.module);
+    if (this.data?.module) {
+      return pluralize(this.data.module);
     }
 
     return '';
   }
 
   onCreateNew() {
-    this.edit(null);
+    this.onCreate.emit({module: this.data.module, record: {}});
   }
 
-  public edit(record: DominionType | null) {
-    this.state.editPath.extras.state.record = record;
-    this.router.navigate(this.state.editPath.route, this.state.editPath.extras);
-  }
-
-  public ngAfterViewInit() {
-    // @ts-ignore
-    this.searchForm.get('search').valueChanges.pipe(
-      map(action => {
-        console.log(action)
-        return action;
-      }),
-      debounceTime(250),
-      distinctUntilChanged()
-    ).subscribe((text: string) => {
-      this.searchInModule();
-    });
-  }
 
 
   public searchInModule() {

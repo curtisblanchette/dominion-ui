@@ -1,12 +1,13 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FlowService } from "./flow.service";
-import { FlowTransitions, FlowTimelineComponent } from './_core';
+import { FlowTransitions } from './_core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
+import { FlowHostDirective } from './_core/classes/flow.host';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -18,8 +19,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   animationIndex = 0;
   tabIndex = 1;
   stepHistory$: Observable<string[]>;
-  @ViewChild(FlowComponent) flow: FlowComponent;
-  @ViewChild(FlowTimelineComponent) timeline: FlowTimelineComponent;
+
+  public flowForm:any;
 
   public tinymceOptions = {
     branding: false,
@@ -49,6 +50,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     }
   ];
 
+  @ViewChild(FlowHostDirective, { static: true }) flowHost!: FlowHostDirective;
+
   constructor(
     private store: Store<fromFlow.FlowState>,
     private flowService: FlowService,
@@ -56,36 +59,32 @@ export class FlowComponent implements OnInit, OnDestroy {
   ) {
     // this catches when a user refreshes the page
     // the inner router-outlet is maintained by this component so we have to strip off aux outlet segments
-    if(this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
-      this.router.navigate(['flow/f']);
+    if(this.router.routerState.snapshot.url.indexOf('(flow:') !== -1) {
+      this.router.navigate(['/flow/text']);
     }
 
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
 
   public async ngOnInit() {
-    await this.flowService.start();
+    await this.flowService.start(this.flowHost);
   }
 
-  public onActivate($event: any) {
-
-  }
-
-  public onNext(): Promise<any> {
+  public onNext() {
     this.animationIndex++;
-    return this.flowService.next();
+    return this.flowService.next(this.flowHost);
   }
 
   public onBack(): Promise<any> {
     this.animationIndex--;
-    return this.flowService.back();
+    return this.flowService.back(this.flowHost);
   }
 
   public goTo(id: string): Promise<any> {
     const next = this.flowService.steps.findIndex(x => x.id === id);
-    const current = this.flowService.steps.findIndex(x => x.id === this.flowService._currentStep.id);
+    const current = this.flowService.steps.findIndex(x => x.id === this.flowService.currentStep.id);
     next < current ? this.animationIndex-- : this.animationIndex++;
-    return this.flowService.goTo(id);
+    return this.flowService.goTo(this.flowHost, id);
   }
 
   public ngOnDestroy() {

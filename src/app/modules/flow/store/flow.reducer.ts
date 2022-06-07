@@ -2,13 +2,15 @@ import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/
 
 import * as flowActions from './flow.actions';
 import { FlowLink, FlowRouter, FlowStep } from '../_core';
+import { cloneDeep } from 'lodash';
 
 export interface FlowState {
   steps: FlowStep[]
   routers: FlowRouter[]
   links: FlowLink[],
   currentStep: FlowStep,
-  stepHistory: string[]
+  stepHistory: any,
+  variables: { [ key:string ] : any }
 }
 
 // need to serialize/deserialize the step/flow/router objects
@@ -41,7 +43,8 @@ export const initialState: FlowState = {
   routers: <FlowRouter[]>getInitialStateByKey('routers'),
   links: <FlowLink[]>getInitialStateByKey('links'),
   currentStep: <FlowStep>getInitialStateByKey('currentStep'),
-  stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]')
+  stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]'),
+  variables : {}
 };
 
 export const reducer = createReducer(
@@ -52,19 +55,26 @@ export const reducer = createReducer(
   on(flowActions.SetCurrentStepAction, (state, { payload }) => ({ ...state, currentStep: payload })),
   on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: payload })),
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
-  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: <FlowStep>{serialize:()=>{}}}))
+  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: <FlowStep>{serialize:()=>{}}})),
+  on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, variables: payload })),
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
 
-export const selectSteps       = createSelector(selectFlow, (flow: FlowState) => flow.steps.map(step => step.serialize()));
+export const selectSteps       = createSelector(selectFlow, (flow: FlowState) => flow.steps.map(step => {
+  // hack to get a mutable object back from store, "specifically the step.component"
+  const clone = cloneDeep(step);
+  return clone.serialize();
+}));
 export const selectRouters     = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
 export const selectLinks       = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
 export const selectCurrentStep = createSelector(selectFlow, (flow: FlowState) => flow.currentStep.serialize());
 export const selectStepHistory = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
+export const selectVariables = createSelector(selectFlow, (flow: FlowState) => flow.variables);
 
 export const selectStepById   = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id));
 export const selectRouterById = (id: string) => createSelector(selectRouters, (entities: FlowRouter[]) => entities.filter((item: FlowRouter) => item.id === id));
 export const selectLinkById   = (id: string) => createSelector(selectLinks, (entities: FlowLink[]) => entities.find((item: FlowLink) =>  item.to.id === id ));
-
+export const selectAllVariables = () => createSelector(selectVariables, (vars:{ [ key:string ] : any } ) => vars );
+export const selectVariablesByKey = (key: string) => createSelector(selectVariables, (vars: { [ key:string ] : any } ) => vars[key]);
 

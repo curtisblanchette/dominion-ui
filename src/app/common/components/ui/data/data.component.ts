@@ -1,10 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
-import { entityConfig } from '../../../../data/entity-metadata';
-import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
 
@@ -12,17 +10,19 @@ import * as fromApp from '../../../../store/app.reducer'
 import { FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 
 @Component({
   selector: 'fiiz-data',
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss']
 })
-export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
+export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
 
-  public form: FormGroup;
+  public form: any;
   public controlData: any;
   public submitText: string;
+  public id: string | null;
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
@@ -32,56 +32,60 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   constructor(
     private store: Store<fromApp.AppState>,
-    private router: Router,
-    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
-    private dataServiceFactory: DefaultDataServiceFactory,
+    private route: ActivatedRoute,
+
     private flowService: FlowService,
     private fb: FormBuilder,
     public navigation: NavigationService,
-    public changeDetector: ChangeDetectorRef
+    public changeDetector: ChangeDetectorRef,
+    entityCollectionServiceFactory: EntityCollectionServiceFactory,
+    dataServiceFactory: DefaultDataServiceFactory,
+    router: Router,
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
-    this.submitText = this.state.record ? `Save ${this.state.module}` : `Create ${this.state.module}`;
+
+    route.paramMap.subscribe(params => {
+      this.id = params.get('id');
+      console.log(this.id);
+    });
+
     this.buildForm(models[this.module]);
+
+    this.data$.subscribe(record => {
+      let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
+
+      if (entity) {
+        const properties = Object.keys(models[this.module]);
+        Object.keys(entity).forEach(prop => {
+
+          if (dayjs(entity[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
+            entity[prop] = dayjs(entity[prop]).format();
+          }
+
+          if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
+            delete entity[prop];
+          }
+        });
+        this.form.addControl('id', new FormControl('', Validators.required));
+        this.form.setValue(entity);
+      }
+
+      if(this.data.module) {}
+      this.submitText = entity ? `Save ${this.data.module}` : `Create ${this.data.module}`;
+    });
+
   }
 
   public ngOnInit() {
-    if (Object.keys(entityConfig.entityMetadata).includes(this.module)) {
-      // this.getData();
-
+    if (this.id !== 'new') {
+      this.getData();
     } else {
-      throw new Error(`There's no such thing as '${this.module}'`);
-    }
-  }
-
-  public ngAfterViewInit() {
-
-    // instantiate dataService for each dropdown and set options
-    this.dropdowns.forEach(dropdown => {
-      const service = dropdown.createService(dropdown.module, this.entityCollectionServiceFactory);
-      service.load();
-      dropdown.items$ = service.filteredEntities$ as any;
-    });
-
-    if (this.state.record) {
-      const properties = Object.keys(models[this.module]);
-      Object.keys(this.state.record).forEach(prop => {
-
-        if(dayjs(this.state.record[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
-          this.state.record[prop] = dayjs(this.state.record[prop]).format();
-        }
-
-        if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
-          delete this.state.record[prop];
-        }
-      });
-      this.form.addControl('id', new FormControl('', Validators.required));
-      this.form.setValue(this.state.record);
+      // throw new Error(`There's no such thing as '${this.module}'`);
     }
   }
 
   public getData(key?: string) {
-    this._dynamicCollectionService.getByKey(this.flowService.cache[this.module].id);
+    this._dynamicCollectionService.getByKey(this.id);
   }
 
   private buildForm(model: { [key: string]: any }) {
@@ -94,7 +98,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
       if (['day', 'daytime'].includes(control.type)) {
         form[key] = new FormControl({value: undefined, disabled: control.disabled}, [
-          ...control.validators,
+          ...control.validators
           // (control: any) => {
           //   return dayjs(control.value, 'DD-MM-YYYY').isBefore(dayjs()) ? {minDate: 'minDate Invalid'} : undefined
           // },
@@ -129,9 +133,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
       const payload = this.form.value;
 
-      if (this.state.record) {
-        return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
-      }
+      // if (this.state.record) {
+      //   return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
+      // }
 
       return this._dynamicCollectionService.add(<DominionType>payload).subscribe().add(() => this.resetForm());
 
@@ -143,6 +147,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.form.enable();
   }
 
-  public ngOnDestroy() {
+  public override ngOnDestroy() {
+    console.log('data component destroyed');
   }
 }

@@ -4,11 +4,11 @@
                 placeholder="Search {{pluralModuleName}}..."></fiiz-input>
     <fiiz-dropdown
       type="button"
-      *ngIf="state.options.editable"
+      *ngIf="data.options.editable"
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-    <fiiz-button stroked (click)="onCreateNew()">Create New {{state.module}}</fiiz-button>
+    <fiiz-button stroked (click)="onCreateNew()">Create New {{data.module}}</fiiz-button>
   </div>
 </form>
 
@@ -27,13 +27,10 @@
   </div>
   <div class="flex-table__body">
 
-    <ng-container [ngTemplateOutlet]="main"
-                  *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length"></ng-container>
-    <ng-container [ngTemplateOutlet]="loading" *ngIf="state?.module && (loading$ | async)"></ng-container>
-    <ng-container [ngTemplateOutlet]="noDataFound"
-                  *ngIf="state?.module && (loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
-    <ng-container [ngTemplateOutlet]="initial"
-                  *ngIf="state?.module && !(loaded$ | async) && !(loading$ | async)"></ng-container>
+    <ng-container [ngTemplateOutlet]="main" *ngIf="(loaded$ | async) && (data$ | async)?.length"></ng-container>
+    <ng-container [ngTemplateOutlet]="loading" *ngIf="loading$ | async"></ng-container>
+    <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="(loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
+    <ng-container [ngTemplateOutlet]="initial" *ngIf="!(loaded$ | async) && !(loading$ | async)"></ng-container>
 
   </div>
   <div class="flex-table__footer">
@@ -62,7 +59,7 @@
 
 <ng-template #noDataFound>
   <div class="message-block" style="padding-top: 5%;">
-    We could not find a {{state.module}} with the term "{{searchForm.value.key}}"
+    We could not find a {{data.module}} with the term "{{searchForm.value.key}}"
   </div>
   <div class="message-block">
     <span>Try another search term or create a new lead.</span>
@@ -85,11 +82,10 @@
 
       <div class="flex-table__row"
            tabindex="0" #row
-           (click)="options.editable && edit(item)"
            (mousedown)="onClick($event, item)"
            (focusin)="onFocusIn($event, item)"
            (focusout)="onFocusOut($event)"
-           *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async }; ">
+           *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async } ">
         <div class="flex-table__cell" style="flex: 0.2; justify-content:space-around;">
 
           <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
