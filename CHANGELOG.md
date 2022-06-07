@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.8.16 (2022-06-07)
+
+
+### Bug Fixes
+
+* **II-2666:** polish ([edf193e](https://github.com/4iiz/dominion-ui/commit/edf193eb15030835b5e769f29496a06fd17a6236))
+
 ### 1.8.15 (2022-06-07)
 
 ### 1.8.14 (2022-06-06)
