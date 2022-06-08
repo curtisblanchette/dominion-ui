@@ -11,7 +11,8 @@ export const ActionTypes = {
   LOGOUT: '[Login] Logout',
   REFRESH_TOKEN: '[Login] Refresh Token',
   ACCEPT_INVITATION: '[Login] Accept Invitation',
-  INVITATION_ERROR: '[Login] Invitation Error'
+  INVITATION_ERROR: '[Login] Invitation Error',
+  REFRESH_FLAG: '[Login] Refresh Flag',
 };
 
 export interface ILoginCredentials {
@@ -77,4 +78,9 @@ export const RefreshTokenAction = createAction(
 
 export const InvitationErrorAction = createAction(
   ActionTypes.INVITATION_ERROR
+);
+
+export const RefreshFlagAction = createAction(
+  ActionTypes.REFRESH_FLAG,
+  props<{ payload:boolean }>()
 );

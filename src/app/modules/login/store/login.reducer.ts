@@ -5,7 +5,8 @@ import * as loginActions from './login.actions';
 export interface LoginState {
   user: User | null;
   loading: boolean;
-  error: any
+  error: any;
+  refreshFlag: boolean;
 }
 
 /**
@@ -23,7 +24,8 @@ function getUserInitialState() {
 export const initialState: LoginState = {
   user: getUserInitialState(),
   loading: false,
-  error: null
+  error: null,
+  refreshFlag: false
 };
 
 export const reducer = createReducer(
@@ -35,7 +37,8 @@ export const reducer = createReducer(
   on(loginActions.LogoutAction, (state) => ({...state, user: null, agent: null, workspace: null})),
   on(loginActions.RefreshTokenAction, (state) => ({...state})),
   on(loginActions.AcceptInvitationAction, (state) => ({ ...state, loading: true })),
-  on(loginActions.InvitationErrorAction, (state) => ({...state, loading:false}))
+  on(loginActions.InvitationErrorAction, (state) => ({...state, loading:false})),
+  on(loginActions.RefreshFlagAction, (state, {payload}) => ({...state, refreshFlag: payload})),
 );
 
 export const selectLogin = createFeatureSelector<LoginState>('login');
@@ -47,5 +50,6 @@ export const selectUser = createSelector(selectLogin, (state: LoginState) => {
 
 export const loading = createSelector(selectLogin, (state: LoginState) => state.loading);
 export const error = createSelector(selectLogin, (state: LoginState) => state.error);
+export const refreshed = createSelector(selectLogin, (state: LoginState) => state.refreshFlag);
 
 

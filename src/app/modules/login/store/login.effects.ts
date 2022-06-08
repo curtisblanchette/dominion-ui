@@ -168,10 +168,11 @@ export class LoginEffects {
         ofType(loginActions.UpdateUserAction),
         map((action) => {
           localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
-          return action.payload;
+          return loginActions.RefreshFlagAction({ payload: true });
+          // return action.payload;
         })
       ),
-    { dispatch: false }
+    { dispatch: true }
   );
 
   acceptInvitation$ = createEffect(
