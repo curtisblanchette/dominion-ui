@@ -34,20 +34,31 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     this.store.select(fromLogin.selectUser).subscribe((user: any) => {
       if (user) {
         this.loggedUser = user as User;
-        this.refreshTokenSubject.next(true);
       }
     });
+
+    this.store.select(fromLogin.refreshed).subscribe((value:any) => {
+      if( value ){
+        this.refreshTokenSubject.next(true);
+        this.store.dispatch(loginActions.RefreshFlagAction({ payload: false}));
+      }      
+    })
+
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.refreshTokenInProgress = this.isRefreshTokenInProgress(this.loggedUser.access_token);
     if (this.refreshTokenInProgress) {
       // wait until refreshTokenSubject has a non-null value
-      console.log("Token Refresh In Progress!")
+      console.log("Token Refresh In Progress!");
       return this.refreshTokenSubject.pipe(
         filter(result => result !== null),
         take(1),
-        switchMap(() => next.handle(this.addAuthenticationToken(req)))
+        switchMap(
+          () => {
+            return next.handle(this.addAuthenticationToken(req))
+          }
+        )
       );
     } else {
       // Set the refreshTokenSubject to null so that subsequent API calls will wait until the new token has been retrieved
@@ -76,7 +87,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     const isExpired = (token: any) => Date.now() >= (JSON.parse(atob(accessToken.split('.')[1]))).exp * 1000;
 
     if (isExpired(accessToken)) {
-      console.log("Token expired. Dispatching new token action!")
+      console.log("Token expired. Dispatching new token action!");
       // Set the refreshTokenSubject to null so that subsequent API calls will wait until the new token has been retrieved
       this.refreshTokenSubject.next(null);
       this.store.dispatch(loginActions.RefreshTokenAction({ payload: this.loggedUser }));
