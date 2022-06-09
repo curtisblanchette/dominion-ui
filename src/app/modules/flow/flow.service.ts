@@ -10,6 +10,7 @@ import { FlowHostDirective } from './_core/classes/flow.host';
 import * as flowSteps from './flow.steps';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { FlowStepHistoryEntry } from './_core/classes/flow.stepHistory';
+import * as dayjs from 'dayjs';
 
 export interface IHistory {
   prevStepId: string;
@@ -151,17 +152,17 @@ export class FlowService {
       }
 
       if(this.currentStep?.step?.id) {
+        const timenow = dayjs().unix();
         const historyEntry: FlowStepHistoryEntry = {
           id: this.currentStep?.step?.id,
           variables: this.currentStep?.variables,
-          elapsed: 0 // TODO hook this up to an interval
+          timestamp: dayjs().unix(),
+          elapsed: await this.getElapsedTime(timenow) // TODO hook this up to an interval
         };
 
         this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
       }
 
-      // set the initial state to false
-      // this.addValidState(false); // Any form should be not valid by default
       await this.renderComponent(host, <FlowStep>step);
 
     } else {
@@ -257,6 +258,16 @@ export class FlowService {
     }
 
     return value;
+  }
+
+  public async getElapsedTime( now:number ){
+    const historySteps = await firstValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
+    const lastHistoryStep = historySteps.pop();    
+    if( lastHistoryStep ){
+      return (now-lastHistoryStep.timestamp);
+    } else {
+      return 0;
+    }
   }
 
 }

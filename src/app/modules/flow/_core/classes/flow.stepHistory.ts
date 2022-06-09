@@ -4,4 +4,5 @@ export interface FlowStepHistoryEntry {
     [ key:string ] : string| number | boolean | Date;
   } | undefined;
   elapsed: number;
+  timestamp:number;
 }
