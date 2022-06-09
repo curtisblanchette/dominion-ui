@@ -1,15 +1,12 @@
-import { FlowCondition, FlowCurrentStep, FlowLink, FlowRouter, FlowStep, ModuleType } from './_core';
+import { FlowCondition, FlowCurrentStep, FlowLink, FlowRouter, FlowStep, ModuleType, FlowHostDirective, FlowStepHistoryEntry, FlowListParams } from './_core';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom, take } from 'rxjs';
-import { FlowHostDirective } from './_core/classes/flow.host';
 
 import * as flowSteps from './flow.steps';
-import { untilDestroyed } from '@ngneat/until-destroy';
-import { FlowStepHistoryEntry } from './_core/classes/flow.stepHistory';
 
 export interface IHistory {
   prevStepId: string;
@@ -46,15 +43,15 @@ export class FlowService {
     this.store.dispatch(flowActions.ResetAction());
   }
 
-  public create(type?: string) {
+  public async create(type?: string) {
 
     // select call type
     const callType = flowSteps.callType();
-    const searchNListContacts =  flowSteps.searchNListContacts()
+    const searchNListContacts = flowSteps.searchNListContacts()
     const webLeadsType = flowSteps.webLeadsType();
     const searchNListWebLeads = flowSteps.searchNListWebLeads();
     const createNewLead = flowSteps.createNewLead();
-    const selectExistingOpp = flowSteps.selectExistingOpp()
+    const selectExistingOpp = flowSteps.selectExistingOpp();
 
     const inboundCond = new FlowCondition(async () => {
       return await this.getVariable('call_type') === 'inbound';
@@ -67,9 +64,11 @@ export class FlowService {
     const callTypeRouter = new FlowRouter('Router', '', [inboundCond, outboundCond]);
     const callTypeLink = new FlowLink(callType, callTypeRouter);
 
-    // inbound
     const existingLead_yes = new FlowCondition(async () => {
-      return await this.getVariable('lead');
+      const leadId = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey('lead')).pipe(take(1)));
+      const params = new FlowListParams();
+      params.setParam('leadId', leadId);
+      return params;
     }, selectExistingOpp);
 
     const existingLead_no = new FlowCondition(async () => {
@@ -138,7 +137,6 @@ export class FlowService {
 
   public async next(host: FlowHostDirective) {
     // find a link where the "from" is equal to "currentStep"
-    console.log('currentStep', this.currentStep);
     const link = this.links.find(link => link.from.id === this.currentStep?.step?.id);
 
     let step: FlowStep | FlowRouter | undefined = link?.to;

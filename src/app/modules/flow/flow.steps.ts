@@ -61,6 +61,7 @@ export const createNewLead = () => {
 };
 
 export const selectExistingOpp = () => {
+
   return new FlowStep({
     nodeText: 'Opportunities',
     nodeIcon: 'address-book',

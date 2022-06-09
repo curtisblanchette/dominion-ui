@@ -186,7 +186,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public async getData( searchkey:string = '' ) {
-    const params:QueryParams = {
+    const params: QueryParams = {
       page: this.page.toString(),
       limit: (await firstValueFrom(this.store.select(fromData.selectPerPage))).toString()
     };
@@ -203,6 +203,14 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['sort'] = 'DESC';
     } else {
       params['sort'] = 'ASC';
+    }
+
+    if(this.data.options.query) {
+      for(const item of Object.entries(this.data.options.query)) {
+        const [key, value] = item;
+        // @ts-ignore
+        params[key] = value;
+      }
     }
 
     // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
