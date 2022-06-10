@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -17,7 +17,7 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss']
 })
-export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
+export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterContentInit, OnDestroy {
 
   public form: any;
   public controlData: any;
@@ -49,8 +49,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       console.log(this.id);
     });
 
-    this.buildForm(models[this.module]);
-
     this.data$.subscribe(record => {
       let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
 
@@ -70,7 +68,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         this.form.setValue(entity);
       }
 
-      if(this.data.module) {}
       this.submitText = entity ? `Save ${this.data.module}` : `Create ${this.data.module}`;
     });
 
@@ -82,6 +79,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     } else {
       // throw new Error(`There's no such thing as '${this.module}'`);
     }
+  }
+
+  public override ngAfterContentInit() {
+    super.ngAfterContentInit();
+    this.buildForm(models[this.module]);
   }
 
   public getData(key?: string) {
