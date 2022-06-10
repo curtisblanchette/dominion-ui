@@ -57,7 +57,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   override getAll(): Observable<T[]> {
 
     if(['role', 'practiceArea', 'leadStatus', 'callType', 'callStatus', 'callOutcome', 'eventOutcome', 'eventType', 'dealStage'].includes(this.entityName)) {
-      return super.getAll().pipe(map(this.toDropdownItems));
+      return super.getAll().pipe(map(CustomDataService.toDropdownItems));
     }
     return super.getAll();
   }
@@ -70,7 +70,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     return super.getWithQuery(params);
   }
 
-  toDropdownItems(items: {[key:string]: any}[]): any {
+  public static toDropdownItems(items: {[key:string]: any}[]): any {
     // return { ...hero, dateLoaded: new Date() };
     return items.map((item: any) => { return { id: item.id, label: item.name }});
   }

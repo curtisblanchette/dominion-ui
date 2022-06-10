@@ -71,7 +71,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
   /** return a service that has a dynamic type defined */
   createService<T>(module: T, factory: EntityCollectionServiceFactory): EntityCollectionService<T> {
-    return factory.create<T>(this.module);
+    return factory.create<T>(this.data.module);
   }
 
 

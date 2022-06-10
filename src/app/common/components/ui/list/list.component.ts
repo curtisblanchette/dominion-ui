@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, take } from 'rxjs';
@@ -34,7 +34,7 @@ export enum SortDirections {
   templateUrl: 'list.component.html',
   styleUrls: ['list.component.scss']
 })
-export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit {
+export class FiizListComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit {
 
   public searchForm: FormGroup;
 
@@ -86,18 +86,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    // if(!this.options || !this.data?.options) {
-    //   /** route state is immutable so we gotta clone it */
-    //
-    //   this.data = {
-    //     options: {
-    //       searchable: true,
-    //       editable: false,
-    //       columns: []
-    //     }
-    //   }
-    // }
-
     let form: { [key: string]: FormControl } = {};
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
@@ -110,13 +98,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   }
 
-  public ngOnInit() {
-
-  }
-
-
-  ngAfterViewInit() {
+  public override ngAfterContentInit() {
+    super.ngAfterContentInit();
     this.columns = getColumnsForModule(this.module);
+
+
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
@@ -129,6 +115,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.page = 1;
       this.searchInModule();
     });
+  }
+
+
+  ngAfterViewInit() {
+
   }
 
   public onClick($event: any, record: any) {
@@ -172,8 +163,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   onCreateNew() {
     this.onCreate.emit({module: this.data.module, record: {}});
   }
-
-
 
   public searchInModule() {
     if (this.searchForm.valid) {

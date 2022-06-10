@@ -1,4 +1,4 @@
-import { AfterContentInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -7,17 +7,22 @@ import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from '../../../../store/app.reducer'
-import { FiizSelectComponent } from '../forms';
+import { DropdownItem, FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
+import { uriOverrides } from '../../../../data/entity-metadata';
+import { firstValueFrom, of } from 'rxjs';
+import { CustomDataService } from '../../../../data/custom.dataservice';
 
 @Component({
   selector: 'fiiz-data',
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss']
 })
-export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterContentInit, OnDestroy {
+export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
 
   public form: any;
   public controlData: any;
@@ -37,7 +42,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     private flowService: FlowService,
     private fb: FormBuilder,
     public navigation: NavigationService,
-    public changeDetector: ChangeDetectorRef,
+    private http: HttpClient,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
     router: Router,
@@ -46,7 +51,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     route.paramMap.subscribe(params => {
       this.id = params.get('id');
-      console.log(this.id);
     });
 
     this.data$.subscribe(record => {
@@ -68,23 +72,37 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         this.form.setValue(entity);
       }
 
-      this.submitText = entity ? `Save ${this.data.module}` : `Create ${this.data.module}`;
+
     });
 
   }
 
   public ngOnInit() {
-    if (this.id !== 'new') {
-      this.getData();
-    } else {
-      // throw new Error(`There's no such thing as '${this.module}'`);
-    }
+
+  }
+
+  public ngAfterViewInit() {
+    this.dropdowns.forEach(async (dropdown) => {
+      const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
+      dropdown.items$ = of(CustomDataService.toDropdownItems(data));
+    });
   }
 
   public override ngAfterContentInit() {
     super.ngAfterContentInit();
     this.buildForm(models[this.module]);
+    this.submitText = this.id ? `Save ${this.data.module}` : `Create ${this.data.module}`;
+
+    if (this.id !== 'new') {
+      this.getData();
+    } else {
+      // throw new Error(`There's no such thing as '${this.module}'`);
+    }
+
+
+
   }
+
 
   public getData(key?: string) {
     this._dynamicCollectionService.getByKey(this.id);

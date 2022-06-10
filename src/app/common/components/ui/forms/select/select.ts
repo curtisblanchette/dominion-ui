@@ -67,11 +67,11 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    if(this.remote) {
-      const service = this.createService(this.module, entityCollectionServiceFactory);
-      service.load();
-      this.items$ = service.filteredEntities$ as any;
-    }
+    // if(this.remote) {
+    //   const service = this.createService(this.module, entityCollectionServiceFactory);
+    //   service.load();
+    //   this.items$ = service.filteredEntities$ as any;
+    // }
   }
 
   async ngOnInit() {
