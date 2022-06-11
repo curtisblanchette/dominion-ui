@@ -14,9 +14,12 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { uriOverrides } from '../../../../data/entity-metadata';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, map, of, takeUntil } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { distinctUntilChanged } from 'rxjs/operators';
 
+@UntilDestroy()
 @Component({
   selector: 'fiiz-data',
   templateUrl: './data.component.html',
@@ -48,36 +51,54 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     router: Router,
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
-
     route.paramMap.subscribe(params => {
       this.id = params.get('id');
-    });
-
-    this.data$.subscribe(record => {
-      let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
-
-      if (entity) {
-        const properties = Object.keys(models[this.module]);
-        Object.keys(entity).forEach(prop => {
-
-          if (dayjs(entity[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
-            entity[prop] = dayjs(entity[prop]).format();
-          }
-
-          if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
-            delete entity[prop];
-          }
-        });
-        this.form.addControl('id', new FormControl('', Validators.required));
-        this.form.setValue(entity);
-      }
-
-
     });
 
   }
 
   public ngOnInit() {
+  }
+
+  public override ngAfterContentInit() {
+    super.ngAfterContentInit();
+    this.buildForm(models[this.module]);
+
+    this.submitText = this.id ? `Save ${this.data.module}` : `Create ${this.data.module}`;
+
+    this.data$.pipe(
+      untilDestroyed(this),
+    ).subscribe(record => {
+      if(record[0]) {
+        let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
+
+        if (entity) {
+          const properties = Object.keys(models[this.module]);
+          Object.keys(entity).forEach(prop => {
+
+            if (dayjs(entity[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
+              entity[prop] = dayjs(entity[prop]).format();
+            }
+
+            if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
+              delete entity[prop];
+            }
+          });
+          this.form.addControl('id', new FormControl('', Validators.required));
+          this.form.setValue(entity);
+        }
+      }
+    });
+
+    this.form.controls.statusId.valueChanges.subscribe((res: number) => {
+      let fnName = 'disable';
+
+      if(res === 3) {
+        fnName = 'enable';
+      }
+
+      this.form.controls.lostReasonId[fnName]({emitEvent: false});
+    });
 
   }
 
@@ -86,26 +107,21 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     });
-  }
 
-  public override ngAfterContentInit() {
-    super.ngAfterContentInit();
-    this.buildForm(models[this.module]);
-    this.submitText = this.id ? `Save ${this.data.module}` : `Create ${this.data.module}`;
+
+
+
 
     if (this.id !== 'new') {
       this.getData();
     } else {
       // throw new Error(`There's no such thing as '${this.module}'`);
     }
-
-
-
   }
-
 
   public getData(key?: string) {
     this._dynamicCollectionService.getByKey(this.id);
+    this._dynamicCollectionService.setFilter({id: this.id});// this modifies filteredEntities$ subset
   }
 
   private buildForm(model: { [key: string]: any }) {
@@ -153,9 +169,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
       const payload = this.form.value;
 
-      // if (this.state.record) {
-      //   return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
-      // }
+      if (this.id) {
+        return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
+      }
 
       return this._dynamicCollectionService.add(<DominionType>payload).subscribe().add(() => this.resetForm());
 

@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry } from './_core';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, FlowLink } from './_core';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -13,7 +13,7 @@ export interface IHistory {
   data: any;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class FlowService {
   public cache: { [key: string]: any } = {};
 
@@ -22,37 +22,72 @@ export class FlowService {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store<fromFlow.FlowState>
+    private store: Store<fromFlow.FlowState>,
   ) {
     this.builder = new FlowBuilder(this.store);
   }
 
-  public async start(host: FlowHostDirective): Promise<any> {
+  public async start(context: FlowHostDirective): Promise<any> {
     await this.builder.build();
     const firstStep: FlowStep = this.builder.process.steps[0];
-    this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: firstStep, variables: [], valid: false }));
-    return this.renderComponent(host, firstStep);
+    return this.renderComponent(context, firstStep);
   }
 
-  public async goTo(host: FlowHostDirective, id: string) {
+  public async goTo(context: FlowHostDirective, id: string) {
     const step = this.builder.process.steps.find(x => x.id === id);
-    await this.renderComponent(host, <FlowStep>step);
+    await this.renderComponent(context, <FlowStep>step);
+  }
+
+  public findNextStep(): FlowStep | FlowRouter | undefined {
+    // find a link where the "from" is equal to "currentStep"
+    const link = this.builder.process.links.find(link => link.from.id === this.builder.process.currentStep?.step?.id);
+    return link?.to;
+  }
+
+  public findPreviousStep(): FlowStep | FlowRouter | undefined {
+    // const clone = [...this.builder.process.stepHistory];
+    //
+    // const previousStep = clone.pop();
+    // return this.builder.process.steps.find(step => step.id === previousStep?.id);
+
+    let link: FlowLink | undefined;
+    let step: FlowStep | FlowRouter | undefined;
+    let router: FlowRouter | undefined;
+
+    link = this.builder.process.links.find(link => link.to.id === this.builder.process.currentStep?.step?.id);
+    step = this.builder.process.steps.find(step => step.id === link?.from?.id);
+
+    if(!link) {
+      // no link, find a router who's router.condition[0].to matches the current step
+      router = this.builder.process.routers.find(router => router.conditions.filter(condition => condition.to.id === this.builder.process.currentStep?.step?.id ) );
+
+      if(router) {
+        // found a router, which `link` links to it?
+        const condition = router.conditions.find(condition => condition.to.id === this.builder.process.currentStep?.step?.id);
+
+        if(condition?.to instanceof FlowRouter) {
+          // recurse
+
+        } else {
+          step = condition?.to;
+        }
+      }
+    }
+
+    return step;
   }
 
   public async next(host: FlowHostDirective) {
     // find a link where the "from" is equal to "currentStep"
-    const link = this.builder.process.links.find(link => link.from.id === this.builder.process.currentStep?.step?.id);
-
-    let step: FlowStep | FlowRouter | undefined = link?.to;
+    let step = this.findNextStep();
 
     if (step) {
-
       if (step instanceof FlowRouter) {
         const init = <FlowRouter>step;
         step = await init.evaluate();
       }
 
-      if(this.builder.process.currentStep?.step?.id) {
+      if (this.builder.process.currentStep?.step?.id) {
         const historyEntry: FlowStepHistoryEntry = {
           id: this.builder.process.currentStep?.step?.id,
           variables: this.builder.process.currentStep?.variables,
@@ -72,9 +107,8 @@ export class FlowService {
   }
 
   public async back(host: FlowHostDirective) {
-    const clone = [...this.builder.process.stepHistory];
-    const previousStep = clone.pop();
-    const step = this.builder.process.steps.find(step => step.id === previousStep?.id);
+    const step = this.findPreviousStep();
+
     // this.store.dispatch(flowActions.SetStepHistoryAction({payload: clone}));
     // console.log('Back Step', step);
     if (step) {
@@ -107,17 +141,10 @@ export class FlowService {
   }
 
   public async renderComponent(host: FlowHostDirective, step: FlowStep) {
-    const existingLead = await this.getVariable('existing_lead');
-    if (existingLead === 'yes') {
-      // let record = await this.getVariable('existing_lead_record');
-      // step.data.options.parentId = record.id;
-    }
-    // this.currentStep = step;
-    this.store.dispatch(flowActions.UpdateCurrentStepAction({ step, valid: false, variables: []  }));
+    this.store.dispatch(flowActions.UpdateCurrentStepAction({step, valid: false, variables: []}));
 
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
-
 
     const componentRef = viewContainerRef.createComponent<any>(step.component);
     componentRef.instance.data = step.data;
@@ -127,7 +154,7 @@ export class FlowService {
     let value;
 
     if (key) {
-       value = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(key)).pipe(take(1)));
+      value = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(key)).pipe(take(1)));
     } else {
       value = await firstValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
     }

@@ -4,7 +4,7 @@ export class FlowFactory {
 
   public static callTypeDecision(): FlowStep {
     return new FlowStep({
-      nodeText: 'call-type',
+      nodeText: 'Call Type',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
       data: {
@@ -48,15 +48,11 @@ export class FlowFactory {
 
   public static createNewLead(): FlowStep {
     return new FlowStep({
-      nodeText: 'Collect Lead Info',
+      nodeText: 'Create New Lead',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       data: {
         title: 'Create a New Lead',
-        // firstName: 'Curtis',
-        // lastName: 'Blanchette',
-        // phone: '+12507183166',
-        // email: 'curtis@4iiz.com',
         module: ModuleType.LEAD
       }
     });

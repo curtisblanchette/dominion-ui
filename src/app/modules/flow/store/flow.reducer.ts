@@ -9,7 +9,7 @@ export interface FlowState {
   routers: FlowRouter[]
   links: FlowLink[],
   currentStep: FlowCurrentStep | undefined,
-  stepHistory: FlowStepHistoryEntry[]
+  stepHistory: FlowStepHistoryEntry[],
 }
 
 // need to serialize/deserialize the step/flow/router objects
@@ -58,9 +58,13 @@ export const reducer = createReducer(
   on(flowActions.UpdateCurrentStepAction, (state, { step, valid, variables }) => ({ ...state, currentStep: { ...state.currentStep, step, valid, variables } })),
   on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: [ ...state.stepHistory, payload ] })),
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
-  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: undefined})),
+  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: undefined })),
   on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, variables: payload }})),
   on(flowActions.SetValidityAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, valid: payload  }})),
+
+
+  // on(flowActions.NextStepAction, (state, { host }) => ({ ...state })),
+  // on(flowActions.PrevStepAction, (state, { host }) => ({ ...state }))
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
@@ -71,9 +75,15 @@ export const selectSteps = createSelector(selectFlow, (flow: FlowState) => flow.
   return clone.serialize();
 }));
 
+export const selectStepsToCurrent = createSelector(selectFlow, (flow: FlowState) => {
+  const currentStepIndex: number = flow.steps.findIndex((step) => step.id === flow.currentStep?.step?.id);
+  return flow.steps.slice(0, currentStepIndex + 1).map(step => step.serialize());
+})
+
 export const selectRouters       = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
 export const selectLinks         = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
-export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.serialize ? flow.currentStep.serialize() : undefined);
+export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => flow.currentStep);
+export const selectCurrentStepId = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.step?.id);
 export const selectIsValid       = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.valid);
 
 export const selectStepHistory   = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);

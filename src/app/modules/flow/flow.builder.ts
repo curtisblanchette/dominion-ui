@@ -3,7 +3,7 @@ import { Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
-import { FlowListParams } from './_core';
+import { FlowListParams, FlowTextComponent } from './_core';
 import { firstValueFrom, take } from 'rxjs';
 
 export class FlowBuilder {
@@ -43,9 +43,13 @@ export class FlowBuilder {
 
     const existingLead_yes = FlowFactory.condition(async () => {
       const leadId = await this.getVariable('lead');
-      const params = new FlowListParams();
-      params.setParam('leadId', leadId);
-      return params;
+      if (leadId) {
+        const params = new FlowListParams();
+        params.setParam('leadId', leadId);
+        return params;
+      }
+      return false;
+
     }, selectExistingOpp);
 
     const existingLead_no = FlowFactory.condition(async () => {
@@ -68,6 +72,13 @@ export class FlowBuilder {
     const webLeadRouter = FlowFactory.router('Router', '', [webLeads_yes, webLeads_no]);
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
 
+
+    //test
+    const bogusStep = FlowFactory.step({nodeText: 'bogus', nodeIcon: 'fa-smile', data: {
+      template: ''
+      }, component: FlowTextComponent});
+    const bogusLink = FlowFactory.link(selectExistingOpp, bogusStep);
+    ///
     this.process
       .addStep(callType)
       .addRouter(callTypeRouter)
@@ -83,6 +94,8 @@ export class FlowBuilder {
       .addStep(selectExistingOpp)
       .addStep(createNewLead)
       .addLink(searchNListContactsLink)
+      .addStep(bogusStep)
+      .addLink(bogusLink)
 
     //   break;
     //

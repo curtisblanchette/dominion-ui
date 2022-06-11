@@ -101,7 +101,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public override ngAfterContentInit() {
     super.ngAfterContentInit();
     this.columns = getColumnsForModule(this.module);
+  }
 
+
+  ngAfterViewInit() {
 
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
@@ -115,11 +118,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.page = 1;
       this.searchInModule();
     });
-  }
-
-
-  ngAfterViewInit() {
-
   }
 
   public onClick($event: any, record: any) {

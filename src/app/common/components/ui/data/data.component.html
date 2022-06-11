@@ -9,7 +9,7 @@
 
   <div class="controls">
     <fiiz-button (click)="navigation.back()" type="button" class="stroked">Cancel</fiiz-button>
-    <fiiz-button #submit type="submit" primary [loading]="loading$ | async" [disabled]="(loading$ | async) || form.invalid">{{submitText}}</fiiz-button>
+    <fiiz-button #submit type="submit" primary [loading]="loadingSubject$" [disabled]="(loadingSubject$ | async) || form.invalid || currentStep">{{submitText}}</fiiz-button>
   </div>
 
 </form>

@@ -63,32 +63,23 @@ export class FlowComponent implements OnInit, OnDestroy {
 
     this.valid$ = this.store.select(fromFlow.selectIsValid);
 
-    this.store.select(fromFlow.selectIsValid).subscribe((isValid) => {
-      console.log(isValid);
-    });
-
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
-
-  // public get isValid(){
-  //   this.store.select(fromFlow.selectCurrentStep).subscribe( res => {
-  //     this.valid$ = !res;
-  //   });
-  //   return true;
-  // }
 
   public async ngOnInit() {
     await this.flowService.start(this.flowHost);
   }
 
-  public onNext() {
+  public onNext($event: Event): void {
+    $event.stopPropagation();
     this.animationIndex++;
-    return this.flowService.next(this.flowHost);
+    this.store.dispatch(flowActions.NextStepAction({ host: this.flowHost }));
   }
 
-  public onBack(): Promise<any> {
+  public onBack($event: Event): void {
+    $event.stopPropagation();
     this.animationIndex--;
-    return this.flowService.back(this.flowHost);
+    this.store.dispatch(flowActions.PrevStepAction({ host: this.flowHost }));
   }
 
   public goTo(id: string): Promise<any> {

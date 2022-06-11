@@ -6,7 +6,6 @@ import { FlowLink } from './flow.link';
 import { FlowCurrentStep } from './flow.currentStep';
 import { FlowStepHistoryEntry } from './flow.stepHistory';
 import * as flowActions from '../../store/flow.actions';
-import { FlowHostDirective } from './flow.host';
 import { Inject } from '@angular/core';
 
 export class FlowProcess {
