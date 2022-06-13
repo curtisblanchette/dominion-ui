@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, FlowLink, NoStepFoundError } from './_core';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError } from './_core';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -6,7 +6,6 @@ import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
-import * as dayjs from 'dayjs';
 
 export interface IHistory {
   prevStepId: string;
@@ -88,14 +87,14 @@ export class FlowService {
 
   private async createHistoryEntry(): Promise<void> {
     if (this.builder.process.currentStep?.step?.id) {
-      const timenow = dayjs().unix();
+      // releasing the step sets step._destroyedAt
+      this.builder.process.currentStep.step.release();
 
       const historyEntry: FlowStepHistoryEntry = {
         id: this.builder.process.currentStep?.step?.id,
         variables: this.builder.process.currentStep?.variables,
-        timestamp: dayjs().unix(),
-        elapsed: await this.getElapsedTime(timenow)
-      };
+        elapsed: this.builder.process.currentStep.step.elapsed
+      } as FlowStepHistoryEntry;
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
     }
   }
@@ -131,16 +130,6 @@ export class FlowService {
     }
 
     return value;
-  }
-
-  public async getElapsedTime( now:number ){
-    const historySteps = await firstValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
-    const lastHistoryStep = historySteps.pop();
-    if( lastHistoryStep ){
-      return (now-lastHistoryStep.timestamp);
-    } else {
-      return 0;
-    }
   }
 
 }
