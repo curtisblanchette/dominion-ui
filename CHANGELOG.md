@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.8.26 (2022-06-13)
+
+
+### Bug Fixes
+
+* **develop:** post the FlowNode id to summaries ([66a7794](https://github.com/4iiz/dominion-ui/commit/66a77943b722e136f25df2ca02f6d2bc29017523))
+
 ### 1.8.25 (2022-06-13)
 
 ### 1.8.24 (2022-06-13)
