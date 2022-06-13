@@ -18,6 +18,7 @@ export class FlowService {
   public cache: { [key: string]: any } = {};
 
   public builder: FlowBuilder;
+  public cmpReference: any;
 
   constructor(
     private router: Router,
@@ -58,6 +59,10 @@ export class FlowService {
       const init = <FlowRouter>step;
       step = await init.evaluate();
     }
+    if(typeof this.cmpReference.instance.save === 'function') {
+      this.cmpReference.instance.save();
+    }
+
     this.createHistoryEntry();
 
     if (step?.id) {
@@ -117,6 +122,8 @@ export class FlowService {
     viewContainerRef.clear();
 
     const componentRef = viewContainerRef.createComponent<any>(step.component);
+    this.cmpReference = componentRef;
+
     componentRef.instance.data = step.data;
   }
 

@@ -14,10 +14,9 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { uriOverrides } from '../../../../data/entity-metadata';
-import { firstValueFrom, map, of, takeUntil } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { distinctUntilChanged } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -39,6 +38,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
   @Output('onFailure') onFailure: EventEmitter<Error> = new EventEmitter<Error>();
+  @Output('isValid') isValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(
     private store: Store<fromApp.AppState>,
@@ -96,13 +96,12 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     });
 
     this.form.controls.statusId.valueChanges.subscribe((res: number) => {
-      let fnName = 'disable';
-
-      if(res === 3) {
-        fnName = 'enable';
-      }
-
+      let fnName = res === 3 ? 'enable' : 'disable';
       this.form.controls.lostReasonId[fnName]({emitEvent: false});
+    });
+
+    this.form.statusChanges.pipe(untilDestroyed(this)).subscribe((valid: 'VALID' | 'INVALID') => {
+      this.isValid.next(valid === 'VALID');
     });
 
   }
@@ -168,10 +167,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public saveData(): void {
+    const payload = this.form.value;
+
     if (this.form.valid) {
       this.form.disable();
-
-      const payload = this.form.value;
 
       if (this.id) {
         return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
