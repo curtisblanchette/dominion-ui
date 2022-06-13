@@ -46,7 +46,7 @@ export class FlowFactory {
     })
   }
 
-  public static createNewLead(): FlowStep {
+  public static createEditLead(): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'address-book',

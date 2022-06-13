@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -32,6 +32,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public submitText: string;
   public id: string | null;
 
+  @Input('data') public override data: any;
+
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
 
@@ -62,9 +64,12 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override ngAfterContentInit() {
     super.ngAfterContentInit();
+
+    this.id = this.data.id
+
     this.buildForm(models[this.module]);
 
-    this.submitText = this.id ? `Save ${this.data.module}` : `Create ${this.data.module}`;
+    this.submitText = this.id ? `Save ${this.module}` : `Create ${this.module}`;
 
     this.data$.pipe(
       untilDestroyed(this),
@@ -102,15 +107,14 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   }
 
+
+
   public ngAfterViewInit() {
+
     this.dropdowns.forEach(async (dropdown) => {
       const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     });
-
-
-
-
 
     if (this.id !== 'new') {
       this.getData();

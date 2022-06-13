@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError } from './_core';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowDataComponent, FlowListComponent, FlowNode } from './_core';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -35,7 +35,7 @@ export class FlowService {
       return this.renderComponent(context, firstStep);
     }
 
-    throw new Error('No step found to transition to.');
+    throw new NoStepFoundError();
 
   }
 
@@ -44,7 +44,7 @@ export class FlowService {
     await this.renderComponent(context, <FlowStep>step);
   }
 
-  public findNextStep(): FlowStep | FlowRouter | undefined {
+  public findNextStep(): FlowNode | undefined  {
     // find a link where the "from" is equal to "currentStep"
     const link = this.builder.process.links.find(link => link.from.id === this.builder.process.currentStep?.step?.id);
     return link?.to;
@@ -85,7 +85,7 @@ export class FlowService {
 
   }
 
-  private async createHistoryEntry(): Promise<void> {
+  private createHistoryEntry(): void {
     if (this.builder.process.currentStep?.step?.id) {
       // releasing the step sets step._destroyedAt
       this.builder.process.currentStep.step.release();

@@ -27,9 +27,10 @@ export class FlowBuilder {
     const searchNListContacts = FlowFactory.searchNListContacts()
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
-    const createNewLead = FlowFactory.createNewLead();
+    const createEditLead = FlowFactory.createEditLead();
     const selectExistingOpp = FlowFactory.selectExistingOpp();
 
+    // inbound
     const inboundCond = FlowFactory.condition(async () => {
       return await this.getVariable('call_type') === 'inbound';
     }, searchNListContacts);
@@ -50,12 +51,12 @@ export class FlowBuilder {
       }
       return false;
 
-    }, selectExistingOpp);
+    }, createEditLead);
 
     const existingLead_no = FlowFactory.condition(async () => {
       const lead = await this.getVariable('lead');
       return lead === null;
-    }, createNewLead);
+    }, createEditLead);
 
     const searchNListContactsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
     const searchNListContactsLink = FlowFactory.link(searchNListContacts, searchNListContactsRouter);
@@ -96,7 +97,7 @@ export class FlowBuilder {
     this.process
       .addRouter(searchNListContactsRouter)
       .addStep(selectExistingOpp)
-      .addStep(createNewLead)
+      .addStep(createEditLead)
       .addLink(searchNListContactsLink)
       .addStep(bogusStep)
       .addStep(bogusStep2)
