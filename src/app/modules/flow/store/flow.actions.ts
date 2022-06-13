@@ -10,7 +10,11 @@ export const ActionTypes = {
   SET_STEP_HISTORY: '[Flow] Set Step History',
   GO_TO_STEP: '[Flow] Go to step',
   RESET: '[Flow] Reset',
-  SET_VALIDITY: '[Flow] Set Validity'
+  SET_VALIDITY: '[Flow] Set Validity',
+
+  NEXT_STEP: '[Flow] Next Step',
+  PREV_STEP: '[Flow] Previous Step',
+  UPDATE_BREADCRUMBS: '[Flow] Update Breadcrumbs',
 };
 
 export const AddStepAction = createAction(
@@ -56,3 +60,14 @@ export const SetValidityAction = createAction(
   ActionTypes.SET_VALIDITY,
   props<{ payload: boolean }>()
 )
+
+export const NextStepAction = createAction(
+  ActionTypes.NEXT_STEP,
+  props<{ host: FlowHostDirective, stepId: string }>()
+)
+
+export const PrevStepAction = createAction(
+  ActionTypes.PREV_STEP,
+  props<{ host: FlowHostDirective }>()
+)
+

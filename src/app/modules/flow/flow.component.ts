@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FlowService } from "./flow.service";
-import { FlowHostDirective, FlowStepHistoryEntry, FlowTransitions } from './_core';
+import { FlowService } from './flow.service';
+import { FlowHostDirective, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './_core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
@@ -18,14 +18,14 @@ export class FlowComponent implements OnInit, OnDestroy {
   animationIndex = 0;
   tabIndex = 1;
   stepHistory$: Observable<FlowStepHistoryEntry[]>;
-  valid$: Observable<boolean|undefined>;
+  valid$: Observable<boolean | undefined>;
 
   public tinymceOptions = {
     branding: false,
     menubar: false,
     toolbar: 'bold italic strikethrough underline align',
     statusbar: false,
-    content_style:`
+    content_style: `
       body {
         font-family: Roboto, Arial, sans-serif;
         font-size: 12px;
@@ -39,30 +39,23 @@ export class FlowComponent implements OnInit, OnDestroy {
     {
       label: 'Object',
       icon: 'fa-solid fa-gavel',
-      emitterValue : 'object'
+      emitterValue: 'object'
     },
     {
       label: 'End Call',
       icon: 'fa-solid fa-phone-slash',
-      emitterValue : 'end-call'
+      emitterValue: 'end-call'
     }
   ];
 
-  @ViewChild(FlowHostDirective, { static: true }) flowHost!: FlowHostDirective;
+  @ViewChild(FlowHostDirective, {static: true}) flowHost!: FlowHostDirective;
 
   constructor(
     private store: Store<fromFlow.FlowState>,
     private flowService: FlowService,
     private router: Router
   ) {
-    // this catches when a user refreshes the page
-    // the inner router-outlet is maintained by this component so we have to strip off aux outlet segments
-    if(this.router.routerState.snapshot.url.indexOf('(flow:') !== -1) {
-      this.router.navigate(['/flow/text']);
-    }
-
     this.valid$ = this.store.select(fromFlow.selectIsValid);
-
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
 
@@ -70,19 +63,32 @@ export class FlowComponent implements OnInit, OnDestroy {
     await this.flowService.start(this.flowHost);
   }
 
-  public onNext() {
+  public onNext($event: Event) {
+    $event.stopPropagation();
     this.animationIndex++;
-    return this.flowService.next(this.flowHost);
+    return this.flowService.next(this.flowHost)
+      .catch((err) => {
+        if (err instanceof NoStepFoundError) {
+          console.warn(err);
+        }
+      });
   }
 
-  public onBack(): Promise<any> {
+  public onBack($event: Event) {
+    $event.stopPropagation();
     this.animationIndex--;
-    return this.flowService.back(this.flowHost);
+
+    return this.flowService.back(this.flowHost)
+      .catch((err) => {
+        if (err instanceof NoStepFoundError) {
+          console.warn(err);
+        }
+      });
   }
 
   public goTo(id: string): Promise<any> {
-    const next = this.flowService.steps.findIndex(x => x.id === id);
-    const current = this.flowService.steps.findIndex(x => x.id === this.flowService?.currentStep?.step?.id);
+    const next = this.flowService.builder.process.steps.findIndex(x => x.id === id);
+    const current = this.flowService.builder.process.steps.findIndex(x => x.id === this.flowService?.builder.process.currentStep?.step?.id);
     next < current ? this.animationIndex-- : this.animationIndex++;
     return this.flowService.goTo(this.flowHost, id);
   }
@@ -91,8 +97,8 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.store.dispatch(flowActions.ResetAction());
   }
 
-  public menuClickAction( event:string ){
-    if( event == 'end-call'){
+  public menuClickAction(event: string) {
+    if (event == 'end-call') {
       this.endCall();
     }
   }

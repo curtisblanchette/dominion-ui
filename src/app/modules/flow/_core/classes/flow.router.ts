@@ -1,4 +1,4 @@
-import { FlowStep, FlowNode, FlowCondition } from "./index";
+import { FlowStep, FlowNode, FlowCondition, FlowListParams } from './index';
 import { cloneDeep } from 'lodash';
 
 export class FlowRouter extends FlowNode {
@@ -18,11 +18,17 @@ export class FlowRouter extends FlowNode {
     let step:FlowRouter | FlowStep | undefined = undefined;
 
     if( this.conditions ){
-      for( const cond of this.conditions){
-        if( await cond.evaluate() ){
-          const to = cond?.to;          
-          if( to ){            
+      for (const cond of this.conditions) {
+        const value = await cond.evaluate();
+        if (value) {
+          const to = cond?.to;
+          if (to) {
             step = <FlowStep>to;
+
+            if(value instanceof FlowListParams) {
+              step.data.options['query'] = value.getParams();
+            }
+
           } else {
             console.warn('There is error evaluating the next step');
           }
@@ -34,7 +40,7 @@ export class FlowRouter extends FlowNode {
   }
 
   serialize() {
-    const data: FlowRouter = { ...cloneDeep(this)};
+    const data: FlowRouter = { ...cloneDeep(this) };
     return new FlowRouter(data.nodeText, data.nodeIcon, data.conditions, data.id);
   }
 

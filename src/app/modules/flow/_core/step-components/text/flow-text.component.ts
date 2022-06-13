@@ -33,25 +33,29 @@ export class FlowTextComponent {
   }
 
   public initForm() {
+    let form: any = {};
     if (this.data.template === 'call-type') {
-      const form = {
+      form = {
         call_type: new FormControl('', [Validators.required])
       };
-      this.form = this.fb.group(form);
     } else if (this.data.template === 'web-lead') {
-      const form = {
+      form = {
         web_lead_options: new FormControl('', [Validators.required])
       };
-      this.form = this.fb.group(form);
     }
 
-    this.form.valueChanges.subscribe((value: any) => {
-      this.flowService.addVariables(value);
-    });
+    if(Object.keys(form).length) {
+      this.form = this.fb.group(form);
 
-    this.form.statusChanges.subscribe((value: any) => {
-      this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
-    });
+      this.form.valueChanges.subscribe((value: any) => {
+        this.flowService.addVariables(value);
+      });
+
+      this.form.statusChanges.subscribe((value: any) => {
+        this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
+      });
+    }
+
   }
 
   public get isValid() {

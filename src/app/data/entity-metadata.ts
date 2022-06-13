@@ -3,21 +3,26 @@ import { EntityMetadataMap } from '@ngrx/data';
 const entityMetadata: EntityMetadataMap = {
   contact: {},
   lead: {
-    // filterFn: (entities: Lead[], pattern: { q: string } ) => {
-    //   if(pattern.q) {
-    //     return entities.filter((entity: any) => {
-    //       const fields = [
-    //         entity.firstName.toLowerCase(),
-    //         entity.lastName.toLowerCase(),
-    //         entity.phone.toLowerCase(),
-    //         entity.email.toLowerCase()
-    //       ];
-    //       return fields.find(field => field.includes(pattern.q));
-    //     })
-    //   }
-    //   return entities;
-    //
-    // },
+    filterFn: (entities: any[], pattern: { q?: string, id?: string } ) => {
+      if(pattern.q) {
+        return entities.filter((entity: any) => {
+          const fields = [
+            entity.firstName.toLowerCase(),
+            entity.lastName.toLowerCase(),
+            entity.phone.toLowerCase(),
+            entity.email.toLowerCase()
+          ];
+          return fields.find(field => field.includes(pattern.q));
+        })
+      }
+
+      // set the filter so we pull only one from store
+      if(pattern.id) {
+        return [entities.find((entity: any) => entity.id === pattern.id)];
+      }
+
+      return entities;
+    },
   },
   call: {},
   deal: {},

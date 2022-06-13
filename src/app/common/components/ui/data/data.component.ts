@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -7,17 +7,25 @@ import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from '../../../../store/app.reducer'
-import { FiizSelectComponent } from '../forms';
+import { DropdownItem, FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
+import { uriOverrides } from '../../../../data/entity-metadata';
+import { firstValueFrom, map, of, takeUntil } from 'rxjs';
+import { CustomDataService } from '../../../../data/custom.dataservice';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { distinctUntilChanged } from 'rxjs/operators';
 
+@UntilDestroy()
 @Component({
   selector: 'fiiz-data',
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss']
 })
-export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
+export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
 
   public form: any;
   public controlData: any;
@@ -37,46 +45,73 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     private flowService: FlowService,
     private fb: FormBuilder,
     public navigation: NavigationService,
-    public changeDetector: ChangeDetectorRef,
+    private http: HttpClient,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
     router: Router,
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
-
     route.paramMap.subscribe(params => {
       this.id = params.get('id');
-      console.log(this.id);
-    });
-
-    this.buildForm(models[this.module]);
-
-    this.data$.subscribe(record => {
-      let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
-
-      if (entity) {
-        const properties = Object.keys(models[this.module]);
-        Object.keys(entity).forEach(prop => {
-
-          if (dayjs(entity[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
-            entity[prop] = dayjs(entity[prop]).format();
-          }
-
-          if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
-            delete entity[prop];
-          }
-        });
-        this.form.addControl('id', new FormControl('', Validators.required));
-        this.form.setValue(entity);
-      }
-
-      if(this.data.module) {}
-      this.submitText = entity ? `Save ${this.data.module}` : `Create ${this.data.module}`;
     });
 
   }
 
   public ngOnInit() {
+  }
+
+  public override ngAfterContentInit() {
+    super.ngAfterContentInit();
+    this.buildForm(models[this.module]);
+
+    this.submitText = this.id ? `Save ${this.data.module}` : `Create ${this.data.module}`;
+
+    this.data$.pipe(
+      untilDestroyed(this),
+    ).subscribe(record => {
+      if(record[0]) {
+        let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
+
+        if (entity) {
+          const properties = Object.keys(models[this.module]);
+          Object.keys(entity).forEach(prop => {
+
+            if (dayjs(entity[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
+              entity[prop] = dayjs(entity[prop]).format();
+            }
+
+            if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
+              delete entity[prop];
+            }
+          });
+          this.form.addControl('id', new FormControl('', Validators.required));
+          this.form.setValue(entity);
+        }
+      }
+    });
+
+    this.form.controls.statusId.valueChanges.subscribe((res: number) => {
+      let fnName = 'disable';
+
+      if(res === 3) {
+        fnName = 'enable';
+      }
+
+      this.form.controls.lostReasonId[fnName]({emitEvent: false});
+    });
+
+  }
+
+  public ngAfterViewInit() {
+    this.dropdowns.forEach(async (dropdown) => {
+      const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
+      dropdown.items$ = of(CustomDataService.toDropdownItems(data));
+    });
+
+
+
+
+
     if (this.id !== 'new') {
       this.getData();
     } else {
@@ -86,6 +121,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public getData(key?: string) {
     this._dynamicCollectionService.getByKey(this.id);
+    this._dynamicCollectionService.setFilter({id: this.id});// this modifies filteredEntities$ subset
   }
 
   private buildForm(model: { [key: string]: any }) {
@@ -133,9 +169,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
       const payload = this.form.value;
 
-      // if (this.state.record) {
-      //   return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
-      // }
+      if (this.id) {
+        return this._dynamicCollectionService.update(<DominionType>payload).subscribe().add(() => this.form.enable());
+      }
 
       return this._dynamicCollectionService.add(<DominionType>payload).subscribe().add(() => this.resetForm());
 

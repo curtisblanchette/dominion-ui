@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, take } from 'rxjs';
@@ -34,7 +34,7 @@ export enum SortDirections {
   templateUrl: 'list.component.html',
   styleUrls: ['list.component.scss']
 })
-export class FiizListComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit {
+export class FiizListComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit {
 
   public searchForm: FormGroup;
 
@@ -86,18 +86,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    // if(!this.options || !this.data?.options) {
-    //   /** route state is immutable so we gotta clone it */
-    //
-    //   this.data = {
-    //     options: {
-    //       searchable: true,
-    //       editable: false,
-    //       columns: []
-    //     }
-    //   }
-    // }
-
     let form: { [key: string]: FormControl } = {};
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
@@ -110,13 +98,14 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   }
 
-  public ngOnInit() {
-
+  public override ngAfterContentInit() {
+    super.ngAfterContentInit();
+    this.columns = getColumnsForModule(this.module);
   }
 
 
   ngAfterViewInit() {
-    this.columns = getColumnsForModule(this.module);
+
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
@@ -173,8 +162,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.onCreate.emit({module: this.data.module, record: {}});
   }
 
-
-
   public searchInModule() {
     if (this.searchForm.valid) {
       const formValues = this.searchForm.value;
@@ -186,7 +173,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public async getData( searchkey:string = '' ) {
-    const params:QueryParams = {
+    const params: QueryParams = {
       page: this.page.toString(),
       limit: (await firstValueFrom(this.store.select(fromData.selectPerPage))).toString()
     };
@@ -203,6 +190,14 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['sort'] = 'DESC';
     } else {
       params['sort'] = 'ASC';
+    }
+
+    if(this.data.options.query) {
+      for(const item of Object.entries(this.data.options.query)) {
+        const [key, value] = item;
+        // @ts-ignore
+        params[key] = value;
+      }
     }
 
     // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
