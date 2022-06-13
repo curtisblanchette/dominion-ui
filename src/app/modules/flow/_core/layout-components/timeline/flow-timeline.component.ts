@@ -33,29 +33,5 @@ export class FlowTimelineComponent {
     this.onSelect.next(id);
   }
 
-  predictNextSteps() {
-    // find the link from this step
-    //
-    // let link = this.builder.process.links.find(link => link.from.id === this.builder.process.currentStep?.step?.id);
-    // let step = this.builder.process.steps.find(step => step.id === link?.from?.id);
-    //
-    // if(!link) {
-    //   // no link, find a router who's router.condition[0].to matches the current step
-    //   router = this.builder.process.routers.find(router => router.conditions.filter(condition => condition.to.id === this.builder.process.currentStep?.step?.id ) );
-    //
-    //   if(router) {
-    //     // found a router, which `link` links to it?
-    //     const condition = router.conditions.find(condition => condition.to.id === this.builder.process.currentStep?.step?.id);
-    //
-    //     if(condition?.to instanceof FlowRouter) {
-    //       // recurse
-    //
-    //     } else {
-    //       step = condition?.to;
-    //     }
-    //   }
-    // }
-  }
-
 
 }

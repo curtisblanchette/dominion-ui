@@ -37,7 +37,9 @@ export class FlowEffects {
     this.actions$.pipe(
       ofType(flowActions.SetProcessIdAction),
       mergeMap( (action: any) => (
-        firstValueFrom(this.http.post(`${environment.dominion_api_url}/flow/summaries`, {}))
+        firstValueFrom(this.http.post(`${environment.dominion_api_url}/flow/summaries`, {
+          id: action.processId
+        }))
       ))
     ), { dispatch: false }
   )
