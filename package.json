@@ -1,6 +1,6 @@
 {
   "name": "dominion-ui",
-  "version": "1.8.24",
+  "version": "1.8.25",
   "scripts": {
     "ng": "ng",
     "start": "ng serve ",
