@@ -77,7 +77,11 @@ export class FlowBuilder {
     const bogusStep = FlowFactory.step({nodeText: 'bogus', nodeIcon: 'fa-smile', data: {
       template: ''
       }, component: FlowTextComponent});
+    const bogusStep2 = FlowFactory.step({nodeText: 'bogus', nodeIcon: 'fa-smile', data: {
+        template: ''
+      }, component: FlowTextComponent});
     const bogusLink = FlowFactory.link(selectExistingOpp, bogusStep);
+    const bogusLink2 = FlowFactory.link(bogusStep, bogusStep2);
     ///
     this.process
       .addStep(callType)
@@ -95,7 +99,9 @@ export class FlowBuilder {
       .addStep(createNewLead)
       .addLink(searchNListContactsLink)
       .addStep(bogusStep)
+      .addStep(bogusStep2)
       .addLink(bogusLink)
+      .addLink(bogusLink2)
 
     //   break;
     //

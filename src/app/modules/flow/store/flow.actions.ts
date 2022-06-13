@@ -14,6 +14,7 @@ export const ActionTypes = {
 
   NEXT_STEP: '[Flow] Next Step',
   PREV_STEP: '[Flow] Previous Step',
+  UPDATE_BREADCRUMBS: '[Flow] Update Breadcrumbs',
 };
 
 export const AddStepAction = createAction(
@@ -62,7 +63,7 @@ export const SetValidityAction = createAction(
 
 export const NextStepAction = createAction(
   ActionTypes.NEXT_STEP,
-  props<{ host: FlowHostDirective }>()
+  props<{ host: FlowHostDirective, stepId: string }>()
 )
 
 export const PrevStepAction = createAction(

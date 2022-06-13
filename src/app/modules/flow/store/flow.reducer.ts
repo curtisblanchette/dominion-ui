@@ -10,6 +10,7 @@ export interface FlowState {
   links: FlowLink[],
   currentStep: FlowCurrentStep | undefined,
   stepHistory: FlowStepHistoryEntry[],
+  breadcrumbs: string[]
 }
 
 // need to serialize/deserialize the step/flow/router objects
@@ -48,6 +49,7 @@ export const initialState: FlowState = {
   links: <FlowLink[]>getInitialStateByKey('links') || [],
   currentStep: getInitialStateByKey('currentStep') as FlowCurrentStep || { step: undefined, variables: {}, valid: false },
   stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]'),
+  breadcrumbs: JSON.parse(localStorage.getItem('breadcrumbs') || '[]') || []
 };
 
 export const reducer = createReducer(
@@ -63,8 +65,8 @@ export const reducer = createReducer(
   on(flowActions.SetValidityAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, valid: payload  }})),
 
 
-  // on(flowActions.NextStepAction, (state, { host }) => ({ ...state })),
-  // on(flowActions.PrevStepAction, (state, { host }) => ({ ...state }))
+  on(flowActions.NextStepAction, (state, { host, stepId }) => ({...state, breadcrumbs: [...state.breadcrumbs, stepId]}) ),
+  on(flowActions.PrevStepAction, (state, { host }) => ({ ...state, breadcrumbs: [...state.breadcrumbs.slice(0, -1)] }))
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
@@ -75,10 +77,29 @@ export const selectSteps = createSelector(selectFlow, (flow: FlowState) => flow.
   return clone.serialize();
 }));
 
-export const selectStepsToCurrent = createSelector(selectFlow, (flow: FlowState) => {
-  const currentStepIndex: number = flow.steps.findIndex((step) => step.id === flow.currentStep?.step?.id);
-  return flow.steps.slice(0, currentStepIndex + 1).map(step => step.serialize());
-})
+export const selectCompletedSteps = createSelector(selectFlow, (flow: FlowState) => {
+  // we'll use the breadcrumb trail here to gather the steps traversed
+  return flow.breadcrumbs.map(stepId => {
+    const step = flow.steps.find(step => step.id === stepId);
+    return step?.serialize();
+  });
+});
+
+export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) => {
+
+  const completed = flow.breadcrumbs.map(stepId => {
+    const step = flow.steps.find(step => step.id === stepId);
+    return step?.serialize();
+  });
+
+  const nextLink = flow.links.find(link => flow?.currentStep?.step?.id === link.from.id);
+
+  if(nextLink && nextLink.to instanceof FlowStep ){
+    return [...completed, nextLink.to] as FlowStep[];
+  } else {
+    return completed;
+  }
+});
 
 export const selectRouters       = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
 export const selectLinks         = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));

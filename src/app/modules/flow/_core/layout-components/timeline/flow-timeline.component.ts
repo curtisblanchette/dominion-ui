@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from '../../../store/flow.reducer';
-import { FlowRouter, FlowStep } from '../../classes';
-import { map, mergeMap, Observable, of } from 'rxjs';
-import { FlowService } from '../../../flow.service';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { FlowStep } from '../../classes';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -14,45 +12,20 @@ import { distinctUntilChanged } from 'rxjs/operators';
 })
 export class FlowTimelineComponent {
 
-  public steps$: Observable<FlowStep[] | null>;
+  public steps$: Observable<(FlowStep | undefined)[]>;
   public currentStepId$: Observable<string | undefined>;
 
   @Output('onSelect') onSelect: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
-    private store: Store<fromFlow.FlowState>,
-    private flowService: FlowService
+    private store: Store<fromFlow.FlowState>
   ) {
 
     // find steps, stop at current
     this.currentStepId$ = this.store.select(fromFlow.selectCurrentStepId);
 
+    this.steps$ = this.store.select(fromFlow.selectFlowTimeline);
 
-    this.steps$ = this.store.select(fromFlow.selectCurrentStep).pipe(
-      distinctUntilChanged((next:any, prev:any) => {
-        const unchanged = prev?.step?.id === next?.step?.id;
-        return unchanged;
-      }),
-      mergeMap(() => this.store.select(fromFlow.selectStepsToCurrent)),
-      map(steps => {
-        // go get the next step recursively until a router
-        const findNext = (): any[] => {
-          const next = this.flowService.findNextStep();
-
-          if(next) {
-            if(next instanceof FlowRouter) {
-              return steps;
-            } else {
-              steps.push(next);
-              return findNext();
-            }
-          }
-          return steps;
-        }
-        return findNext();
-
-      })
-    );
 
   }
 
@@ -60,10 +33,28 @@ export class FlowTimelineComponent {
     this.onSelect.next(id);
   }
 
-
-
-  predict() {
-
+  predictNextSteps() {
+    // find the link from this step
+    //
+    // let link = this.builder.process.links.find(link => link.from.id === this.builder.process.currentStep?.step?.id);
+    // let step = this.builder.process.steps.find(step => step.id === link?.from?.id);
+    //
+    // if(!link) {
+    //   // no link, find a router who's router.condition[0].to matches the current step
+    //   router = this.builder.process.routers.find(router => router.conditions.filter(condition => condition.to.id === this.builder.process.currentStep?.step?.id ) );
+    //
+    //   if(router) {
+    //     // found a router, which `link` links to it?
+    //     const condition = router.conditions.find(condition => condition.to.id === this.builder.process.currentStep?.step?.id);
+    //
+    //     if(condition?.to instanceof FlowRouter) {
+    //       // recurse
+    //
+    //     } else {
+    //       step = condition?.to;
+    //     }
+    //   }
+    // }
   }
 
 
