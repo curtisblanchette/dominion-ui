@@ -5,12 +5,13 @@ import { FlowCurrentStep, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry }
 import { cloneDeep } from 'lodash';
 
 export interface FlowState {
-  steps: FlowStep[]
-  routers: FlowRouter[]
-  links: FlowLink[],
-  currentStep: FlowCurrentStep | undefined,
-  stepHistory: FlowStepHistoryEntry[],
-  breadcrumbs: string[]
+  processId: string | undefined;
+  steps: FlowStep[];
+  routers: FlowRouter[];
+  links: FlowLink[];
+  currentStep: FlowCurrentStep | undefined;
+  stepHistory: FlowStepHistoryEntry[];
+  breadcrumbs: string[];
 }
 
 // need to serialize/deserialize the step/flow/router objects
@@ -44,6 +45,7 @@ function getInitialStateByKey(key: string): (FlowStep|FlowRouter|FlowLink)[] | F
 }
 
 export const initialState: FlowState = {
+  processId: localStorage.getItem('processId') || undefined,
   steps: <FlowStep[]>getInitialStateByKey('steps') || [],
   routers: <FlowRouter[]>getInitialStateByKey('routers') || [],
   links: <FlowLink[]>getInitialStateByKey('links') || [],
@@ -54,6 +56,7 @@ export const initialState: FlowState = {
 
 export const reducer = createReducer(
   initialState,
+
   on(flowActions.AddStepAction, (state, { payload }) => ({ ...state, steps: [ ...state.steps, payload ]})),
   on(flowActions.AddLinkAction, (state, { payload }) => ({ ...state, links: [ ...state.links, payload ]})),
   on(flowActions.AddRouterAction, (state, { payload }) => ({ ...state, routers: [ ...state.routers, payload ]})),
@@ -66,7 +69,9 @@ export const reducer = createReducer(
 
 
   on(flowActions.NextStepAction, (state, { host, stepId }) => ({...state, breadcrumbs: [...state.breadcrumbs, stepId]}) ),
-  on(flowActions.PrevStepAction, (state, { host }) => ({ ...state, breadcrumbs: [...state.breadcrumbs.slice(0, -1)] }))
+  on(flowActions.PrevStepAction, (state, { host }) => ({ ...state, breadcrumbs: [...state.breadcrumbs.slice(0, -1)] })),
+
+  on(flowActions.SetProcessIdAction, (state, { processId }) => ({ ...state, processId: processId }))
 );
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
@@ -101,6 +106,7 @@ export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) =
   }
 });
 
+export const selectProcessId     = createSelector(selectFlow, (flow: FlowState) => flow.processId);
 export const selectRouters       = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
 export const selectLinks         = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
 export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => flow.currentStep);

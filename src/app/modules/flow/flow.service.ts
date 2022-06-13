@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, FlowLink, NoStepFoundError } from './_core';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError } from './_core';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -85,13 +85,16 @@ export class FlowService {
 
   }
 
-  private createHistoryEntry(): void {
+  private async createHistoryEntry(): Promise<void> {
     if (this.builder.process.currentStep?.step?.id) {
+      // releasing the step sets step._destroyedAt
+      this.builder.process.currentStep.step.release();
+
       const historyEntry: FlowStepHistoryEntry = {
         id: this.builder.process.currentStep?.step?.id,
         variables: this.builder.process.currentStep?.variables,
-        elapsed: 0 // TODO hook this up to an interval
-      };
+        elapsed: this.builder.process.currentStep.step.elapsed
+      } as FlowStepHistoryEntry;
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
     }
   }

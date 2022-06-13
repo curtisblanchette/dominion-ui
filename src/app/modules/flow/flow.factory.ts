@@ -96,7 +96,7 @@ export class FlowFactory {
     return FlowFactory.step(data);
   }
 
-  public static step(data: Omit<FlowStep, 'serialize' | 'deserialize' | 'apply' | 'save'>) {
+  public static step(data: Omit<FlowStep, 'serialize' | 'deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>) {
     return new FlowStep(data)
   }
 

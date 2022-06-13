@@ -15,6 +15,7 @@ export const ActionTypes = {
   NEXT_STEP: '[Flow] Next Step',
   PREV_STEP: '[Flow] Previous Step',
   UPDATE_BREADCRUMBS: '[Flow] Update Breadcrumbs',
+  SET_PROCESS_ID: '[Flow] Set Process Id'
 };
 
 export const AddStepAction = createAction(
@@ -25,6 +26,11 @@ export const AddStepAction = createAction(
 export const AddLinkAction = createAction(
   ActionTypes.ADD_LINK,
   props<{ payload: FlowLink }>()
+);
+
+export const SetProcessIdAction = createAction(
+  ActionTypes.SET_PROCESS_ID,
+  props<{ processId: string }>()
 );
 
 export const AddRouterAction = createAction(

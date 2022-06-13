@@ -17,7 +17,7 @@ export class FlowBuilder {
   }
 
   public reset(): void {
-    this.process = new FlowProcess(this.store)
+    this.process = new FlowProcess(this.store);
   }
 
   public async build(type?: string) {

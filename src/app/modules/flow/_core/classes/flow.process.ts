@@ -7,8 +7,9 @@ import { FlowCurrentStep } from './flow.currentStep';
 import { FlowStepHistoryEntry } from './flow.stepHistory';
 import * as flowActions from '../../store/flow.actions';
 import { Inject } from '@angular/core';
+import { FlowBaseModel } from './flow.baseModel';
 
-export class FlowProcess {
+export class FlowProcess extends FlowBaseModel {
 
   public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
@@ -16,11 +17,11 @@ export class FlowProcess {
   public currentStep: FlowCurrentStep | undefined;
   public stepHistory: FlowStepHistoryEntry[];
 
-  public chunks: (FlowStep | FlowRouter | FlowLink)[][];
-
   constructor(
     @Inject(Store) private store: Store<fromFlow.FlowState>,
+    id?: string,
   ) {
+    super(id);
     this.store.select(fromFlow.selectFlow).subscribe(state => {
       this.steps = state.steps;
       this.routers = state.routers;
@@ -28,26 +29,28 @@ export class FlowProcess {
       this.currentStep = state.currentStep;
       this.stepHistory = state.stepHistory;
     });
+
+    // @ts-ignore
+    this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
+
   }
 
-  public reset() {
+  public reset(): FlowProcess {
     this.store.dispatch(flowActions.ResetAction());
+    return this;
   }
 
-  public addStep(step: FlowStep) {
-    // this.steps.push(step);
+  public addStep(step: FlowStep): FlowProcess {
     this.store.dispatch(flowActions.AddStepAction({payload: step}));
     return this;
   }
 
-  public addRouter(router: FlowRouter) {
-    // this.routers.push(router);
+  public addRouter(router: FlowRouter): FlowProcess {
     this.store.dispatch(flowActions.AddRouterAction({payload: router}));
     return this;
   }
 
-  public addLink(link: FlowLink) {
-    // this.links.push(link);
+  public addLink(link: FlowLink): FlowProcess {
     this.store.dispatch(flowActions.AddLinkAction({payload: link}));
     return this;
   }
