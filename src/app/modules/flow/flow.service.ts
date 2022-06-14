@@ -115,16 +115,39 @@ export class FlowService {
     }
   }
 
-  public async renderComponent(host: FlowHostDirective, step: FlowStep) {
+  public async renderComponent(host: FlowHostDirective, step: FlowStep): Promise<void> {
     this.store.dispatch(flowActions.UpdateCurrentStepAction({step, valid: false, variables: []}));
 
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
 
-    const componentRef = viewContainerRef.createComponent<any>(step.component);
-    this.cmpReference = componentRef;
+    this.cmpReference = viewContainerRef.createComponent<any>(step.component);
+    this.cmpReference.instance.data = step.data;
 
-    componentRef.instance.data = step.data;
+    if(this.cmpReference.instance instanceof FlowListComponent) {
+      /**
+       * Subscribe to:
+       * @param {values} EventEmitter
+       * @param {onCreate} EventEmitter
+       */
+      this.cmpReference.instance.values.subscribe((value: any) => {
+        const variable = { [value.module]: value.record?.id || null };
+
+        this.setValidity(!!value.record);
+        this.addVariables(variable);
+      });
+
+      this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
+        this.next(host).catch((err) => {
+          if (err instanceof NoStepFoundError) {
+            console.warn(err);
+          }
+        });
+
+      });
+    }
+
+
   }
 
   public async getVariable(key?: string) {

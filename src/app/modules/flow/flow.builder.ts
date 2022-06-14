@@ -55,13 +55,13 @@ export class FlowBuilder {
         params.setParam('leadId', leadId);
         return params;
       }
-      return false;
 
+      return false;
     }, createEditLead);
 
     const existingLead_no = FlowFactory.condition(async () => {
       const lead = await this.getVariable('lead');
-      return lead === null;
+      return !lead;
     }, createEditLead);
 
     const leadToOppListLink = FlowFactory.link(createEditLead, selectExistingOpp);

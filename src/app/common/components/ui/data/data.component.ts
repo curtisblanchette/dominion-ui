@@ -20,8 +20,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface IDataOptions {
   controls: boolean;
+  state: 'edit' | 'create'
 }
-
 
 @UntilDestroy()
 @Component({
@@ -29,7 +29,7 @@ export interface IDataOptions {
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss']
 })
-export class FiizDataComponent extends EntityCollectionComponentBase implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
+export class FiizDataComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit, OnDestroy {
 
   public form: any;
   public controlData: any;
@@ -37,7 +37,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public id: string | null;
 
   @Input('data') public override data: any;
-  @Input('options') options: IDataOptions = { controls: true };
+  @Input('options') options: IDataOptions = { controls: true, state: 'create' };
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
@@ -62,11 +62,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     route.paramMap.subscribe(params => {
       this.id = params.get('id');
     });
-
-
-  }
-
-  public ngOnInit() {
   }
 
   public override ngAfterContentInit() {
@@ -123,12 +118,14 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     });
 
-    if (this.id !== 'new') {
+    if (this.id) {
       this.getData();
+    } else {
+      this._dynamicCollectionService.setFilter({}); // this modifies filteredEntities$ subset
     }
   }
 
-  public getData(key?: string) {
+  public getData() {
     this._dynamicCollectionService.getByKey(this.id);
     this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
   }
@@ -194,5 +191,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override ngOnDestroy() {
     console.log('data component destroyed');
+    this._dynamicCollectionService.clearCache();
   }
 }

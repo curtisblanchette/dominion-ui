@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { FlowService } from '../../../flow.service';
 import { DominionType } from '../../../../../common/models';
 
@@ -11,6 +11,9 @@ export class FlowListComponent implements OnDestroy {
 
   @Input('data') data: any;
 
+  @Output('values') values: EventEmitter<any> = new EventEmitter();
+  @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
+
   constructor(
     public flowService: FlowService
   ) {
@@ -21,8 +24,11 @@ export class FlowListComponent implements OnDestroy {
   }
 
   public EmitValues( value: {module: string, record: DominionType } ) {
-    this.flowService.setValidity(!!value.record);
-    this.flowService.addVariables( { [value.module]: value.record?.id || null });
+    this.values.next(value)
+  }
+
+  public create($event: Event) {
+    this.onCreate.next(true);
   }
 
 }

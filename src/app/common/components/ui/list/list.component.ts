@@ -159,7 +159,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   onCreateNew() {
-    this.onCreate.emit({module: this.data.module, record: {}});
+    this.onCreate.emit(true);
   }
 
   public searchInModule() {
