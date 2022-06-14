@@ -6,6 +6,7 @@ import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
+import { FlowComponent } from './flow.component';
 
 export interface IHistory {
   prevStepId: string;
@@ -126,6 +127,10 @@ export class FlowService {
       });
 
       this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
+        const _injector = host.viewContainerRef.parentInjector;
+        const _parent: FlowComponent = _injector.get<FlowComponent>(FlowComponent);
+        _parent.animationIndex++;
+
         this.next(host).catch((err) => {
           if (err instanceof NoStepFoundError) {
             console.warn(err);
