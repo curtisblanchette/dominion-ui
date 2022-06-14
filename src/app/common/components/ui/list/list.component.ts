@@ -105,7 +105,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
 
   ngAfterViewInit() {
-
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
@@ -159,6 +158,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   onCreateNew() {
+    this.selected = null;
+    this.values.emit( { module: this.module, record: null });
     this.onCreate.emit(true);
   }
 

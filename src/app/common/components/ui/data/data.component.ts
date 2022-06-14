@@ -73,7 +73,16 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this.buildForm(models[this.module]);
 
-    this.submitText = this.id ? `Save ${this.module}` : `Create ${this.module}`;
+    switch(this.options.state) {
+      case 'create': {
+        this.submitText = `Create New ${this.module}`;
+      }
+      break;
+      case 'edit': {
+        this.submitText = `Review ${this.module}`;
+      }
+      break;
+    }
 
     this.data$.pipe(
       untilDestroyed(this),
@@ -117,11 +126,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     });
+    this._dynamicCollectionService.setFilter({}); // clear the filters
+
 
     if (this.id) {
       this.getData();
     } else {
-      this._dynamicCollectionService.setFilter({}); // this modifies filteredEntities$ subset
+
     }
   }
 
@@ -191,6 +202,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override ngOnDestroy() {
     console.log('data component destroyed');
+    this.id = null;
     this._dynamicCollectionService.clearCache();
+    this._dynamicCollectionService.setFilter({});
   }
 }

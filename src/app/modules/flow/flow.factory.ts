@@ -52,8 +52,12 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       data: {
-        title: 'Create a New Lead',
-        module: ModuleType.LEAD
+        title: 'Create New Lead',
+        module: ModuleType.LEAD,
+        options: {
+          controls: false,
+          state: 'create'
+        }
       }
     });
   };

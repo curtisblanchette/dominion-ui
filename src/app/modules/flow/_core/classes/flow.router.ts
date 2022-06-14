@@ -41,10 +41,6 @@ export class FlowRouter extends FlowNode {
               // FlowDataComponent
               const instance = new (<FlowStep>step).component();
               if(instance instanceof FlowDataComponent) {
-                // Mutate DataComponent's nodeText and title
-                // making it reusable for edits and creates
-                (<FlowStep>step).nodeText = `Review ${(<FlowStep>step).data.module}`;
-                (<FlowStep>step).data.title = `Review ${(<FlowStep>step).data.module}`;
                 (<FlowStep>step).data.id = value.getParams()[`${(<FlowStep>step).data.module}Id`];
               }
 

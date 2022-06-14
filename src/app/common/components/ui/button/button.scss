@@ -31,6 +31,7 @@
     line-height: 44px;
     cursor: pointer;
     transition: background .1s ease-in-out, width .25s ease-out;
+    text-transform: capitalize;
 
 
     &.full-width {

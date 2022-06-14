@@ -104,17 +104,6 @@ export class FlowService {
     }
   }
 
-  public setValidity(value: boolean) {
-    this.store.dispatch(flowActions.SetValidityAction({payload: value}));
-  }
-
-  public addVariables(data: any) {
-    if (data) {
-      let allVars = {...this.builder.process.currentStep?.variables, ...data};
-      this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
-    }
-  }
-
   public async renderComponent(host: FlowHostDirective, step: FlowStep): Promise<void> {
     this.store.dispatch(flowActions.UpdateCurrentStepAction({step, valid: false, variables: []}));
 
@@ -132,7 +121,6 @@ export class FlowService {
        */
       this.cmpReference.instance.values.subscribe((value: any) => {
         const variable = { [value.module]: value.record?.id || null };
-
         this.setValidity(!!value.record);
         this.addVariables(variable);
       });
@@ -146,8 +134,17 @@ export class FlowService {
 
       });
     }
+  }
 
+  public setValidity(value: boolean) {
+    this.store.dispatch(flowActions.SetValidityAction({payload: value}));
+  }
 
+  public addVariables(data: any) {
+    if (data) {
+      let allVars = {...this.builder.process.currentStep?.variables, ...data};
+      this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
+    }
   }
 
   public async getVariable(key?: string) {

@@ -63,7 +63,7 @@ export const reducer = createReducer(
   on(flowActions.UpdateCurrentStepAction, (state, { step, valid, variables }) => ({ ...state, currentStep: { ...state.currentStep, step, valid, variables } })),
   on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: [ ...state.stepHistory, payload ] })),
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
-  on(flowActions.ResetAction, (state) => ({...state, steps: [], routers: [], links: [], currentStep: undefined })),
+  on(flowActions.ResetAction, (state) => ({...state, processId: undefined, steps: [], routers: [], links: [], currentStep: undefined, stepHistory: [], breadcrumbs: [] })),
   on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, variables: payload }})),
   on(flowActions.SetValidityAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, valid: payload  }})),
 

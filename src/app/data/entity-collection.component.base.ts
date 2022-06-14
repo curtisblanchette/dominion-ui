@@ -53,7 +53,8 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   }
 
   ngOnDestroy() {
-    console.log('component destroyed');
+    this.data$ = of([]);
+    console.log('entity collection component destroyed');
   }
 
   public getById(id: string): Observable<any> {

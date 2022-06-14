@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
 import { FlowListParams, FlowTextComponent } from './_core';
-import { firstValueFrom, lastValueFrom, take } from 'rxjs';
+import { lastValueFrom, take } from 'rxjs';
 
 export class FlowBuilder {
 
@@ -50,7 +50,11 @@ export class FlowBuilder {
 
     const existingLead_yes = FlowFactory.condition(async () => {
       const leadId = await this.getVariable('lead');
+
       if (leadId) {
+        createEditLead.nodeText = 'Review Lead Info';
+        createEditLead.data.title = 'Review Lead Info';
+
         const params = new FlowListParams();
         params.setParam('leadId', leadId);
         return params;
@@ -61,7 +65,14 @@ export class FlowBuilder {
 
     const existingLead_no = FlowFactory.condition(async () => {
       const lead = await this.getVariable('lead');
+      /**
+       * Conditions can also update FlowStep members
+       */
+      createEditLead.nodeText = 'Create New Lead';
+      createEditLead.data.title = 'Create New Lead';
+
       return !lead;
+
     }, createEditLead);
 
     const leadToOppListLink = FlowFactory.link(createEditLead, selectExistingOpp);
