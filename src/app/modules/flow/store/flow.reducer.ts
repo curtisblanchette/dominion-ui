@@ -97,13 +97,22 @@ export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) =
     return step?.serialize();
   });
 
-  const nextLink = flow.links.find(link => flow?.currentStep?.step?.id === link.from.id);
+  const next: FlowStep[] = [];
 
-  if(nextLink && nextLink.to instanceof FlowStep ){
-    return [...completed, nextLink.to] as FlowStep[];
-  } else {
-    return completed;
+  const getNextLink = (stepId: string | undefined): any => {
+    const nextLink = flow.links.find(link => stepId === link.from.id);
+
+    if(nextLink && nextLink.to instanceof FlowStep ){
+      next.push(nextLink.to);
+      return getNextLink(nextLink.to.id);
+    }
+
+    return [...completed, ...next] as FlowStep[];
   }
+
+  return getNextLink(flow?.currentStep?.step?.id);
+
+
 });
 
 export const selectProcessId     = createSelector(selectFlow, (flow: FlowState) => flow.processId);
