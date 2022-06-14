@@ -18,6 +18,11 @@ import { firstValueFrom, of } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+export interface IDataOptions {
+  controls: boolean;
+}
+
+
 @UntilDestroy()
 @Component({
   selector: 'fiiz-data',
@@ -32,6 +37,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public id: string | null;
 
   @Input('data') public override data: any;
+  @Input('options') options: IDataOptions = { controls: true };
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
@@ -56,6 +62,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     route.paramMap.subscribe(params => {
       this.id = params.get('id');
     });
+
 
   }
 
@@ -109,7 +116,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
 
   public ngAfterViewInit() {
-
     this.dropdowns.forEach(async (dropdown) => {
       const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
@@ -117,14 +123,12 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     if (this.id !== 'new') {
       this.getData();
-    } else {
-      // throw new Error(`There's no such thing as '${this.module}'`);
     }
   }
 
   public getData(key?: string) {
     this._dynamicCollectionService.getByKey(this.id);
-    this._dynamicCollectionService.setFilter({id: this.id});// this modifies filteredEntities$ subset
+    this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
   }
 
   private buildForm(model: { [key: string]: any }) {
