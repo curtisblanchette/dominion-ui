@@ -164,22 +164,28 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public searchInModule() {
     if (this.searchForm.valid) {
-      const formValues = this.searchForm.value;
-      this.getData( formValues.search.toLowerCase() );
+      this.getData();
     } else {
       console.warn('Form not valid');
       return of([]);
     }
   }
 
-  public async getData( searchkey:string = '' ) {
+  public async getData() {
+    const params = await this.parseQuery();
+    // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
+    /** Proxy to the underlying dataService to do some processing */
+    this.getWithQuery(params).pipe(take(1)).subscribe(); // this performs an API call
+  }
+
+  private async parseQuery(): Promise<QueryParams> {
     const params: QueryParams = {
       page: this.page.toString(),
       limit: (await firstValueFrom(this.store.select(fromData.selectPerPage))).toString()
     };
 
-    if( searchkey ){
-      params['q'] = searchkey;
+    if( this.searchForm.value.search.toLowerCase().length ){
+      params['q'] = this.searchForm.value.search.toLowerCase();
     }
 
     if( this.sortColumn ){
@@ -194,22 +200,17 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
     if(this.data.options.query) {
       if(typeof this.data.options.query === 'function') {
-        // TODO Fix the timing here
-        const query = await this.data.options.query();
-
-        this.data.options.query = query;
-      }
-
-      for(const item of Object.entries(this.data.options.query)) {
-        const [key, value] = item;
-        // @ts-ignore
-        params[key] = value;
+        for(const key of Object.keys(this.data.options.query())) {
+          params[key] = await this.data.options.query()[key];
+        }
+      } else {
+        for(const [key, value] of Object.entries(this.data.options.query)) {
+          // @ts-ignore
+          params[key] = value;
+        }
       }
     }
-
-    // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
-    /** Proxy to the underlying dataService to do some processing */
-    this.getWithQuery(params).pipe(take(1)).subscribe(); // this performs an API call
+    return params;
   }
 
   public performAction( value:any ){

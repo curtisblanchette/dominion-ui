@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ViewChildren } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FlowState } from '../../../store/flow.reducer';
 import * as flowActions from '../../../store/flow.actions';
