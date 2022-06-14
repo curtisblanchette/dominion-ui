@@ -58,7 +58,7 @@ export class FlowFactory {
     });
   };
 
-  public static selectExistingOpp(): FlowStep {
+  public static selectExistingOpp(query: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Opportunities',
       nodeIcon: 'address-book',
@@ -71,7 +71,7 @@ export class FlowFactory {
           editable: false,
           perPage: 25,
           columns: [],
-          parentId: null
+          query
         }
       }
     });
@@ -104,7 +104,7 @@ export class FlowFactory {
     return new FlowCondition(evaluate, to);
   }
 
-  public static link(from: FlowStep, to: FlowStep | FlowRouter,) {
+  public static link(from: FlowStep, to: FlowStep | FlowRouter) {
     return new FlowLink(from, to);
   }
 

@@ -193,6 +193,13 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     }
 
     if(this.data.options.query) {
+      if(typeof this.data.options.query === 'function') {
+        // TODO Fix the timing here
+        const query = await this.data.options.query();
+
+        this.data.options.query = query;
+      }
+
       for(const item of Object.entries(this.data.options.query)) {
         const [key, value] = item;
         // @ts-ignore

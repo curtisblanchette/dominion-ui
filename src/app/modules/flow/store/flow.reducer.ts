@@ -116,7 +116,10 @@ export const selectIsValid       = createSelector(selectFlow, (flow: FlowState) 
 export const selectStepHistory   = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
 export const selectAllVariables  = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.stepHistory));
 // @ts-ignore
-export const selectVariableByKey = (key: string) => createSelector(selectFlow, (flow: FlowState) =>  flow.currentStep?.variables[key]);
+export const selectVariableByKey = (key: string) => createSelector(selectCurrentStep, selectAllVariables, (currentStep, variables:{[key: string]: string | number | Date }) => {
+  const allVars = {...variables, ...currentStep?.variables};
+  return allVars[key];
+});
 
 export const selectStepById       = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id));
 export const selectRouterById     = (id: string) => createSelector(selectRouters, (entities: FlowRouter[]) => entities.filter((item: FlowRouter) => item.id === id));
@@ -132,11 +135,10 @@ export const selectLinkById       = (id: string) => createSelector(selectLinks, 
  * @param history
  */
 function accumulateVariables(history: FlowStepHistoryEntry[]): {[key: string]: string | number | Date } {
-  const items: {[key:string]: any} = {};
+  let items: {[key:string]: any} = {};
 
   for(const [key, value] of Object.entries(history)) {
-    // @ts-ignore
-    items[history[key].id] = value['variables'];
+    items = {...items, ...value['variables']};
   }
 
   return items;

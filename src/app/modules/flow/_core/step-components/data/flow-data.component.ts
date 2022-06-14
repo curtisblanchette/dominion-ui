@@ -6,7 +6,7 @@ import { FiizDataComponent } from '../../../../../common/components/ui/data/data
 
 @Component({
   selector: 'flow-data',
-  template: `<fiiz-data #cmp [data]="data" (isValid)="updateValidity($event)"></fiiz-data>`,
+  template: `<fiiz-data #cmp [data]="data" [options]="{controls: false}" (isValid)="updateValidity($event)"></fiiz-data>`,
   styleUrls: ['../_base.scss']
 })
 export class FlowDataComponent {

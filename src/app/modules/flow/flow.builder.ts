@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
 import { FlowListParams, FlowTextComponent } from './_core';
-import { firstValueFrom, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, take } from 'rxjs';
 
 export class FlowBuilder {
 
@@ -28,7 +28,13 @@ export class FlowBuilder {
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const createEditLead = FlowFactory.createEditLead();
-    const selectExistingOpp = FlowFactory.selectExistingOpp();
+    const selectExistingOpp = FlowFactory.selectExistingOpp(async () => ({
+      /**
+       * by passing a function to the `query` argument
+       * we can defer the collection of variables to a later time
+       */
+      leadId: await this.getVariable('lead')
+    }));
 
     // inbound
     const inboundCond = FlowFactory.condition(async () => {
@@ -57,6 +63,8 @@ export class FlowBuilder {
       const lead = await this.getVariable('lead');
       return lead === null;
     }, createEditLead);
+
+    const leadToOppListLink = FlowFactory.link(createEditLead, selectExistingOpp);
 
     const searchNListContactsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
     const searchNListContactsLink = FlowFactory.link(searchNListContacts, searchNListContactsRouter);
@@ -98,6 +106,8 @@ export class FlowBuilder {
       .addRouter(searchNListContactsRouter)
       .addStep(selectExistingOpp)
       .addStep(createEditLead)
+      .addStep(selectExistingOpp)
+      .addLink(leadToOppListLink)
       .addLink(searchNListContactsLink)
       .addStep(bogusStep)
       .addStep(bogusStep2)
@@ -119,13 +129,13 @@ export class FlowBuilder {
 
   }
 
-  public async getVariable(key?: string) {
+  public async getVariable(key?: string): Promise<any> {
     let value;
 
     if (key) {
-      value = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(key)).pipe(take(1)));
+      value = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(key)).pipe(take(1)));
     } else {
-      value = await firstValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
+      value = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
     }
 
     return value;
