@@ -15,3 +15,9 @@ export class NoStepFoundError extends FlowError {
   }
 }
 
+export class ProcessNotFoundError extends FlowError {
+  constructor(processId?: string) {
+    super(`A process with id '${processId}' could not be found.`);
+    this.name = 'ProcessNotFoundError';
+  }
+}

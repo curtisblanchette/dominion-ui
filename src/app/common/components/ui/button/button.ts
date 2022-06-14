@@ -14,7 +14,7 @@ export class FiizButtonComponent implements AfterViewInit, AfterViewInit {
   @Input('theme') theme: string = 'light';
   @Input('disabled') isDisabled: boolean;
   @Input('class') class: string = '';
-  @Input('loading') loading: Observable<boolean>;
+  @Input('loading') loading$: Observable<boolean>;
 
   @ViewChild('el') el: ElementRef;
 

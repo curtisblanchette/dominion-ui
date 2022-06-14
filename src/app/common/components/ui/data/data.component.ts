@@ -72,7 +72,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public override ngAfterContentInit() {
     super.ngAfterContentInit();
 
-    this.id = this.data.id
+    if(!this.id) {
+      this.id = this.data.id
+    }
 
     this.buildForm(models[this.module]);
 

@@ -15,6 +15,11 @@ export class FlowRouter extends FlowNode {
     this.conditions = conditions;
   }
 
+  /**
+   * Evaluates conditions attached to this router.
+   *
+   * @returns {FlowNode | undefined}
+   */
   public async evaluate():Promise<FlowNode | undefined> {
     let step: FlowStep | FlowNode | undefined = undefined;
 
@@ -26,28 +31,27 @@ export class FlowRouter extends FlowNode {
           if (cond?.to) {
             step = <FlowStep>cond?.to as FlowStep;
 
+            /**********************************************************
+             ----------------- INJECTION POINT ------------------------
+             **********************************************************/
+             // Use this location to mutate components before rendering
+             // example: Set Query Params returned by conditions
             if(value instanceof FlowListParams) {
 
-              /**
-               * data and list components require a different param to be set for queries.
-               * the component reference are class pointers, not instance so we have to construct one
-               * don't worry we're just destroying it right away
-               * we need it for the `instanceof` check
-              */
-              if(new (<FlowStep>step).component() instanceof FlowDataComponent) {
-                /**
-                 * Mutate DataComponent's nodeText and title
-                 * we can reuse it for edits and creates
-                */
+              // FlowDataComponent
+              const instance = new (<FlowStep>step).component();
+              if(instance instanceof FlowDataComponent) {
+                // Mutate DataComponent's nodeText and title
+                // making it reusable for edits and creates
                 (<FlowStep>step).nodeText = `Review ${(<FlowStep>step).data.module}`;
                 (<FlowStep>step).data.title = `Review ${(<FlowStep>step).data.module}`;
                 (<FlowStep>step).data.id = value.getParams()[`${(<FlowStep>step).data.module}Id`];
               }
 
-              if((<FlowStep>step).component instanceof FlowListComponent) {
+              // FlowListComponent
+              if(instance instanceof FlowListComponent) {
                 (<FlowStep>step).data.options['query'] = value.getParams();
               }
-
             }
 
           } else {
@@ -60,11 +64,19 @@ export class FlowRouter extends FlowNode {
     return step;
   }
 
-  serialize() {
+  /**
+   * Serializes JSON representation to JS Object
+   *
+   * @returns FlowRouter
+   */
+  serialize(): FlowRouter {
     const data: FlowRouter = { ...cloneDeep(this) };
     return new FlowRouter(data.nodeText, data.nodeIcon, data.conditions, data.id);
   }
 
+  /**
+   * Deserializes JS Object back to JSON representation
+   */
   deserialize() {
   }
 

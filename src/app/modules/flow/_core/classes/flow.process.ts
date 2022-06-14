@@ -8,6 +8,7 @@ import { FlowStepHistoryEntry } from './flow.stepHistory';
 import * as flowActions from '../../store/flow.actions';
 import { Inject } from '@angular/core';
 import { FlowBaseModel } from './flow.baseModel';
+import { ProcessNotFoundError } from './flow.errors';
 
 export class FlowProcess extends FlowBaseModel {
 
@@ -30,7 +31,9 @@ export class FlowProcess extends FlowBaseModel {
       this.stepHistory = state.stepHistory;
     });
 
-    // @ts-ignore
+    if(!this.id) {
+      throw new ProcessNotFoundError();
+    }
     this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
 
   }

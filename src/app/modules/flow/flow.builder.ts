@@ -28,12 +28,12 @@ export class FlowBuilder {
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const createEditLead = FlowFactory.createEditLead();
-    const selectExistingOpp = FlowFactory.selectExistingOpp(async () => ({
+    const selectExistingOpp = FlowFactory.selectExistingOpp(() => ({
       /**
        * by passing a function to the `query` argument
        * we can defer the collection of variables to a later time
        */
-      leadId: await this.getVariable('lead')
+      leadId: this.getVariable('lead')
     }));
 
     // inbound
