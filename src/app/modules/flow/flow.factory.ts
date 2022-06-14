@@ -28,7 +28,7 @@ export class FlowFactory {
     });
   }
 
-  public static searchNListContacts(): FlowStep {
+  public static searchNListLeads(): FlowStep {
     return new FlowStep({
       nodeText: 'Search Leads',
       nodeIcon: 'address-book',

@@ -24,7 +24,7 @@ export class FlowBuilder {
 
     // select call type
     const callType = FlowFactory.callTypeDecision();
-    const searchNListContacts = FlowFactory.searchNListContacts()
+    const searchNListLeads = FlowFactory.searchNListLeads()
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const createEditLead = FlowFactory.createEditLead();
@@ -39,7 +39,7 @@ export class FlowBuilder {
     // inbound
     const inboundCond = FlowFactory.condition(async () => {
       return await this.getVariable('call_type') === 'inbound';
-    }, searchNListContacts);
+    }, searchNListLeads);
 
     const outboundCond = FlowFactory.condition(async () => {
       return await this.getVariable('call_type') === 'outbound';
@@ -77,8 +77,10 @@ export class FlowBuilder {
 
     const leadToOppListLink = FlowFactory.link(createEditLead, selectExistingOpp);
 
-    const searchNListContactsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
-    const searchNListContactsLink = FlowFactory.link(searchNListContacts, searchNListContactsRouter);
+
+
+    const searchNListLeadsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
+    const searchNListLeadsLink = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
 
     // outbound
     const webLeads_yes = FlowFactory.condition(async () => {
@@ -87,7 +89,7 @@ export class FlowBuilder {
 
     const webLeads_no = FlowFactory.condition(async () => {
       return await this.getVariable('web_lead_options') === 'contacts';
-    }, searchNListContacts);
+    }, searchNListLeads);
 
     const webLeadRouter = FlowFactory.router('Router', '', [webLeads_yes, webLeads_no]);
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
@@ -106,7 +108,7 @@ export class FlowBuilder {
     this.process
       .addStep(callType)
       .addRouter(callTypeRouter)
-      .addStep(searchNListContacts)
+      .addStep(searchNListLeads)
       .addStep(webLeadsType)
       .addLink(callTypeLink);
 
@@ -114,12 +116,12 @@ export class FlowBuilder {
     //   case 'inbound':
 
     this.process
-      .addRouter(searchNListContactsRouter)
+      .addRouter(searchNListLeadsRouter)
       .addStep(selectExistingOpp)
       .addStep(createEditLead)
       .addStep(selectExistingOpp)
       .addLink(leadToOppListLink)
-      .addLink(searchNListContactsLink)
+      .addLink(searchNListLeadsLink)
       .addStep(bogusStep)
       .addStep(bogusStep2)
       .addLink(bogusLink)
@@ -132,7 +134,7 @@ export class FlowBuilder {
     this.process
       .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
-      .addStep(searchNListContacts)
+      .addStep(searchNListLeads)
       .addLink(webLeadLink)
     //     break;
     //
