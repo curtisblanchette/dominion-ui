@@ -5,6 +5,8 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import * as flowActions from '../../../store/flow.actions';
 import { Store } from '@ngrx/store';
 import { FlowState } from '../../../store/flow.reducer';
+import { Observable, of } from 'rxjs';
+import { DropdownItem } from '../../../../../common/components/interfaces/dropdownitem.interface';
 
 @UntilDestroy()
 @Component({
@@ -17,13 +19,14 @@ export class FlowTextComponent {
   @Input('data') data: any;
   public form: any;
   public fields: Array<any> = [];
+  public callTypes$: Observable<DropdownItem[]>;
 
   constructor(
     private store: Store<FlowState>,
     private flowService: FlowService,
     private fb: FormBuilder
   ) {
-
+    this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
   }
 
   public ngOnInit(){
@@ -37,6 +40,7 @@ export class FlowTextComponent {
 
     switch(this.data.template) {
       case 'call-type': {
+
         form['call_type'] = new FormControl('', [Validators.required]);
       }
       break;

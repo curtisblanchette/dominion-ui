@@ -1,11 +1,10 @@
 <div *ngIf="data">
   <h3>{{data.title}}</h3>
-  {{data.body}}
+  <p>{{data.body}}</p>
   <ng-container [ngSwitch]="data.template">
     <ng-template [ngSwitchCase]="'call-type'">
       <form [formGroup]="form">
-        <input type="radio" formControlName="call_type" value="inbound" ngDefaultControl /> Inbound
-        <input type="radio" formControlName="call_type" value="outbound" ngDefaultControl /> Outbound
+        <fiiz-radio [items]="callTypes$" formControlName="call_type"></fiiz-radio>
       </form>
     </ng-template>
 

@@ -10,7 +10,7 @@ import {
   FiizMinDateDirective,
   FiizInputComponent,
   FiizTextAreaComponent,
-  FiizToggleComponent
+  FiizToggleComponent, FiizRadioComponent
 } from './forms';
 import { FiizCardComponent } from './card';
 import { FiizPillComponent } from './pill';
@@ -41,6 +41,7 @@ import { DpDatePickerModule } from 'ng2-date-picker';
     FiizCardComponent,
     FiizDatePickerComponent,
     FiizInputComponent,
+    FiizRadioComponent,
     FiizTextAreaComponent,
     FiizTableComponent,
     FiizTabNavComponent,
@@ -78,6 +79,7 @@ import { DpDatePickerModule } from 'ng2-date-picker';
     FiizCardComponent,
     FiizDatePickerComponent,
     FiizInputComponent,
+    FiizRadioComponent,
     FiizTextAreaComponent,
     FiizTableComponent,
     FiizTabNavComponent,
