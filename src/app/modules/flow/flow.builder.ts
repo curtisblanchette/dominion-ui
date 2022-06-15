@@ -27,14 +27,23 @@ export class FlowBuilder {
     const searchNListLeads = FlowFactory.searchNListLeads()
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
-    const createEditLead = FlowFactory.createEditLead();
-    const selectExistingOpp = FlowFactory.selectExistingOpp(() => ({
+    const createLead = FlowFactory.createLead();
+    const editLead = FlowFactory.editLead();
+    const setLeadSource = FlowFactory.setLeadSource(() => this.getVariable('lead'));
+    const oppList = FlowFactory.selectExistingOpp(() => ({
       /**
        * by passing a function to the `query` argument
        * we can defer the collection of variables to a later time
        */
       leadId: this.getVariable('lead')
     }));
+
+
+    const relationshipBuilding = FlowFactory.relationshipBuilding();
+    const toRelationshipBuilding = FlowFactory.link(setLeadSource, relationshipBuilding);
+
+    const powerQuestion = FlowFactory.powerQuestion();
+    const toPowerQuestion = FlowFactory.link(relationshipBuilding, powerQuestion);
 
     // inbound
     const inboundCond = FlowFactory.condition(async () => {
@@ -46,42 +55,32 @@ export class FlowBuilder {
     }, webLeadsType);
 
     const callTypeRouter = FlowFactory.router('Router', '', [inboundCond, outboundCond]);
-    const callTypeLink = FlowFactory.link(callType, callTypeRouter);
+    const toCallTypeRouter = FlowFactory.link(callType, callTypeRouter);
 
     const existingLead_yes = FlowFactory.condition(async () => {
       const leadId = await this.getVariable('lead');
 
       if (leadId) {
-        createEditLead.nodeText = 'Review Lead Info';
-        createEditLead.data.title = 'Review Lead Info';
-
         const params = new FlowListParams();
         params.setParam('leadId', leadId);
         return params;
       }
 
       return false;
-    }, createEditLead);
+    }, editLead);
 
     const existingLead_no = FlowFactory.condition(async () => {
       const lead = await this.getVariable('lead');
-      /**
-       * Conditions can also update FlowStep members
-       */
-      createEditLead.nodeText = 'Create New Lead';
-      createEditLead.data.title = 'Create New Lead';
-      createEditLead.data.id = null;
-
+      /** Conditions can also update FlowStep members */
       return !lead;
+    }, createLead);
 
-    }, createEditLead);
+    const toOppList = FlowFactory.link(editLead, oppList);
 
-    const leadToOppListLink = FlowFactory.link(createEditLead, selectExistingOpp);
-
-
+    const setLeadSourceLink = FlowFactory.link(createLead, setLeadSource);
 
     const searchNListLeadsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
-    const searchNListLeadsLink = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
+    const toSearchNListLeadsRouter = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
 
     // outbound
     const webLeads_yes = FlowFactory.condition(async () => {
@@ -103,43 +102,44 @@ export class FlowBuilder {
     const bogusStep2 = FlowFactory.step({nodeText: 'bogus', nodeIcon: 'fa-smile', data: {
         template: ''
       }, component: FlowTextComponent});
-    const bogusLink = FlowFactory.link(selectExistingOpp, bogusStep);
+    const bogusLink = FlowFactory.link(oppList, bogusStep);
     const bogusLink2 = FlowFactory.link(bogusStep, bogusStep2);
-    ///
+
     this.process
       .addStep(callType)
+      .addLink(toCallTypeRouter)
       .addRouter(callTypeRouter)
       .addStep(searchNListLeads)
-      .addStep(webLeadsType)
-      .addLink(callTypeLink);
+      .addStep(webLeadsType);
 
-    // switch (type) {
-    //   case 'inbound':
 
+    // 'inbound'
     this.process
       .addRouter(searchNListLeadsRouter)
-      .addStep(selectExistingOpp)
-      .addStep(createEditLead)
-      .addStep(selectExistingOpp)
-      .addLink(leadToOppListLink)
-      .addLink(searchNListLeadsLink)
+      .addLink(toSearchNListLeadsRouter)
+      .addStep(oppList)
+      .addLink(toOppList)
+      .addStep(createLead)
+      .addStep(editLead)
+      .addLink(setLeadSourceLink)
+      .addStep(setLeadSource)
+      .addStep(relationshipBuilding)
+      .addLink(toRelationshipBuilding)
+      .addStep(powerQuestion)
+      .addLink(toPowerQuestion)
+
       .addStep(bogusStep)
       .addStep(bogusStep2)
       .addLink(bogusLink)
       .addLink(bogusLink2)
 
-    //   break;
-    //
-    // case 'outbound':
-
+    // 'outbound'
     this.process
       .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
       .addStep(searchNListLeads)
       .addLink(webLeadLink)
-    //     break;
-    //
-    // }
+
 
   }
 

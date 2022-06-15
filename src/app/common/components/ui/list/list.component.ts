@@ -157,7 +157,13 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     return '';
   }
 
-  onCreateNew() {
+  get moduleName() {
+    if(this.data?.module) {
+      return this.data.module[0].toUpperCase() + this.data.module.substring(1, this.data.module.length);
+    }
+  }
+
+  public onCreateNew() {
     this.selected = null;
     this.values.emit( { module: this.module, record: null });
     this.onCreate.emit(true);

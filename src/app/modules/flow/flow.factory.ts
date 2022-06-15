@@ -1,4 +1,5 @@
 import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink } from './_core';
+import { LeadModel } from '../../common/models/lead.model';
 
 export class FlowFactory {
 
@@ -46,7 +47,7 @@ export class FlowFactory {
     })
   }
 
-  public static createEditLead(): FlowStep {
+  public static createLead(): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'address-book',
@@ -56,7 +57,51 @@ export class FlowFactory {
         module: ModuleType.LEAD,
         options: {
           controls: false,
-          state: 'create'
+          state: 'create',
+          fields: {
+            firstName: LeadModel['firstName'],
+            lastName: LeadModel['lastName'],
+            phone: LeadModel['phone'],
+            email: LeadModel['email'],
+            state: LeadModel['state']
+          }
+        }
+      }
+    });
+  };
+
+  public static editLead(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Review Lead Info',
+      nodeIcon: 'address-book',
+      component: FlowDataComponent,
+      data: {
+        title: 'Review Lead Info',
+        module: ModuleType.LEAD,
+        options: {
+          controls: false,
+          state: 'edit',
+          fields: LeadModel // all fields
+        }
+      }
+    });
+  };
+
+  public static setLeadSource(resolve: Function = () => {}): FlowStep {
+    return new FlowStep({
+      nodeText: 'Select Lead Source',
+      nodeIcon: 'address-book',
+      component: FlowDataComponent,
+      data: {
+        title: 'Select a Lead Source',
+        module: ModuleType.LEAD,
+        resolve,
+        options: {
+          controls: false,
+          state: 'edit',
+          fields: {
+            campaignId: LeadModel['campaignId']
+          }
         }
       }
     });
@@ -80,6 +125,32 @@ export class FlowFactory {
       }
     });
   };
+
+  public static relationshipBuilding(resolve: Function = () => {}) {
+    return new FlowStep({
+      nodeText: 'Relationship Building',
+      nodeIcon: 'fa-gear',
+      component: FlowTextComponent,
+      data: {
+        title: 'Relationship Building',
+        // body: '',
+        template: 'relationship-building'
+      }
+    })
+  }
+
+  public static powerQuestion(resolve: Function = () => {}) {
+    return new FlowStep({
+      nodeText: 'Power Question',
+      nodeIcon: 'fa-address-book',
+      component: FlowTextComponent,
+      data: {
+        title: 'Power Question',
+        // body: '',
+        template: 'power-question'
+      }
+    })
+  }
 
   public static searchNListWebLeads(): FlowStep {
     const data = {

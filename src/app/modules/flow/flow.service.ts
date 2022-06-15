@@ -62,7 +62,8 @@ export class FlowService {
     }
 
     if(typeof this.cmpReference.instance.save === 'function') {
-      this.cmpReference.instance.save();
+      // wait for these to complete
+      await this.cmpReference.instance.save();
     }
 
     if(typeof this.cmpReference.instance.onNext === 'function') {
@@ -122,6 +123,7 @@ export class FlowService {
 
     this.cmpReference = viewContainerRef.createComponent<any>(step.component);
     this.cmpReference.instance.data = step.data;
+    this.cmpReference.instance.options = step.data.options;
 
     if(this.cmpReference.instance instanceof FlowListComponent) {
       /**

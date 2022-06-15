@@ -7,13 +7,16 @@ import { OnBack, OnNext } from '../../classes';
 
 @Component({
   selector: 'flow-data',
-  template: `<fiiz-data #cmp [data]="data" [options]="options" (isValid)="updateValidity($event)"></fiiz-data>`,
+  template: `
+    <div>{{options.dictation}}</div>
+    <fiiz-data #cmp [data]="data" [options]="options" (isValid)="updateValidity($event)"></fiiz-data>
+  `,
   styleUrls: ['../_base.scss']
 })
 export class FlowDataComponent implements OnDestroy, OnBack, OnNext {
 
   @Input('data') data: any;
-  @Input('options') options: IDataOptions = { controls: false, state: 'create' };
+  @Input('options') options: IDataOptions = { controls: false, state: 'create', dictation: '', fields: [] };
 
   @ViewChild(FiizDataComponent, { static: true }) cmp: FiizDataComponent;
 
@@ -27,12 +30,11 @@ export class FlowDataComponent implements OnDestroy, OnBack, OnNext {
     this.store.dispatch(flowActions.SetValidityAction({payload: isValid}))
   }
 
-  save() {
-    this.cmp.saveData();
+  public save(): Promise<any> {
+    return this.cmp.saveData();
   }
 
   ngOnDestroy() {
-    // we only want to do this if it's a back action
     console.log("FlowDataComponent Destroyed")
   }
 

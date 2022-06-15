@@ -34,15 +34,26 @@ export class FlowTextComponent {
 
   public initForm() {
     let form: any = {};
-    if (this.data.template === 'call-type') {
-      form = {
-        call_type: new FormControl('', [Validators.required])
-      };
-    } else if (this.data.template === 'web-lead') {
-      form = {
-        web_lead_options: new FormControl('', [Validators.required])
-      };
+
+    switch(this.data.template) {
+      case 'call-type': {
+        form['call_type'] = new FormControl('', [Validators.required]);
+      }
+      break;
+      case 'web-lead': {
+        form['web_lead_options'] = new FormControl('', [Validators.required]);
+      }
+      break;
+      case 'power-question': {
+
+      }
+      break;
+      case 'relationship-building': {
+
+      }
+      break;
     }
+
 
     if(Object.keys(form).length) {
       this.form = this.fb.group(form);
@@ -55,6 +66,9 @@ export class FlowTextComponent {
         this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
       });
     }
+
+    /** If there is no form, the step's validity should be true */
+    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
 
   }
 
