@@ -119,20 +119,17 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   }
 
-
-
   public ngAfterViewInit() {
     this.dropdowns.forEach(async (dropdown) => {
       const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     });
-    this._dynamicCollectionService.setFilter({}); // clear the filters
 
+
+    this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
 
     if (this.id) {
       this.getData();
-    } else {
-
     }
   }
 
