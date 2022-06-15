@@ -125,8 +125,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     });
 
-
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
+    this._dynamicCollectionService.clearCache();
 
     if (this.id) {
       this.getData();
@@ -195,10 +195,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   private resetForm() {
     this.form.reset();
     this.form.enable();
+    this.id = null;
+    this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
+    this._dynamicCollectionService.clearCache();
   }
 
   public override ngOnDestroy() {
     console.log('data component destroyed');
-    this.id = null;
+    this.resetForm();
   }
 }
