@@ -67,7 +67,6 @@ export const reducer = createReducer(
   on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, variables: payload }})),
   on(flowActions.SetValidityAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, valid: payload  }})),
 
-
   on(flowActions.NextStepAction, (state, { host, stepId }) => ({...state, breadcrumbs: [...state.breadcrumbs, stepId]}) ),
   on(flowActions.PrevStepAction, (state, { host }) => ({ ...state, breadcrumbs: [...state.breadcrumbs.slice(0, -1)] })),
 

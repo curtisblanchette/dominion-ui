@@ -60,8 +60,13 @@ export class FlowService {
       const init = <FlowRouter>step;
       step = await init.evaluate();
     }
+
     if(typeof this.cmpReference.instance.save === 'function') {
       this.cmpReference.instance.save();
+    }
+
+    if(typeof this.cmpReference.instance.onNext === 'function') {
+      this.cmpReference.instance.onNext();
     }
 
     this.createHistoryEntry();
@@ -77,6 +82,10 @@ export class FlowService {
 
   public async back(host: FlowHostDirective): Promise<void> {
     this.createHistoryEntry();
+
+    if(typeof this.cmpReference.instance.onBack === 'function') {
+      this.cmpReference.instance.onBack();
+    }
 
     const completedSteps = [...(await firstValueFrom(this.store.select(fromFlow.selectCompletedSteps)))];
     completedSteps.pop() // remove the current step

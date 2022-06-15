@@ -3,14 +3,14 @@ import { Store } from '@ngrx/store';
 import { FlowState } from '../../../store/flow.reducer';
 import * as flowActions from '../../../store/flow.actions';
 import { FiizDataComponent, IDataOptions } from '../../../../../common/components/ui/data/data.component';
-import { FlowFactory } from '../../../flow.factory';
+import { OnBack, OnNext } from '../../classes';
 
 @Component({
   selector: 'flow-data',
   template: `<fiiz-data #cmp [data]="data" [options]="options" (isValid)="updateValidity($event)"></fiiz-data>`,
   styleUrls: ['../_base.scss']
 })
-export class FlowDataComponent implements OnDestroy {
+export class FlowDataComponent implements OnDestroy, OnBack, OnNext {
 
   @Input('data') data: any;
   @Input('options') options: IDataOptions = { controls: false, state: 'create' };
@@ -32,8 +32,18 @@ export class FlowDataComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.data.id = null;
-    this.data.title = FlowFactory.createEditLead()
+    // we only want to do this if it's a back action
     console.log("FlowDataComponent Destroyed")
   }
+
+  onBack() {
+    this.data.id = null;
+    this.cmp.resetForm();
+    console.log('FlowDataComponent OnBack called!');
+  }
+
+  onNext() {
+    console.log('FlowDataComponent OnNext called!');
+  }
+
 }

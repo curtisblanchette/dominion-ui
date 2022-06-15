@@ -197,7 +197,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
   }
 
-  private resetForm() {
+  public resetForm() {
     this.form.reset();
     this.form.enable();
     this.id = null;
@@ -207,6 +207,5 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override ngOnDestroy() {
     console.log('data component destroyed');
-    this.resetForm();
   }
 }

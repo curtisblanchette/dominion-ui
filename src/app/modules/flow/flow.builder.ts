@@ -70,6 +70,7 @@ export class FlowBuilder {
        */
       createEditLead.nodeText = 'Create New Lead';
       createEditLead.data.title = 'Create New Lead';
+      createEditLead.data.id = null;
 
       return !lead;
 
