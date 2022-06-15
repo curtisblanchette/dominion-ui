@@ -7,14 +7,16 @@ import {
   FiizDatePickerComponent,
   FiizDatePickerDirective,
   FiizMaxDateDirective,
-  FiizMinDateDirective, FiizInputComponent, FiizTextAreaComponent
+  FiizMinDateDirective,
+  FiizInputComponent,
+  FiizTextAreaComponent,
+  FiizToggleComponent
 } from './forms';
 import { FiizCardComponent } from './card';
 import { FiizPillComponent } from './pill';
 import { FiizTableComponent } from './table';
 import { FiizTabNavComponent } from './tab-nav/tab-nav';
 import { RouterModule } from '@angular/router';
-import { FiizToggleComponent } from './forms/toggle/toggle';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
 import { FiizInputCurrencyComponent } from './forms/input-currency';

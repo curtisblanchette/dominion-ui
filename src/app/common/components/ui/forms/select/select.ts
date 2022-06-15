@@ -5,7 +5,6 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { ModuleType } from '../../../../../modules/flow/_core';
 import { Router } from '@angular/router';
-import { untilDestroyed, UntilDestroy } from '@ngneat/until-destroy';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -13,7 +12,6 @@ export interface DropdownItem {
   disabled?: boolean;
 }
 
-@UntilDestroy()
 @Component({
   selector: 'fiiz-select',
   templateUrl: './select.html',
@@ -67,22 +65,17 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    if(this.remote) {
-      const service = this.createService(this.module, entityCollectionServiceFactory);
-      service.load();
-      this.items$ = service.filteredEntities$ as any;
-    }
+    // if(this.remote) {
+    //   const service = this.createService(this.module, entityCollectionServiceFactory);
+    //   service.load();
+    //   this.items$ = service.filteredEntities$ as any;
+    // }
   }
 
   async ngOnInit() {
     if( this.default ){
       this.label = this.default;
     }
-
-    this.items$.pipe(untilDestroyed(this)).subscribe(items => {
-      this.selected = items[0];
-    });
-
 
   }
 

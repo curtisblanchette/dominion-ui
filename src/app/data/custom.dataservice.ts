@@ -71,7 +71,6 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   }
 
   public static toDropdownItems(items: {[key:string]: any}[]): any {
-    // return { ...hero, dateLoaded: new Date() };
     return items.map((item: any) => { return { id: item.id, label: item.name }});
   }
 

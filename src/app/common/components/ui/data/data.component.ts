@@ -17,6 +17,7 @@ import { uriOverrides } from '../../../../data/entity-metadata';
 import { firstValueFrom, of } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { delay } from 'rxjs/operators';
 
 export interface IDataOptions {
   controls: boolean;
@@ -86,6 +87,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this.data$.pipe(
       untilDestroyed(this),
+      delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
     ).subscribe(record => {
       if(record[0]) {
         let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
@@ -106,15 +108,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           this.form.setValue(entity);
         }
       }
-    });
-
-    this.form.controls.statusId.valueChanges.subscribe((res: number) => {
-      let fnName = res === 3 ? 'enable' : 'disable';
-      this.form.controls.lostReasonId[fnName]({emitEvent: false});
-    });
-
-    this.form.statusChanges.pipe(untilDestroyed(this)).subscribe((valid: 'VALID' | 'INVALID') => {
-      this.isValid.next(valid === 'VALID');
     });
 
   }
@@ -162,6 +155,18 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
     this.form = this.fb.group(form);
     this.controlData = this.getControlData(this.form, model);
+
+    if(this.module === 'lead') {
+      this.form.controls.statusId.valueChanges.subscribe((res: number) => {
+        let fnName = res === 3 ? 'enable' : 'disable';
+        this.form.controls.lostReasonId[fnName]({emitEvent: false});
+      });
+
+      this.form.statusChanges.pipe(untilDestroyed(this)).subscribe((valid: 'VALID' | 'INVALID') => {
+        this.isValid.next(valid === 'VALID');
+      });
+    }
+
   }
 
   public getControlData(formGroup: FormGroup, model: any) {
