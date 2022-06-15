@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.8.37 (2022-06-15)
+
+
+### Bug Fixes
+
+* **develop:** resetting the filter here is important ([96d18bd](https://github.com/4iiz/dominion-ui/commit/96d18bd589d9a376201ca98039a4ccf353573fff))
+
 ### 1.8.36 (2022-06-14)
 
 ### 1.8.35 (2022-06-14)
