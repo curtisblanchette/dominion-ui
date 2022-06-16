@@ -198,8 +198,15 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         {
           when: LeadFields.STATUS_ID,
           equals: 'Lost',
-          then: 'enable',
-          else: 'disable',
+          then: {
+            fn: 'enable',
+            args: [{emitEvent: false}]
+          },
+          else: {
+            fn: 'disable',
+            args: [{emitEvent: false}]
+          },
+          args: [{emitEvent: false}],
           field: 'lostReasonId'
         }
       ],
@@ -207,8 +214,14 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         {
           when: DealFields.STAGE_ID,
           equals: 'Lost',
-          then: 'enable',
-          else: 'disable',
+          then: {
+            fn: 'enable',
+            args: [{emitEvent: false}]
+          },
+          else: {
+            fn: 'disable',
+            args: [{emitEvent: false}]
+          },
           field: 'lostReasonId'
         }
       ]
@@ -217,12 +230,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     for(const watch of watchFields[this.module]){
       const field = watch.when;
       this.form.controls[field].valueChanges.subscribe(async (res: number) => {
-        // get the value from the dropdown items
         const dropdown = this.dropdowns.find(cmp => cmp.id === field);
         const options = await dropdown?.items$.pipe(take(1)).toPromise();
         const value = options?.find(opt => opt.label === watch.equals)?.id;
-        const fnName = res === value ? watch.then : watch.else;
-        this.form.controls[watch.field][fnName]({emitEvent: false});
+        const result = res === value ? watch.then : watch.else;
+        this.form.controls[watch.field][result.fn](...result.args);
       });
     }
 
