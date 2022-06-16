@@ -1,7 +1,8 @@
 import { FlowRouter, FlowBaseModel, FlowStep } from './index';
 import { cloneDeep } from 'lodash';
+import { FlowSerialization } from './flow.serialization';
 
-export class FlowLink extends FlowBaseModel {
+export class FlowLink extends FlowBaseModel implements FlowSerialization<FlowLink> {
   public from: FlowStep;
   public to: FlowStep | FlowRouter;
 
@@ -15,22 +16,13 @@ export class FlowLink extends FlowBaseModel {
     this.to = to;
   }
 
-  public async run(): Promise<void> {
-    await this.beforeRouting();
+  public _serialize(): string {
+    return JSON.stringify(this);
   }
 
-  public async beforeRouting() {
-    // apply any model changes.
-    await this.from.save();
-  }
-
-
-  serialize() {
+  public _deserialize(): FlowLink {
     const data: FlowLink = {...cloneDeep(this)};
     // @ts-ignore
     return new FlowLink(data.id, data.from, data.to);
-  }
-
-  deserialize() {
   }
 }

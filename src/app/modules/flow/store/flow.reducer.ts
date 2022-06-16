@@ -78,14 +78,14 @@ export const selectFlow = createFeatureSelector<FlowState>('flow');
 export const selectSteps = createSelector(selectFlow, (flow: FlowState) => flow.steps.map(step => {
   // hack to get a mutable object back from store, "specifically the step.component"
   const clone = cloneDeep(step);
-  return clone.serialize();
+  return clone._deserialize();
 }));
 
 export const selectCompletedSteps = createSelector(selectFlow, (flow: FlowState) => {
   // we'll use the breadcrumb trail here to gather the steps traversed
   return flow.breadcrumbs.map(stepId => {
     const step = flow.steps.find(step => step.id === stepId);
-    return step?.serialize();
+    return step?._deserialize();
   });
 });
 
@@ -93,7 +93,7 @@ export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) =
 
   const completed = flow.breadcrumbs.map(stepId => {
     const step = flow.steps.find(step => step.id === stepId);
-    return step?.serialize();
+    return step?._deserialize();
   });
 
   const next: FlowStep[] = [];
@@ -115,8 +115,8 @@ export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) =
 });
 
 export const selectProcessId     = createSelector(selectFlow, (flow: FlowState) => flow.processId);
-export const selectRouters       = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router.serialize()));
-export const selectLinks         = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link.serialize()));
+export const selectRouters       = createSelector(selectFlow, (flow: FlowState) => flow.routers.map(router => router._deserialize()));
+export const selectLinks         = createSelector(selectFlow, (flow: FlowState) => flow.links.map(link => link._deserialize()));
 export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => flow.currentStep);
 export const selectCurrentStepId = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.step?.id);
 export const selectIsValid       = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.valid);

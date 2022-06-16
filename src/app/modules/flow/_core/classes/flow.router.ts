@@ -1,8 +1,9 @@
 import { FlowStep, FlowNode, FlowCondition, FlowListParams } from './index';
 import { cloneDeep } from 'lodash';
 import { FlowDataComponent, FlowListComponent } from '../step-components';
+import { FlowSerialization } from './flow.serialization';
 
-export class FlowRouter extends FlowNode {
+export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter> {
   public conditions: FlowCondition[];
 
   constructor(
@@ -60,20 +61,13 @@ export class FlowRouter extends FlowNode {
     return step;
   }
 
-  /**
-   * Serializes JSON representation to JS Object
-   *
-   * @returns FlowRouter
-   */
-  serialize(): FlowRouter {
-    const data: FlowRouter = { ...cloneDeep(this) };
-    return new FlowRouter(data.nodeText, data.nodeIcon, data.conditions, data.id);
+  public _serialize(): string {
+    return JSON.stringify(this);
   }
 
-  /**
-   * Deserializes JS Object back to JSON representation
-   */
-  deserialize() {
+  public _deserialize(): FlowRouter {
+    const data: FlowRouter = { ...cloneDeep(this) };
+    return new FlowRouter(data.nodeText, data.nodeIcon, data.conditions, data.id);
   }
 
 }

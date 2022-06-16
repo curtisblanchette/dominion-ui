@@ -1,7 +1,8 @@
 import { FlowNode } from "./index";
 import { cloneDeep } from 'lodash';
+import { FlowSerialization } from './flow.serialization';
 
-export class FlowStep extends FlowNode {
+export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
 
   public override id?: string;
   public override nodeText: string;
@@ -31,19 +32,20 @@ export class FlowStep extends FlowNode {
 
   }
 
-  public serialize(): FlowStep {
-    const data: FlowStep = { ...cloneDeep(this) };
-    return new FlowStep(data);
-  }
-
-  public deserialize() {
-  }
-
   public release(): void {
     this._destroyedAt = new Date().getTime();
   }
 
   get elapsed() {
     return this._destroyedAt - this._constructedAt;
+  }
+
+  public _serialize(): string {
+    return JSON.stringify(this);
+  }
+
+  public _deserialize(): FlowStep {
+    const data: FlowStep = { ...cloneDeep(this) };
+    return new FlowStep(data);
   }
 }
