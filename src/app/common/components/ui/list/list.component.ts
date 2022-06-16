@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, take } from 'rxjs';
@@ -16,11 +16,13 @@ import * as fromData from '../../../../modules/data/store/data.reducer';
 import { DropdownItem } from '../forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { ModuleType } from '../../../../modules/flow/_core';
 
 export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   columns: Array<Object>;
+  query?: Function;
 }
 
 export enum SortDirections {
@@ -57,7 +59,9 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
   @Input('data') public override data: any;
-  @Input('options') options: IListOptions;
+  @Input('module') public override module: ModuleType;
+  @Input('options') public override options: IListOptions;
+
   @Input('loadInitial') loadInitial: boolean = false;
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
@@ -86,6 +90,14 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
+    const state = (<any>router.getCurrentNavigation()?.extras.state);
+
+    if(state && Object.keys(state).length){
+      this.module = state.module;
+      this.options = state.options;
+      this.data = state.data;
+    }
+
     let form: { [key: string]: FormControl } = {};
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
@@ -102,7 +114,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     super.ngAfterContentInit();
     this.columns = getColumnsForModule(this.module);
   }
-
 
   ngAfterViewInit() {
     // @ts-ignore
@@ -150,16 +161,16 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
 
   get pluralModuleName() {
-    if (this.data?.module) {
-      return pluralize(this.data.module);
+    if (this.module) {
+      return pluralize(this.module);
     }
 
     return '';
   }
 
   get moduleName() {
-    if(this.data?.module) {
-      return this.data.module[0].toUpperCase() + this.data.module.substring(1, this.data.module.length);
+    if(this.module) {
+      return this.module[0].toUpperCase() + this.module.substring(1, this.data.length);
     }
   }
 
@@ -205,13 +216,13 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['sort'] = 'ASC';
     }
 
-    if(this.data.options.query) {
-      if(typeof this.data.options.query === 'function') {
-        for(const key of Object.keys(this.data.options.query())) {
-          params[key] = await this.data.options.query()[key];
+    if(this.options.query) {
+      if(typeof this.options.query === 'function') {
+        for(const key of Object.keys(this.options.query())) {
+          params[key] = await this.options.query()[key];
         }
       } else {
-        for(const [key, value] of Object.entries(this.data.options.query)) {
+        for(const [key, value] of Object.entries(this.options.query)) {
           // @ts-ignore
           params[key] = value;
         }

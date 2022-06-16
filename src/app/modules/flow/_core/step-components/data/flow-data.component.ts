@@ -2,21 +2,22 @@ import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FlowState } from '../../../store/flow.reducer';
 import * as flowActions from '../../../store/flow.actions';
-import { FiizDataComponent, IDataOptions } from '../../../../../common/components/ui/data/data.component';
-import { OnBack, OnNext } from '../../classes';
+import { FiizDataComponent, FiizDataComponentOptions } from '../../../../../common/components/ui/data/data.component';
+import { ModuleType, OnBack, OnNext } from '../../classes';
 
 @Component({
   selector: 'flow-data',
   template: `
     <div>{{options.dictation}}</div>
-    <fiiz-data #cmp [data]="data" [options]="options" (isValid)="updateValidity($event)"></fiiz-data>
+    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="updateValidity($event)"></fiiz-data>
   `,
   styleUrls: ['../_base.scss']
 })
 export class FlowDataComponent implements OnDestroy, OnBack, OnNext {
 
+  @Input('module') module: ModuleType;
   @Input('data') data: any;
-  @Input('options') options: IDataOptions = { controls: false, state: 'create', dictation: '', fields: [] };
+  @Input('options') options: FiizDataComponentOptions;
 
   @ViewChild(FiizDataComponent, { static: true }) cmp: FiizDataComponent;
 

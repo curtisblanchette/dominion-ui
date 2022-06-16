@@ -121,35 +121,43 @@ export class FlowService {
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
 
-    this.cmpReference = viewContainerRef.createComponent<any>(step.component);
-    this.cmpReference.instance.data = step.data;
-    this.cmpReference.instance.options = step.data.options;
+    try {
+      this.cmpReference = viewContainerRef.createComponent<any>(step.component);
+      this.cmpReference.instance.module = step.state.module;
+      this.cmpReference.instance.data = step.state.data;
+      this.cmpReference.instance.options = step.state.options;
 
-    if(this.cmpReference.instance instanceof FlowListComponent) {
-      /**
-       * Subscribe to:
-       * @param {values} EventEmitter
-       * @param {onCreate} EventEmitter
-       */
-      this.cmpReference.instance.values.subscribe((value: any) => {
-        const variable = { [value.module]: value.record?.id || null };
-        this.setValidity(!!value.record);
-        this.addVariables(variable);
-      });
-
-      this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
-        const _injector = host.viewContainerRef.parentInjector;
-        const _parent: FlowComponent = _injector.get<FlowComponent>(FlowComponent);
-        _parent.animationIndex++;
-
-        this.next(host).catch((err) => {
-          if (err instanceof NoStepFoundError) {
-            console.warn(err);
-          }
+      if(this.cmpReference.instance instanceof FlowListComponent) {
+        /**
+         * Subscribe to:
+         * @param {values} EventEmitter
+         * @param {onCreate} EventEmitter
+         */
+        this.cmpReference.instance.values.subscribe((value: any) => {
+          const variable = { [value.module]: value.record?.id || null };
+          this.setValidity(!!value.record);
+          this.addVariables(variable);
         });
 
-      });
+        this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
+          const _injector = host.viewContainerRef.parentInjector;
+          const _parent: FlowComponent = _injector.get<FlowComponent>(FlowComponent);
+          _parent.animationIndex++;
+
+          this.next(host).catch((err) => {
+            if (err instanceof NoStepFoundError) {
+              console.warn(err);
+            }
+          });
+
+        });
+      }
+    } catch(e) {
+      console.error(e);
+      throw e;
     }
+
+
   }
 
   public setValidity(value: boolean) {

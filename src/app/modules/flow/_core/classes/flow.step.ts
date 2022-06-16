@@ -8,17 +8,17 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   public override nodeText: string;
   public override nodeIcon: string;
   public component: any; // TODO make this type right
-  public data: any;
+  public state: any;
 
   private readonly _constructedAt: number = 0;
   private _destroyedAt: number = 0;
 
   constructor(
-    data: Omit<FlowStep, 'serialize' | 'deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>
+    data: Omit<FlowStep, '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>
   ) {
     super(data.nodeText, data.nodeIcon, data.id);
     this.component = data.component;
-    this.data = data.data;
+    this.state = data.state;
 
     this._constructedAt = new Date().getTime();
 

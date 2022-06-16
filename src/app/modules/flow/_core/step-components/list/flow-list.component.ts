@@ -10,6 +10,8 @@ import { DominionType } from '../../../../../common/models';
 export class FlowListComponent implements OnDestroy {
 
   @Input('data') data: any;
+  @Input('module') module: any;
+  @Input('options') options: any;
 
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();

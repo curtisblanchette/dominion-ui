@@ -1,5 +1,6 @@
 import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink } from './_core';
-import { LeadModel } from '../../common/models/lead.model';
+import { Fields as LeadFields } from '../../common/models/lead.model';
+import { Fields as DealFields } from '../../common/models/deal.model';
 
 export class FlowFactory {
 
@@ -8,10 +9,12 @@ export class FlowFactory {
       nodeText: 'Call Type',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
-      data: {
-        title: 'Call Type',
-        body: 'Select one of the call types below.',
-        template: 'call-type'
+      state: {
+        data: {
+          title: 'Call Type',
+          body: 'Select one of the call types below.',
+          template: 'call-type'
+        }
       }
     });
   }
@@ -21,10 +24,12 @@ export class FlowFactory {
       nodeText: 'Web Leads type',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
-      data: {
-        title: 'How you wanna proceed',
-        body: 'select any one options below',
-        template: 'web-lead'
+      state: {
+        data: {
+          title: 'How you wanna proceed',
+          body: 'select any one options below',
+          template: 'web-lead'
+        }
       }
     });
   }
@@ -34,9 +39,11 @@ export class FlowFactory {
       nodeText: 'Search Leads',
       nodeIcon: 'address-book',
       component: FlowListComponent,
-      data: {
-        title: 'Lead List',
+      state: {
         module: ModuleType.LEAD,
+        data: {
+          title: 'Lead List',
+        },
         options: {
           searchable: true,
           editable: false,
@@ -52,36 +59,82 @@ export class FlowFactory {
       nodeText: 'Create New Lead',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
-      data: {
-        title: 'Create New Lead',
+      state: {
         module: ModuleType.LEAD,
+        data: {
+          title: 'Create New Lead',
+        },
         options: {
           controls: false,
           state: 'create',
-          fields: {
-            firstName: LeadModel['firstName'],
-            lastName: LeadModel['lastName'],
-            phone: LeadModel['phone'],
-            email: LeadModel['email'],
-            state: LeadModel['state']
-          }
+          fields: [
+            LeadFields.FIRST_NAME,
+            LeadFields.LAST_NAME,
+            LeadFields.PHONE,
+            LeadFields.EMAIL,
+            LeadFields.STATE
+          ]
         }
       }
     });
   };
 
-  public static editLead(): FlowStep {
+  public static editLead(resolve: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
-      data: {
-        title: 'Review Lead Info',
+      state: {
         module: ModuleType.LEAD,
+        data: {
+          title: 'Review Lead Info',
+          resolve
+        },
         options: {
           controls: false,
           state: 'edit',
-          fields: LeadModel // all fields
+          fields: Object.values(LeadFields)
+        }
+      }
+    });
+  };
+
+  public static createDeal(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Create Opportunity',
+      nodeIcon: 'address-book',
+      component: FlowDataComponent,
+      state: {
+        module: ModuleType.DEAL,
+        data: {
+          title: 'Create Opportunity',
+        },
+        options: {
+          controls: false,
+          state: 'create',
+          fields: [
+            DealFields.NAME
+          ]
+        }
+      }
+    });
+  };
+
+  public static editDeal(resolve: Function = () => {}): FlowStep {
+    return new FlowStep({
+      nodeText: 'Review Lead Info',
+      nodeIcon: 'address-book',
+      component: FlowDataComponent,
+      state: {
+        module: ModuleType.DEAL,
+        data: {
+          title: 'Review Deal Info',
+          resolve
+        },
+        options: {
+          controls: false,
+          state: 'edit',
+          fields: Object.values(DealFields)
         }
       }
     });
@@ -92,16 +145,18 @@ export class FlowFactory {
       nodeText: 'Select Lead Source',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
-      data: {
-        title: 'Select a Lead Source',
+      state: {
         module: ModuleType.LEAD,
-        resolve,
+        data: {
+          title: 'Select a Campaign',
+          resolve
+        },
         options: {
           controls: false,
           state: 'edit',
-          fields: {
-            campaignId: LeadModel['campaignId']
-          }
+          fields: [
+            LeadFields.CAMPAIGN_ID
+          ]
         }
       }
     });
@@ -109,12 +164,14 @@ export class FlowFactory {
 
   public static selectExistingOpp(query: Function = () => {}): FlowStep {
     return new FlowStep({
-      nodeText: 'Opportunities',
+      nodeText: 'Opportunity List',
       nodeIcon: 'address-book',
       component: FlowListComponent,
-      data: {
-        title: 'Opportunities',
+      state: {
         module: ModuleType.DEAL,
+        data: {
+          title: 'Opportunity List',
+        },
         options: {
           searchable: false,
           editable: false,
@@ -131,10 +188,13 @@ export class FlowFactory {
       nodeText: 'Relationship Building',
       nodeIcon: 'fa-gear',
       component: FlowTextComponent,
-      data: {
-        title: 'Relationship Building',
-        // body: '',
-        template: 'relationship-building'
+      state: {
+        data: {
+          title: 'Relationship Building',
+          // body: '',
+          template: 'relationship-building',
+          resolve
+        }
       }
     })
   }
@@ -144,10 +204,13 @@ export class FlowFactory {
       nodeText: 'Power Question',
       nodeIcon: 'fa-address-book',
       component: FlowTextComponent,
-      data: {
-        title: 'Power Question',
-        // body: '',
-        template: 'power-question'
+      state: {
+        data: {
+          title: 'Power Question',
+          // body: '',
+          template: 'power-question',
+          resolve
+        }
       }
     })
   }
@@ -157,9 +220,11 @@ export class FlowFactory {
       nodeText: 'Search Web Leads',
       nodeIcon: 'address-book',
       component: FlowListComponent,
-      data: {
-        title: 'Search and List Web Leads',
+      state: {
         module: ModuleType.LEAD,
+        data: {
+          title: 'Search and List Web Leads',
+        },
         options: {
           searchable: true,
           editable: false,
@@ -171,7 +236,7 @@ export class FlowFactory {
     return FlowFactory.step(data);
   }
 
-  public static step(data: Omit<FlowStep, 'serialize' | 'deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>) {
+  public static step(data: Omit<FlowStep, '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>) {
     return new FlowStep(data)
   }
 

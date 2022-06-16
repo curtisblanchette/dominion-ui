@@ -2,9 +2,26 @@ import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 
+export enum Fields {
+  FIRST_NAME = 'firstName',
+  LAST_NAME = 'lastName',
+  PHONE = 'phone',
+  EMAIL = 'email',
+  STATUS_ID = 'statusId',
+  LOST_REASON_ID = 'lostReasonId',
+  STATE = 'state',
+  PRACTICE_AREA_ID = 'practiceAreaId',
+  CAMPAIGN_ID = 'campaignId',
+  LEAD_SOURCE_ID = 'leadSourceId',
+}
+
+export enum VirtualFields {
+  FULL_NAME = 'fullName',
+}
+
 export const LeadModel: {[key: string]: IModel} = {
   ...timestamps,
-  firstName: {
+  [Fields.FIRST_NAME]: {
     label: 'First Name',
     type: 'text',
     defaultValue: null,
@@ -12,7 +29,7 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  lastName: {
+  [Fields.LAST_NAME]: {
     label: 'Last Name',
     type: 'text',
     defaultValue: null,
@@ -20,11 +37,11 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  fullName: {
+  [VirtualFields.FULL_NAME]: {
     label: 'Full Name',
     type: 'virtual'
   },
-  phone: {
+  [Fields.PHONE]: {
     label: 'Phone Number',
     type: 'tel',
     defaultValue: null,
@@ -32,7 +49,7 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  email: {
+  [Fields.EMAIL]: {
     label: 'Email Address',
     type: 'email',
     defaultValue: null,
@@ -41,7 +58,7 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.email
     ]
   },
-  statusId: {
+  [Fields.STATUS_ID]: {
     label: 'Status',
     type: 'dropdown',
     service: 'leadStatus',
@@ -50,7 +67,7 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  lostReasonId: {
+  [Fields.LOST_REASON_ID]: {
     label: 'Lost: Reason',
     type: 'dropdown',
     service: 'lostReason',
@@ -59,7 +76,7 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  state: {
+  [Fields.STATE]: {
     label: 'State',
     type: 'text',
     defaultValue: null,
@@ -67,7 +84,7 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  practiceAreaId: {
+  [Fields.PRACTICE_AREA_ID]: {
     label: 'Practice Area',
     type: 'dropdown',
     service: 'practiceArea',
@@ -76,13 +93,13 @@ export const LeadModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  campaignId: {
+  [Fields.CAMPAIGN_ID]: {
     label: 'Campaign Id',
     type: 'text',
     defaultValue: null,
     validators: []
   },
-  leadSourceId: {
+  [Fields.LEAD_SOURCE_ID]: {
     label: 'Lead Source Id',
     type: 'text',
     defaultValue: null,

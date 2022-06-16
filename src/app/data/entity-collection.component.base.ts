@@ -13,7 +13,6 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public _dynamicCollectionService: EntityCollectionService<DominionType>;
   public _dynamicService: EntityCollectionDataService<DominionType>;
 
-  public module: ModuleType;
   public type: any;
 
   public entityMap$: Observable<any> = of([]);
@@ -25,23 +24,29 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
   public response$: Observable<any>;
   @Input('data') public data: any;
+  @Input('options') public options: any;
+  @Input('module') public module: ModuleType;
 
   constructor(
     router: Router,
     @Inject(EntityCollectionServiceFactory) private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     @Inject(DefaultDataServiceFactory) private dataServiceFactory: DefaultDataServiceFactory
   ) {
-    this.data = router.getCurrentNavigation()?.extras.state || this.data;
+    const state = (<any>router.getCurrentNavigation()?.extras.state);
+
+    if (state && Object.keys(state).length) {
+      this.module = state.module;
+      this.options = state.options;
+      this.data = state.data;
+    }
+
   }
 
   public ngAfterContentInit() {
     if( this.data ){
-      this.module = this.data?.module;
-
-      this.type = types[this.data.module];
 
       if (this.module) {
-        this._dynamicCollectionService = this.createService(this.type, this.entityCollectionServiceFactory);
+        this._dynamicCollectionService = this.createService(types[this.module], this.entityCollectionServiceFactory);
         this._dynamicService = this.dataServiceFactory.create(this.module);
 
         this.data$ = this._dynamicCollectionService.filteredEntities$;
@@ -91,7 +96,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
   /** return a service that has a dynamic type defined */
   createService<T>(module: T, factory: EntityCollectionServiceFactory): EntityCollectionService<T> {
-    return factory.create<T>(this.data.module);
+    return factory.create<T>(this.module);
   }
 
 

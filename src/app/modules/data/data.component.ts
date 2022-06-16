@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { FiizListComponent, IListOptions } from '../../common/components/ui/list/list.component';
 import { FiizDataComponent } from '../../common/components/ui/data/data.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Fields as LeadFields } from '../../common/models/lead.model';
 
 @UntilDestroy()
 @Component({
@@ -40,14 +41,23 @@ export class DataComponent implements OnInit {
       componentRef.values.pipe(untilDestroyed(this)).subscribe(res => {
         this.router.navigate([`/data/edit/${res.record.id}`, { outlets: {'aux': [res.module]} }], {
           state: {
-            module: res.module
+            module: res.module,
+            data: {},
+            options: {
+              controls: true,
+              fields: Object.values(LeadFields)
+            }
           }
         });
       })
       componentRef.onCreate.pipe(untilDestroyed(this)).subscribe(res => {
         this.router.navigate([`/data/edit/new`, { outlets: {'aux': [res.module]} }], {
           state: {
-            module: res.module
+            module: res.module,
+            data: {},
+            options: {
+              controls: true
+            }
           }
         });
       });
@@ -57,9 +67,14 @@ export class DataComponent implements OnInit {
   public renderComponent(module: string) {
     return this.router.navigate(['/data/list', {outlets: {'aux': [module]}}], {
       state: {
-        options: this.listOptions,
+        module: module,
+        data: {},
+        options: {
+          searchable: true,
+          editable: true,
+          columns: []
+        },
         page: 1,
-        module: module
       }
     });
   }

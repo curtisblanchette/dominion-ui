@@ -42,12 +42,12 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
               // FlowDataComponent
               const instance = new (<FlowStep>step).component();
               if(instance instanceof FlowDataComponent) {
-                (<FlowStep>step).data.id = value.getParams()[`${(<FlowStep>step).data.module}Id`];
+                (<FlowStep>step).state.data.id = value.getParams()[`${(<FlowStep>step).state.module}Id`];
               }
 
               // FlowListComponent
               if(instance instanceof FlowListComponent) {
-                (<FlowStep>step).data.options['query'] = value.getParams();
+                (<FlowStep>step).state.options['query'] = value.getParams();
               }
             }
 

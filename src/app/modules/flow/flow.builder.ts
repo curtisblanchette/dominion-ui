@@ -11,7 +11,7 @@ export class FlowBuilder {
   public process: FlowProcess;
 
   constructor(
-    @Inject(Store) private store: Store<fromFlow.FlowState>,
+    @Inject(Store) private store: Store<fromFlow.FlowState>
   ) {
     this.reset();
   }
@@ -28,7 +28,7 @@ export class FlowBuilder {
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const createLead = FlowFactory.createLead();
-    const editLead = FlowFactory.editLead();
+    const editLead = FlowFactory.editLead(() => this.getVariable('lead'));
     const setLeadSource = FlowFactory.setLeadSource(() => this.getVariable('lead'));
     const oppList = FlowFactory.selectExistingOpp(() => ({
       /**
@@ -37,7 +37,9 @@ export class FlowBuilder {
        */
       leadId: this.getVariable('lead')
     }));
-
+    const toOppList = FlowFactory.link(editLead, oppList);
+    const createOpp = FlowFactory.createDeal();
+    const editOpp = FlowFactory.editDeal(() => this.getVariable('deal'));
 
     const relationshipBuilding = FlowFactory.relationshipBuilding();
     const toRelationshipBuilding = FlowFactory.link(setLeadSource, relationshipBuilding);
@@ -75,12 +77,34 @@ export class FlowBuilder {
       return !lead;
     }, createLead);
 
-    const toOppList = FlowFactory.link(editLead, oppList);
 
-    const setLeadSourceLink = FlowFactory.link(createLead, setLeadSource);
+    const existingDeal_yes = FlowFactory.condition(async () => {
+      const dealId = await this.getVariable('deal');
+
+      if (dealId) {
+        const params = new FlowListParams();
+        params.setParam('dealId', dealId);
+        return params;
+      }
+
+      return false;
+    }, editOpp);
 
     const searchNListLeadsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
     const toSearchNListLeadsRouter = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
+
+
+    const existingDeal_no = FlowFactory.condition(async () => {
+      const deal = await this.getVariable('deal');
+      /** Conditions can also update FlowStep members */
+      return !deal;
+    }, createOpp);
+
+    const oppListRouter = FlowFactory.router('Router', '', [existingDeal_yes, existingDeal_no]);
+    const toOppListRouter = FlowFactory.link(oppList, oppListRouter);
+
+    const setLeadSourceLink = FlowFactory.link(createLead, setLeadSource);
+
 
     // outbound
     const webLeads_yes = FlowFactory.condition(async () => {
@@ -95,15 +119,7 @@ export class FlowBuilder {
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
 
 
-    //test
-    const bogusStep = FlowFactory.step({nodeText: 'bogus', nodeIcon: 'fa-smile', data: {
-      template: ''
-      }, component: FlowTextComponent});
-    const bogusStep2 = FlowFactory.step({nodeText: 'bogus', nodeIcon: 'fa-smile', data: {
-        template: ''
-      }, component: FlowTextComponent});
-    const bogusLink = FlowFactory.link(oppList, bogusStep);
-    const bogusLink2 = FlowFactory.link(bogusStep, bogusStep2);
+
 
     this.process
       .addStep(callType)
@@ -128,10 +144,10 @@ export class FlowBuilder {
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
 
-      .addStep(bogusStep)
-      .addStep(bogusStep2)
-      .addLink(bogusLink)
-      .addLink(bogusLink2)
+      .addStep(editOpp)
+      .addStep(createOpp)
+      .addLink(toOppListRouter)
+
 
     // 'outbound'
     this.process

@@ -4,11 +4,11 @@
                 placeholder="Search {{pluralModuleName}}..."></fiiz-input>
     <fiiz-dropdown
       type="button"
-      *ngIf="data.options.editable"
+      *ngIf="options.editable"
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-    <fiiz-button stroked (click)="onCreateNew()">Create New {{data.module}}</fiiz-button>
+    <fiiz-button stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
   </div>
 </form>
 

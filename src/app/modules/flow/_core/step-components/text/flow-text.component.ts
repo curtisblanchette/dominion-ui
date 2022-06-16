@@ -18,7 +18,6 @@ export class FlowTextComponent {
 
   @Input('data') data: any;
   public form: any;
-  public fields: Array<any> = [];
   public callTypes$: Observable<DropdownItem[]>;
 
   constructor(
