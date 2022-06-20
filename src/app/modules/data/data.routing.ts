@@ -62,6 +62,14 @@ const routes: Routes = [
     component: DataComponent,
     children: [
       {
+        path: 'edit/new',
+        children: sidebarRoutes[0].children.map(route => ({
+          path: route.path,
+          component: FiizDataComponent,
+          outlet: 'aux',
+        }))
+      },
+      {
         path: 'edit/:id',
         children: sidebarRoutes[0].children.map(route => ({
           path: route.path,

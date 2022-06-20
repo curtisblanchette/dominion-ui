@@ -25,7 +25,7 @@ const defaultListColumns: {[key: string]: string[]} = {
   contact: ['fullName', 'phone', 'email', 'createdAt'],
   event: ['title', 'type', 'startTime', 'endTime', 'createdAt'],
   lead: ['fullName', 'phone', 'email', 'createdAt'],
-  leadSource: ['name', 'status', 'createdAt']
+  leadSource: ['name', 'status', 'createdAt', 'channel']
 }
 
 export const getColumnsForModule = (module: string): DropdownItem[] => {
