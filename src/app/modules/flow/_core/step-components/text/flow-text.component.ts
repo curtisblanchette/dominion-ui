@@ -25,6 +25,7 @@ export class FlowTextComponent implements OnSave, AfterViewInit {
 
   public form: any;
   public callTypes$: Observable<DropdownItem[]>;
+  public webLeadOptions$: Observable<DropdownItem[]>;
   public moduleTypes: any;
 
   constructor(
@@ -34,6 +35,7 @@ export class FlowTextComponent implements OnSave, AfterViewInit {
     private cd: ChangeDetectorRef
   ) {
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
+    this.webLeadOptions$ = of([{id: 'contacts', label: 'Search and List Contacts'}, {id: 'web_leads', label: 'Search and List Web Leads' }])
     this.moduleTypes = ModuleType;
   }
 

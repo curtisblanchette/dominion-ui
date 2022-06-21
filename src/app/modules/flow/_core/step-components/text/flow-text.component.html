@@ -10,8 +10,7 @@
 
     <ng-template [ngSwitchCase]="'web-lead'">
       <form [formGroup]="form">
-        <input type="radio" formControlName="web_lead_options" value="contacts" ngDefaultControl /> Search and List Contacts
-        <input type="radio" formControlName="web_lead_options" value="web_leads" ngDefaultControl /> Search and List Web Leads
+        <fiiz-radio [items]="webLeadOptions$" formControlName="web_lead_options"></fiiz-radio>
       </form>
     </ng-template>
 
