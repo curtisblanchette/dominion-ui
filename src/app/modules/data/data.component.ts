@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { FiizListComponent, IListOptions } from '../../common/components/ui/list/list.component';
 import { FiizDataComponent } from '../../common/components/ui/data/data.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Fields as LeadFields } from '../../common/models/lead.model';
+import { models } from '../../common/models';
 
 @UntilDestroy()
 @Component({
@@ -21,7 +21,6 @@ export class DataComponent implements OnInit {
     private router: Router
   ) {
     if (this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
-      console.log('here');
       this.router.navigate(['/data/list']);
     }
     this.listOptions = {
@@ -39,16 +38,19 @@ export class DataComponent implements OnInit {
     // if it's a list, subscribe to the `values` emitter
     if(componentRef instanceof FiizListComponent) {
       componentRef.values.pipe(untilDestroyed(this)).subscribe(res => {
-        this.router.navigate([`/data/edit/${res.record.id}`, { outlets: {'aux': [res.module]} }], {
-          state: {
-            module: res.module,
-            data: {},
-            options: {
-              controls: true,
-              fields: Object.values(LeadFields)
+        if( res.record && res.record.id ){
+          this.router.navigate([`/data/edit/${res.record.id}`, { outlets: {'aux': [res.module]} }], {
+            state: {
+              module: res.module,
+              data: {},
+              options: {
+                state : 'edit',
+                controls: true,
+                fields: Object.keys(models[res.module])
+              }
             }
-          }
-        });
+          });
+        }
       })
       componentRef.onCreate.pipe(untilDestroyed(this)).subscribe(res => {
         this.router.navigate([`/data/edit/new`, { outlets: {'aux': [res.module]} }], {
@@ -56,7 +58,9 @@ export class DataComponent implements OnInit {
             module: res.module,
             data: {},
             options: {
-              controls: true
+              state : 'create',
+              controls: true,
+              fields: Object.keys(models[res.module])
             }
           }
         });

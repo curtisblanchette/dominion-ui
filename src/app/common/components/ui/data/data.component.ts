@@ -93,9 +93,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       // TODO maybe we use this to set the id?
       console.log(variable);
     });
-
-    this.buildForm(this.options.fields);
-
     switch (this.options.state) {
       case 'create': {
         this.submitText = `Create New ${this.module}`;
@@ -106,6 +103,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       }
         break;
     }
+
+    this.buildForm(this.options.fields);
 
     this.data$.pipe(
       untilDestroyed(this),

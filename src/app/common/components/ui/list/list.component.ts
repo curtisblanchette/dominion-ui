@@ -144,6 +144,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public onPerPageChange($event: any) {
+    this.page = 1;
     this.store.dispatch(dataActions.SetPerPageAction({payload: parseInt($event.target.value, 0)}));
   }
 
@@ -177,7 +178,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public onCreateNew() {
     this.selected = null;
     this.values.emit( { module: this.module, record: null });
-    this.onCreate.emit(true);
+    this.onCreate.emit( { module: this.module, record: null } );
   }
 
   public searchInModule() {
@@ -232,7 +233,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public performAction( value:any ){
-    console.log('value to emit', value);
     this.btnValue.emit(value);
   }
 
