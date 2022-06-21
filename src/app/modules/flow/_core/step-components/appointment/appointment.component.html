@@ -4,26 +4,47 @@
         <div class="flex_main_wrapper__header__title">
             Set Appointment
         </div>
-        <div class="flex_main_wrapper__header__sub_title">
+        <div>
+            <form [formGroup]="form">
+                <input type="checkbox" formControlName="set_appointment" /> Set Appointment
+            </form>
+        </div>
+        <div class="flex_main_wrapper__header__sub_title" *ngIf="showSlots">
             "We have availability at our office as soon as..."
         </div>
     </div>
 
-    <div *ngFor="let slot of timeSlots">
-        <div class="flex_main_wrapper__slots" *ngFor="let item of slot | keyvalue">
-            <div class="flex_main_wrapper__slots__day">
-                {{ item.key }}
-            </div>
-            <div class="flex_main_wrapper__slots__time">
-                <div *ngFor="let time of item.value;">
-                    <button [id]="item.key+', '+time" [ngClass]="{'active' : selectedBtnId === item.key+', '+time}" #slotBtn class="btn_time_slots" (click)="setEventTime($event)" >{{ time }}</button>            
+    <ng-container *ngIf="!showSlots">
+        <div>
+            <form [formGroup]="objectionForm" >
+                <fiiz-select
+                    [id]="'appt_objection'"
+                    [label]="'Objection Reason'"
+                    [formControlName]="'appt_objection'"
+                    [items]="objections"
+                >
+                </fiiz-select>
+            </form>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="showSlots">
+        <div *ngFor="let slot of timeSlots">
+            <div class="flex_main_wrapper__slots" *ngFor="let item of slot | keyvalue">
+                <div class="flex_main_wrapper__slots__day">
+                    {{ item.key }}
+                </div>
+                <div class="flex_main_wrapper__slots__time">
+                    <div *ngFor="let time of item.value;">
+                        <button [id]="item.key+', '+time" [ngClass]="{'active' : selectedBtnId === item.key+', '+time}" #slotBtn class="btn_time_slots" (click)="setEventTime($event)" >{{ time }}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="info">
-        "May I have a good email address for you and I will send you a confirmation of your appointment, it will also include driving directions to our office."
-    </div>
+        <div class="info">
+            "May I have a good email address for you and I will send you a confirmation of your appointment, it will also include driving directions to our office."
+        </div>
+    </ng-container>
 
 </div>

@@ -3,13 +3,16 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { Store } from '@ngrx/store';
 import * as dayjs from 'dayjs';
 import { IEvent } from '@4iiz/corev2';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { FlowService } from '../../../flow.service';
 import * as fromApp from '../../../../../store/app.reducer';
-import { firstValueFrom } from 'rxjs';
+import * as flowActions from '../../../store/flow.actions';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { DropdownItem } from '../../../../../common/components/ui/forms/select/select';
 
 @UntilDestroy()
 @Component({
@@ -27,6 +30,19 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public timeSlots:Array<any> = [];
   public selectedBtnId:string;
+  public form:FormGroup;
+  public objectionForm:FormGroup;
+  public showSlots:boolean = true;
+  public objections:Observable<DropdownItem[]> = of([
+    {
+      id : 'reason1',
+      label : 'This is a test reason'
+    },
+    {
+      id : 'reason2',
+      label : 'This is a test reason2'
+    }
+  ]);
 
   @ViewChildren('slotBtn') slotBtn: QueryList<ElementRef>;
 
@@ -36,13 +52,38 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     dataServiceFactory: DefaultDataServiceFactory,
     public flowService: FlowService,
     public store:Store<fromApp.AppState>,
-    public renderer:Renderer2
+    public renderer:Renderer2,
+    public fb:FormBuilder
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
   }
 
   async ngOnInit(): Promise<any> {
+
+    this.form = this.fb.group({
+      set_appointment : new FormControl(true, [Validators.required])
+    });
+
+    this.objectionForm = this.fb.group({
+      appt_objection : new FormControl('', [Validators.required])
+    })
+
+    this.form.valueChanges.subscribe((value: any) => {
+      if(value.set_appointment){
+        this.showSlots = true;
+      } else {
+        this.showSlots = false;
+      }
+      this.flowService.addVariables(value);
+      this.checkValidity();
+    });
+
+    this.objectionForm.statusChanges.subscribe((value: any) => {
+      this.flowService.addVariables(value);
+      this.checkValidity();
+    });
+
     const startDate = dayjs().add(1,'day').format('YYYY-MM-DD');
     const endDate = dayjs().add(2,'day').format('YYYY-MM-DD');
 
@@ -91,6 +132,17 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public setEventTime( event:any ){
     this.selectedBtnId = event.target.id;
+    this.checkValidity();
+  }
+
+  public checkValidity(){
+    let isValid:boolean = false;
+    if( this.form.value.set_appointment && this.selectedBtnId ){
+      isValid = true;
+    } else if ( !this.form.value.set_appointment && this.objectionForm.valid ){
+      isValid = true;
+    }
+    this.store.dispatch(flowActions.SetValidityAction({payload: isValid}));
   }
 
 

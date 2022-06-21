@@ -54,6 +54,27 @@ export class FlowFactory {
     })
   }
 
+
+  public static searchNListContacts(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Search Leads',
+      nodeIcon: 'address-book',
+      component: FlowListComponent,
+      state: {
+        module: ModuleType.CONTACT,
+        data: {
+          title: 'Contact List',
+        },
+        options: {
+          searchable: true,
+          editable: false,
+          perPage: 25,
+          columns: []
+        }
+      }
+    })
+  }
+
   public static createLead(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Lead',
