@@ -55,13 +55,11 @@ export class FlowComponent implements OnInit, OnDestroy {
     private flowService: FlowService,
     private router: Router
   ) {
-
+    this.valid$ = this.store.select(fromFlow.selectIsValid);
+    this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
   }
 
   public async ngOnInit() {
-    this.valid$ = this.store.select(fromFlow.selectIsValid);
-    this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
-
     await this.flowService.start(this.flowHost);
   }
 

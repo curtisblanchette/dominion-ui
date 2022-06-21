@@ -118,16 +118,12 @@ export class FlowBuilder {
     const webLeadRouter = FlowFactory.router('Router', '', [webLeads_yes, webLeads_no]);
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
 
-
-
-
     this.process
       .addStep(callType)
       .addLink(toCallTypeRouter)
       .addRouter(callTypeRouter)
       .addStep(searchNListLeads)
       .addStep(webLeadsType);
-
 
     // 'inbound'
     this.process

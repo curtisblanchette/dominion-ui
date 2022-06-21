@@ -26,9 +26,9 @@ import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
 
 export interface FiizDataComponentOptions {
-  controls: boolean;
+  controls?: boolean;
   state: 'edit' | 'create';
-  dictation: string;
+  dictation?: string;
   fields: Array<string>;
 }
 
@@ -265,10 +265,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         case 'create': {
           // append additional data as payload attachments
           payload = { ...payload, ...this.additionalData };
-          return this.form.pristine ||this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
+
+          return this.form.pristine || this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});
             this.store.dispatch(flowActions.AddVariablesAction({payload: { [this.module]: res?.id }}));
-          }).then(() => this.resetForm());
+          });
         }
       }
     }

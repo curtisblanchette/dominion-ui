@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FlowService } from '../../../flow.service';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import * as flowActions from '../../../store/flow.actions';
 import { Store } from '@ngrx/store';
@@ -14,7 +14,8 @@ import { FormInvalidError, ModuleType, OnSave } from '../../classes';
 @Component({
   selector: 'flow-text',
   templateUrl: './flow-text.component.html',
-  styleUrls: ['../_base.scss', './flow-text.component.scss']
+  styleUrls: ['../_base.scss', './flow-text.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FlowTextComponent implements OnSave, AfterViewInit {
 
@@ -29,7 +30,8 @@ export class FlowTextComponent implements OnSave, AfterViewInit {
   constructor(
     private store: Store<FlowState>,
     private flowService: FlowService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cd: ChangeDetectorRef
   ) {
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.moduleTypes = ModuleType;
@@ -43,6 +45,8 @@ export class FlowTextComponent implements OnSave, AfterViewInit {
 
   ngAfterViewInit() {
     // console.log(this.dataCmp);
+    this.form.updateValueAndValidity();
+    // this.cd.detectChanges();
   }
 
   public initForm() {
@@ -69,7 +73,7 @@ export class FlowTextComponent implements OnSave, AfterViewInit {
     }
 
 
-    if(Object.keys(form).length) {
+    // if(Object.keys(form).length) {
       this.form = this.fb.group(form);
 
       this.form.valueChanges.subscribe((value: any) => {
@@ -78,11 +82,14 @@ export class FlowTextComponent implements OnSave, AfterViewInit {
 
       this.form.statusChanges.subscribe((value: any) => {
         this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
+        this.cd.detectChanges();
       });
-    } else {
+      // throws `ExpressionChangedAfterItHasBeenCheckedError`
+      // this.form.updateValueAndValidity();
+    // } else {
       /** If there is no form, the step's validity should be true */
-      this.store.dispatch(flowActions.SetValidityAction({payload: true}));
-    }
+      // this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    // }
 
 
   }
