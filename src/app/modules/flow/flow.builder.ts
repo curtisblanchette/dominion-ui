@@ -42,7 +42,7 @@ export class FlowBuilder {
     const editOpp = FlowFactory.editDeal(() => this.getVariable('deal'), () => {leadId: this.getVariable('lead')});
 
     const relationshipBuilding = FlowFactory.relationshipBuilding();
-    const toRelationshipBuilding = FlowFactory.link(setLeadSource, relationshipBuilding);
+    const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);
 
     const powerQuestion = FlowFactory.powerQuestion();
     const toPowerQuestion = FlowFactory.link(relationshipBuilding, powerQuestion);
@@ -93,7 +93,6 @@ export class FlowBuilder {
     const searchNListLeadsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
     const toSearchNListLeadsRouter = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
 
-
     const existingDeal_no = FlowFactory.condition(async () => {
       const deal = await this.getVariable('deal');
       /** Conditions can also update FlowStep members */
@@ -105,6 +104,7 @@ export class FlowBuilder {
 
     const setLeadSourceLink = FlowFactory.link(createLead, setLeadSource);
 
+    const toRelationshipBuilding2 = FlowFactory.link(createOpp, relationshipBuilding);
 
     // outbound
     const webLeads_yes = FlowFactory.condition(async () => {
@@ -140,7 +140,8 @@ export class FlowBuilder {
       .addLink(setLeadSourceLink)
       .addStep(setLeadSource)
       .addStep(relationshipBuilding)
-      .addLink(toRelationshipBuilding)
+      .addLink(toRelationshipBuilding1)
+      .addLink(toRelationshipBuilding2)
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
 

@@ -59,7 +59,6 @@ export const DealModel: {[key: string]: IModel} = {
     type: 'text',
     defaultValue: null,
     validators: [
-      Validators.required
     ]
   },
   campaignId: {
@@ -67,7 +66,6 @@ export const DealModel: {[key: string]: IModel} = {
     type: 'text',
     defaultValue: null,
     validators: [
-      Validators.required
     ]
   },
   leadSourceId: {
@@ -75,7 +73,6 @@ export const DealModel: {[key: string]: IModel} = {
     type: 'text',
     defaultValue: null,
     validators: [
-      Validators.required
     ]
   },
   leadId: {
