@@ -257,23 +257,30 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (this.form.valid) {
       this.form.disable();
 
-
       switch (this.options.state) {
         case 'edit': {
-          return this.form.pristine || this._dynamicCollectionService.update(<DominionType>payload).toPromise().then(() => this.form.enable());
+          return this.form.dirty && this._dynamicCollectionService.update(<DominionType>payload).toPromise()
+            .then(() => this.cleanForm()) || Promise.resolve(this.cleanForm());
         }
         case 'create': {
           // append additional data as payload attachments
           payload = { ...payload, ...this.additionalData };
 
-          return this.form.pristine || this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
+          return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});
             this.store.dispatch(flowActions.AddVariablesAction({payload: { [this.module]: res?.id }}));
-          });
+          }) || Promise.resolve(this.cleanForm());
         }
       }
     }
     throw new FormInvalidError('Data Component');
+  }
+
+  private async cleanForm() {
+    this.form.markAsPristine();
+    this.form.updateValueAndValidity();
+    this.form.enable();
+    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
   }
 
   private getControlData() {
