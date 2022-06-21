@@ -2,30 +2,32 @@
   <h3>{{data.title}}</h3>
   <p>{{data.body}}</p>
   <ng-container [ngSwitch]="data.template">
-    <ng-template [ngSwitchCase]="'call-type'">
+
+    <ng-template [ngSwitchCase]="'call-type'" *ngIf="form">
       <form [formGroup]="form">
         <fiiz-radio [items]="callTypes$" formControlName="call_type"></fiiz-radio>
       </form>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'web-lead'">
+    <ng-template [ngSwitchCase]="'web-lead'" *ngIf="form">
       <form [formGroup]="form">
-        <fiiz-radio [items]="webLeadOptions$" formControlName="web_lead_options"></fiiz-radio>
+        <fiiz-radio [items]="webLeadTypes$" formControlName="web_lead_options"></fiiz-radio>
       </form>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'relationship-building'">
-      <p>Excellent, so you were telling me your case is regarding...</p>
-      <fiiz-data [module]="moduleTypes.DEAL" [data]="{title: ''}" [options]="{state: 'edit', fields: ['practiceAreaId']}"></fiiz-data>
-
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet aperiam autem, dolore dolorem eum explicabo laborum maiores quae quasi! Animi corporis dolorum eum expedita iste placeat sapiente tenetur vel!</p>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'power-question'">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet aperiam autem, dolore dolorem eum explicabo laborum maiores quae quasi! Animi corporis dolorum eum expedita iste placeat sapiente tenetur vel!</p>
     </ng-template>
 
-    <ng-template [ngSwitch]="'recap'" >
-      This is the recap of the call flow
+    <ng-template [ngSwitchCase]="'recap'" >
+      This is the Recap Window, Where some information can be shown
+      <ul>
+        <li>Appointment Date Time : {{ allVars.appt_date_time }}</li>
+      </ul>
     </ng-template>
 
     <ng-template ngSwitchDefault>This would be a default template</ng-template>

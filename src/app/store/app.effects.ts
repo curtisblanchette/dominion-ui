@@ -68,12 +68,30 @@ export class AppEffects {
         let practiceAreas = await firstValueFrom(this.http.get(environment.dominion_api_url + '/practice-areas')) as any;
         let roles = await firstValueFrom(this.http.get(environment.dominion_api_url + '/roles')) as any;
 
+        // Call Lookups
+        let callOutcomes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-outcomes')) as any;
+        let callStatus = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-statuses')) as any;
+        let callTypes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-types')) as any;
+
+        // Event lookups
+        let eventOutcomes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/event-outcomes')) as any;
+        let eventTypes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/event-types')) as any;
+
+        let offices = await firstValueFrom(this.http.get(environment.dominion_api_url + '/offices')) as any;
+
         // transform it into a DropdownItem[]
         roles = roles.map((r: any) => ({id: r.id, label: r.name }));
         practiceAreas = practiceAreas.map((r: any) => ({id: r.id, label: r.name }));
+        callOutcomes = callOutcomes.map((r: any) => ({id: r.id, label: r.name }));
+        callStatus = callStatus.map((r: any) => ({id: r.id, label: r.name }));
+        callTypes = callTypes.map((r: any) => ({id: r.id, label: r.name }));
+        eventOutcomes = eventOutcomes.map((r: any) => ({id: r.id, label: r.name }));
+        eventTypes = eventTypes.map((r: any) => ({id: r.id, label: r.name }));
+        offices = offices.rows.map((r: any) => ({id: r.id, label: r.name }));
 
-        localStorage.setItem('lookups', JSON.stringify({ roles, practiceAreas }));
-        this.store.dispatch(appActions.SetLookupsAction({ payload: { roles, practiceAreas } }) );
+        const data = { roles, practiceAreas, callOutcomes, callStatus, callTypes, eventOutcomes, eventTypes, offices };
+        localStorage.setItem('lookups', JSON.stringify(data));
+        this.store.dispatch(appActions.SetLookupsAction({ payload: data }) );
         return appActions.AppInitializedAction();
 
       })

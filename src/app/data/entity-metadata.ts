@@ -1,6 +1,7 @@
 import { EntityMetadataMap } from '@ngrx/data';
 
 const entityMetadata: EntityMetadataMap = {
+  address: {},
   contact: {},
   lead: {
     filterFn: (entities: any[], pattern: { q?: string, id?: string } ) => {
@@ -29,6 +30,8 @@ const entityMetadata: EntityMetadataMap = {
   event: {},
   campaign: {},
   leadSource: {},
+  office: {},
+  note: {},
 
   role: { noChangeTracking: true },
   practiceArea: { noChangeTracking: true },
@@ -44,6 +47,7 @@ const entityMetadata: EntityMetadataMap = {
 
 
 export const pluralNames = {
+  address: 'addresses',
   contact: 'contacts',
   lead: 'leads',
   deal: 'deals',
@@ -51,6 +55,8 @@ export const pluralNames = {
   event: 'events',
   campaign: 'campaigns',
   leadSource: 'leadSources',
+  note: 'notes',
+  office: 'offices',
 
   role: 'roles',
   practiceArea: 'practiceAreas',
@@ -80,5 +86,6 @@ export const uriOverrides: { [key: string]: string } = {
   dealStage: 'deal-stages',
   eventOutcome: 'event-outcomes',
   eventType: 'event-types',
-  lostReason: 'lost-reasons'
+  lostReason: 'lost-reasons',
+  office: 'offices'
 }

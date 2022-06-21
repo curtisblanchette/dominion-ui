@@ -1,6 +1,7 @@
 import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent } from './_core';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
+import { Fields as ContactFields } from '../../common/models/contact.model';
 
 export class FlowFactory {
 
@@ -57,7 +58,7 @@ export class FlowFactory {
 
   public static searchNListContacts(): FlowStep {
     return new FlowStep({
-      nodeText: 'Search Leads',
+      nodeText: 'Search Contacts',
       nodeIcon: 'address-book',
       component: FlowListComponent,
       state: {
@@ -121,6 +122,32 @@ export class FlowFactory {
       }
     });
   };
+
+  public static createContact(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Create New Contact',
+      nodeIcon: 'address-book',
+      component: FlowDataComponent,
+      state: {
+        module: ModuleType.CONTACT,
+        data: {
+          title: 'Create New Contact'
+        },
+        options: {
+          controls: false,
+          state: 'create',
+          fields: [
+            ContactFields.LEAD_ID,
+            ContactFields.FIRST_NAME,
+            ContactFields.LAST_NAME,
+            ContactFields.LEAD_ID,
+            ContactFields.PHONE,
+            ContactFields.EMAIL
+          ]
+        }
+      }
+    });
+  }
 
   public static createDeal(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({

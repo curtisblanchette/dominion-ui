@@ -2,9 +2,21 @@ import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 
-export const ContactModel: {[key: string]: IModel} = {
+export enum Fields {
+  FIRST_NAME = 'firstName',
+  LAST_NAME = 'lastName',
+  PHONE = 'phone',
+  EMAIL = 'email',
+  LEAD_ID = 'leadId'
+}
+
+export enum VirtualFields {
+  FULL_NAME = 'fullName'
+}
+
+export const ContactModel: { [key: string]: IModel } = {
   ...timestamps,
-  firstName: {
+  [Fields.FIRST_NAME]: {
     label: 'First Name',
     type: 'text',
     defaultValue: '',
@@ -12,7 +24,7 @@ export const ContactModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  lastName: {
+  [Fields.LAST_NAME]: {
     label: 'Last Name',
     type: 'text',
     defaultValue: '',
@@ -20,11 +32,11 @@ export const ContactModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  fullName: {
+  [VirtualFields.FULL_NAME]: {
     label: 'Full Name',
     type: 'virtual'
   },
-  phone: {
+  [Fields.PHONE]: {
     label: 'Phone',
     type: 'text',
     defaultValue: '',
@@ -32,7 +44,7 @@ export const ContactModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  email: {
+  [Fields.EMAIL]: {
     label: 'Email',
     type: 'text',
     defaultValue: '',
@@ -41,7 +53,7 @@ export const ContactModel: {[key: string]: IModel} = {
       Validators.email
     ]
   },
-  leadId: {
+  [Fields.LEAD_ID]: {
     label: 'Lead Id',
     type: 'text',
     defaultValue: '',

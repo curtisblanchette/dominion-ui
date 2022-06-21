@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import { Observable } from 'rxjs';
+import { ModuleType } from '../flow/_core';
 
 @Component({
   selector: 'app-system',
@@ -13,6 +14,7 @@ export class SettingsComponent {
   public appointmentSettings$: Observable<any>;
   public generalSettings$: Observable<any>;
   public byKey$: Observable<any>;
+  public moduleTypes: any;
 
   constructor(
     private store: Store<fromApp.AppState>
@@ -20,6 +22,7 @@ export class SettingsComponent {
      this.appointmentSettings$ = this.store.select(fromApp.selectSettingGroup('appointment'));
      this.generalSettings$ = this.store.select(fromApp.selectSettingGroup('general'));
      this.byKey$ = this.store.select(fromApp.selectSettingByKey('timezone'));
+     this.moduleTypes = ModuleType;
   }
 
   public getSettingDisplayName(name: string) {

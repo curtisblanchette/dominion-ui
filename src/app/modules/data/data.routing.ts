@@ -43,6 +43,11 @@ export const sidebarRoutes = [
         path: 'leadSource',
         icon: 'fa fa-address-book '
       },
+      {
+        label: 'Offices',
+        path: 'office',
+        icon: 'fa fa-building '
+      },
     ]
   },
   {

@@ -7,5 +7,7 @@ export enum ModuleType {
     CAMPAIGN = 'campaign',
     LEAD_SOURCE = 'leadSource',
     ROLE = 'role',
-    PRACTICE_AREA = 'practiceArea'
+    PRACTICE_AREA = 'practiceArea',
+    NOTE = 'note',
+    OFFICE = 'office'
 }

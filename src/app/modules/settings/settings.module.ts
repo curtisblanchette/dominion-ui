@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { SettingsComponent } from "./settings.component";
 import { SettingsRouting } from "./settings.routing";
+import { FiizUIModule } from '../../common/components/ui/fiiz-ui.module';
 
 @NgModule({
   declarations: [
@@ -9,6 +10,7 @@ import { SettingsRouting } from "./settings.routing";
   ],
   imports: [
     SettingsRouting,
+    FiizUIModule,
     CommonModule
   ],
   providers: [

@@ -1,49 +1,65 @@
 @import '~src/assets/css/variables';
 
-.flex_main_wrapper {    
-    
-    &__slots {
+.flex_main_wrapper {
 
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-content: center;
-        justify-content: center;
-        align-items: flex-start;
-        padding-bottom: 4%;
+  &__slots {
 
-        &__day {
-            font-size: 14px;
-            font-weight: 500;
-            color: $green1;            
-        }
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: flex-start;
+    padding-bottom: 4%;
 
-        &__time {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-content: center;
-            align-items: center;
-            justify-content: flex-start;
-            margin: 16px 0 0 0;
-            & div {
-                margin-right: 10px;
-            }
-        }
-
+    &__day {
+      font-size: 14px;
+      font-weight: 500;
+      color: $green1;
     }
+
+    &__time {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-content: center;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 16px 0 0 0;
+      & div {
+        margin-right: 10px;
+      }
+    }
+
+  }
+
+  &__form{
+    width: 100%;
+    form {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-content: center;
+      align-items: stretch;
+      justify-content: center;
+    }
+  }
 
 }
 
 .btn_time_slots{
-    border: 1px solid #7D89A6;
-    color: #7D89A6;
-    background: none;
-    width: 142px;
+  border: 1px solid #7D89A6;
+  color: #7D89A6;
+  background: none;
+  width: 142px;
+  padding: 8px;
+  margin: 0px 0px 10px 0px;
+  border-radius: 5px;
+  cursor: pointer;
 
-    &.active, &:hover {
-        border: 1px solid #95A9C0;
-        color: #000000;
-        background: #6F93BB;
-    }
+  &.active, &:hover {
+    border: 1px solid #95A9C0;
+    color: #000000;
+    background: #6F93BB;
+  }
 }

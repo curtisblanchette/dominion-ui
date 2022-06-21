@@ -38,6 +38,7 @@ export const selectSettingByKey = (name: string) => createSelector(selectSetting
 export const selectLookups = createSelector(selectApp, (state: AppState) => state.lookups);
 export const selectRoles = createSelector(selectApp, (state: AppState) => state.lookups.roles);
 export const selectPracticeAreas = createSelector(selectApp, (state: AppState) => state.lookups.practiceAreas);
+export const selectOffices = createSelector(selectApp, (state: AppState) => state.lookups.offices);
 
 export const selectInitialized = createSelector(selectApp, (state: AppState) => state.initialized);
 

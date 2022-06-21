@@ -99,7 +99,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       }
         break;
       case 'edit': {
-        this.submitText = `Review ${this.module}`;
+        this.submitText = `Save ${this.module}`;
       }
         break;
     }
@@ -235,20 +235,21 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       ]
     };
 
-    for(const watch of watchFields[this.module]){
-      const field = watch.when;
-      if(this.form.controls.hasOwnProperty(field)){
-        this.form.controls[field].valueChanges.subscribe(async (res: number) => {
-          const dropdown = this.dropdowns.find(cmp => cmp.id === field);
-          const options = await dropdown?.items$.pipe(take(1)).toPromise();
-          const value = options?.find(opt => opt.label === watch.equals)?.id;
-          const result = res === value ? watch.then : watch.else;
-          // @ts-ignore
-          this.form.controls[watch.field][result.fn](...result.args)
-        });
+    if(Object.keys(watchFields).includes(this.module)){
+      for(const watch of watchFields[this.module]){
+        const field = watch.when;
+        if(this.form.controls.hasOwnProperty(field)){
+          this.form.controls[field].valueChanges.subscribe(async (res: number) => {
+            const dropdown = this.dropdowns.find(cmp => cmp.id === field);
+            const options = await dropdown?.items$.pipe(take(1)).toPromise();
+            const value = options?.find(opt => opt.label === watch.equals)?.id;
+            const result = res === value ? watch.then : watch.else;
+            // @ts-ignore
+            this.form.controls[watch.field][result.fn](...result.args)
+          });
+        }
       }
     }
-
   }
 
   public async save(): Promise<any> {

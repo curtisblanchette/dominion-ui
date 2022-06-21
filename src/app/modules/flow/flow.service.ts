@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowDataComponent, FlowListComponent, FlowNode } from './_core';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowDataComponent, FlowListComponent, FlowNode, ModuleType } from './_core';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -134,7 +134,19 @@ export class FlowService {
          * @param {onCreate} EventEmitter
          */
         this.cmpReference.instance.values.subscribe((value: any) => {
-          const variable = { [value.module]: value.record?.id || null };
+          const variable = { [value.module as ModuleType]: value.record?.id || null };
+
+          /**
+           * If the select record has entity relationships ,
+           * store them as entity variables
+           */
+          if( value.record?.contactId ){
+            variable[ModuleType.CONTACT] = value.record.contactId;
+          }
+          if( value.record?.leadId ){
+            variable[ModuleType.LEAD] = value.record.leadId;
+          }
+
           this.setValidity(!!value.record);
           this.addVariables(variable);
         });
