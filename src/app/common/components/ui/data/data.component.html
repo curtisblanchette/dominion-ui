@@ -1,5 +1,5 @@
 <h3>{{data.title}}</h3>
-<form [formGroup]="form" *ngIf="form" (ngSubmit)="saveData()">
+<form [formGroup]="form" *ngIf="form" (ngSubmit)="save()">
 
   <ng-container *ngFor="let control of controlData">
     <fiiz-input *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>

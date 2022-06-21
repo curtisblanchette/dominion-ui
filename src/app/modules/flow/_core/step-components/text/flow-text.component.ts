@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { FlowService } from '../../../flow.service';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -7,6 +7,8 @@ import { Store } from '@ngrx/store';
 import { FlowState } from '../../../store/flow.reducer';
 import { Observable, of } from 'rxjs';
 import { DropdownItem } from '../../../../../common/components/interfaces/dropdownitem.interface';
+import { FormInvalidError, ModuleType, OnSave } from '../../classes';
+
 
 @UntilDestroy()
 @Component({
@@ -14,11 +16,15 @@ import { DropdownItem } from '../../../../../common/components/interfaces/dropdo
   templateUrl: './flow-text.component.html',
   styleUrls: ['../_base.scss', './flow-text.component.scss']
 })
-export class FlowTextComponent {
+export class FlowTextComponent implements OnSave, AfterViewInit {
 
   @Input('data') data: any;
+
+  // @ViewChildren(FiizDataComponent) dataCmp: QueryList<FiizDataComponent>;
+
   public form: any;
   public callTypes$: Observable<DropdownItem[]>;
+  public moduleTypes: any;
 
   constructor(
     private store: Store<FlowState>,
@@ -26,12 +32,17 @@ export class FlowTextComponent {
     private fb: FormBuilder
   ) {
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
+    this.moduleTypes = ModuleType;
   }
 
   public ngOnInit(){
     if (this.data) {
       this.initForm();
     }
+  }
+
+  ngAfterViewInit() {
+    // console.log(this.dataCmp);
   }
 
   public initForm() {
@@ -68,11 +79,19 @@ export class FlowTextComponent {
       this.form.statusChanges.subscribe((value: any) => {
         this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
       });
+    } else {
+      /** If there is no form, the step's validity should be true */
+      this.store.dispatch(flowActions.SetValidityAction({payload: true}));
     }
 
-    /** If there is no form, the step's validity should be true */
-    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
 
+  }
+
+  onSave() {
+    if(this.form.valid) {
+      return;
+    }
+    throw new FormInvalidError(this.form.name);
   }
 
   public get isValid() {

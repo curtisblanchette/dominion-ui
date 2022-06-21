@@ -1,7 +1,7 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
@@ -14,13 +14,13 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { uriOverrides } from '../../../../data/entity-metadata';
-import { firstValueFrom, of, take } from 'rxjs';
+import { firstValueFrom, map, of, take } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay, filter } from 'rxjs/operators';
 import * as flowActions from '../../../../modules/flow/store/flow.actions';
 import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
-import { ModuleType } from '../../../../modules/flow/_core';
+import { FormInvalidError, ModuleType } from '../../../../modules/flow/_core';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
@@ -40,11 +40,11 @@ export interface FiizDataComponentOptions {
 })
 export class FiizDataComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit, OnDestroy {
 
-  public form: any;
+  public form: FormGroup;
   public controlData: any;
   public submitText: string;
   public id: string | null;
-  public model: any;
+  public additionalData: any;
 
   @Input('module') public override module: ModuleType;
   @Input('data') public override data: any;
@@ -127,21 +127,28 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             }
           });
           this.form.addControl('id', new FormControl('', Validators.required));
-          this.form.setValue(entity);
+          this.form.setValue(entity, {emitEvent: true});
+
+          // workaround issue: https://github.com/angular/angular/issues/14542
+          of('').pipe(delay(0),map(() => this.isValid.next(this.form.valid))).subscribe();
         }
       }
     });
   }
 
   public async ngAfterViewInit() {
-    if (this.data.resolve) {
-      if (typeof this.data.resolve === 'function') {
-        /**
-         * if the step was passed a <Promise>
-         *  resolve it now and set the ID
-        */
-        this.id = await this.data.resolve();
-      }
+    if (this.data.resolveId && typeof this.data.resolveId === 'function') {
+      /**
+       * if the step was passed a resolveId <Promise> resolve it now
+      */
+      this.id = await this.data.resolveId();
+    }
+
+    if(this.data.resolveAdditionalData && typeof this.data.resolveAdditionalData === 'function') {
+      /**
+       * if the step was passed an additionalData <Promise> resolve it now
+       */
+      this.additionalData = await this.data.resolveAdditionalData();
     }
 
     for(const dropdown of this.dropdowns) {
@@ -187,6 +194,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     }
     this.form = this.fb.group(form);
+    this.form.statusChanges.pipe(untilDestroyed(this)).subscribe((valid: any) => {
+      this.isValid.next(valid === 'VALID');
+    });
     this.controlData = this.getControlData();
 
     /**
@@ -206,7 +216,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             fn: 'disable',
             args: [{emitEvent: false}]
           },
-          args: [{emitEvent: false}],
           field: 'lostReasonId'
         }
       ],
@@ -229,42 +238,42 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     for(const watch of watchFields[this.module]){
       const field = watch.when;
-      this.form.controls[field].valueChanges.subscribe(async (res: number) => {
-        const dropdown = this.dropdowns.find(cmp => cmp.id === field);
-        const options = await dropdown?.items$.pipe(take(1)).toPromise();
-        const value = options?.find(opt => opt.label === watch.equals)?.id;
-        const result = res === value ? watch.then : watch.else;
-        this.form.controls[watch.field][result.fn](...result.args);
-      });
+      if(this.form.controls.hasOwnProperty(field)){
+        this.form.controls[field].valueChanges.subscribe(async (res: number) => {
+          const dropdown = this.dropdowns.find(cmp => cmp.id === field);
+          const options = await dropdown?.items$.pipe(take(1)).toPromise();
+          const value = options?.find(opt => opt.label === watch.equals)?.id;
+          const result = res === value ? watch.then : watch.else;
+          // @ts-ignore
+          this.form.controls[watch.field][result.fn](...result.args)
+        });
+      }
     }
 
-
-
-    this.form.statusChanges.pipe(untilDestroyed(this)).subscribe((valid: 'VALID' | 'INVALID') => {
-      this.isValid.next(valid === 'VALID');
-    });
   }
 
-  public async saveData(): Promise<void> {
-    const payload = this.form.value;
+  public async save(): Promise<any> {
+    let payload = this.form.value;
 
     if (this.form.valid) {
       this.form.disable();
 
+
       switch (this.options.state) {
         case 'edit': {
-          return this._dynamicCollectionService.update(<DominionType>payload).toPromise().then(() => this.form.enable());
+          return this.form.pristine || this._dynamicCollectionService.update(<DominionType>payload).toPromise().then(() => this.form.enable());
         }
         case 'create': {
-          // update
-          return this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
+          // append additional data as payload attachments
+          payload = { ...payload, ...this.additionalData };
+          return this.form.pristine ||this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});
-            this.store.dispatch(flowActions.AddVariablesAction({payload: {lead: res?.id}}));
+            this.store.dispatch(flowActions.AddVariablesAction({payload: { [this.module]: res?.id }}));
           }).then(() => this.resetForm());
         }
       }
-
     }
+    throw new FormInvalidError('Data Component');
   }
 
   private getControlData() {

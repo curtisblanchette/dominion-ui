@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { FlowState } from '../../../store/flow.reducer';
 import * as flowActions from '../../../store/flow.actions';
 import { FiizDataComponent, FiizDataComponentOptions } from '../../../../../common/components/ui/data/data.component';
-import { ModuleType, OnBack, OnNext } from '../../classes';
+import { ModuleType, OnBack, OnNext, OnSave } from '../../classes';
 
 @Component({
   selector: 'flow-data',
@@ -13,7 +13,7 @@ import { ModuleType, OnBack, OnNext } from '../../classes';
   `,
   styleUrls: ['../_base.scss']
 })
-export class FlowDataComponent implements OnDestroy, OnBack, OnNext {
+export class FlowDataComponent implements OnDestroy, OnSave, OnBack, OnNext {
 
   @Input('module') module: ModuleType;
   @Input('data') data: any;
@@ -31,12 +31,8 @@ export class FlowDataComponent implements OnDestroy, OnBack, OnNext {
     this.store.dispatch(flowActions.SetValidityAction({payload: isValid}))
   }
 
-  public save(): Promise<any> {
-    return this.cmp.saveData();
-  }
-
-  ngOnDestroy() {
-    console.log("FlowDataComponent Destroyed")
+  onSave(): Promise<any> {
+    return this.cmp.save();
   }
 
   onBack() {
@@ -47,6 +43,10 @@ export class FlowDataComponent implements OnDestroy, OnBack, OnNext {
 
   onNext() {
     console.log('FlowDataComponent OnNext called!');
+  }
+
+  ngOnDestroy() {
+    console.log("FlowDataComponent Destroyed")
   }
 
 }

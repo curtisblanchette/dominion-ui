@@ -11,14 +11,6 @@ export enum Fields {
   CAMPAIGN_ID = 'campaignId',
   LEAD_SOURCE_ID = 'leadSourceId',
   LEAD_ID = 'leadId',
-  NO_SET_ON = 'noSetOn',
-  SET_APPOINTMENT_ON = 'setAppointmentOn',
-  NO_SHOW_ON = 'noShowOn',
-  HIRE_SCHEDULED_ON = 'hireScheduledOn',
-  NO_HIRE_ON = 'noHireOn',
-  HIRED_ON = 'hiredOn',
-  UNQUALIFIED_ON = 'unqualifiedOn',
-  LOST_ON = 'lostOn'
 }
 
 export enum VirtualFields {
@@ -93,53 +85,5 @@ export const DealModel: {[key: string]: IModel} = {
     validators: [
       Validators.required
     ]
-  },
-  noSetOn: {
-    label: 'No Set On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
-  },
-  setAppointmentOn: {
-    label: 'Set Appointment On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
-  },
-  noShowOn: {
-    label: 'No Show On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
-  },
-  hireScheduledOn: {
-    label: 'Hire Scheduled On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
-  },
-  noHireOn: {
-    label: 'No Hire On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
-  },
-  hiredOn: {
-    label: 'Hired On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
-  },
-  unqualifiedOn: {
-    label: 'Unqualified On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
-  },
-  lostOn: {
-    label: 'Lost On',
-    type: 'day',
-    defaultValue: null,
-    validators: []
   }
 }

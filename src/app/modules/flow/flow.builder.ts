@@ -38,8 +38,8 @@ export class FlowBuilder {
       leadId: this.getVariable('lead')
     }));
     const toOppList = FlowFactory.link(editLead, oppList);
-    const createOpp = FlowFactory.createDeal();
-    const editOpp = FlowFactory.editDeal(() => this.getVariable('deal'));
+    const createOpp = FlowFactory.createDeal(undefined, async () => ({ leadId: await this.getVariable('lead') }));
+    const editOpp = FlowFactory.editDeal(() => this.getVariable('deal'), () => {leadId: this.getVariable('lead')});
 
     const relationshipBuilding = FlowFactory.relationshipBuilding();
     const toRelationshipBuilding = FlowFactory.link(setLeadSource, relationshipBuilding);

@@ -21,3 +21,10 @@ export class ProcessNotFoundError extends FlowError {
     this.name = 'ProcessNotFoundError';
   }
 }
+
+export class FormInvalidError extends FlowError {
+  constructor(formName?: string) {
+    super(`A form with the name '${formName}' is invalid.`);
+    this.name = 'FormInvalidError';
+  }
+}

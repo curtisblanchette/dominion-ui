@@ -54,7 +54,7 @@ export class FlowFactory {
     })
   }
 
-  public static createLead(): FlowStep {
+  public static createLead(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'address-book',
@@ -63,6 +63,8 @@ export class FlowFactory {
         module: ModuleType.LEAD,
         data: {
           title: 'Create New Lead',
+          resolveId,
+          resolveAdditionalData
         },
         options: {
           controls: false,
@@ -99,7 +101,7 @@ export class FlowFactory {
     });
   };
 
-  public static createDeal(): FlowStep {
+  public static createDeal(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'address-book',
@@ -108,19 +110,21 @@ export class FlowFactory {
         module: ModuleType.DEAL,
         data: {
           title: 'Create Opportunity',
+          resolveId,
+          resolveAdditionalData
         },
         options: {
           controls: false,
           state: 'create',
           fields: [
             DealFields.NAME
-          ]
+          ],
         }
       }
     });
   };
 
-  public static editDeal(resolve: Function = () => {}): FlowStep {
+  public static editDeal(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'address-book',
@@ -129,7 +133,8 @@ export class FlowFactory {
         module: ModuleType.DEAL,
         data: {
           title: 'Review Deal Info',
-          resolve
+          resolveId,
+          resolveAdditionalData
         },
         options: {
           controls: false,
@@ -140,7 +145,7 @@ export class FlowFactory {
     });
   };
 
-  public static setLeadSource(resolve: Function = () => {}): FlowStep {
+  public static setLeadSource(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Select Lead Source',
       nodeIcon: 'address-book',
@@ -149,7 +154,8 @@ export class FlowFactory {
         module: ModuleType.LEAD,
         data: {
           title: 'Select a Campaign',
-          resolve
+          resolveId,
+          resolveAdditionalData
         },
         options: {
           controls: false,

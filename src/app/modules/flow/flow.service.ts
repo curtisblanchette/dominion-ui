@@ -52,7 +52,7 @@ export class FlowService {
     return link?.to;
   }
 
-  public async next(host: FlowHostDirective) {
+  public async next(host: FlowHostDirective): Promise<any> {
     // find a link where the "from" is equal to "currentStep"
     let step = this.findNextStep();
 
@@ -61,28 +61,27 @@ export class FlowService {
       step = await init.evaluate();
     }
 
-    if(typeof this.cmpReference.instance.save === 'function') {
-      // wait for these to complete
-      await this.cmpReference.instance.save();
+    if(typeof this.cmpReference.instance.onSave === 'function') {
+        await this.cmpReference.instance.onSave();
     }
 
     if(typeof this.cmpReference.instance.onNext === 'function') {
       this.cmpReference.instance.onNext();
     }
 
-    this.createHistoryEntry();
-
     if (step?.id) {
+      this.createHistoryEntry();
+
       this.store.dispatch(flowActions.NextStepAction({host, stepId: step.id}));
       return await this.renderComponent(host, <FlowStep>step);
     }
 
+    // TODO THIS SHOULD ONLY FIRE IF THERE'S ACTUALLY NO STEP FOUND
     throw new NoStepFoundError(step?.id);
 
   }
 
   public async back(host: FlowHostDirective): Promise<void> {
-    this.createHistoryEntry();
 
     if(typeof this.cmpReference.instance.onBack === 'function') {
       this.cmpReference.instance.onBack();
@@ -93,6 +92,7 @@ export class FlowService {
     const prevStep = completedSteps.pop(); // grab the last item from the array
 
     if (prevStep) {
+      this.createHistoryEntry();
       this.store.dispatch(flowActions.PrevStepAction({host}));
       return await this.renderComponent(host, <FlowStep>prevStep);
     }
