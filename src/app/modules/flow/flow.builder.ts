@@ -26,6 +26,7 @@ export class FlowBuilder {
     const callType = FlowFactory.callTypeDecision();
     const searchNListLeads = FlowFactory.searchNListLeads()
     const webLeadsType = FlowFactory.webLeadsType();
+    const searchNListContacts = FlowFactory.searchNListContacts()
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const createLead = FlowFactory.createLead();
     const editLead = FlowFactory.editLead(() => this.getVariable('lead'));
@@ -107,17 +108,37 @@ export class FlowBuilder {
     const toRelationshipBuilding2 = FlowFactory.link(createOpp, relationshipBuilding);
 
     // outbound
+    const oppWithNoOutcomes = FlowFactory.selectExistingOpp( () => ({
+      stageId : '2,4,5'
+    }));
+    const setAppointment = FlowFactory.setAppointment();
+    const recap = FlowFactory.recap();
+
     const webLeads_yes = FlowFactory.condition(async () => {
       return await this.getVariable('web_lead_options') === 'web_leads';
-    }, searchNListWebLeads);
+    }, oppWithNoOutcomes);
 
     const webLeads_no = FlowFactory.condition(async () => {
       return await this.getVariable('web_lead_options') === 'contacts';
-    }, searchNListLeads);
+    }, searchNListContacts);
 
     const webLeadRouter = FlowFactory.router('Router', '', [webLeads_yes, webLeads_no]);
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
 
+    const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
+
+    const setAppt_yes = FlowFactory.condition( async() => {
+      return await this.getVariable('set_appointment');
+    }, recap);
+
+    const setAppt_no = FlowFactory.condition( async() => {
+      return await this.getVariable('set_appointment');
+    }, recap);
+
+    const apptRouter = FlowFactory.router('Router', '', [setAppt_yes, setAppt_no]);
+    const apptLink = FlowFactory.link(setAppointment, apptRouter);
+
+    ///
     this.process
       .addStep(callType)
       .addLink(toCallTypeRouter)
@@ -153,6 +174,16 @@ export class FlowBuilder {
       .addStep(searchNListLeads)
       .addLink(webLeadLink)
 
+      .addStep(oppWithNoOutcomes)
+      .addStep(setAppointment)
+      .addLink(setApptLink)
+      .addRouter(apptRouter)
+      .addStep(recap)
+      .addLink(apptLink)
+
+    //     break;
+    //
+    // }
 
   }
 

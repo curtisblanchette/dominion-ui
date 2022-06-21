@@ -1,4 +1,4 @@
-import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink } from './_core';
+import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent } from './_core';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
 
@@ -126,7 +126,7 @@ export class FlowFactory {
 
   public static editDeal(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({
-      nodeText: 'Review Lead Info',
+      nodeText: 'Review Deal Info',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
@@ -221,7 +221,7 @@ export class FlowFactory {
     })
   }
 
-  public static searchNListWebLeads(): FlowStep {
+  public static searchNListWebLeads(query: Function = () => {}): FlowStep {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'address-book',
@@ -235,11 +235,55 @@ export class FlowFactory {
           searchable: true,
           editable: false,
           perPage: 25,
-          columns: []
+          columns: [],
+          query
         }
       }
-    }
+    };
     return FlowFactory.step(data);
+  }
+
+  public static setAppointment():FlowStep {
+    return new FlowStep({
+      nodeText: 'Set Appointment',
+      nodeIcon: 'address-book',
+      component: FlowAppointmentComponent,
+      state: {
+        module: ModuleType.EVENT,
+        data: {
+          title: 'Set Appointment'
+        }
+      }
+    });
+  }
+
+  public static verifyInfo(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Verify',
+      nodeIcon: 'address-book',
+      component: FlowDataComponent,
+      state: {
+        module: ModuleType.CONTACT,
+        data: {
+          title: 'Verify Information',
+        }
+      }
+    });
+  };
+
+  public static recap(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Recap',
+      nodeIcon: 'address-book',
+      component: FlowTextComponent,
+      state: {
+        data: {
+          title: 'Recap',
+          body: 'Recap',
+          template: 'recap'
+        }
+      }
+    });
   }
 
   public static step(data: Omit<FlowStep, '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>) {
