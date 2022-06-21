@@ -30,6 +30,15 @@
   <flow-timeline (onSelect)="goTo($event)"></flow-timeline>
 </ng-template>
 
-<ng-template #flowNotes><div>
-  <editor apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i" [init]="tinymceOptions" ></editor>
-</div></ng-template>
+<ng-template #flowNotes>
+  <div>
+    <editor
+      apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
+      outputFormat="html"
+      [initialValue]="(notes$ | async)"
+      (onSelectionChange)="saveNotes($event)"
+      [(ngModel)]="notesData"
+      [init]="tinymceOptions"
+    ></editor>
+  </div>
+</ng-template>

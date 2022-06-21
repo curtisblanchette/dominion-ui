@@ -19,6 +19,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   tabIndex = 1;
   stepHistory$: Observable<FlowStepHistoryEntry[]>;
   valid$: Observable<boolean | undefined>;
+  notes$: Observable<string | null | undefined>;
+  notesData:any;
 
   public tinymceOptions = {
     branding: false,
@@ -55,12 +57,15 @@ export class FlowComponent implements OnInit, OnDestroy {
     private flowService: FlowService,
     private router: Router
   ) {
-    this.valid$ = this.store.select(fromFlow.selectIsValid);
-    this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
+
   }
 
   public async ngOnInit() {
+    this.valid$ = this.store.select(fromFlow.selectIsValid);
+    this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
+    this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
     await this.flowService.start(this.flowHost);
+
   }
 
   public onNext($event: Event) {
@@ -106,6 +111,10 @@ export class FlowComponent implements OnInit, OnDestroy {
   public endCall() {
     this.store.dispatch(flowActions.ResetAction());
     this.router.navigate(['dashboard']);
+  }
+
+  public saveNotes( event:any ) {
+    this.flowService.addVariables({notes : this.notesData});
   }
 
 }
