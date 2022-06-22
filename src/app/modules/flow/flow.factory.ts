@@ -1,7 +1,8 @@
-import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent } from './_core';
+import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './_core';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
+import { Fields as EventFields } from '../../common/models/event.model';
 
 export class FlowFactory {
 
@@ -20,6 +21,18 @@ export class FlowFactory {
     });
   }
 
+  public static objection(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Objection',
+      nodeIcon: 'address-book',
+      component: FlowObjectionComponent,
+      state: {
+        data: {
+          title: 'Objection',
+        }
+      }
+    });
+  }
   public static webLeadsType(): FlowStep {
     return new FlowStep({
       nodeText: 'Web Leads type',
@@ -300,6 +313,15 @@ export class FlowFactory {
         module: ModuleType.EVENT,
         data: {
           title: 'Set Appointment'
+        },
+        options: {
+          fields: [
+            EventFields.TITLE,
+            EventFields.DESCRIPTION,
+            EventFields.TYPE_ID,
+            EventFields.START_TIME,
+            EventFields.END_TIME
+          ]
         }
       }
     });

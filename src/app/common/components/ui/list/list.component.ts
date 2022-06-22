@@ -110,12 +110,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   }
 
-  public override ngAfterContentInit() {
-    super.ngAfterContentInit();
+  public override async ngAfterContentInit() {
+    await super.ngAfterContentInit();
     this.columns = getColumnsForModule(this.module);
   }
 
-  ngAfterViewInit() {
+  public async ngAfterViewInit() {
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),

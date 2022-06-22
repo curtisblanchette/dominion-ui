@@ -5,27 +5,26 @@
       Set Appointment
     </div>
     <div class="flex_main_wrapper__form">
-      <form [formGroup]="form" *ngIf="form" >
+      <form [formGroup]="form" *ngIf="form">
         <div>
           <input type="checkbox" formControlName="set_appointment" /> Set Appointment
         </div>
         <div *ngIf="showSlots">
           <label for="office">Location</label>
-          <fiiz-select #dropdown [module]="moduleType.OFFICE" [remote]="true" [id]="'office'" [label]="'Office'"></fiiz-select>
+          <fiiz-select #dropdown [module]="moduleType.OFFICE" [data]="{}" [remote]="true" id="office" [label]="'Office'" formControlName="officeId"></fiiz-select>
         </div>
         <div *ngIf="showSlots">
-          <label for="event_title">Event Title</label>
+          <label for="title">Title</label>
           <fiiz-input
-            id="event_title"
+            id="title"
             type="text"
-            formControlName="event_title"
-            placeholder="Event Title"
-          >
+            formControlName="title"
+            placeholder="Title">
           </fiiz-input>
         </div>
         <div *ngIf="showSlots">
-          <label for="event_desc">Event Description</label>
-          <fiiz-textarea [formControlName]="'event_desc'" placeholder="Add notes..." [height]="'100px'" ></fiiz-textarea>
+          <label for="description">Description</label>
+          <fiiz-textarea formControlName="description" id="description" placeholder="Add a description..." [height]="'100px'" ></fiiz-textarea>
         </div>
       </form>
     </div>

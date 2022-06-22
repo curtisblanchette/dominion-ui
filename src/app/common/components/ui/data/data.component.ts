@@ -44,7 +44,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public controlData: any;
   public submitText: string;
   public id: string | null;
-  public additionalData: any;
 
   @Input('module') public override module: ModuleType;
   @Input('data') public override data: any;
@@ -143,23 +142,24 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.id = await this.data.resolveId();
     }
 
-    if(this.data.resolveAdditionalData && typeof this.data.resolveAdditionalData === 'function') {
-      /**
-       * if the step was passed an additionalData <Promise> resolve it now
-       */
-      this.additionalData = await this.data.resolveAdditionalData();
-    }
-
-    for(const dropdown of this.dropdowns) {
-      const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
-      dropdown.items$ = of(CustomDataService.toDropdownItems(data));
-    }
-
+    await this.resolveDropdowns();
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
 
     if (this.id) {
       this.getData();
+    }
+  }
+
+
+  /**
+   * Get Data for Dropdowns.
+   * @return void
+   */
+  public async resolveDropdowns(): Promise<void> {
+    for(const dropdown of this.dropdowns) {
+      const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
+      dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     }
   }
 

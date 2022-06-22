@@ -14,6 +14,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public _dynamicService: EntityCollectionDataService<DominionType>;
 
   public type: any;
+  public additionalData: any;
 
   public entityMap$: Observable<any> = of([]);
   public count$: Observable<number> = of(0);
@@ -42,7 +43,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
   }
 
-  public ngAfterContentInit() {
+  public async ngAfterContentInit() {
     if( this.data ){
 
       if (this.module) {
@@ -54,8 +55,16 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
         this.loaded$ = this._dynamicCollectionService.loaded$;
         this.count$ = this._dynamicCollectionService.count$; // <-- ** always returns the filteredEntities$.length (not the collectionState.count)
       }
+
+      if(this.data.resolveAdditionalData && typeof this.data.resolveAdditionalData === 'function') {
+        /**
+         * if the step was passed an additionalData <Promise> resolve it now
+         */
+        this.additionalData = await this.data.resolveAdditionalData();
+      }
     }
   }
+
 
   ngOnDestroy() {
     this.data$ = of([]);

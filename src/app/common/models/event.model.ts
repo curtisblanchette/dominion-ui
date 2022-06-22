@@ -2,9 +2,21 @@ import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 
+export enum Fields {
+  TITLE = 'title',
+  DESCRIPTION = 'description',
+  CONTACT_ID = 'contactId',
+  START_TIME = 'startTime',
+  END_TIME = 'endTime',
+  TYPE_ID = 'typeId',
+  DEAL_ID = 'dealId',
+  OFFICE_ID = 'officeId',
+  OUTCOME_ID = 'outcomeId'
+}
+
 export const EventModel: {[key: string]: IModel} = {
   ...timestamps,
-  title: {
+  [Fields.TITLE]: {
     label: 'Title',
     type: 'text',
     defaultValue: null,
@@ -12,15 +24,14 @@ export const EventModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  description: {
+  [Fields.DESCRIPTION]: {
     label: 'Description',
     type: 'text',
     defaultValue: null,
     validators: [
-      Validators.required
     ]
   },
-  contactId: {
+  [Fields.CONTACT_ID]: {
     label: 'Contact Id',
     type: 'text',
     defaultValue: null,
@@ -28,7 +39,7 @@ export const EventModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  startTime: {
+  [Fields.START_TIME]: {
     label: 'Start Time',
     type: 'daytime',
     defaultValue: null,
@@ -36,7 +47,7 @@ export const EventModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  endTime: {
+  [Fields.END_TIME]: {
     label: 'End Time',
     type: 'daytime',
     defaultValue: null,
@@ -44,7 +55,7 @@ export const EventModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  typeId: {
+  [Fields.TYPE_ID]: {
     label: 'Type',
     type: 'dropdown',
     service: 'eventType',
@@ -53,19 +64,19 @@ export const EventModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  dealId: {
+  [Fields.DEAL_ID]: {
     label: 'Deal Id',
     type: 'text',
     defaultValue: null,
     validators: []
   },
-  officeId: {
+  [Fields.OFFICE_ID]: {
     label: 'Office Id',
     type: 'text',
     defaultValue: null,
     validators: []
   },
-  outcomeId: {
+  [Fields.OUTCOME_ID]: {
     label: 'Outcome Id',
     type: 'dropdown',
     service: 'eventOutcome',
