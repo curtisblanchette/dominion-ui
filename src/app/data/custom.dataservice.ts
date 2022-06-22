@@ -28,7 +28,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     );
   }
 
-  override add(entity: Partial<DominionType>) {
+  override add(entity: Partial<DominionType>, notify: boolean = true) {
     const data = this.removeNulls(entity);
     const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
 
@@ -39,18 +39,22 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     return of('dummy-delay').pipe(
       // delay(2000),
       mergeMap(() => super.add(data)),
-      tap((res: any) => this.toastr.success(`${entityLabel} Created`))
+      tap((res: any) => {
+        notify && this.toastr.success(`${entityLabel} Created`);
+      })
     );
   }
 
-  override update(entity: Update<T>) {
+  override update(entity: Update<T>, notify: boolean = true) {
     const data = this.removeNulls(entity);
     const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
 
     return of('dummy-delay').pipe(
       // delay(2000),
       mergeMap(() => super.update(data)),
-      tap((res: any) => this.toastr.success(`${entityLabel} Updated`))
+      tap((res: any) => {
+        notify && this.toastr.success(`${entityLabel} Updated`)
+      })
     )
   }
 
@@ -98,7 +102,7 @@ export class CustomDataServiceFactory extends DefaultDataServiceFactory {
     super(http, httpUrlGenerator, config);
   }
 
-  override create<T>(entityName: string): EntityCollectionDataService<T> {
+  override create<T>(entityName: string): CustomDataService<T> {
     return new CustomDataService<T>(
       entityName,
       this.http,

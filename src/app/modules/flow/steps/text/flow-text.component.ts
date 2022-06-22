@@ -99,18 +99,18 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
             officeId : this.allVars.office
           };
 
-          const callPayload = {
-            leadId : this.allVars.lead,
-            dealId : this.allVars.deal,
-            startTime : dayjs().format(),
-            direction : this.allVars.call_type,
-            // outcomeId : await this.map.callOutcome(),
-            // typeId : await this.map.callType(),
-            // statusId : await this.map.callStatus(),
-            description : '', // Need a field for it as of now
-            trackingNumber : '', // Not required as of now
-            dialledNumber : '' // Not required as of now
-          };
+          // const callPayload = {
+          //   leadId : this.allVars.lead,
+          //   dealId : this.allVars.deal,
+          //   startTime : dayjs().format(),
+          //   direction : this.allVars.call_type,
+          //   // outcomeId : await this.map.callOutcome(),
+          //   // typeId : await this.map.callType(),
+          //   // statusId : await this.map.callStatus(),
+          //   description : '', // Need a field for it as of now
+          //   trackingNumber : '', // Not required as of now
+          //   dialledNumber : '' // Not required as of now
+          // };
 
           const notesPayload = {
             entityId : this.allVars.deal,
@@ -119,7 +119,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
           };
 
           this._dynamicCollectionService.add(<DominionType><unknown>eventPayload).subscribe().add();
-          this.callAPI.add(<DominionType><unknown>callPayload).subscribe().add();
+          // this.callAPI.add(<DominionType><unknown>callPayload).subscribe().add();
           this.noteAPI.add(<DominionType><unknown>notesPayload).subscribe().add();
 
         }
