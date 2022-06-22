@@ -49,7 +49,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.callAPI = entityCollectionServiceFactory.create(ModuleType.CALL);
     this.noteAPI = entityCollectionServiceFactory.create(ModuleType.NOTE);
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
-    this.webLeadTypes$ = of([ { id : 'contacts', label : 'Search and List Contacts' }, { id : 'web_leads', label : 'Search and List Web Leads' } ]);
+    this.webLeadTypes$ = of([ { id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' } ]);
   }
 
   public async ngOnInit(){

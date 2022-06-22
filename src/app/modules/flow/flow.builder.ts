@@ -3,7 +3,7 @@ import { Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
-import { FlowListParams, FlowTextComponent } from './index';
+import { FlowListParams } from './index';
 import { lastValueFrom, take } from 'rxjs';
 
 export class FlowBuilder {
@@ -171,7 +171,7 @@ export class FlowBuilder {
     this.process
       .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
-      .addStep(searchNListLeads)
+      .addStep(searchNListContacts)
       .addLink(webLeadLink)
 
       .addStep(oppWithNoOutcomes)

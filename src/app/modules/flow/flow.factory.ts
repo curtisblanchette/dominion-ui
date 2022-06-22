@@ -23,13 +23,13 @@ export class FlowFactory {
 
   public static webLeadsType(): FlowStep {
     return new FlowStep({
-      nodeText: 'Web Leads type',
+      nodeText: 'Search and List',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
       state: {
         data: {
-          title: 'How you wanna proceed',
-          body: 'select any one options below',
+          title: 'Search and List',
+          body: 'Lookup an Contact or Opportunity from one of the following lists',
           template: 'web-lead'
         }
       }
@@ -65,7 +65,7 @@ export class FlowFactory {
       state: {
         module: ModuleType.CONTACT,
         data: {
-          title: 'Contact List',
+          title: 'Search Contacts',
         },
         options: {
           searchable: true,
