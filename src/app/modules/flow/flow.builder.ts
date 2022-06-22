@@ -1,9 +1,9 @@
-import { FlowProcess } from './_core/classes/flow.process';
+import { FlowProcess } from './classes/flow.process';
 import { Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
-import { FlowListParams, FlowTextComponent } from './_core';
+import { FlowListParams, FlowTextComponent } from './index';
 import { lastValueFrom, take } from 'rxjs';
 
 export class FlowBuilder {

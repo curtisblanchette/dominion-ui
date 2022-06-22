@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromFlow from '../../../store/flow.reducer';
+import * as fromFlow from '../../store/flow.reducer';
 import { FlowStep } from '../../classes';
 import { Observable } from 'rxjs';
 

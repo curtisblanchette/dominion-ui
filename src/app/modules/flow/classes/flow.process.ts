@@ -1,11 +1,11 @@
 import { Store } from '@ngrx/store';
-import * as fromFlow from '../../store/flow.reducer';
+import * as fromFlow from '../store/flow.reducer';
 import { FlowStep } from './flow.step';
 import { FlowRouter } from './flow.router';
 import { FlowLink } from './flow.link';
 import { FlowCurrentStep } from './flow.currentStep';
 import { FlowStepHistoryEntry } from './flow.stepHistory';
-import * as flowActions from '../../store/flow.actions';
+import * as flowActions from '../store/flow.actions';
 import { Inject } from '@angular/core';
 import { FlowBaseModel } from './flow.baseModel';
 import { ProcessNotFoundError } from './flow.errors';

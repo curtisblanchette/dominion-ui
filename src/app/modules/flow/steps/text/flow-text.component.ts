@@ -4,14 +4,14 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { lastValueFrom, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { DropdownItem } from '../../../../../common/components/interfaces/dropdownitem.interface';
+import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
 
-import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
-import * as flowActions from '../../../store/flow.actions';
-import { FlowService } from '../../../flow.service';
-import * as fromFlow from '../../../store/flow.reducer';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import * as flowActions from '../../store/flow.actions';
+import { FlowService } from '../../flow.service';
+import * as fromFlow from '../../store/flow.reducer';
 import { DominionType } from 'src/app/common/models';
 
 // import { FlowMaps } from '../../../_core/classes/flow.lookupMap';

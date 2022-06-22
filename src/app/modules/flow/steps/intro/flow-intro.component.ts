@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
-import { FlowService } from "../../../flow.service";
+import { FlowService } from "../../flow.service";
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 
 @Component({

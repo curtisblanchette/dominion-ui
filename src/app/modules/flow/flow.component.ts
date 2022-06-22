@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
-import { FlowHostDirective, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './_core';
+import { FlowHostDirective, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';

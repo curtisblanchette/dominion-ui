@@ -1,4 +1,4 @@
-import { ModuleType } from '../modules/flow/_core';
+import { ModuleType } from '../modules/flow';
 import { Router } from '@angular/router';
 import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
 import { map, Observable, of, Subject } from 'rxjs';

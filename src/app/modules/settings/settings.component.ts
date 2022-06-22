@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import { Observable } from 'rxjs';
-import { ModuleType } from '../flow/_core';
+import { ModuleType } from '../flow';
 
 @Component({
   selector: 'app-system',

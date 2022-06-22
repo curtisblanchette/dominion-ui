@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { FlowService } from '../../../flow.service';
-import { DominionType } from '../../../../../common/models';
+import { FlowService } from '../../flow.service';
+import { DominionType } from '../../../../common/models';
 
 @Component({
   selector: 'flow-list',
