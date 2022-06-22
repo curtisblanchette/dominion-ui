@@ -56,7 +56,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
 
   override getAll(): Observable<T[]> {
 
-    if(['role', 'practiceArea', 'leadStatus', 'callType', 'callStatus', 'callOutcome', 'eventOutcome', 'eventType', 'dealStage'].includes(this.entityName)) {
+    if(['role', 'practiceArea', 'leadStatus', 'callType', 'callStatus', 'callOutcome', 'eventOutcome', 'eventType', 'dealStage', 'office'].includes(this.entityName)) {
       return super.getAll().pipe(map(CustomDataService.toDropdownItems));
     }
     return super.getAll();

@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
+import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
 
 export const CallModel: {[key: string]: IModel} = {
   ...timestamps,
@@ -20,7 +21,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  outcome: {
+  outcomeId: {
     label: 'Outcome',
     type: 'dropdown',
     service: 'callOutcome',
@@ -55,7 +56,8 @@ export const CallModel: {[key: string]: IModel} = {
   },
   dealId: {
     label: 'Deal Id',
-    type: 'text',
+    type: 'dropdown-search',
+    service: ModuleType.DEAL,
     defaultValue: null,
     validators: []
   },
@@ -67,7 +69,8 @@ export const CallModel: {[key: string]: IModel} = {
   },
   leadId: {
     label: 'Lead Id',
-    type: 'text',
+    type: 'dropdown-search',
+    service: ModuleType.LEAD,
     defaultValue: null,
     validators: []
   },

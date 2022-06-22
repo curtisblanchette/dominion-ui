@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
+import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
 
 export enum Fields {
   FIRST_NAME = 'firstName',
@@ -55,7 +56,8 @@ export const ContactModel: { [key: string]: IModel } = {
   },
   [Fields.LEAD_ID]: {
     label: 'Lead Id',
-    type: 'text',
+    type: 'dropdown-search',
+    service: ModuleType.LEAD,
     defaultValue: '',
     validators: [
       Validators.required

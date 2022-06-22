@@ -14,7 +14,7 @@ import { OfficeModel } from './office.model';
 
 export interface IModel {
   label: string;
-  type: 'text' | 'email' | 'tel' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'day' | 'daytime' | 'virtual' | 'timestamp',
+  type: 'text' | 'email' | 'tel' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'day' | 'daytime' | 'virtual' | 'timestamp' | 'dropdown-search',
   service?: string;
   defaultValue?: any;
   validators?: Validators[]
@@ -22,7 +22,7 @@ export interface IModel {
 
 const defaultListColumns: {[key: string]: string[]} = {
   address: ['line1', 'city', 'zipCode', 'stateCode', 'countryCode'],
-  call: ['type', 'direction', 'outcome', 'status', 'dialledNumber', 'createdAt'],
+  call: ['type', 'direction', 'outcomeId', 'status', 'dialledNumber', 'createdAt'],
   campaign: ['name', 'createdAt'],
   deal: ['name', 'stage', 'contactId', 'createdAt'],
   contact: ['fullName', 'phone', 'email', 'createdAt'],

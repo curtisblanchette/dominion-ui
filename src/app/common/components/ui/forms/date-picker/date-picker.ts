@@ -1,5 +1,6 @@
 import { Component, EventEmitter, forwardRef, HostBinding, Input, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import * as dayjs from 'dayjs';
 import {Dayjs} from 'dayjs';
 import { IDatePickerConfig } from 'ng2-date-picker/lib/date-picker/date-picker-config.model';
 
@@ -61,9 +62,8 @@ export class FiizDatePickerComponent implements ControlValueAccessor {
   }
 
   changed(value: Dayjs) {
-    if(value){
+    if(value && dayjs(value).isValid() ){
       this.value = value;
-
       this.onChange(this.value.format());
       this.change.emit(this.value.format());
       this.onTouched();

@@ -94,7 +94,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
     return this._dynamicService.getWithQuery(params).pipe(
       map((res: any) => {
         this.count$ = of(res.count);
-        this.data$ = of(res.rows);
+        this.data$ = of(res.count ? res.rows : res);
         this.loaded$ = of(true);
         this.loading$ = of(false);
         this.loadingSubject$.next(false);
