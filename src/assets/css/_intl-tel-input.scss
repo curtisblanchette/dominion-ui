@@ -6,7 +6,7 @@
   width: 100%!important;
 
   input {
-    padding-left: calc(52px + $input-padding);
+    padding-left: calc(52px + (#{$input-padding-lr} / 2 ))!important;
   }
 
   &__country-list {

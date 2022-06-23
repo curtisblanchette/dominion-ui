@@ -28,7 +28,7 @@ $darkBlue: #0E1D34;
 
 // input defaults
 $input-border-radius: 10px;
-$input-padding-lr: 8px;
+$input-padding-lr: 1.5em;
 $input-padding-tb: 0;
 $input-margin-bottom: 14px;
 
@@ -37,6 +37,7 @@ $focusring-moz-mac:  inset 0 0 0 1px -moz-mac-focusring;
 
 // button defaults
 $button-border-radius: 6px;
+$button-padding-lr: 1.5em;
 
 // fonts
 $text1: #C6CEED;
