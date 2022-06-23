@@ -80,7 +80,8 @@
 
 <ng-template #main>
 
-      <div class="flex-table__row"
+      <div class="flex-table__row active"
+           [ngClass]="{'active' : selected?.id === item?.id}"
            tabindex="0" #row
            (mousedown)="onClick($event, item)"
            (focusin)="onFocusIn($event, item)"

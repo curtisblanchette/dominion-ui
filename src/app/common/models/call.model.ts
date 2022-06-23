@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
+import { phoneValidation } from '../../common/custom.validations';
 
 export const CallModel: {[key: string]: IModel} = {
   ...timestamps,
@@ -49,9 +50,11 @@ export const CallModel: {[key: string]: IModel} = {
   },
   dialledNumber: {
     label: 'Dialled Number',
-    type: 'text',
+    type: 'tel',
     defaultValue: null,
-    validators: []
+    validators: [
+      phoneValidation
+    ]
   },
   dealId: {
     label: 'Deal Id',

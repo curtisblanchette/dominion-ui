@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
+import { phoneValidation } from '../../common/custom.validations';
 
 export enum Fields {
   FIRST_NAME = 'firstName',
@@ -38,10 +39,11 @@ export const ContactModel: { [key: string]: IModel } = {
   },
   [Fields.PHONE]: {
     label: 'Phone',
-    type: 'text',
+    type: 'tel',
     defaultValue: '',
     validators: [
-      Validators.required
+      Validators.required,
+      phoneValidation
     ]
   },
   [Fields.EMAIL]: {
