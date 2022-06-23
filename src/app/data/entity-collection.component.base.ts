@@ -1,4 +1,3 @@
-import { ModuleType } from '../modules/flow';
 import { Router } from '@angular/router';
 import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
 import { map, Observable, of, Subject } from 'rxjs';
@@ -6,6 +5,7 @@ import { DominionType, types } from '../common/models';
 import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfaces';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { AfterContentInit, Inject, Input, OnDestroy } from '@angular/core';
+import { ModuleTypes } from './entity-metadata';
 
 @UntilDestroy()
 export class EntityCollectionComponentBase implements AfterContentInit, OnDestroy {
@@ -26,7 +26,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public response$: Observable<any>;
   @Input('data') public data: any;
   @Input('options') public options: any;
-  @Input('module') public module: ModuleType;
+  @Input('module') public module: ModuleTypes;
 
   constructor(
     router: Router,

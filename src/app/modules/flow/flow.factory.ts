@@ -1,8 +1,9 @@
-import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './index';
+import { FlowStep, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './index';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
 import { Fields as EventFields } from '../../common/models/event.model';
+import { ModuleTypes } from '../../data/entity-metadata';
 
 export class FlowFactory {
 
@@ -57,7 +58,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowListComponent,
       state: {
-        module: ModuleType.LEAD,
+        module: ModuleTypes.LEAD,
         data: {
           title: 'Lead List',
         },
@@ -78,7 +79,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowListComponent,
       state: {
-        module: ModuleType.CONTACT,
+        module: ModuleTypes.CONTACT,
         data: {
           title: 'Search Contacts',
         },
@@ -98,7 +99,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
-        module: ModuleType.LEAD,
+        module: ModuleTypes.LEAD,
         data: {
           title: 'Create New Lead',
           resolveId,
@@ -125,7 +126,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
-        module: ModuleType.LEAD,
+        module: ModuleTypes.LEAD,
         data: {
           title: 'Review Lead Info',
           resolve
@@ -145,7 +146,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
-        module: ModuleType.CONTACT,
+        module: ModuleTypes.CONTACT,
         data: {
           title: 'Create New Contact'
         },
@@ -171,7 +172,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
-        module: ModuleType.DEAL,
+        module: ModuleTypes.DEAL,
         data: {
           title: 'Create Opportunity',
           resolveId,
@@ -194,7 +195,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
-        module: ModuleType.DEAL,
+        module: ModuleTypes.DEAL,
         data: {
           title: 'Review Deal Info',
           resolveId,
@@ -215,7 +216,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
-        module: ModuleType.LEAD,
+        module: ModuleTypes.LEAD,
         data: {
           title: 'Select a Campaign',
           resolveId,
@@ -238,7 +239,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowListComponent,
       state: {
-        module: ModuleType.DEAL,
+        module: ModuleTypes.DEAL,
         data: {
           title: 'Opportunity List',
         },
@@ -291,7 +292,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowListComponent,
       state: {
-        module: ModuleType.LEAD,
+        module: ModuleTypes.LEAD,
         data: {
           title: 'Search and List Web Leads',
         },
@@ -313,7 +314,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowAppointmentComponent,
       state: {
-        module: ModuleType.EVENT,
+        module: ModuleTypes.EVENT,
         data: {
           title: 'Set Appointment'
         },
@@ -336,7 +337,7 @@ export class FlowFactory {
       nodeIcon: 'address-book',
       component: FlowDataComponent,
       state: {
-        module: ModuleType.CONTACT,
+        module: ModuleTypes.CONTACT,
         data: {
           title: 'Verify Information',
         }

@@ -1,7 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
-import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
+import { ModuleTypes } from '../../data/entity-metadata';
 
 export enum Fields {
   TITLE = 'title',
@@ -36,7 +36,7 @@ export const EventModel: {[key: string]: IModel} = {
   [Fields.CONTACT_ID]: {
     label: 'Contact',
     type: 'dropdown-search',
-    service: ModuleType.CONTACT,
+    service: ModuleTypes.CONTACT,
     defaultValue: null,
     validators: [
       Validators.required
@@ -70,7 +70,7 @@ export const EventModel: {[key: string]: IModel} = {
   [Fields.DEAL_ID]: {
     label: 'Deal',
     type: 'dropdown-search',
-    service: ModuleType.DEAL,
+    service: ModuleTypes.DEAL,
     defaultValue: null,
     validators: []
   },

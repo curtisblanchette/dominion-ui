@@ -16,7 +16,7 @@ import * as fromData from '../../../../modules/data/store/data.reducer';
 import { DropdownItem } from '../forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
-import { ModuleType } from '../../../../modules/flow';
+import { ModuleTypes } from '../../../../data/entity-metadata';
 
 export interface IListOptions {
   searchable: boolean;
@@ -59,7 +59,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @ViewChildren('row') rows: QueryList<ElementRef>;
 
   @Input('data') public override data: any;
-  @Input('module') public override module: ModuleType;
+  @Input('module') public override module: ModuleTypes;
   @Input('options') public override options: IListOptions;
 
   @Input('loadInitial') loadInitial: boolean = false;

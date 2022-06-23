@@ -1,41 +1,41 @@
-import { ModuleType } from '../../../../modules/flow';
+import { ModuleTypes } from '../../../../modules/flow';
 
 const columns = new Map([
-  [ModuleType.CONTACT, [
+  [ModuleTypes.CONTACT, [
     {id: 'fullName', label: 'Name'},
     {id: 'phone', label: 'Phone'},
     {id: 'email', label: 'Email'}
   ]],
-  [ModuleType.LEAD, [
+  [ModuleTypes.LEAD, [
     {id: 'fullName', label: 'Name'},
     {id: 'phone', label: 'Phone'},
     {id: 'email', label: 'Email'}
   ]],
-  [ModuleType.DEAL, [
+  [ModuleTypes.DEAL, [
     {id: 'name', label: 'Name'},
     {id: 'stage', label: 'Stage'}
   ]],
-  [ModuleType.EVENT, [
+  [ModuleTypes.EVENT, [
     {id: 'title', label: 'Title'},
     {id: 'startTime', label: 'Start Time'},
     {id: 'endTime', label: 'End Time'}
   ]],
-  [ModuleType.CALL, [
+  [ModuleTypes.CALL, [
     {id: 'direction', label: 'Direction'},
     {id: 'status', label: 'Status'},
     {id: 'outcome', label: 'Outcome'},
   ]],
-  [ModuleType.CAMPAIGN, [
+  [ModuleTypes.CAMPAIGN, [
     {id: 'name', label: 'Name'},
     {id: 'status', label: 'Status'},
     {id: 'trackingNumber', label: 'Tracking No.'},
     {id: 'type', label: 'Type'},
   ]],
-  [ModuleType.LEAD_SOURCE, [
+  [ModuleTypes.LEAD_SOURCE, [
     {id: 'name', label: 'Name'},
     {id: 'status', label: 'Status'}
   ]],
 
 ]);
 
-export const getColumns = (module: ModuleType) => columns.get(module)!;
+export const getColumns = (module: ModuleTypes) => columns.get(module)!;

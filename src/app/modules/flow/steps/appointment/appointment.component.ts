@@ -17,11 +17,11 @@ import { environment } from '../../../../../environments/environment';
 import { uriOverrides } from '../../../../data/entity-metadata';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { HttpClient } from '@angular/common/http';
-import { FormInvalidError, ModuleType, OnSave } from '../../classes';
+import { FormInvalidError, OnSave } from '../../classes';
 import { DominionType, models } from '../../../../common/models';
 import { INestedSetting } from '../../../../store/app.effects';
 import { ManipulateType } from 'dayjs';
-
+import { ModuleTypes } from '../../../../data/entity-metadata';
 
 @UntilDestroy()
 @Component({
@@ -34,7 +34,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public timeZone: any = 'America/New_York';
 
   public appointmentSettings: INestedSetting;
-  public moduleType: any;
+  public ModuleTypes: any;
 
   public timeSlots: Array<any> = [];
   public selectedBtnId: string;
@@ -70,7 +70,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.offices$ = this.store.select(fromApp.selectOffices);
-    this.moduleType = ModuleType;
+    this.ModuleTypes = ModuleTypes;
 
     this.store.select(fromApp.selectSettingGroup('appointment')).subscribe((settings: INestedSetting) => {
       this.appointmentSettings = settings;

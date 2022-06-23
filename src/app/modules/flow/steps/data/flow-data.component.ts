@@ -3,7 +3,8 @@ import { Store } from '@ngrx/store';
 import { FlowState } from '../../store/flow.reducer';
 import * as flowActions from '../../store/flow.actions';
 import { FiizDataComponent, FiizDataComponentOptions } from '../../../../common/components/ui/data/data.component';
-import { ModuleType, OnBack, OnNext, OnSave } from '../../classes';
+import { OnBack, OnNext, OnSave } from '../../classes';
+import { ModuleTypes } from '../../../../data/entity-metadata';
 
 @Component({
   selector: 'flow-data',
@@ -15,7 +16,7 @@ import { ModuleType, OnBack, OnNext, OnSave } from '../../classes';
 })
 export class FlowDataComponent implements OnDestroy, OnSave, OnBack, OnNext {
 
-  @Input('module') module: ModuleType;
+  @Input('module') module: ModuleTypes;
   @Input('data') data: any;
   @Input('options') options: FiizDataComponentOptions;
 

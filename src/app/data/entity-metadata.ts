@@ -1,9 +1,24 @@
 import { EntityMetadataMap } from '@ngrx/data';
 
+export enum ModuleTypes {
+  ADDRESS = 'address',
+  LEAD = 'lead',
+  CONTACT = 'contact',
+  DEAL = 'deal',
+  CALL = 'call',
+  EVENT = 'event',
+  CAMPAIGN = 'campaign',
+  LEAD_SOURCE = 'leadSource',
+  ROLE = 'role',
+  PRACTICE_AREA = 'practiceArea',
+  NOTE = 'note',
+  OFFICE = 'office'
+}
+
 const entityMetadata: EntityMetadataMap = {
-  address: {},
-  contact: {},
-  lead: {
+  [ModuleTypes.ADDRESS]: {},
+  [ModuleTypes.CONTACT]: {},
+  [ModuleTypes.LEAD]: {
     filterFn: (entities: any[], pattern: { q?: string, id?: string } ) => {
       if(pattern.q) {
         return entities.filter((entity: any) => {
@@ -25,16 +40,16 @@ const entityMetadata: EntityMetadataMap = {
       return entities;
     },
   },
-  call: {},
-  deal: {},
-  event: {},
-  campaign: {},
-  leadSource: {},
-  office: {},
-  note: {},
+  [ModuleTypes.CALL]: {},
+  [ModuleTypes.DEAL]: {},
+  [ModuleTypes.EVENT]: {},
+  [ModuleTypes.CAMPAIGN]: {},
+  [ModuleTypes.LEAD_SOURCE]: {},
+  [ModuleTypes.OFFICE]: {},
+  [ModuleTypes.NOTE]: {},
 
   role: { noChangeTracking: true },
-  practiceArea: { noChangeTracking: true },
+  [ModuleTypes.PRACTICE_AREA]: { noChangeTracking: true },
   leadStatus: { noChangeTracking: true },
   callOutcome: { noChangeTracking: true },
   callObjection: { noChangeTracking: true },
@@ -48,19 +63,19 @@ const entityMetadata: EntityMetadataMap = {
 };
 
 export const pluralNames = {
-  address: 'addresses',
-  contact: 'contacts',
-  lead: 'leads',
-  deal: 'deals',
-  call: 'calls',
-  event: 'events',
-  campaign: 'campaigns',
-  leadSource: 'leadSources',
-  note: 'notes',
-  office: 'offices',
+  [ModuleTypes.ADDRESS]: 'addresses',
+  [ModuleTypes.CONTACT]: 'contacts',
+  [ModuleTypes.LEAD]: 'leads',
+  [ModuleTypes.DEAL]: 'deals',
+  [ModuleTypes.CALL]: 'calls',
+  [ModuleTypes.EVENT]: 'events',
+  [ModuleTypes.CAMPAIGN]: 'campaigns',
+  [ModuleTypes.LEAD_SOURCE]: 'leadSources',
+  [ModuleTypes.NOTE]: 'notes',
+  [ModuleTypes.OFFICE]: 'offices',
 
   role: 'roles',
-  practiceArea: 'practiceAreas',
+  [ModuleTypes.PRACTICE_AREA]: 'practiceAreas',
   leadStatus: 'leadStatuses',
   callOutcome: 'callOutcomes',
   callObjection: 'callObjections',
@@ -80,8 +95,13 @@ export const entityConfig = {
 }
 
 export const uriOverrides: { [key: string]: string } = {
-  leadSource: 'lead-sources',
-  practiceArea: 'practice-areas',
+  [ModuleTypes.OFFICE]: 'offices',
+  [ModuleTypes.CAMPAIGN]: 'campaigns',
+  [ModuleTypes.CONTACT]: 'contacts',
+  [ModuleTypes.LEAD]: 'leads',
+  [ModuleTypes.DEAL]: 'deals',
+  [ModuleTypes.LEAD_SOURCE]: 'lead-sources',
+  [ModuleTypes.PRACTICE_AREA]: 'practice-areas',
   leadStatus: 'lead-statuses',
   callStatus: 'call-statuses',
   callType: 'call-types',
@@ -92,9 +112,4 @@ export const uriOverrides: { [key: string]: string } = {
   eventObjection: 'event-objections',
   eventType: 'event-types',
   lostReason: 'lost-reasons',
-  office: 'offices',
-  campaign: 'campaigns',
-  contact: 'contacts',
-  lead: 'leads',
-  deal: 'deals',
 }

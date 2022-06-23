@@ -5,6 +5,8 @@
   display: block;
   position: relative;
   margin-bottom: $input-margin-bottom;
+  overflow: hidden;
+  border-radius: $input-border-radius;
 
   &.has-label {
     margin-top: 30px;

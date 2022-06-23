@@ -1,28 +1,28 @@
 import { DropdownItem } from '../forms';
-import { ModuleType } from '../../../../modules/flow';
+import { ModuleTypes } from '../../../../modules/flow';
 
 const modules = new Map([
-  [ModuleType.CONTACT, [
+  [ModuleTypes.CONTACT, [
     {id: 'firstName', label: 'First Name'},
     {id: 'lastName', label: 'Last Name'},
     {id: 'email', label: 'Email'},
     {id: 'phone', label: 'Phone'}
   ]],
-  [ModuleType.LEAD, [
+  [ModuleTypes.LEAD, [
     {id: 'firstName', label: 'First Name'},
     {id: 'lastName', label: 'Last Name'},
     {id: 'phone', label: 'Phone'}
   ]],
-  [ModuleType.DEAL, [
+  [ModuleTypes.DEAL, [
     {id: 'name', label: 'Name'}
   ]],
-  [ModuleType.CALL, [
+  [ModuleTypes.CALL, [
     {id: 'name', label: 'Name'}
   ]],
-  [ModuleType.CAMPAIGN, [
+  [ModuleTypes.CAMPAIGN, [
     {id: 'name', label: 'Name'}
   ]],
 
 ]);
 
-export const getSearchableColumns = (module: ModuleType): DropdownItem[] => modules.get(module)!;
+export const getSearchableColumns = (module: ModuleTypes): DropdownItem[] => modules.get(module)!;

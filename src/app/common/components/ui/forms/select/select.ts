@@ -3,8 +3,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
-import { ModuleType } from '../../../../../modules/flow';
 import { Router } from '@angular/router';
+import { ModuleTypes } from '../../../../../data/entity-metadata';
 
 export interface DropdownItem {
   id: number | string | boolean;
@@ -31,12 +31,14 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   @Input('label') public label: string | number | boolean | undefined;
 
   @Input('id') id!: string;
+  @Input('module') override module: ModuleTypes;
+
   @Input('size') size!: 'small' | 'large';
   @Input('default') default: string | number | boolean | undefined;
   @Input('autofocus') autofocus = false;
   @Input('position') position:string = 'bottom-right';
   @Input('showDefault') showDefault!: boolean;
-  @Input('module') override module: ModuleType;
+
   @Input('remote') remote: boolean = false;
 
   @HostBinding('attr.disabled')

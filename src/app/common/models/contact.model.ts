@@ -1,8 +1,8 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
-import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
-import { phoneValidation } from '../../common/custom.validations';
+import { FiizValidators } from '../validators';
+import { ModuleTypes } from '../../data/entity-metadata';
 
 export enum Fields {
   FIRST_NAME = 'firstName',
@@ -44,7 +44,7 @@ export const ContactModel: { [key: string]: IModel } = {
     defaultValue: '',
     validators: [
       Validators.required,
-      phoneValidation
+      FiizValidators.e164
     ]
   },
   [Fields.EMAIL]: {
@@ -59,7 +59,7 @@ export const ContactModel: { [key: string]: IModel } = {
   [Fields.LEAD_ID]: {
     label: 'Lead Id',
     type: 'dropdown-search',
-    service: ModuleType.LEAD,
+    service: ModuleTypes.LEAD,
     defaultValue: '',
     validators: [
       Validators.required

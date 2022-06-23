@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, ModuleType } from './index';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode } from './index';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -10,6 +10,7 @@ import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
 import { DominionType } from '../../common/models';
 import { DefaultDataServiceFactory } from '@ngrx/data';
+import { ModuleTypes } from '../../data/entity-metadata';
 
 export interface IHistory {
   prevStepId: string;
@@ -32,7 +33,7 @@ export class FlowService {
     private dataServiceFactory: DefaultDataServiceFactory
   ) {
     this.builder = new FlowBuilder(this.store, this);
-    this.callService = this.dataServiceFactory.create(ModuleType.CALL) as CustomDataService<DominionType>;
+    this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
   }
 
   public async start(context: FlowHostDirective): Promise<any> {
@@ -161,17 +162,17 @@ export class FlowService {
          * @param {onCreate} EventEmitter
          */
         this.cmpReference.instance.values.subscribe((value: any) => {
-          const variable = { [value.module as ModuleType]: value.record?.id || null };
+          const variable = { [value.module as ModuleTypes]: value.record?.id || null };
 
           /**
            * If the select record has entity relationships ,
            * store them as entity variables
            */
           if( value.record?.contactId ){
-            variable[ModuleType.CONTACT] = value.record.contactId;
+            variable[ModuleTypes.CONTACT] = value.record.contactId;
           }
           if( value.record?.leadId ){
-            variable[ModuleType.LEAD] = value.record.leadId;
+            variable[ModuleTypes.LEAD] = value.record.leadId;
           }
 
           this.setValidity(!!value.record);

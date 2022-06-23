@@ -13,14 +13,14 @@ import * as dayjs from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
-import { uriOverrides } from '../../../../data/entity-metadata';
+import { ModuleTypes, uriOverrides } from '../../../../data/entity-metadata';
 import { firstValueFrom, map, of, take } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay } from 'rxjs/operators';
 import * as flowActions from '../../../../modules/flow/store/flow.actions';
 import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
-import { FormInvalidError, ModuleType } from '../../../../modules/flow';
+import { FormInvalidError } from '../../../../modules/flow';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
@@ -45,7 +45,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public submitText: string;
   public id: string | null;
 
-  @Input('module') public override module: ModuleType;
+  @Input('module') public override module: ModuleTypes;
   @Input('data') public override data: any;
   @Input('options') public override options: FiizDataComponentOptions = { controls: true, state: 'create', dictation: '', fields: [] };
 
@@ -173,7 +173,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     for (const field of fields) {
       const control = models[this.module][field];
-      
+
       if (!['virtual', 'timestamp'].includes(control.type)) {
 
         form[field] = new FormControl(control.defaultValue, control.validators);
@@ -204,7 +204,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
      * example: `lostReason` is required when status is `lost`
      */
     const watchFields: any = {
-      [ModuleType.LEAD]: [
+      [ModuleTypes.LEAD]: [
         {
           when: LeadFields.STATUS_ID,
           equals: 'Lost',
@@ -219,7 +219,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           field: 'lostReasonId'
         }
       ],
-      [ModuleType.DEAL]: [
+      [ModuleTypes.DEAL]: [
         {
           when: DealFields.STAGE_ID,
           equals: 'Lost',

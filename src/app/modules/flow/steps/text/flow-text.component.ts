@@ -15,8 +15,8 @@ import * as fromFlow from '../../store/flow.reducer';
 import { DominionType } from 'src/app/common/models';
 
 // import { FlowMaps } from '../../../_core/classes/flow.lookupMap';
-import { ModuleType } from '../../classes';
 import * as dayjs from 'dayjs';
+import { ModuleTypes } from '../../../../data/entity-metadata';
 
 
 @UntilDestroy()
@@ -46,8 +46,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     // private map:FlowMaps,
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
-    this.callAPI = entityCollectionServiceFactory.create(ModuleType.CALL);
-    this.noteAPI = entityCollectionServiceFactory.create(ModuleType.NOTE);
+    this.callAPI = entityCollectionServiceFactory.create(ModuleTypes.CALL);
+    this.noteAPI = entityCollectionServiceFactory.create(ModuleTypes.NOTE);
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.webLeadTypes$ = of([ { id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' } ]);
   }
@@ -114,7 +114,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
           const notesPayload = {
             entityId : this.allVars.deal,
-            entityName : `${ModuleType.DEAL.charAt(0).toUpperCase()}${ModuleType.DEAL.slice(1)}`,
+            entityName : `${ModuleTypes.DEAL.charAt(0).toUpperCase()}${ModuleTypes.DEAL.slice(1)}`,
             content : this.allVars.notes || ''
           };
 

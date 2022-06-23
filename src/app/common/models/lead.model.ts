@@ -1,8 +1,8 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
-import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
-import { phoneValidation } from '../../common/custom.validations';
+import { FiizValidators } from '../validators';
+import { ModuleTypes } from '../../data/entity-metadata';
 
 export enum Fields {
   FIRST_NAME = 'firstName',
@@ -49,7 +49,7 @@ export const LeadModel: {[key: string]: IModel} = {
     defaultValue: null,
     validators: [
       Validators.required,
-      phoneValidation
+      FiizValidators.e164
     ]
   },
   [Fields.EMAIL]: {
@@ -99,14 +99,14 @@ export const LeadModel: {[key: string]: IModel} = {
   [Fields.CAMPAIGN_ID]: {
     label: 'Campaign Id',
     type: 'dropdown-search',
-    service: ModuleType.CAMPAIGN,
+    service: ModuleTypes.CAMPAIGN,
     defaultValue: null,
     validators: []
   },
   [Fields.LEAD_SOURCE_ID]: {
     label: 'Lead Source Id',
     type: 'dropdown-search',
-    service: ModuleType.LEAD_SOURCE,
+    service: ModuleTypes.LEAD_SOURCE,
     defaultValue: null,
     validators: []
   },
