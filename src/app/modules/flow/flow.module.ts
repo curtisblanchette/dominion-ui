@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FlowComponent } from "./flow.component";
 import { FlowService } from "./flow.service";
-import { FlowRouting } from "./flow.routing";
-import { FlowHostDirective, FlowDataComponent, FlowIntroComponent, FlowListComponent, FlowTextComponent, FlowNotesComponent, FlowTimelineComponent, FlowAppointmentComponent } from './index';
+import { FlowHostDirective, FlowDataComponent, FlowListComponent, FlowTextComponent, FlowNotesComponent, FlowTimelineComponent, FlowAppointmentComponent, FlowObjectionComponent } from './index';
 import { CommonModule } from "@angular/common";
 import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
 import { StoreModule } from '@ngrx/store';
@@ -12,13 +11,14 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { EffectsModule } from '@ngrx/effects';
 import { FlowEffects } from './store/flow.effects';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { FlowRouting } from './flow.routing';
 
 @NgModule({
   declarations: [
     FlowComponent,
     FlowNotesComponent,
     FlowTimelineComponent,
-    FlowIntroComponent,
+    FlowObjectionComponent,
     FlowTextComponent,
     FlowDataComponent,
     FlowListComponent,

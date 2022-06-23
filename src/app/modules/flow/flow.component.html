@@ -8,11 +8,7 @@
       </div>
     </section>
     <section class="fab-button">
-      <fiiz-dropdown
-        type = "button"
-        [items] = "menuItems"
-        position = "bottom-right"
-      ></fiiz-dropdown>
+      <fiiz-dropdown type="button" (onClick)="handleFabAction($event)" [items]="menuItems" position="bottom-right"></fiiz-dropdown>
     </section>
     <section [@slide]="animationIndex" class="flow-layout__content">
       <ng-template flowHost></ng-template>

@@ -37,14 +37,15 @@ const entityMetadata: EntityMetadataMap = {
   practiceArea: { noChangeTracking: true },
   leadStatus: { noChangeTracking: true },
   callOutcome: { noChangeTracking: true },
+  callObjection: { noChangeTracking: true },
   callStatus: { noChangeTracking: true },
   callType: { noChangeTracking: true },
   dealStage: { noChangeTracking: true },
   eventOutcome: { noChangeTracking: true },
+  eventObjection: { noChangeTracking: true },
   eventType:  { noChangeTracking: true },
   lostReason: { noChangeTracking: true }
 };
-
 
 export const pluralNames = {
   address: 'addresses',
@@ -62,10 +63,12 @@ export const pluralNames = {
   practiceArea: 'practiceAreas',
   leadStatus: 'leadStatuses',
   callOutcome: 'callOutcomes',
+  callObjection: 'callObjections',
   callType: 'callTypes',
   callStatus: 'callStatuses',
   dealStage: 'dealStages',
   eventOutcome: 'eventOutcomes',
+  eventObjections: 'eventObjections',
   eventType: 'eventTypes',
   lostReason: 'lostReasons',
 }
@@ -83,8 +86,10 @@ export const uriOverrides: { [key: string]: string } = {
   callStatus: 'call-statuses',
   callType: 'call-types',
   callOutcome: 'call-outcomes',
+  callObjection: 'call-objections',
   dealStage: 'deal-stages',
   eventOutcome: 'event-outcomes',
+  eventObjection: 'event-objections',
   eventType: 'event-types',
   lostReason: 'lost-reasons',
   office: 'offices'

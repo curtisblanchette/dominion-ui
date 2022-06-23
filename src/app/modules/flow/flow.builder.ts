@@ -24,6 +24,7 @@ export class FlowBuilder {
 
   public async build(type?: string) {
 
+    const objection = FlowFactory.objection();
     // select call type
     const callType = FlowFactory.callTypeDecision();
     const searchNListLeads = FlowFactory.searchNListLeads()
@@ -188,9 +189,10 @@ export class FlowBuilder {
       .addStep(recap)
       .addLink(apptLink)
 
-    //     break;
-    //
-    // }
+    // global
+
+    this.process
+      .addStep(objection);
 
   }
 

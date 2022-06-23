@@ -1,10 +1,25 @@
-import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent } from './index';
+import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './index';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
 import { Fields as EventFields } from '../../common/models/event.model';
 
 export class FlowFactory {
+
+  public static objection(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Objection',
+      nodeIcon: 'address-book',
+      component: FlowObjectionComponent,
+      state: {
+        data: {
+          title: 'Objection',
+          body: '',
+          template: 'call-type'
+        }
+      }
+    });
+  }
 
   public static callTypeDecision(): FlowStep {
     return new FlowStep({

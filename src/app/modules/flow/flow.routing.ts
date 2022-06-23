@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FlowComponent } from './flow.component';
-import { FlowDataComponent, FlowTextComponent, FlowIntroComponent, FlowListComponent, FlowAppointmentComponent } from './index';
+import { FlowDataComponent, FlowTextComponent, FlowObjectionComponent, FlowListComponent, FlowAppointmentComponent } from './index';
 import { sidebarRoutes } from '../data/data.routing';
 
 const routes: Routes = [
@@ -10,8 +10,8 @@ const routes: Routes = [
     component: FlowComponent,
     children: [
       {
-        path: 'intro',
-        component: FlowIntroComponent,
+        path: 'objection',
+        component: FlowObjectionComponent,
         outlet: 'flow'
       },
       {

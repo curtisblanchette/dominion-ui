@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
-import { FlowHostDirective, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
+import { FlowHostDirective, FlowObjectionComponent, FlowStep, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
@@ -41,7 +41,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     {
       label: 'Object',
       icon: 'fa-solid fa-gavel',
-      emitterValue: 'object'
+      emitterValue: 'objection'
     },
     {
       label: 'End Call',
@@ -89,6 +89,24 @@ export class FlowComponent implements OnInit, OnDestroy {
           console.warn(err);
         }
       });
+  }
+
+  public handleFabAction(action: string) {
+    switch(action) {
+      case 'objection': {
+        // find the objection step somehow
+        const objection = this.flowService.builder.process.steps.find(step => step.component === FlowObjectionComponent);
+
+        if(objection && objection.id) {
+          return this.goTo(objection.id);
+        }
+      }
+      break;
+      case 'end-call': {
+
+      }
+      break;
+    }
   }
 
   public goTo(id: string): Promise<any> {

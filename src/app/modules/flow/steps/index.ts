@@ -6,7 +6,7 @@ export enum FlowComponentType {
   EVENT = 'event'
 }
 
-export { FlowIntroComponent } from './intro/flow-intro.component';
+export { FlowObjectionComponent } from './objection/objection.component';
 export { FlowTextComponent } from './text/flow-text.component';
 export { FlowDataComponent } from './data/flow-data.component';
 export { FlowListComponent } from './list/flow-list.component';
