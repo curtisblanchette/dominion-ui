@@ -49,6 +49,8 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   }
 
   public async ngAfterViewInit() {
+    // TODO determine if it's a call or event objection
+    // the lookup values might be different
     const data: any = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides['callObjection']}`)) as DropdownItem[];
     this.dropdown.items$ = of(CustomDataService.toDropdownItems(data));
   }
