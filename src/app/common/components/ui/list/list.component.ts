@@ -16,7 +16,7 @@ import * as fromData from '../../../../modules/data/store/data.reducer';
 import { DropdownItem } from '../forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
-import { ModuleType } from '../../../../modules/flow/_core';
+import { ModuleType } from '../../../../modules/flow';
 
 export interface IListOptions {
   searchable: boolean;

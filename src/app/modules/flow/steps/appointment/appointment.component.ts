@@ -5,21 +5,21 @@ import * as dayjs from 'dayjs';
 import { IEvent } from '@4iiz/corev2';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 
-import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
-import { FlowService } from '../../../flow.service';
-import * as fromApp from '../../../../../store/app.reducer';
-import * as flowActions from '../../../store/flow.actions';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import { FlowService } from '../../flow.service';
+import * as fromApp from '../../../../store/app.reducer';
+import * as flowActions from '../../store/flow.actions';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { DropdownItem, FiizSelectComponent } from '../../../../../common/components/ui/forms';
-import { environment } from '../../../../../../environments/environment';
-import { uriOverrides } from '../../../../../data/entity-metadata';
-import { CustomDataService } from '../../../../../data/custom.dataservice';
+import { DropdownItem, FiizSelectComponent } from '../../../../common/components/ui/forms';
+import { environment } from '../../../../../environments/environment';
+import { uriOverrides } from '../../../../data/entity-metadata';
+import { CustomDataService } from '../../../../data/custom.dataservice';
 import { HttpClient } from '@angular/common/http';
 import { FormInvalidError, ModuleType, OnSave } from '../../classes';
-import { DominionType, models } from '../../../../../common/models';
-import { INestedSetting } from '../../../../../store/app.effects';
+import { DominionType, models } from '../../../../common/models';
+import { INestedSetting } from '../../../../store/app.effects';
 import { ManipulateType } from 'dayjs';
 
 

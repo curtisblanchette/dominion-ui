@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FlowState } from '../../../store/flow.reducer';
-import * as flowActions from '../../../store/flow.actions';
-import { FiizDataComponent, FiizDataComponentOptions } from '../../../../../common/components/ui/data/data.component';
+import { FlowState } from '../../store/flow.reducer';
+import * as flowActions from '../../store/flow.actions';
+import { FiizDataComponent, FiizDataComponentOptions } from '../../../../common/components/ui/data/data.component';
 import { ModuleType, OnBack, OnNext, OnSave } from '../../classes';
 
 @Component({

@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowDataComponent, FlowListComponent, FlowNode, ModuleType } from './_core';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, ModuleType } from './index';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -7,6 +7,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
+import { CustomDataService } from '../../data/custom.dataservice';
+import { DominionType } from '../../common/models';
+import { DefaultDataServiceFactory } from '@ngrx/data';
 
 export interface IHistory {
   prevStepId: string;
@@ -20,18 +23,23 @@ export class FlowService {
 
   public builder: FlowBuilder;
   public cmpReference: any;
+  public callService: CustomDataService<DominionType>;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store<fromFlow.FlowState>
+    private store: Store<fromFlow.FlowState>,
+    private dataServiceFactory: DefaultDataServiceFactory
   ) {
-    this.builder = new FlowBuilder(this.store);
+    this.builder = new FlowBuilder(this.store, this);
+    this.callService = this.dataServiceFactory.create(ModuleType.CALL) as CustomDataService<DominionType>;
   }
 
   public async start(context: FlowHostDirective): Promise<any> {
     await this.builder.build();
+
     const firstStep: FlowStep = this.builder.process.steps[0];
+
     if (firstStep && firstStep.id) {
       this.store.dispatch(flowActions.NextStepAction({host: context, stepId: firstStep.id}));
       return this.renderComponent(context, firstStep);
@@ -39,6 +47,25 @@ export class FlowService {
 
     throw new NoStepFoundError();
 
+  }
+
+  public startCall(direction: string): void {
+    this.callService.add({
+      startTime: new Date().toISOString(),
+      direction: direction
+    }, false).pipe(take(1)).subscribe((res) =>{
+      this.addVariables({call_direction: 'inbound'})
+    });
+  }
+
+  public updateCall(data: any): void {
+    this.callService.update(data).pipe(take(1)).subscribe((res) => {
+      const variables: any = {};
+      for(const key of Object.keys(data)) {
+         variables[`call_${key}`] = data[key];
+      }
+      this.addVariables(variables);
+    });
   }
 
   public async goTo(context: FlowHostDirective, id: string) {

@@ -1,17 +1,19 @@
-import { FlowProcess } from './_core/classes/flow.process';
+import { FlowProcess } from './classes/flow.process';
 import { Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
-import { FlowListParams, FlowTextComponent } from './_core';
+import { FlowListParams } from './index';
 import { lastValueFrom, take } from 'rxjs';
+import { FlowService } from './flow.service';
 
 export class FlowBuilder {
 
   public process: FlowProcess;
 
   constructor(
-    @Inject(Store) private store: Store<fromFlow.FlowState>
+    @Inject(Store) private store: Store<fromFlow.FlowState>,
+    @Inject(Store) private flowService: FlowService
   ) {
     this.reset();
   }
@@ -22,6 +24,7 @@ export class FlowBuilder {
 
   public async build(type?: string) {
 
+    const objection = FlowFactory.objection();
     // select call type
     const callType = FlowFactory.callTypeDecision();
     const searchNListLeads = FlowFactory.searchNListLeads()
@@ -40,7 +43,7 @@ export class FlowBuilder {
     }));
     const toOppList = FlowFactory.link(editLead, oppList);
     const createOpp = FlowFactory.createDeal(undefined, async () => ({ leadId: await this.getVariable('lead') }));
-    const editOpp = FlowFactory.editDeal(() => this.getVariable('deal'), () => {leadId: this.getVariable('lead')});
+    const editOpp = FlowFactory.editDeal(() => this.getVariable('deal'), () => ({ leadId: this.getVariable('lead')}));
 
     const relationshipBuilding = FlowFactory.relationshipBuilding();
     const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);
@@ -50,7 +53,12 @@ export class FlowBuilder {
 
     // inbound
     const inboundCond = FlowFactory.condition(async () => {
-      return await this.getVariable('call_type') === 'inbound';
+      const isInbound = await this.getVariable('call_type') === 'inbound';
+      if(isInbound) {
+        this.flowService.startCall('inbound');
+      }
+      return isInbound;
+
     }, searchNListLeads);
 
     const outboundCond = FlowFactory.condition(async () => {
@@ -109,8 +117,9 @@ export class FlowBuilder {
 
     // outbound
     const oppWithNoOutcomes = FlowFactory.selectExistingOpp( () => ({
-      stageId : '2,4,5'
+      stageId : '2,4,5' // TODO get these from the lookups
     }));
+
     const setAppointment = FlowFactory.setAppointment();
     const recap = FlowFactory.recap();
 
@@ -171,7 +180,7 @@ export class FlowBuilder {
     this.process
       .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
-      .addStep(searchNListLeads)
+      .addStep(searchNListContacts)
       .addLink(webLeadLink)
 
       .addStep(oppWithNoOutcomes)
@@ -181,9 +190,10 @@ export class FlowBuilder {
       .addStep(recap)
       .addLink(apptLink)
 
-    //     break;
-    //
-    // }
+    // global
+
+    this.process
+      .addStep(objection);
 
   }
 

@@ -1,10 +1,25 @@
-import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './_core';
+import { FlowStep, ModuleType, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './index';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
 import { Fields as EventFields } from '../../common/models/event.model';
 
 export class FlowFactory {
+
+  public static objection(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Objection',
+      nodeIcon: 'address-book',
+      component: FlowObjectionComponent,
+      state: {
+        data: {
+          title: 'Objection',
+          body: '',
+          template: 'call-type'
+        }
+      }
+    });
+  }
 
   public static callTypeDecision(): FlowStep {
     return new FlowStep({
@@ -21,27 +36,15 @@ export class FlowFactory {
     });
   }
 
-  public static objection(): FlowStep {
-    return new FlowStep({
-      nodeText: 'Objection',
-      nodeIcon: 'address-book',
-      component: FlowObjectionComponent,
-      state: {
-        data: {
-          title: 'Objection',
-        }
-      }
-    });
-  }
   public static webLeadsType(): FlowStep {
     return new FlowStep({
-      nodeText: 'Web Leads type',
+      nodeText: 'Search and List',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
       state: {
         data: {
-          title: 'How you wanna proceed',
-          body: 'select any one options below',
+          title: 'Search and List',
+          body: 'Lookup an Contact or Opportunity from one of the following lists',
           template: 'web-lead'
         }
       }
@@ -77,7 +80,7 @@ export class FlowFactory {
       state: {
         module: ModuleType.CONTACT,
         data: {
-          title: 'Contact List',
+          title: 'Search Contacts',
         },
         options: {
           searchable: true,

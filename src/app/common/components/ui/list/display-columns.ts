@@ -1,10 +1,10 @@
-import { ModuleType } from '../../../../modules/flow/_core';
+import { ModuleType } from '../../../../modules/flow';
 
 const columns = new Map([
   [ModuleType.CONTACT, [
     {id: 'fullName', label: 'Name'},
     {id: 'phone', label: 'Phone'},
-    {id: 'email', label: 'Email'}    
+    {id: 'email', label: 'Email'}
   ]],
   [ModuleType.LEAD, [
     {id: 'fullName', label: 'Name'},

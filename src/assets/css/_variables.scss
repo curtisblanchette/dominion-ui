@@ -1,6 +1,5 @@
 @import '../../assets/css/mixins';
-$container-width: 1440px;
-
+// colors
 $grey1: #E9E9E9;
 $grey2: #CAD2E2;
 
@@ -8,7 +7,7 @@ $blue0: #85C8ED;
 $blue1: #44ADDF;
 $blue2: #5BA5F9;
 $blue3: #5BA5F9; // primary
-$blue3-shaded: #008BC8;
+$blue3-shaded: #008BC8; // TODO use the mixins to shade the blue
 //$blue4: #1D607D;
 $blue4: #0D5777;
 $blue5: #003247;
@@ -27,18 +26,23 @@ $green1: #80CBC2;
 
 $darkBlue: #0E1D34;
 
+// input defaults
 $input-border-radius: 10px;
-$button-border-radius: 6px;
+$input-padding-lr: 1.5em;
+$input-padding-tb: 0;
+$input-margin-bottom: 14px;
 
 $focusring: inset 0 0 1px 2px $blue3;
 $focusring-moz-mac:  inset 0 0 0 1px -moz-mac-focusring;
 
-$ctmWidgetPaneSize: 382px;
+// button defaults
+$button-border-radius: 6px;
+$button-padding-lr: 1.5em;
 
-$input-margin-bottom: 14px;
-
-
+// fonts
 $text1: #C6CEED;
 
+// components
+$container-width: 1440px;
 $navbar-height: 64px;
 $full-height-minus-navbar: calc(100% - #{$navbar-height});

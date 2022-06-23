@@ -17,10 +17,10 @@ import { uriOverrides } from '../../../../data/entity-metadata';
 import { firstValueFrom, map, of, take } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { delay, filter } from 'rxjs/operators';
+import { delay } from 'rxjs/operators';
 import * as flowActions from '../../../../modules/flow/store/flow.actions';
 import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
-import { FormInvalidError, ModuleType } from '../../../../modules/flow/_core';
+import { FormInvalidError, ModuleType } from '../../../../modules/flow';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';

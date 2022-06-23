@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
-import { ModuleType } from '../../../../../modules/flow/_core';
+import { ModuleType } from '../../../../../modules/flow';
 import { Router } from '@angular/router';
 
 export interface DropdownItem {

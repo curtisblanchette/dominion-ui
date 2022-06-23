@@ -1,6 +1,6 @@
 {
   "name": "dominion-ui",
-  "version": "1.8.53",
+  "version": "1.9.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve ",
@@ -19,7 +19,7 @@
   },
   "private": true,
   "dependencies": {
-    "@4iiz/corev2": "0.0.122",
+    "@4iiz/corev2": "0.2.2",
     "@angular/animations": "~13.2.0",
     "@angular/cdk": "^13.2.6",
     "@angular/common": "~13.2.0",
@@ -38,6 +38,7 @@
     "@tinymce/tinymce-angular": "^6.0.1",
     "amazon-cognito-identity-js": "^5.2.8",
     "dayjs": "^1.11.2",
+    "google-libphonenumber": "^3.2.28",
     "intl-tel-input": "^17.0.16",
     "lodash": "^4.17.21",
     "ng2-date-picker": "^13.1.1",
@@ -55,11 +56,11 @@
     "@angular/cli": "~13.2.5",
     "@angular/compiler-cli": "~13.2.0",
     "@ngrx/store-devtools": "^13.1.0",
+    "@types/intl-tel-input": "^17.0.4",
     "@types/jasmine": "~3.10.0",
     "@types/lodash": "^4.14.180",
     "@types/node": "^12.11.1",
     "@types/pluralize": "0.0.29",
-    "@types/intl-tel-input": "^17.0.4",
     "jasmine-core": "~4.0.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",

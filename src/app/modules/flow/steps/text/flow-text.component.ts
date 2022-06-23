@@ -4,14 +4,14 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { lastValueFrom, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { DropdownItem } from '../../../../../common/components/interfaces/dropdownitem.interface';
+import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
 
-import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
-import * as flowActions from '../../../store/flow.actions';
-import { FlowService } from '../../../flow.service';
-import * as fromFlow from '../../../store/flow.reducer';
+import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
+import * as flowActions from '../../store/flow.actions';
+import { FlowService } from '../../flow.service';
+import * as fromFlow from '../../store/flow.reducer';
 import { DominionType } from 'src/app/common/models';
 
 // import { FlowMaps } from '../../../_core/classes/flow.lookupMap';
@@ -49,7 +49,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.callAPI = entityCollectionServiceFactory.create(ModuleType.CALL);
     this.noteAPI = entityCollectionServiceFactory.create(ModuleType.NOTE);
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
-    this.webLeadTypes$ = of([ { id : 'contacts', label : 'Search and List Contacts' }, { id : 'web_leads', label : 'Search and List Web Leads' } ]);
+    this.webLeadTypes$ = of([ { id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' } ]);
   }
 
   public async ngOnInit(){
@@ -99,18 +99,18 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
             officeId : this.allVars.office
           };
 
-          const callPayload = {
-            leadId : this.allVars.lead,
-            dealId : this.allVars.deal,
-            startTime : dayjs().format(),
-            direction : this.allVars.call_type,
-            // outcomeId : await this.map.callOutcome(),
-            // typeId : await this.map.callType(),
-            // statusId : await this.map.callStatus(),
-            description : '', // Need a field for it as of now
-            trackingNumber : '', // Not required as of now
-            dialledNumber : '' // Not required as of now
-          };
+          // const callPayload = {
+          //   leadId : this.allVars.lead,
+          //   dealId : this.allVars.deal,
+          //   startTime : dayjs().format(),
+          //   direction : this.allVars.call_type,
+          //   // outcomeId : await this.map.callOutcome(),
+          //   // typeId : await this.map.callType(),
+          //   // statusId : await this.map.callStatus(),
+          //   description : '', // Need a field for it as of now
+          //   trackingNumber : '', // Not required as of now
+          //   dialledNumber : '' // Not required as of now
+          // };
 
           const notesPayload = {
             entityId : this.allVars.deal,
@@ -119,7 +119,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
           };
 
           this._dynamicCollectionService.add(<DominionType><unknown>eventPayload).subscribe().add();
-          this.callAPI.add(<DominionType><unknown>callPayload).subscribe().add();
+          // this.callAPI.add(<DominionType><unknown>callPayload).subscribe().add();
           this.noteAPI.add(<DominionType><unknown>notesPayload).subscribe().add();
 
         }

@@ -1,6 +1,6 @@
 import { FlowStep, FlowNode, FlowCondition, FlowListParams } from './index';
 import { cloneDeep } from 'lodash';
-import { FlowDataComponent, FlowListComponent } from '../step-components';
+import { FlowDataComponent, FlowListComponent } from '../steps';
 import { FlowSerialization } from './flow.serialization';
 
 export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter> {

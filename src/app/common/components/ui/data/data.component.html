@@ -9,8 +9,8 @@
   </ng-container>
 
   <div class="controls" *ngIf="options.controls">
-    <fiiz-button (click)="navigation.back()" type="button" class="stroked">Cancel</fiiz-button>
-    <fiiz-button #submit type="submit" primary [loading]="loadingSubject$" [disabled]="(loadingSubject$ | async) || form.invalid">{{submitText}}</fiiz-button>
+    <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>
+    <fiiz-button #submit type="submit" primary [loading]="loadingSubject$" [disabled]="(loadingSubject$ | async) || form.invalid || form.pristine">{{submitText}}</fiiz-button>
   </div>
 
 </form>

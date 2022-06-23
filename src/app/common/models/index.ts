@@ -5,9 +5,8 @@ import { DealModel } from './deal.model';
 import { EventModel } from './event.model';
 import { LeadSourceModel } from './leadSource.model';
 import { LeadModel } from './lead.model';
-import { Address, Call, Campaign, Contact, Deal, Event, ICall, ICallDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, IPracticeAreaDTO, Lead, LeadSource, LK_PracticeArea, Office } from '@4iiz/corev2';
+import { Address, Call, Campaign, Contact, Deal, Event, ICall, ICallDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, Lead, LeadSource, LK_PracticeArea, Office } from '@4iiz/corev2';
 import { Validators } from '@angular/forms';
-import { IPracticeArea } from '@4iiz/corev2/dist/models/client/PracticeArea/PracticeArea';
 import { DropdownItem } from '../components/ui/forms';
 import { AddressModel } from './address.model';
 import { OfficeModel } from './office.model';
@@ -74,4 +73,4 @@ export type DominionType =
   Event | IEvent | IEventDTO |
   Lead | ILead | ILeadDTO |
   LeadSource | ILeadSource | ILeadSourceDTO |
-  LK_PracticeArea | IPracticeArea | IPracticeAreaDTO;
+  LK_PracticeArea;

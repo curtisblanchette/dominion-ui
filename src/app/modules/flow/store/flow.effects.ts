@@ -6,7 +6,7 @@ import { firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
-import { FlowHostDirective } from '../_core';
+import { FlowHostDirective } from '../index';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 

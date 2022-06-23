@@ -2,6 +2,7 @@ import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
+import { phoneValidation } from '../../common/custom.validations';
 
 export enum Fields {
   FIRST_NAME = 'firstName',
@@ -47,7 +48,8 @@ export const LeadModel: {[key: string]: IModel} = {
     type: 'tel',
     defaultValue: null,
     validators: [
-      Validators.required
+      Validators.required,
+      phoneValidation
     ]
   },
   [Fields.EMAIL]: {

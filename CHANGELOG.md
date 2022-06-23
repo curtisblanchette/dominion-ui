@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.9.3 (2022-06-23)
+
+### 1.9.2 (2022-06-23)
+
+### 1.9.1 (2022-06-23)
+
+## 1.9.0 (2022-06-23)
+
+
+### Features
+
+* **develop:** objection routing and lookup data, form validity /etc ([21effad](https://github.com/4iiz/dominion-ui/commit/21effadf9ce92baae670f47e68497fe923cb98db))
+
+### 1.8.56 (2022-06-22)
+
+### 1.8.55 (2022-06-22)
+
+### 1.8.54 (2022-06-22)
+
 ### 1.8.53 (2022-06-22)
 
 ### 1.8.52 (2022-06-21)
