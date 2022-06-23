@@ -90,6 +90,10 @@
       outline: none;
     }
 
+    &:hover {
+      background: rgba(255, 255, 255, .02); 
+    }
+
     &.active {
       position: relative;
 

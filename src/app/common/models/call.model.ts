@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
+import { phoneValidation } from '../../common/custom.validations';
 
 export enum Fields {
   START_TIME = 'startTime',
@@ -63,9 +64,11 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.DIALLED_NUMBER]: {
     label: 'Dialled Number',
-    type: 'text',
+    type: 'tel',
     defaultValue: null,
-    validators: []
+    validators: [
+      phoneValidation
+    ]
   },
   [Fields.DEAL_ID]: {
     label: 'Deal Id',
