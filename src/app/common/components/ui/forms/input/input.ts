@@ -35,7 +35,7 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
   // @HostBinding('attr.disabled')
   // isDisabled = false;
 
-  value: number | string = 0;
+  value: number | string;
 
   intlTelInput?: any;
 

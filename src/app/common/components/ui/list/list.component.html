@@ -97,6 +97,7 @@
           <ng-container [ngSwitch]="(item[column.id] | typeOf)">
             <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date }}</ng-container>
             <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
+            <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
             <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
             <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
           </ng-container>

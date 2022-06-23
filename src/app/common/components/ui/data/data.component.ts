@@ -90,7 +90,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this.store.select(fromFlow.selectVariableByKey(this.data.module)).pipe(untilDestroyed(this)).subscribe(variable => {
       // TODO maybe we use this to set the id?
-      console.log(variable);
+      // console.log(variable);
     });
     switch (this.options.state) {
       case 'create': {
@@ -116,7 +116,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           const properties = this.options.fields;
           Object.keys(entity).forEach(prop => {
 
-            if (dayjs(entity[prop]).isValid() && ['day', 'daytime'].includes(models[this.module][prop].type)) {
+            if (dayjs(entity[prop]).isValid() && models[this.module][prop] && ['day', 'daytime'].includes(models[this.module][prop].type)) {
               entity[prop] = dayjs(entity[prop]).format();
             }
 
@@ -173,6 +173,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     for (const field of fields) {
       const control = models[this.module][field];
+      
       if (!['virtual', 'timestamp'].includes(control.type)) {
 
         form[field] = new FormControl(control.defaultValue, control.validators);
@@ -254,7 +255,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public async save(): Promise<any> {
     let payload = this.form.value;
-
+    console.log('payload',payload);
     if (this.form.valid) {
       this.form.disable();
 

@@ -3,10 +3,17 @@
 @import '~src/assets/css/mixins';
 
 :host {
+  display: block;
   position: relative;
+  margin-bottom: $input-margin-bottom;
 
   .no-title {
     width: 50px;
+  }
+
+  &.has-label {
+    margin-top: 30px;
+    color: rgba(198, 203, 237, .62);
   }
 
 }
@@ -14,8 +21,11 @@
   z-index: 1;
   width: 100%;
 
-  fiiz-button {
-
+  &__dropdown {
+    i {
+      flex : 1;
+      text-align: right;
+    }
   }
 
   &__content {
@@ -29,11 +39,15 @@
     top: 54px;
     border-radius: $button-border-radius;
     white-space: nowrap;
+    min-width: 100%;
 
     li {
 
       i {
         padding-right: 10px;
+        align-items: flex-end;
+        flex-direction: column;
+        align-items: end;
       }
 
       button {
@@ -55,15 +69,6 @@
         border-bottom: 1px solid rgb(255 255 255 / 10%);
       }
 
-      &.selected {
-        background-color: $text1;
-        font-weight: bold;
-
-        a {
-          color: #0a1930;
-        }
-      }
-
       &.disabled {
         background-color: #dddddd;
 
@@ -79,15 +84,40 @@
       &:last-child button {
         border-radius: 0 0 $button-border-radius $button-border-radius;
       }
+
+      & input.search {
+        background-color: $slate4;
+        color : $text1;
+        padding: 10px;
+        font-size: 14px;
+      }
+
     }
-
-
 
     &__item {
       text-decoration: none;
     }
+
+    fiiz-input{
+      margin-bottom: 0px;
+    }
+
+    &__wrapper {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    fiiz-button.selected {        
+        button {
+          background-color: #525252;
+        }
+      
+    }
+
   }
 }
+
+
 
 .fiiz-dropdown-button-bottom-right {
   right: 0;
@@ -105,4 +135,13 @@
 .fiiz-dropdown-button-top-left {
   left: 0;
   bottom: 110%;
+}
+
+label {
+  text-transform: uppercase;
+  font-size: 10px;
+  margin-bottom: 0;
+  position: absolute;
+  top: -20px;
+  left: 16px;
 }

@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
+import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
 
 export const CampaignModel: {[key: string]: IModel} = {
   ...timestamps,
@@ -62,7 +63,8 @@ export const CampaignModel: {[key: string]: IModel} = {
   },
   leadSourceId: {
     label: 'Lead Source Id',
-    type: 'text',
+    type: 'dropdown-search',
+    service: ModuleType.LEAD_SOURCE,
     defaultValue: null,
     validators: [
       Validators.required

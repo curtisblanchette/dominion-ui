@@ -92,5 +92,9 @@ export const uriOverrides: { [key: string]: string } = {
   eventObjection: 'event-objections',
   eventType: 'event-types',
   lostReason: 'lost-reasons',
-  office: 'offices'
+  office: 'offices',
+  campaign: 'campaigns',
+  contact: 'contacts',
+  lead: 'leads',
+  deal: 'deals',
 }

@@ -1,6 +1,7 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
+import { ModuleType } from '../../modules/flow/_core/classes/flow.moduleTypes';
 import { phoneValidation } from '../../common/custom.validations';
 
 export enum Fields {
@@ -72,7 +73,8 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.DEAL_ID]: {
     label: 'Deal Id',
-    type: 'text',
+    type: 'dropdown-search',
+    service: ModuleType.DEAL,
     defaultValue: null,
     validators: []
   },
@@ -84,7 +86,8 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.LEAD_ID]: {
     label: 'Lead Id',
-    type: 'text',
+    type: 'dropdown-search',
+    service: ModuleType.LEAD,
     defaultValue: null,
     validators: []
   },
