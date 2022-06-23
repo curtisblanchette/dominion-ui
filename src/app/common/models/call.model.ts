@@ -2,9 +2,23 @@ import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 
+export enum Fields {
+  START_TIME = 'startTime',
+  DIRECTION = 'direction',
+  OUTCOME = 'outcome',
+  TYPE = 'type',
+  STATUS = 'status',
+  DIALLED_NUMBER = 'dialledNumber',
+  DEAL_ID = 'dealId',
+  DESCRIPTION = 'description',
+  LEAD_ID = 'leadId',
+  TRACKING_NUMBER = 'trackingNumber',
+  OBJECTION = 'objection'
+}
+
 export const CallModel: {[key: string]: IModel} = {
   ...timestamps,
-  startTime: {
+  [Fields.START_TIME]: {
     label: 'Start Time',
     type: 'daytime',
     defaultValue: new Date(),
@@ -12,7 +26,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  direction: {
+  [Fields.DIRECTION]: {
     label: 'Direction',
     type: 'text',
     defaultValue: 'inbound',
@@ -20,7 +34,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  outcome: {
+  [Fields.OUTCOME]: {
     label: 'Outcome',
     type: 'dropdown',
     service: 'callOutcome',
@@ -29,7 +43,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  type: {
+  [Fields.TYPE]: {
     label: 'Type',
     type: 'dropdown',
     service: 'callType',
@@ -38,7 +52,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  status: {
+  [Fields.STATUS]: {
     label: 'Status',
     type: 'dropdown',
     service: 'callStatus',
@@ -47,33 +61,40 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  dialledNumber: {
+  [Fields.DIALLED_NUMBER]: {
     label: 'Dialled Number',
     type: 'text',
     defaultValue: null,
     validators: []
   },
-  dealId: {
+  [Fields.DEAL_ID]: {
     label: 'Deal Id',
     type: 'text',
     defaultValue: null,
     validators: []
   },
-  description: {
+  [Fields.DESCRIPTION]: {
     label: 'Description',
     type: 'text',
     defaultValue: null,
     validators: []
   },
-  leadId: {
+  [Fields.LEAD_ID]: {
     label: 'Lead Id',
     type: 'text',
     defaultValue: null,
     validators: []
   },
-  trackingNumber: {
+  [Fields.TRACKING_NUMBER]: {
     label: 'Tracking Number',
     type: 'text',
+    defaultValue: null,
+    validators: []
+  },
+  [Fields.OBJECTION]: {
+    label: 'Objection',
+    type: 'dropdown',
+    service: 'callObjection',
     defaultValue: null,
     validators: []
   }

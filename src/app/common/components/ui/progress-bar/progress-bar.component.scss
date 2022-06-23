@@ -1,4 +1,6 @@
 @import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
+@import '~src/assets/css/functions';
 
 :host {
   width: 100%;
@@ -17,7 +19,7 @@
     font-size: 26px;
     line-height: 1em;
     font-weight: 700;
-    color: $blue3-shaded;
+    color: shade($blue3, 15%);
   }
   &__bar {
     width: 100%;

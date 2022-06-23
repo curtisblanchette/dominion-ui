@@ -11,7 +11,8 @@ export enum Fields {
   TYPE_ID = 'typeId',
   DEAL_ID = 'dealId',
   OFFICE_ID = 'officeId',
-  OUTCOME_ID = 'outcomeId'
+  OUTCOME_ID = 'outcomeId',
+  OBJECTION_ID = 'objectionId'
 }
 
 export const EventModel: {[key: string]: IModel} = {
@@ -32,7 +33,7 @@ export const EventModel: {[key: string]: IModel} = {
     ]
   },
   [Fields.CONTACT_ID]: {
-    label: 'Contact Id',
+    label: 'Contact',
     type: 'text',
     defaultValue: null,
     validators: [
@@ -65,21 +66,28 @@ export const EventModel: {[key: string]: IModel} = {
     ]
   },
   [Fields.DEAL_ID]: {
-    label: 'Deal Id',
+    label: 'Deal',
     type: 'text',
     defaultValue: null,
     validators: []
   },
   [Fields.OFFICE_ID]: {
-    label: 'Office Id',
+    label: 'Office',
     type: 'text',
     defaultValue: null,
     validators: []
   },
   [Fields.OUTCOME_ID]: {
-    label: 'Outcome Id',
+    label: 'Outcome',
     type: 'dropdown',
     service: 'eventOutcome',
+    defaultValue: null,
+    validators: []
+  },
+  [Fields.OBJECTION_ID]: {
+    label: 'Objection',
+    type: 'dropdown',
+    service: 'eventObjection',
     defaultValue: null,
     validators: []
   }
