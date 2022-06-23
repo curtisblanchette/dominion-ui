@@ -117,8 +117,9 @@ export class FlowBuilder {
 
     // outbound
     const oppWithNoOutcomes = FlowFactory.selectExistingOpp( () => ({
-      stageId : '2,4,5'
+      stageId : '2,4,5' // TODO get these from the lookups
     }));
+
     const setAppointment = FlowFactory.setAppointment();
     const recap = FlowFactory.recap();
 
