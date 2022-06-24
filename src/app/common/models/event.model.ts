@@ -76,7 +76,8 @@ export const EventModel: {[key: string]: IModel} = {
   },
   [Fields.OFFICE_ID]: {
     label: 'Office',
-    type: 'dropdown',
+    type: 'dropdown-search',
+    service: ModuleTypes.OFFICE,
     defaultValue: null,
     validators: []
   },
