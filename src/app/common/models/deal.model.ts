@@ -8,7 +8,6 @@ export enum Fields {
   STAGE_ID = 'stageId',
   LOST_REASON_ID = 'lostReasonId',
   PRACTICE_AREA_ID = 'practiceAreaId',
-  CONTACT_ID = 'contactId',
   CAMPAIGN_ID = 'campaignId',
   LEAD_SOURCE_ID = 'leadSourceId',
   LEAD_ID = 'leadId',
@@ -55,14 +54,14 @@ export const DealModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  contactId: {
-    label: 'Contact Id',
-    type: 'dropdown-search',
-    service: ModuleTypes.CONTACT,
-    defaultValue: null,
-    validators: [
-    ]
-  },
+  // contactId: {
+  //   label: 'Contact Id',
+  //   type: 'dropdown-search',
+  //   service: ModuleTypes.CONTACT,
+  //   defaultValue: null,
+  //   validators: [
+  //   ]
+  // },
   campaignId: {
     label: 'Campaign Id',
     type: 'dropdown-search',
