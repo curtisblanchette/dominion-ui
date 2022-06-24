@@ -1,4 +1,4 @@
-import { ModuleTypes } from '../../../../modules/flow';
+import { ModuleTypes } from '../../../../data/entity-metadata';
 
 const columns = new Map([
   [ModuleTypes.CONTACT, [
@@ -13,7 +13,8 @@ const columns = new Map([
   ]],
   [ModuleTypes.DEAL, [
     {id: 'name', label: 'Name'},
-    {id: 'stage', label: 'Stage'}
+    {id: 'stage', label: 'Stage'},
+    {id: 'createdAt', label: 'Created'},
   ]],
   [ModuleTypes.EVENT, [
     {id: 'title', label: 'Title'},
@@ -21,9 +22,10 @@ const columns = new Map([
     {id: 'endTime', label: 'End Time'}
   ]],
   [ModuleTypes.CALL, [
-    {id: 'direction', label: 'Direction'},
+    {id: 'dialledNumber', label: 'Dialled'},
     {id: 'status', label: 'Status'},
     {id: 'outcome', label: 'Outcome'},
+    {id: 'direction', label: 'Direction'}
   ]],
   [ModuleTypes.CAMPAIGN, [
     {id: 'name', label: 'Name'},

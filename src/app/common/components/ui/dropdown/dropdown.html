@@ -1,36 +1,37 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
 <div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title }" >
     <ng-container [ngSwitch]="dropdownType">
-        
+
         <fiiz-button class="dropdown fiiz-dropdown-button__dropdown">
             {{title}}
             <i class="fa-solid fa-caret-down"></i>
-        </fiiz-button>            
+        </fiiz-button>
 
     </ng-container>
-    
-    <ul #dropdownList class="fiiz-dropdown-button__content fiiz-dropdown-button-{{position}}" *ngIf="showDropDowns" [@dropDownMenu] [ngSwitch]="type" >
+
+    <ul #dropdownList class="fiiz-dropdown-button__content fiiz-dropdown-button-{{position}}" *ngIf="showDropDowns" [@dropDownMenu]="" [ngSwitch]="type" >
 
         <ng-template [ngIf]="dropdownType === 'search'">
-            <fiiz-input 
-                #searchInput
-                autocomplete="off" 
-                (keyup)="onKeyUpEvent($event)" 
-                type="text" 
-                placeholder="Search..." 
-                name="search" 
-                class="search" 
-                id="search-dropdown"
+          <form [formGroup]="searchForm">
+            <fiiz-input
+              formControlName="search"
+              autocomplete="off"
+              (keyup)="onKeyUpEvent($event)"
+              type="text"
+              placeholder="Search..."
+              class="search"
+              id="search-dropdown"
             ></fiiz-input>
+          </form>
             <div class="fiiz-dropdown-button__content__wrapper">
                 <li tabindex="0" role="option" *ngFor="let item of items; let i = index; let last = last;" [ngClass]="{ 'divider':!last }" style="width: 100%;">
-                    <fiiz-button [ngClass]="{'selected': currentIndex === i, 'dropdown' : true}" (click)="setTheValue(item.label, item.id)" style="border-radius: 0px;">
+                    <fiiz-button [ngClass]="{'selected': currentIndex === i, 'dropdown' : true}" (click)="setTheValue(item.label, item.id)" style="border-radius: 0;">
                         {{ item.label }}
                     </fiiz-button>
                 </li>
-            </div>            
+            </div>
         </ng-template>
-        
+
         <ng-template [ngIf]="dropdownType === 'button'" >
             <li *ngFor="let item of items; let i = index; let last = last" [ngClass]="{'divider': !last}">
                 <fiiz-button class="dropdown" (click)="emitTheValue(item.emitterValue)">

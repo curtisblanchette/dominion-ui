@@ -54,6 +54,12 @@ export const sidebarRoutes = [
     label : 'Other',
     children: [
       {
+        label: 'Custom Fields',
+        path : 'other',
+        icon : 'fa fa-address-book '
+      },
+      {
+        label: 'Lookups',
         path : 'other',
         icon : 'fa fa-address-book '
       }

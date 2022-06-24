@@ -5,7 +5,7 @@
   display: block;
   position: relative;
   margin-bottom: $input-margin-bottom;
-  overflow: hidden;
+  //overflow: hidden;
   border-radius: $input-border-radius;
 
   &.has-label {
@@ -14,25 +14,29 @@
   }
 
   &.ng-invalid {
-    input {
-      // border-bottom: 2px solid red;
+    .wrapper {
+      position:relative;
+      overflow: hidden;
+      border-radius: $input-border-radius;
+
+      &:after {
+        display: block;
+        position: absolute;
+        content: '';
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        background: $red0;
+      }
     }
   }
 
-  &:after {
-    display: block;
-    position: absolute;
-    content: '';
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    background: $red0;
-  }
-
   &.ng-invalid.ng-dirty {
-    &:after {
-      width: 90%;
-      animation: line .25s forwards;
+    .wrapper {
+      &:after {
+        width: 90%;
+        animation: line .25s forwards;
+      }
     }
   }
 

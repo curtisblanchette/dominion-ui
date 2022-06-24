@@ -8,7 +8,6 @@ import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { IDropDownMenuItem } from '../dropdown';
-import { getColumnsForModule } from '../../../models';
 import { AppState } from '../../../../store/app.reducer';
 import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
@@ -17,6 +16,7 @@ import { DropdownItem } from '../forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { ModuleTypes } from '../../../../data/entity-metadata';
+import { getColumns } from './display-columns';
 
 export interface IListOptions {
   searchable: boolean;
@@ -107,12 +107,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.searchInModule();
       return value;
     }));
-
   }
 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
-    this.columns = getColumnsForModule(this.module);
+
+    this.columns = getColumns(this.module);
   }
 
   public async ngAfterViewInit() {
@@ -132,6 +132,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public onClick($event: any, record: any) {
     $event.preventDefault();
+
+    if([2,3].includes($event.which)) {
+      // don't process if it's a middle-click or right-click
+      return false;
+    }
 
     if (this.selected?.id === record.id) {
       this.values.emit( { module: this.module, record: null });

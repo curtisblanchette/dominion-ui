@@ -19,27 +19,27 @@ export interface IModel {
   validators?: Validators[]
 }
 
-const defaultListColumns: {[key: string]: string[]} = {
-  address: ['line1', 'city', 'zipCode', 'stateCode', 'countryCode'],
-  call: ['type', 'direction', 'outcomeId', 'status', 'dialledNumber', 'createdAt'],
-  campaign: ['name', 'createdAt'],
-  deal: ['name', 'stage', 'contactId', 'createdAt'],
-  contact: ['fullName', 'phone', 'email', 'createdAt'],
-  event: ['title', 'type', 'startTime', 'endTime', 'createdAt'],
-  lead: ['fullName', 'phone', 'email', 'createdAt'],
-  leadSource: ['name', 'status', 'createdAt', 'channel'],
-  office: ['name']
-}
+// const defaultListColumns: {[key: string]: string[]} = {
+//   address: ['line1', 'city', 'zipCode', 'stateCode', 'countryCode'],
+//   call: ['type', 'direction', 'outcomeId', 'status', 'dialledNumber', 'createdAt'],
+//   campaign: ['name', 'createdAt'],
+//   deal: ['name', 'stage', 'contactId', 'createdAt'],
+//   contact: ['fullName', 'phone', 'email', 'createdAt'],
+//   event: ['title', 'type', 'startTime', 'endTime', 'createdAt'],
+//   lead: ['fullName', 'phone', 'email', 'createdAt'],
+//   leadSource: ['name', 'status', 'createdAt', 'channel'],
+//   office: ['name']
+// }
 
-export const getColumnsForModule = (module: string): DropdownItem[] => {
-  const columns = [];
-  for(const [key, value] of Object.entries(models[module]) ) {
-    if(defaultListColumns[module].includes(key)) {
-      columns.push({id: key, label: (<any>value).label});
-    }
-  }
-  return columns;
-}
+// export const getColumnsForModule = (module: string): DropdownItem[] => {
+//   const columns = [];
+//   for(const [key, value] of Object.entries(models[module]) ) {
+//     if(defaultListColumns[module].includes(key)) {
+//       columns.push({id: key, label: (<any>value).label});
+//     }
+//   }
+//   return columns;
+// }
 
 export const models: {[key: string]: any} = {
   address: AddressModel,

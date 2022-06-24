@@ -1,5 +1,5 @@
 import { DropdownItem } from '../forms';
-import { ModuleTypes } from '../../../../modules/flow';
+import { ModuleTypes } from '../../../../data/entity-metadata';
 
 const modules = new Map([
   [ModuleTypes.CONTACT, [

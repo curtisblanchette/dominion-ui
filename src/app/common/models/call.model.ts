@@ -7,15 +7,15 @@ import { FiizValidators } from '../validators';
 export enum Fields {
   START_TIME = 'startTime',
   DIRECTION = 'direction',
-  OUTCOME = 'outcome',
-  TYPE = 'type',
-  STATUS = 'status',
+  OUTCOME_ID = 'outcomeId',
+  TYPE_ID = 'typeId',
+  STATUS_ID = 'statusId',
   DIALLED_NUMBER = 'dialledNumber',
   DEAL_ID = 'dealId',
   DESCRIPTION = 'description',
   LEAD_ID = 'leadId',
   TRACKING_NUMBER = 'trackingNumber',
-  OBJECTION = 'objection'
+  OBJECTION_ID = 'objectionId'
 }
 
 export const CallModel: {[key: string]: IModel} = {
@@ -36,7 +36,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  [Fields.OUTCOME]: {
+  [Fields.OUTCOME_ID]: {
     label: 'Outcome',
     type: 'dropdown',
     service: 'callOutcome',
@@ -45,7 +45,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  [Fields.TYPE]: {
+  [Fields.TYPE_ID]: {
     label: 'Type',
     type: 'dropdown',
     service: 'callType',
@@ -54,7 +54,7 @@ export const CallModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
-  [Fields.STATUS]: {
+  [Fields.STATUS_ID]: {
     label: 'Status',
     type: 'dropdown',
     service: 'callStatus',
@@ -97,7 +97,7 @@ export const CallModel: {[key: string]: IModel} = {
     defaultValue: null,
     validators: []
   },
-  [Fields.OBJECTION]: {
+  [Fields.OBJECTION_ID]: {
     label: 'Objection',
     type: 'dropdown',
     service: 'callObjection',

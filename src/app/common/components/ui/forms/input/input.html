@@ -4,21 +4,23 @@
 <ng-template #input>
   <i class="fa {{icon}}" *ngIf="!!icon"></i>
 
-	<input [id]="id"
-       autocomplete="off"
-       #inputElement
-		   [type]="type"
-		   [minlength]="minlength"
-		   [maxlength]="maxlength"
-		   [attr.min]="min"
-		   [attr.max]="max"
-		   [placeholder]="placeholder"
-		   [value]="value"
-		   [autofocus]="autofocus"
-		   [(ngModel)]="value"
-		   [disabled]="disabled"
-		   [ngClass]="{ 'number': type === 'number', 'has-icon': !!icon }"
-		   (ngModelChange)="changed($event)"/>
+  <div class="wrapper">
+    <input [id]="id"
+         autocomplete="off"
+         #inputElement
+         [type]="type"
+         [minlength]="minlength"
+         [maxlength]="maxlength"
+         [attr.min]="min"
+         [attr.max]="max"
+         [placeholder]="placeholder"
+         [value]="value"
+         [autofocus]="autofocus"
+         [(ngModel)]="value"
+         [disabled]="disabled"
+         [ngClass]="{ 'number': type === 'number', 'has-icon': !!icon }"
+         (ngModelChange)="changed($event)"/>
+  </div>
 </ng-template>
 
 <ng-template #textarea>

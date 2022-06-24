@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import * as dayjs from 'dayjs';
 const customParseFormat = require('dayjs/plugin/customParseFormat')
 dayjs.extend(customParseFormat);
-import { validate } from "uuid";
+import { validate as isUuid } from "uuid";
 
 @Pipe({
     name: 'typeOf'
@@ -10,7 +10,10 @@ import { validate } from "uuid";
 export class TypeOfPipe implements PipeTransform {
 
     public transform(value: any): string  {
-      if(validate(value)) {
+      if( Array.isArray(value) ) {
+        return 'array';
+      }
+      if(isUuid(value)) {
         return 'uuid';
       }
       if(dayjs(value, 'YYYY-MM-DDTHH:MM:SS.Z').isValid()) {

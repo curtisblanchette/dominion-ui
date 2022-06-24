@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import { Observable } from 'rxjs';
-import { ModuleTypes } from '../../data/entity-metadata';
 
 @Component({
   selector: 'app-system',
@@ -22,7 +21,6 @@ export class SettingsComponent {
      this.appointmentSettings$ = this.store.select(fromApp.selectSettingGroup('appointment'));
      this.generalSettings$ = this.store.select(fromApp.selectSettingGroup('general'));
      this.byKey$ = this.store.select(fromApp.selectSettingByKey('timezone'));
-     this.moduleTypes = ModuleTypes;
   }
 
   public getSettingDisplayName(name: string) {
