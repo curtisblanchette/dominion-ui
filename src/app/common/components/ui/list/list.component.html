@@ -105,6 +105,11 @@
                 {{item.firstName}} {{item.lastName}}
               </ng-container>
             </ng-container>
+            <ng-container *ngSwitchCase="'address'">
+              <ng-container *ngFor="let item of item[column.id]">
+                {{item.line1}}, {{item.city}} {{item.stateCode}}
+              </ng-container>
+            </ng-container>
           </ng-container>
         </div>
 

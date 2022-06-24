@@ -37,7 +37,10 @@ const columns = new Map([
     {id: 'name', label: 'Name'},
     {id: 'status', label: 'Status'}
   ]],
-
+  [ModuleTypes.OFFICE, [
+    {id: 'name', label: 'Name'},
+    {id: 'addresses', label: 'Address' }
+  ]],
 ]);
 
 export const getColumns = (module: ModuleTypes) => columns.get(module)!;
