@@ -48,6 +48,11 @@ export const sidebarRoutes = [
         path: 'office',
         icon: 'fa fa-building '
       },
+      {
+        label: 'Addresses',
+        path: 'address',
+        icon: 'fa fa-building '
+      },
     ]
   },
   {

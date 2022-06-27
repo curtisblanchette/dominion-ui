@@ -45,7 +45,14 @@ const columns = new Map([
   ]],
   [ModuleTypes.OFFICE, [
     {id: 'name', label: 'Name'},
-    {id: 'addresses', label: 'Address' }
+    {id: 'address', label: 'Address' }
+  ]],
+  [ModuleTypes.ADDRESS, [
+    {id: 'line1', label: 'Line 1'},
+    {id: 'city', label: 'City' },
+    {id: 'stateCode', label: 'State' },
+    {id: 'countryCode', label: 'Country' },
+    {id: 'zipCode', label: 'Zip Code'},
   ]],
 ]);
 

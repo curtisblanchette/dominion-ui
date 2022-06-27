@@ -104,7 +104,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public ngOnInit() {
-    this.getData();
+    // this.getData();
   }
 
   public async ngAfterViewInit() {
@@ -173,6 +173,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public toggle() {
     this.showDropDowns = !this.showDropDowns;
+
+    if(this.showDropDowns) {
+      this.getData();
+    }
 
   }
 

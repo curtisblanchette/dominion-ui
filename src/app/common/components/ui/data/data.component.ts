@@ -42,6 +42,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public form: FormGroup;
   public controlData: any;
+
+  public relForm: FormGroup;
+  public relControlData: any;
+
   public submitText: string;
   public id: string | null;
 
@@ -82,7 +86,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public override async ngAfterContentInit() {
-    super.ngAfterContentInit();
+    await super.ngAfterContentInit();
 
     if (!this.id) {
       this.id = this.data.id
@@ -105,6 +109,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this.buildForm(this.options.fields);
 
+
     this.data$.pipe(
       untilDestroyed(this),
       delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
@@ -114,6 +119,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
         if (entity) {
           const properties = this.options.fields;
+
           Object.keys(entity).forEach(prop => {
 
             if (dayjs(entity[prop]).isValid() && models[this.module][prop] && ['day', 'daytime'].includes(models[this.module][prop].type)) {
@@ -128,7 +134,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           this.form.setValue(entity, {emitEvent: true});
 
           // workaround issue: https://github.com/angular/angular/issues/14542
-          of('').pipe(delay(0),map(() => this.isValid.next(this.form.valid))).subscribe();
+          of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();
         }
       }
     });

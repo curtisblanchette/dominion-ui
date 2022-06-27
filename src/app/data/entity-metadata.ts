@@ -95,6 +95,7 @@ export const entityConfig = {
 }
 
 export const uriOverrides: { [key: string]: string } = {
+  [ModuleTypes.ADDRESS]: 'addresses',
   [ModuleTypes.OFFICE]: 'offices',
   [ModuleTypes.CAMPAIGN]: 'campaigns',
   [ModuleTypes.CONTACT]: 'contacts',

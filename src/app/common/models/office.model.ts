@@ -1,8 +1,10 @@
 import { Validators } from '@angular/forms';
 import { IModel } from './index';
+import { ModuleTypes } from '../../data/entity-metadata';
 
 export enum Fields {
-  NAME = 'name'
+  NAME = 'name',
+  ADDRESS_ID = 'addressId'
 }
 
 export const OfficeModel: { [key: string]: IModel } = {
@@ -14,4 +16,10 @@ export const OfficeModel: { [key: string]: IModel } = {
       Validators.required
     ]
   },
+  [Fields.ADDRESS_ID]: {
+    label: 'Address',
+    type: 'dropdown-search',
+    service: ModuleTypes.ADDRESS,
+    defaultValue: null
+  }
 }

@@ -98,14 +98,10 @@
             <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
             <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
             <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
+            <ng-container *ngSwitchCase="'address'">{{item[column.id].fullName}}</ng-container>
             <ng-container *ngSwitchCase="'array'">
               <ng-container *ngFor="let item of item[column.id]">
                 {{item.firstName}} {{item.lastName}}
-              </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="'address'">
-              <ng-container *ngFor="let item of item[column.id]">
-                {{item.line1}}, {{item.city}} {{item.stateCode}}
               </ng-container>
             </ng-container>
           </ng-container>

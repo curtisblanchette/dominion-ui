@@ -10,11 +10,13 @@ import { validate as isUuid } from "uuid";
 export class TypeOfPipe implements PipeTransform {
 
     public transform(value: any): string  {
-      /** can we determine what the relationship is type */
-      if( Array.isArray(value) && value.length > 0 ) {
-        if(value[0].hasOwnProperty('line1')) {
-          return 'address';
-        }
+      /**  we can determine what the relationship type is */
+      if(value && value.length > 0 ) {
+
+      }
+
+      if(value && value.hasOwnProperty('line1')) {
+        return 'address';
       }
 
       if( Array.isArray(value) ) {
