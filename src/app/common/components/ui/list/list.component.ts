@@ -17,6 +17,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { getColumns } from './display-columns';
+import { getSearchableColumns } from './searchable-columns';
 
 export interface IListOptions {
   searchable: boolean;
@@ -41,8 +42,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public searchForm: FormGroup;
 
   // Sorting Options
-  public sortColumn:string = 'createdAt'; // Sort by createdAt as default
-  public sortOrgColumn:string = '';
+  public sortColumn: string = 'createdAt'; // Sort by createdAt as default
+  public sortOrgColumn: string = '';
   public sortDirection: SortDirections = SortDirections.ASC; // DESC = 1, ASC = 0
   public sortDirections: any = SortDirections;
 
@@ -113,6 +114,9 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     await super.ngAfterContentInit();
 
     this.columns = getColumns(this.module);
+
+    // set the default sort column from ./searchable-columns.ts
+    this.sortColumn = getSearchableColumns(this.module)[0].id as string;
   }
 
   public async ngAfterViewInit() {
