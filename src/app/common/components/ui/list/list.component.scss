@@ -91,7 +91,7 @@
     }
 
     &:hover {
-      background: rgba(255, 255, 255, .02); 
+      background: rgba(255, 255, 255, .02);
     }
 
     &.active {
@@ -112,10 +112,19 @@
 
   &__cell {
 
+
+    &.phone { max-width: 8em;}
+    &.createdAt { max-width: 7em; }
+
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     justify-content: flex-start;
     font-weight: 400;
     align-items: center;
+
+    &:first-child {
+      max-width: 52px;
+      width: 100%;
+    }
 
     &.sortable{
       cursor: pointer;
@@ -198,6 +207,7 @@
        fiiz-select {
          display: inline-block;
          width: 120px;
+         margin: 0;
        }
      }
   }

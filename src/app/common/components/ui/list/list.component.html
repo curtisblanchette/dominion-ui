@@ -14,8 +14,8 @@
 
 <div class="flex-table">
   <div class="flex-table__header">
-    <div class="flex-table__cell" style="flex: 0.2;">&nbsp;</div>
-    <div class="flex-table__cell sortable"
+    <div class="flex-table__cell">&nbsp;</div>
+    <div class="flex-table__cell sortable {{column.id}}"
          [ngClass]="sortOrgColumn === column.id && {
             'sort__asc': sortDirection === sortDirections.ASC,
             'sort__desc': sortDirection === sortDirections.DESC
@@ -87,13 +87,11 @@
            (focusin)="onFocusIn($event, item)"
            (focusout)="onFocusOut($event)"
            *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async } ">
-        <div class="flex-table__cell" style="flex: 0.2; justify-content:space-around;">
-
+        <div class="flex-table__cell" style="justify-content:space-around;">
           <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
           <span class="customRadio"></span>
-
         </div>
-        <div class="flex-table__cell" *ngFor="let column of columns">
+        <div class="flex-table__cell {{column.id}}" *ngFor="let column of columns">
           <ng-container [ngSwitch]="(item[column.id] | typeOf)">
             <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date }}</ng-container>
             <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
