@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -43,9 +43,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public form: FormGroup;
   public controlData: any;
 
-  public relForm: FormGroup;
-  public relControlData: any;
-
   public submitText: string;
   public id: string | null;
 
@@ -82,7 +79,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.module = state.module;
       this.data = state.data;
     }
-
+    this.form = this.fb.group({});
   }
 
   public override async ngAfterContentInit() {
@@ -113,7 +110,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.data$.pipe(
       untilDestroyed(this),
       delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
-    ).subscribe(record => {
+    ).subscribe(async (record: any) => {
       if (record[0]) {
         let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
 
@@ -130,6 +127,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
               delete entity[prop];
             }
           });
+          await this.resolveDropdowns();
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
 
@@ -148,13 +146,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.id = await this.data.resolveId();
     }
 
-    await this.resolveDropdowns();
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
 
     if (this.id) {
       this.getData();
     }
+
   }
 
 
@@ -167,6 +165,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
       dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     }
+    return;
   }
 
   public getData() {
