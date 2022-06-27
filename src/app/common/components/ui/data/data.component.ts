@@ -5,11 +5,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
+import { IDatePickerConfig } from 'ng2-date-picker/lib/date-picker/date-picker-config.model';
 
 import * as fromApp from '../../../../store/app.reducer'
 import { DropdownItem, FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
@@ -24,6 +26,7 @@ import { FormInvalidError } from '../../../../modules/flow';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
+import { DatePickerComponent } from 'ng2-date-picker';
 
 export interface FiizDataComponentOptions {
   controls?: boolean;
@@ -45,6 +48,14 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public submitText: string;
   public id: string | null;
+  public datePickerConfig: IDatePickerConfig = {
+    showGoToCurrent: false
+  };
+
+  public startMinDate: Dayjs | string | undefined = dayjs();
+  public startMaxDate: Dayjs | string | undefined = undefined;
+  public endMinDate: Dayjs | string | undefined = undefined;
+  public endMaxDate: Dayjs | string | undefined = undefined;
 
   @Input('module') public override module: ModuleTypes;
   @Input('data') public override data: any;
@@ -52,6 +63,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
+  @ViewChildren('pickers') pickers:QueryList<ElementRef>;
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
   @Output('onFailure') onFailure: EventEmitter<Error> = new EventEmitter<Error>();
@@ -148,9 +160,35 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
+    this.dateValidation();
 
     if (this.id) {
       this.getData();
+    }    
+
+  }
+
+  public dateValidation(){
+    let items:{ [key:string] : any } = {};
+    const ids = this.pickers.map((item:any, index:number) => {
+      if( 'startTime' == item.id ){
+        items['startTime'] = item;
+      }
+      if( 'endTime' == item.id ){
+        items['endTime'] = item;
+      }
+      return item.id;
+    });
+    
+    if( ids.includes('startTime') && ids.includes('endTime') ){
+      this.form.get('startTime')?.valueChanges.subscribe( (value:any) => {
+        console.log('value',value);
+        if( !this.form.get('endTime')?.value ){
+          // this.form.patchValue({'endTime' : dayjs(value).add(30, 'minutes') });
+          this.endMinDate = value;
+        }
+      });
+
     }
 
   }
