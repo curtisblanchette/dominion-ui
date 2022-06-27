@@ -43,6 +43,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   // Sorting Options
   public sortColumn: string = 'createdAt'; // Sort by createdAt as default
+  public sortableColumns: DropdownItem[];
   public sortOrgColumn: string = '';
   public sortDirection: SortDirections = SortDirections.ASC; // DESC = 1, ASC = 0
   public sortDirections: any = SortDirections;
@@ -116,7 +117,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.columns = getColumns(this.module);
 
     // set the default sort column from ./searchable-columns.ts
-    this.sortColumn = getSearchableColumns(this.module)[0].id as string;
+    this.sortableColumns = getSearchableColumns(this.module);
+    this.sortColumn = this.sortableColumns[0].id as string;
   }
 
   public async ngAfterViewInit() {
@@ -250,7 +252,11 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.searchInModule();
   }
 
-  public sortListBy( column:string ){
+  public sortListBy( column:string ) {
+    const isSortable = this.sortableColumns.find(item => item.id === column);
+    if(!isSortable) {
+      return;
+    }
     if( column === this.sortOrgColumn ){
       this.toggleSort();
     } else {
