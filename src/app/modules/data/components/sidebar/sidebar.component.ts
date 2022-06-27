@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { menuAnimation, arrowAnimation } from './sidebar.animation';
 import { sidebarRoutes } from '../../data.routing';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,13 +19,35 @@ export class SidebarComponent implements OnInit {
 
   public menu:Array<any> = sidebarRoutes;
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) {
+
+    if (this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
+      this.router.navigate(['/data/list']);
+    }
+  }
 
   ngOnInit(): void {
     this.menu = this.menu.map((item) => {
       item.state = false;
       return item;
     });
+  }
+
+  /**
+   * This getter is used in place of RouterLinkActive
+   * The aux edit routes are not children of the parent list
+   * makes matching on path unusable.
+   */
+  get parseModuleFromPath(): string {
+    let re = /(aux:\w+)/g;
+    let str = this.router.routerState.snapshot.url;
+    let match = str.match(re);
+    if(match) {
+      return match[0].split(':')[1];
+    }
+    return '';
   }
 
   public toggleMenu( index:number ){

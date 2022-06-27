@@ -9,10 +9,8 @@
     <li *ngFor="let item of items.children">
 
       <a tabindex="0" class="sidebar__item"
-         [routerLink]="[ '/data/list', {outlets: {aux: [item.path]}} ]"
-         (click)="onClick(item)"
-         routerLinkActive="active"
-         [routerLinkActiveOptions]="{exact: true}">
+         [ngClass]="{'active': parseModuleFromPath === item.path}"
+         (click)="onClick(item)">
         <!--            <i class="sidebar__item__icon {{item.icon}}"></i>-->
         {{item.label}}
       </a>
