@@ -1,7 +1,8 @@
-import { Component, EventEmitter, forwardRef, HostBinding, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import * as dayjs from 'dayjs';
-import {Dayjs} from 'dayjs';
+import { Dayjs } from 'dayjs';
+import { DatePickerComponent } from 'ng2-date-picker';
 import { IDatePickerConfig } from 'ng2-date-picker/lib/date-picker/date-picker-config.model';
 
 @Component({
@@ -14,7 +15,7 @@ import { IDatePickerConfig } from 'ng2-date-picker/lib/date-picker/date-picker-c
     multi: true
   }]
 })
-export class FiizDatePickerComponent implements ControlValueAccessor {
+export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewInit, OnInit {
 
 
   @HostBinding('class.has-label')
@@ -23,8 +24,8 @@ export class FiizDatePickerComponent implements ControlValueAccessor {
   @Input('id') id!: string;
   @Input('mode') mode: "day"|"month"|"time"|"daytime";
 
-  @Input('min') min!: string;
-  @Input('max') max!: Date | string;
+  @Input('min') min!: Dayjs | string | undefined;
+  @Input('max') max!: Dayjs | string | undefined;
 
   @Input() isDisabled!: boolean;
 
@@ -32,17 +33,40 @@ export class FiizDatePickerComponent implements ControlValueAccessor {
 
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 
-  @Input('config') config: IDatePickerConfig = {
-    showGoToCurrent: false
-  };
+  @Input('config') config: IDatePickerConfig;
 
   value!: string | Dayjs;
+  public startEndValidation:boolean = false;
+
+  @ViewChild('picker') picker:DatePickerComponent;
 
   onChange: (value: any) => void = () => {};
   onTouched: Function = () => {};
 
   constructor(
   ) {
+    
+  }
+
+  ngOnInit(): void {
+   
+  }
+
+  ngAfterViewInit(): void {
+    // this.picker.registerOnChange((value:Dayjs | string) => {
+    //   const id = this.picker.inputElement.nativeElement.parentElement?.parentElement?.parentElement?.id;
+    //   if( id === 'startTime' ){
+    //     if( value == undefined ){
+    //       // this.config.min = dayjs().format('YYYY-MM-DD');
+    //       // console.log( dayjs().format('YYYY-MM-DD'), dayjs().format('HH:mm') );
+    //       // this.picker.minDate = dayjs().format('YYYY-MM-DD');
+    //       // this.picker.minTime = dayjs().format('HH:mm');
+    //       console.log(this.picker);
+    //     }
+    //   }
+    //   // console.log('value',value);
+    // });
+    
   }
 
   writeValue(value: any) {
@@ -68,6 +92,10 @@ export class FiizDatePickerComponent implements ControlValueAccessor {
       this.change.emit(this.value.format());
       this.onTouched();
     }
+
+  }
+
+  valueChanged(){
 
   }
 

@@ -3,7 +3,15 @@
 
   <ng-container *ngFor="let control of controlData">
     <fiiz-input *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
-    <fiiz-date-picker *ngIf="['day', 'daytime'].includes(control.type)" [mode]="control.type" [label]="control.label" [formControlName]="control.key"></fiiz-date-picker>
+    <fiiz-date-picker #pickers *ngIf="['day', 'daytime'].includes(control.type)" 
+      [config]="datePickerConfig" 
+      [mode]="control.type" 
+      [id]="control.key" 
+      [label]="control.label" 
+      [formControlName]="control.key"
+      [min]="'startTime' === control.key ? startMinDate : endMinDate" 
+      [max]="'endTime' === control.key ? startMaxDate : endMaxDate"
+    ></fiiz-date-picker>
     <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [remote]="true" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
     <fiiz-dropdown style="width: 100%;" *ngIf="control.type === 'dropdown-search'" type="search" [formControlName]="control.key" [id]="control.key" [label]="control.label" [title]="control.label" [module]="control.service" ></fiiz-dropdown>
   </ng-container>

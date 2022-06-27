@@ -1,6 +1,19 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
 <div class="input-wrapper" [ngClass]="{'disabled': isDisabled}">
-  <dp-date-picker [(ngModel)]="value" [config]="config" [mode]="mode" [minDate]="min" (ngModelChange)="changed($event)" [autofocus]="autofocus" required></dp-date-picker>
-  <!--	<input id="{{id}}" type="text" [disabled]="isDisabled" [fiizMinDate]="min" [fiizMaxDate]="max"  fiizDatePicker required/>-->
+  <dp-date-picker
+    #picker
+    [id]="id" 
+    (change)="valueChanged()" 
+    [minDate]="min"
+    [maxDate]="max"
+    [config]="config"
+    [(ngModel)]="value" 
+    [mode]="mode" 
+    (ngModelChange)="changed($event)" 
+    [autofocus]="autofocus" 
+    required
+  >
+  </dp-date-picker>
+  	<!-- <input id="{{id}}" type="text" [disabled]="isDisabled" [fiizMinDate]="min" [fiizMaxDate]="max"  fiizDatePicker required/> -->
 </div>
 
