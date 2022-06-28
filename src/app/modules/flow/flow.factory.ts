@@ -129,7 +129,7 @@ export class FlowFactory {
         module: ModuleTypes.LEAD,
         data: {
           title: 'Review Lead Info',
-          resolve
+          resolveId : resolve
         },
         options: {
           controls: false,
@@ -140,7 +140,7 @@ export class FlowFactory {
     });
   };
 
-  public static createContact(): FlowStep {
+  public static createContact(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'address-book',
@@ -148,7 +148,9 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.CONTACT,
         data: {
-          title: 'Create New Contact'
+          title: 'Create New Contact',
+          resolveId,
+          resolveAdditionalData
         },
         options: {
           controls: false,
@@ -157,7 +159,6 @@ export class FlowFactory {
             ContactFields.LEAD_ID,
             ContactFields.FIRST_NAME,
             ContactFields.LAST_NAME,
-            ContactFields.LEAD_ID,
             ContactFields.PHONE,
             ContactFields.EMAIL
           ]
@@ -182,7 +183,8 @@ export class FlowFactory {
           controls: false,
           state: 'create',
           fields: [
-            DealFields.NAME
+            DealFields.LEAD_ID,
+            DealFields.NAME         
           ],
         }
       }

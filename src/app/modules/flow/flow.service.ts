@@ -55,7 +55,7 @@ export class FlowService {
       startTime: new Date().toISOString(),
       direction: direction
     }, false).pipe(take(1)).subscribe((res) =>{
-      this.addVariables({call_direction: 'inbound'})
+      this.addVariables({call_direction: direction})
     });
   }
 
