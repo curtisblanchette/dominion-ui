@@ -120,7 +120,7 @@ export class FlowFactory {
     });
   };
 
-  public static editLead(resolve: Function = () => {}): FlowStep {
+  public static editLead(resolveId: Function = () => {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'address-book',
@@ -129,7 +129,7 @@ export class FlowFactory {
         module: ModuleTypes.LEAD,
         data: {
           title: 'Review Lead Info',
-          resolve
+          resolveId
         },
         options: {
           controls: false,
