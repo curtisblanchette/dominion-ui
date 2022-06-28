@@ -10,7 +10,7 @@
       [label]="control.label" 
       [formControlName]="control.key"
       [min]="'startTime' === control.key ? startMinDate : endMinDate" 
-      [max]="'endTime' === control.key ? startMaxDate : endMaxDate"
+      [max]="'startTime' === control.key ? startMaxDate : endMaxDate"
     ></fiiz-date-picker>
     <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [remote]="true" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
     <fiiz-dropdown style="width: 100%;" *ngIf="control.type === 'dropdown-search'" type="search" [formControlName]="control.key" [id]="control.key" [label]="control.label" [title]="control.label" [module]="control.service" ></fiiz-dropdown>

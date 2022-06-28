@@ -37,6 +37,10 @@ const modules = new Map([
   [ModuleTypes.ADDRESS, [
     {id: 'name', label: 'Name'}
   ]],
+  [ModuleTypes.EVENT, [
+    {id: 'createdAt', label: 'Created'},
+    {id: 'title', label: 'Title'}
+  ]],
 ]);
 
 export const getSearchableColumns = (module: ModuleTypes): DropdownItem[] => modules.get(module)!;

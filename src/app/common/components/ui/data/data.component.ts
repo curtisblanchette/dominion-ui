@@ -100,7 +100,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (!this.id) {
       this.id = this.data.id
     }
-
+    console.log('after content init');
     this.store.select(fromFlow.selectVariableByKey(this.data.module)).pipe(untilDestroyed(this)).subscribe(variable => {
       // TODO maybe we use this to set the id?
       // console.log(variable);
@@ -139,15 +139,16 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
               delete entity[prop];
             }
           });
-          await this.resolveDropdowns();
+          await this.resolveDropdowns();          
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
 
           // workaround issue: https://github.com/angular/angular/issues/14542
-          of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();
+          of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();          
         }
       }
     });
+    this.dateValidation();
   }
 
   public async ngAfterViewInit() {
@@ -160,7 +161,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
-    this.dateValidation();
+    
 
     if (this.id) {
       this.getData();
@@ -168,27 +169,21 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   }
 
-  public dateValidation(){
-    let items:{ [key:string] : any } = {};
-    const ids = this.pickers.map((item:any, index:number) => {
-      if( 'startTime' == item.id ){
-        items['startTime'] = item;
-      }
-      if( 'endTime' == item.id ){
-        items['endTime'] = item;
-      }
-      return item.id;
-    });
-    
-    if( ids.includes('startTime') && ids.includes('endTime') ){
+  public dateValidation(){    
+    if( this.pickers ){
+      console.log('has pickers');
+      this.pickers.map( (item:ElementRef, index:number, array:ElementRef<any>[]) => {
+        console.log(item);
+        console.log(index);
+        console.log(array);
+      })    
       this.form.get('startTime')?.valueChanges.subscribe( (value:any) => {
         console.log('value',value);
         if( !this.form.get('endTime')?.value ){
-          // this.form.patchValue({'endTime' : dayjs(value).add(30, 'minutes') });
+          this.form.patchValue({'endTime' : dayjs(value).add(30, 'minutes') });
           this.endMinDate = value;
         }
       });
-
     }
 
   }
