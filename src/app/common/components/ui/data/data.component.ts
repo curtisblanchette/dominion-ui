@@ -151,6 +151,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       }
     }
 
+    if (this.data.resolveAdditionalData && typeof this.data.resolveAdditionalData === 'function') {
+      this.additionalData = await this.data.resolveAdditionalData();
+    }
+
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
 
@@ -185,7 +189,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       const control = models[this.module][field];
 
       if (!['virtual', 'timestamp'].includes(control.type)) {
-
         form[field] = new FormControl(control.defaultValue, control.validators);
       }
 
@@ -265,7 +268,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public async save(): Promise<any> {
     let payload = this.form.value;
-    console.log('payload',payload);
+
     if (this.form.valid) {
       this.form.disable();
 

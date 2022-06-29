@@ -91,7 +91,7 @@ export class AppEffects {
         eventOutcomes = eventOutcomes.map((r: any) => ({id: r.id, label: r.name }));
         eventObjections = eventObjections.map((r: any) => ({id: r.id, label: r.name }));
         eventTypes = eventTypes.map((r: any) => ({id: r.id, label: r.name }));
-        offices = offices.map((r: any) => ({id: r.id, label: r.name }));
+        offices = offices.rows.map((r: any) => ({id: r.id, label: r.name }));
 
 
         const data = { roles, practiceAreas, callOutcomes, callObjections, callStatus, callTypes, eventOutcomes, eventTypes, eventObjections, offices };

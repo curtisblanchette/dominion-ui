@@ -49,6 +49,9 @@ export class FlowBuilder {
     const powerQuestion = FlowFactory.powerQuestion();
     const toPowerQuestion = FlowFactory.link(relationshipBuilding, powerQuestion);
 
+    const setAppointment = FlowFactory.setAppointment();
+    const recap = FlowFactory.recap();
+
     // inbound
     const inboundCond = FlowFactory.condition({
       variable: 'call_type',
@@ -104,20 +107,21 @@ export class FlowBuilder {
 
     const toRelationshipBuilding2 = FlowFactory.link(createOpp, relationshipBuilding);
 
+    const inboundSetApptLink = FlowFactory.link(relationshipBuilding, setAppointment);
+    const inboundSetApptLink1 = FlowFactory.link(editOpp, setAppointment);
+
     // outbound
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
 
     const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( {
       contactId: ModuleTypes.CONTACT
     });
-
-    const setAppointment = FlowFactory.setAppointment();
-    const recap = FlowFactory.recap();
+    
 
     const webLeads_yes = FlowFactory.condition({
       variable: 'web_lead_options',
       equals: 'web_leads'
-    }, {}, oppWithNoOutcomes);
+    }, {}, oppWithNoOutcomes);   
 
     const webLeads_no = FlowFactory.condition({
       variable: 'web_lead_options',
@@ -156,8 +160,8 @@ export class FlowBuilder {
 
     const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
     const setApptLink2 = FlowFactory.link(contactOppsWithNoOutcomes, setAppointment);
-    const setApptLink3 = FlowFactory.link(createOpp, setAppointment);
-    const oppLink = FlowFactory.link(createContact, createOpp);
+    const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
+    const oppLink = FlowFactory.link(createContact, createOpp1);
 
     const setAppt_yes = FlowFactory.condition( {
       variable: 'set_appointment',
@@ -199,6 +203,9 @@ export class FlowBuilder {
       .addStep(relationshipBuilding)
       .addLink(toRelationshipBuilding1)
       .addLink(toRelationshipBuilding2)
+      .addLink(inboundSetApptLink)
+      .addLink(inboundSetApptLink1)
+      .addStep(setAppointment)      
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
 
@@ -216,6 +223,7 @@ export class FlowBuilder {
       .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
       .addStep(searchNListContacts)
+      .addStep(createOpp1)
       .addRouter(oppRouter)
       .addLink(oppLink2)
       .addLink(webLeadLink)

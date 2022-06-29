@@ -6,14 +6,12 @@
     </div>
     <div class="flex_main_wrapper__form">
       <form [formGroup]="form" *ngIf="form">
-        <div>
-          <input type="checkbox" formControlName="set_appointment" /> Set Appointment
-        </div>
+
         <div *ngIf="showSlots">
           <label for="office">Location</label>
-          <fiiz-dropdown #dropdown [module]="ModuleTypes.OFFICE" id="office" type="search" [label]="'Office'" title="Select an Office" formControlName="officeId"></fiiz-dropdown>
-
+          <fiiz-select #dropdown [module]="ModuleTypes['OFFICE']" [items]="offices$" id="office" [label]="'Office'" formControlName="officeId"></fiiz-select>
         </div>
+
         <div *ngIf="showSlots">
           <label for="title">Title</label>
           <fiiz-input
@@ -23,30 +21,18 @@
             placeholder="Title">
           </fiiz-input>
         </div>
+
         <div *ngIf="showSlots">
           <label for="description">Description</label>
           <fiiz-textarea formControlName="description" id="description" placeholder="Add a description..." [height]="'100px'" ></fiiz-textarea>
         </div>
+
       </form>
     </div>
     <div class="flex_main_wrapper__header__sub_title" *ngIf="showSlots">
       "We have availability at our office as soon as..."
     </div>
   </div>
-
-  <ng-container *ngIf="!showSlots">
-    <div>
-      <form [formGroup]="objectionForm" >
-        <fiiz-select
-          [id]="'appt_objection'"
-          [label]="'Objection Reason'"
-          [formControlName]="'appt_objection'"
-          [items]="objections$"
-        >
-        </fiiz-select>
-      </form>
-    </div>
-  </ng-container>
 
   <ng-container *ngIf="showSlots">
     <div *ngFor="let slot of timeSlots">

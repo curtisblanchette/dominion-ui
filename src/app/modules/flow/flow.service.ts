@@ -195,11 +195,11 @@ export class FlowService {
            * If the select record has entity relationships ,
            * store them as entity variables
            */
-          if( value.record?.contactId ){
-            variable[ModuleTypes.CONTACT] = value.record.contactId;
+          if( value.record?.contactId || value.record?.contacts ){
+            variable[ModuleTypes.CONTACT] = value.record?.contactId || value.record?.contacts[0].id;
           }
-          if( value.record?.leadId ){
-            variable[ModuleTypes.LEAD] = value.record.leadId;
+          if( value.record?.leadId || value.record?.leads ){
+            variable[ModuleTypes.LEAD] = value.record.leadId || value.record?.leads[0].id;
           }
 
           this.setValidity(!!value.record);
