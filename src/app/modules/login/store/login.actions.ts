@@ -44,7 +44,7 @@ export const LoginAction = createAction(
 
 export const LoginSuccessfulAction = createAction(
   ActionTypes.LOGIN_SUCCESSFUL,
-  props<{ payload: User }>()
+  props<{ payload: User | any }>()
 );
 
 export const GetUserAction = createAction(
@@ -59,7 +59,7 @@ export const LoginErrorAction = createAction(
 
 export const UpdateUserAction = createAction(
   ActionTypes.UPDATE_RECORD,
-  props<{ payload: User }>()
+  props<{ payload: User | any }>()
 );
 
 export const LogoutAction = createAction(
@@ -73,7 +73,7 @@ export const AcceptInvitationAction = createAction(
 
 export const RefreshTokenAction = createAction(
   ActionTypes.REFRESH_TOKEN,
-  props<{ payload: User }>()
+  props<{ payload: User | string }>()
 );
 
 export const InvitationErrorAction = createAction(

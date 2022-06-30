@@ -56,8 +56,8 @@ export class LoginEffects {
                 id,
                 username: email,
               });
-              localStorage.setItem('user', btoa(JSON.stringify(user)));
-              return loginActions.LoginSuccessfulAction({payload: user});
+              // localStorage.setItem('user', btoa(JSON.stringify(user)));
+              return loginActions.LoginSuccessfulAction({payload: user._serialize()});
             }).catch(e => {
               switch(e.code) {
                 case 'UserNotFoundException':
@@ -103,7 +103,7 @@ export class LoginEffects {
             map((res: any) => {
               // merge the two user records
               res.roles = res.roles.map((role: {id: string, name: string}) => role.name);
-              return loginActions.UpdateUserAction({payload: new User({...user, ...res })});
+              return loginActions.UpdateUserAction({payload: new User({...user, ...res })._serialize()});
             })
           );
         })
@@ -167,7 +167,7 @@ export class LoginEffects {
       this.actions$.pipe(
         ofType(loginActions.UpdateUserAction),
         map((action) => {
-          localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
+          // localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
           return loginActions.RefreshFlagAction({ payload: true });
           // return action.payload;
         })
@@ -202,14 +202,15 @@ export class LoginEffects {
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.RefreshTokenAction),
-        mergeMap(async (action) => {
+        mergeMap(async (action: {payload: any}) => {
           const session = await this.cognito.refreshSession();
           const access_token = session.accessToken.getJwtToken();
           const id_token = session.idToken.getJwtToken();
           const refresh_token = session.refreshToken.getToken();
 
+          const userData = action.payload
           const user: User = new User({
-            ...action.payload,
+            ...userData,
             access_token,
             id_token,
             refresh_token

@@ -1,4 +1,4 @@
-import { FlowStep, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './index';
+import { FlowStep, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent, IEvaluation } from './index';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
@@ -93,7 +93,7 @@ export class FlowFactory {
     })
   }
 
-  public static createLead(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
+  public static createLead(): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'address-book',
@@ -101,9 +101,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.LEAD,
         data: {
-          title: 'Create New Lead',
-          resolveId,
-          resolveAdditionalData
+          title: 'Create New Lead'
         },
         options: {
           controls: false,
@@ -120,7 +118,7 @@ export class FlowFactory {
     });
   };
 
-  public static editLead(resolveId: Function = () => {}): FlowStep {
+  public static editLead(resolveId: ModuleTypes | null): FlowStep {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'address-book',
@@ -140,7 +138,7 @@ export class FlowFactory {
     });
   };
 
-  public static createContact(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
+  public static createContact(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'address-book',
@@ -150,7 +148,7 @@ export class FlowFactory {
         data: {
           title: 'Create New Contact',
           resolveId,
-          resolveAdditionalData
+          resolveData
         },
         options: {
           controls: false,
@@ -167,7 +165,7 @@ export class FlowFactory {
     });
   }
 
-  public static createDeal(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
+  public static createDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'address-book',
@@ -177,7 +175,7 @@ export class FlowFactory {
         data: {
           title: 'Create Opportunity',
           resolveId,
-          resolveAdditionalData
+          resolveData
         },
         options: {
           controls: false,
@@ -191,7 +189,7 @@ export class FlowFactory {
     });
   };
 
-  public static editDeal(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
+  public static editDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Deal Info',
       nodeIcon: 'address-book',
@@ -201,7 +199,7 @@ export class FlowFactory {
         data: {
           title: 'Review Deal Info',
           resolveId,
-          resolveAdditionalData
+          resolveData
         },
         options: {
           controls: false,
@@ -212,7 +210,7 @@ export class FlowFactory {
     });
   };
 
-  public static setLeadSource(resolveId: Function = () => {}, resolveAdditionalData: Function = () => {}): FlowStep {
+  public static setLeadSource(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Select Lead Source',
       nodeIcon: 'address-book',
@@ -222,7 +220,7 @@ export class FlowFactory {
         data: {
           title: 'Select a Campaign',
           resolveId,
-          resolveAdditionalData
+          resolveData
         },
         options: {
           controls: false,
@@ -235,7 +233,7 @@ export class FlowFactory {
     });
   };
 
-  public static selectExistingOpp(query: Function = () => {}): FlowStep {
+  public static selectExistingOpp(resolveQuery: {[key: string]: any} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Opportunity List',
       nodeIcon: 'address-book',
@@ -250,13 +248,13 @@ export class FlowFactory {
           editable: false,
           perPage: 25,
           columns: [],
-          query
+          resolveQuery
         }
       }
     });
   };
 
-  public static relationshipBuilding(resolve: Function = () => {}) {
+  public static relationshipBuilding(resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Relationship Building',
       nodeIcon: 'fa-gear',
@@ -266,13 +264,13 @@ export class FlowFactory {
           title: 'Relationship Building',
           // body: '',
           template: 'relationship-building',
-          resolve
+          resolveData
         }
       }
     })
   }
 
-  public static powerQuestion(resolve: Function = () => {}) {
+  public static powerQuestion(resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Power Question',
       nodeIcon: 'fa-address-book',
@@ -282,13 +280,13 @@ export class FlowFactory {
           title: 'Power Question',
           // body: '',
           template: 'power-question',
-          resolve
+          resolveData
         }
       }
     })
   }
 
-  public static searchNListWebLeads(query: Function = () => {}): FlowStep {
+  public static searchNListWebLeads(resolveQuery: {[key: string]: ModuleTypes} = {}): FlowStep {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'address-book',
@@ -303,7 +301,7 @@ export class FlowFactory {
           editable: false,
           perPage: 25,
           columns: [],
-          query
+          resolveQuery
         }
       }
     };
@@ -366,16 +364,19 @@ export class FlowFactory {
     return new FlowStep(data)
   }
 
-  public static condition(evaluate: Function, to: FlowStep | FlowRouter): FlowCondition {
-    return new FlowCondition(evaluate, to);
+  public static condition(evaluation: IEvaluation, forwardParams: any, to: FlowStep | FlowRouter): FlowCondition {
+    const data = {evaluation, forwardParams, to};
+    return new FlowCondition(data);
   }
 
   public static link(from: FlowStep, to: FlowStep | FlowRouter) {
-    return new FlowLink(from, to);
+    const data = {from, to};
+    return new FlowLink(data);
   }
 
   public static router(nodeText: string, nodeIcon: string, conditions: FlowCondition[]): FlowRouter {
-    return new FlowRouter(nodeText, nodeIcon, conditions);
+    const data = {nodeText, nodeIcon, conditions};
+    return new FlowRouter(data);
   }
 
 }

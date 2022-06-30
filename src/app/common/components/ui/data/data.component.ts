@@ -14,7 +14,7 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { ModuleTypes, uriOverrides } from '../../../../data/entity-metadata';
-import { firstValueFrom, map, of, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, map, of, take } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay } from 'rxjs/operators';
@@ -139,11 +139,16 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
-    if (this.data.resolveId && typeof this.data.resolveId === 'function') {
-      /**
-       * if the step was passed a resolveId <Promise> resolve it now
-      */
-      this.id = await this.data.resolveId();
+
+    // if the step was module to resolve the ID for - do it now
+    if(this.data.hasOwnProperty('resolveId')) {
+      this.id = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveId)).pipe(take(1)));
+    }
+
+    if(this.data.hasOwnProperty('additionalData')) {
+      for (const key of Object.keys(this.additionalData)) {
+        this.additionalData[key] = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(key)));
+      }
     }
 
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters

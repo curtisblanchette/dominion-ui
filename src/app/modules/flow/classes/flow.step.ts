@@ -2,6 +2,8 @@ import { FlowNode } from "./index";
 import { cloneDeep } from 'lodash';
 import { FlowSerialization } from './flow.serialization';
 
+type OmitMethods = '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed';
+
 export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
 
   public override id?: string;
@@ -14,7 +16,7 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   private _destroyedAt: number = 0;
 
   constructor(
-    data: Omit<FlowStep, '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>
+    data: Omit<FlowStep, OmitMethods>
   ) {
     super(data.nodeText, data.nodeIcon, data.id);
     this.component = data.component;
@@ -40,12 +42,18 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     return this._destroyedAt - this._constructedAt;
   }
 
-  public _serialize(): string {
-    return JSON.stringify(this);
+  public _serialize(): FlowStep {
+    // we need to keep the step.component class name so that it can be retrieved again
+    if(typeof this.component !== 'string'){
+      this.component = this.component.name;
+    }
+
+    return this;
   }
 
   public _deserialize(): FlowStep {
     const data: FlowStep = { ...cloneDeep(this) };
+    // data.component = new (<FlowStepdata.component)();
     return new FlowStep(data);
   }
 }

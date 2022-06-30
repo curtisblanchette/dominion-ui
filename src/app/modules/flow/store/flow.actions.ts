@@ -69,7 +69,7 @@ export const SetValidityAction = createAction(
 
 export const NextStepAction = createAction(
   ActionTypes.NEXT_STEP,
-  props<{ host: FlowHostDirective, stepId: string }>()
+  props<{ stepId: string }>()
 )
 
 export const PrevStepAction = createAction(

@@ -1,19 +1,23 @@
 import { FlowStep, FlowNode, FlowCondition, FlowListParams } from './index';
 import { cloneDeep } from 'lodash';
-import { FlowDataComponent, FlowListComponent } from '../steps';
+import { FlowDataComponent, FlowListComponent, FlowStepClassMap } from '../steps';
 import { FlowSerialization } from './flow.serialization';
+
+
+type OmitMethods = 'evaluate' | '_serialize' | '_deserialize';
 
 export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter> {
   public conditions: FlowCondition[];
 
   constructor(
-    nodeText: string,
-    nodeIcon: string,
-    conditions: FlowCondition[],
-    id?: string,
+    data: Omit<FlowRouter, OmitMethods>,
+    // nodeText: string,
+    // nodeIcon: string,
+    // conditions: FlowCondition[],
+    // id?: string,
   ) {
-    super(nodeText, nodeIcon, id);
-    this.conditions = conditions;
+    super(data.nodeText, data.nodeIcon, data.id);
+    this.conditions = data.conditions;
   }
 
   /**
@@ -26,7 +30,7 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
 
     if( this.conditions ){
       for (const cond of this.conditions) {
-        const value = await cond.evaluate();
+        const value = await cond.evaluate()
         if (value) {
 
           if (cond?.to) {
@@ -37,19 +41,19 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
              **********************************************************/
              // Use this location to mutate components before rendering
              // example: Set Query Params returned by conditions
-            if(value instanceof FlowListParams) {
+            // if(value instanceof FlowListParams) {
 
               // FlowDataComponent
-              const instance = new (<FlowStep>step).component();
-              if(instance instanceof FlowDataComponent) {
-                (<FlowStep>step).state.data.id = value.getParams()[`${(<FlowStep>step).state.module}Id`];
-              }
+              const instance = (<any>FlowStepClassMap)[(<FlowStep>step).component];
+              // if(instance instanceof FlowDataComponent) {
+              //   (<FlowStep>step).state.data.id = value.getParams()[`${(<FlowStep>step).state.module}Id`];
+              // }
 
               // FlowListComponent
               if(instance instanceof FlowListComponent) {
-                (<FlowStep>step).state.options['query'] = value.getParams();
+                (<FlowStep>step).state.options['query'] = cond.resolveParams().getParams();
               }
-            }
+            // }
 
           } else {
             console.warn('There is error evaluating the next step');
@@ -61,13 +65,15 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
     return step;
   }
 
-  public _serialize(): string {
-    return JSON.stringify(this);
+  public _serialize(): FlowRouter {
+    this.conditions = this.conditions.map(condition => condition._serialize());
+    return this;
   }
 
   public _deserialize(): FlowRouter {
     const data: FlowRouter = { ...cloneDeep(this) };
-    return new FlowRouter(data.nodeText, data.nodeIcon, data.conditions, data.id);
+    data.conditions = data.conditions.map(condition => new FlowCondition(condition)._deserialize());
+    return new FlowRouter(data);
   }
 
 }

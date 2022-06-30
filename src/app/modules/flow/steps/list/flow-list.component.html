@@ -2,7 +2,7 @@
 
     <p class="dictation">Thank you for calling the Law Offices of Diener Law, this is Miguel, how may I assist you today?</p>
 
-    <fiiz-list [data]="data" [module]="module" [options]="options" (values)="EmitValues($event)" (onCreate)="create($event)"></fiiz-list>
+    <fiiz-list #cmp [data]="data" [module]="module" [options]="options" (values)="EmitValues($event)" (onCreate)="create($event)"></fiiz-list>
 
 
 </div>

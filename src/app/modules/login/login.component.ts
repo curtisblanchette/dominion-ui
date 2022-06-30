@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit {
   @ViewChild('loginTemplate') loginTemplate: TemplateRef<any>;
   @ViewChild('newUserTemplate') newUserTemplate: TemplateRef<any>;
 
-
   constructor(
     private loginService: LoginService,
     private fb: FormBuilder,
@@ -56,7 +55,6 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
-
     this.isLoading$ = this.store.select(fromLogin.loading);
     this.error$ = this.store.select(fromLogin.error);
   }

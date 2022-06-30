@@ -2,27 +2,41 @@ import { FlowRouter, FlowBaseModel, FlowStep } from './index';
 import { cloneDeep } from 'lodash';
 import { FlowSerialization } from './flow.serialization';
 
+type OmitMethods = '_serialize' | '_deserialize';
+
 export class FlowLink extends FlowBaseModel implements FlowSerialization<FlowLink> {
-  public from: FlowStep;
-  public to: FlowStep | FlowRouter;
+  public from: FlowStep | string;
+  public to: FlowStep | FlowRouter | string;
 
   constructor(
-    from: FlowStep,
-    to: FlowStep | FlowRouter,
-    id?: string,
+    data: Omit<FlowLink, OmitMethods>
+    // from: FlowStep | string,
+    // to: FlowStep | FlowRouter | string,
+    // id?: string,
   ) {
-    super(id);
-    this.from = from;
-    this.to = to;
+    super(data.id);
+    this.from = data.from;
+    this.to = data.to;
   }
 
-  public _serialize(): string {
-    return JSON.stringify(this);
+  public _serialize(): FlowLink {
+    // if(typeof this.from !== 'string'){
+    //   this.from = (<FlowStep>this.from)._serialize();
+    // }
+    // if(typeof this.to !== 'string'){
+    //   this.to = (<FlowStep | FlowRouter>this.to)._serialize();
+    // }
+
+    return this;
   }
 
   public _deserialize(): FlowLink {
     const data: FlowLink = {...cloneDeep(this)};
     // @ts-ignore
-    return new FlowLink(data.id, data.from, data.to);
+    data.to = (<FlowStep>data.to)._deserialize();
+    // @ts-ignore
+    data.from = (<FlowStep>data.from)._deserialize();
+    // @ts-ignore
+    return new FlowLink(data);
   }
 }

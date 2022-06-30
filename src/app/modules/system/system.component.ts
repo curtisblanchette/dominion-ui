@@ -44,7 +44,7 @@ export class SystemComponent implements OnDestroy {
   }
 
   onChange($event: any) {
-    localStorage.setItem('actingFor', $event.target.value);
+    // localStorage.setItem('actingFor', $event.target.value);
     this.store.dispatch(systemActions.SetActingForAction({id: $event.target.value}));
   }
 

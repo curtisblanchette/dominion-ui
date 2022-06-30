@@ -1,3 +1,7 @@
+import { cloneDeep } from 'lodash';
+
+export type OmitMethods =  'apply' | '_serialize' | '_deserialize';
+
 export class User {
   access_token: string;
   id_token: string;
@@ -16,13 +20,21 @@ export class User {
   fullName?: string;
 
   constructor(
-    data: Omit<User, 'apply'>
+    data: Omit<User, OmitMethods>
   ) {
     this.apply(data);
   }
 
-  public apply(data:  Omit<User, 'apply'>): void {
+  public apply(data:  Omit<User, OmitMethods>): void {
      Object.assign(this, data);
   }
 
+  public _serialize(): string {
+    return JSON.parse(JSON.stringify(this));
+  }
+
+  public _deserialize(): User {
+    const data: User = {...cloneDeep(this)};
+    return new User(data);
+  }
 }

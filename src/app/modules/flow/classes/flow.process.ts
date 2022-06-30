@@ -15,7 +15,7 @@ export class FlowProcess extends FlowBaseModel {
   public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
   public links: FlowLink[] = [];
-  public currentStep: FlowCurrentStep | undefined;
+  public currentStep: FlowCurrentStep | null;
   public stepHistory: FlowStepHistoryEntry[];
 
   constructor(
@@ -23,18 +23,45 @@ export class FlowProcess extends FlowBaseModel {
     id?: string,
   ) {
     super(id);
+
+
     this.store.select(fromFlow.selectFlow).subscribe(state => {
-      this.steps = state.steps;
-      this.routers = state.routers;
-      this.links = state.links;
-      this.currentStep = state.currentStep;
-      this.stepHistory = state.stepHistory;
+      // is there an existing process? resume
+      // otherwise build
+      if(state.processId) {
+        this.id = state.processId;
+      }
+
+      // getting Flow objects from their deserialized selectors below
+        // this.steps = state.steps;
+        // this.routers = state.routers;
+        // this.links = state.links;
+        // this.currentStep = state.currentStep;
+        // this.stepHistory = state.stepHistory;
+    });
+
+    this.store.select(fromFlow.selectSteps).subscribe(steps => {
+      this.steps = steps;
+    });
+    this.store.select(fromFlow.selectRouters).subscribe(routers => {
+      this.routers = routers;
+    });
+    this.store.select(fromFlow.selectLinks).subscribe(links => {
+      this.links = links;
+    });
+    this.store.select(fromFlow.selectCurrentStep).subscribe(currentStep => {
+      this.currentStep = currentStep;
+    });
+    this.store.select(fromFlow.selectStepHistory).subscribe(stepHistory => {
+      this.stepHistory = stepHistory;
     });
 
     if(!this.id) {
       throw new ProcessNotFoundError();
+    } else {
+      this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
     }
-    this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
+
 
   }
 
@@ -54,6 +81,8 @@ export class FlowProcess extends FlowBaseModel {
   }
 
   public addLink(link: FlowLink): FlowProcess {
+    // link.to = (<FlowStep>link.to)._serialize();
+    // link.from = (<FlowStep>link.from)._serialize();
     this.store.dispatch(flowActions.AddLinkAction({payload: link}));
     return this;
   }

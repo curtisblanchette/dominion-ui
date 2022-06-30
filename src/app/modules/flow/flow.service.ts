@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode } from './index';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, FlowStepClassMap, FlowDataComponent } from './index';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -11,6 +11,7 @@ import { CustomDataService } from '../../data/custom.dataservice';
 import { DominionType } from '../../common/models';
 import { DefaultDataServiceFactory } from '@ngrx/data';
 import { ModuleTypes } from '../../data/entity-metadata';
+import { FlowState } from './store/flow.reducer';
 
 export interface IHistory {
   prevStepId: string;
@@ -34,19 +35,36 @@ export class FlowService {
   ) {
     this.builder = new FlowBuilder(this.store, this);
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
+
+    // this.store.select(fromFlow.selectFlow).subscribe((flow: FlowState) => {
+    //   console.log(flow);
+    // });
   }
 
-  public async start(context: FlowHostDirective): Promise<any> {
-    await this.builder.build();
+  public async restart(): Promise<any> {
+    // kill all flow storage
+  }
 
-    const firstStep: FlowStep = this.builder.process.steps[0];
+  public async start(context: FlowHostDirective, resume = false): Promise<any> {
 
-    if (firstStep && firstStep.id) {
-      this.store.dispatch(flowActions.NextStepAction({host: context, stepId: firstStep.id}));
-      return this.renderComponent(context, firstStep);
+    if(!resume) {
+      await this.builder.build();
+
+      const firstStep: FlowStep = this.builder.process.steps[0];
+
+      if (firstStep && firstStep.id) {
+        this.store.dispatch(flowActions.NextStepAction({stepId: firstStep.id}));
+        return this.renderComponent(context, firstStep);
+      }
+      throw new NoStepFoundError();
     }
 
-    throw new NoStepFoundError();
+    const currentStep: FlowStep = this.builder.process.currentStep?.step as FlowStep;
+    return this.renderComponent(context, currentStep);
+
+  }
+
+  public async resume(context:FlowHostDirective): Promise<any> {
 
   }
 
@@ -76,8 +94,10 @@ export class FlowService {
 
   public findNextStep(): FlowNode | undefined  {
     // find a link where the "from" is equal to "currentStep"
-    const link = this.builder.process.links.find(link => link.from.id === this.builder.process.currentStep?.step?.id);
-    return link?.to;
+    const link = this.builder.process.links.find((link: any) => {
+      return link.from.id === this.builder.process.currentStep?.step?.id
+    });
+    return <FlowStep|FlowRouter>link?.to;
   }
 
   public async next(host: FlowHostDirective): Promise<any> {
@@ -100,7 +120,7 @@ export class FlowService {
     if (step?.id) {
       this.createHistoryEntry();
 
-      this.store.dispatch(flowActions.NextStepAction({host, stepId: step.id}));
+      this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
       return await this.renderComponent(host, <FlowStep>step);
     }
 
@@ -132,7 +152,10 @@ export class FlowService {
   private createHistoryEntry(): void {
     if (this.builder.process.currentStep?.step?.id) {
       // releasing the step sets step._destroyedAt
-      this.builder.process.currentStep.step.release();
+      if(this.builder.process.currentStep.step.release) {
+        this.builder.process.currentStep.step.release();
+      }
+
 
       const historyEntry: FlowStepHistoryEntry = {
         id: this.builder.process.currentStep?.step?.id,
@@ -144,13 +167,15 @@ export class FlowService {
   }
 
   public async renderComponent(host: FlowHostDirective, step: FlowStep): Promise<void> {
-    this.store.dispatch(flowActions.UpdateCurrentStepAction({step, valid: false, variables: []}));
+    this.store.dispatch(flowActions.UpdateCurrentStepAction({step: step, valid: false, variables: []}));
 
     const viewContainerRef = host.viewContainerRef;
     viewContainerRef.clear();
 
     try {
-      this.cmpReference = viewContainerRef.createComponent<any>(step.component);
+
+      const component = (<any>FlowStepClassMap)[step.component];
+      this.cmpReference = viewContainerRef.createComponent(component);
       this.cmpReference.instance.module = step.state.module;
       this.cmpReference.instance.data = step.state.data;
       this.cmpReference.instance.options = step.state.options;
@@ -192,6 +217,8 @@ export class FlowService {
 
         });
       }
+
+
     } catch(e) {
       console.error(e);
       throw e;

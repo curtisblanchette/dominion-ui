@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, take } from 'rxjs';
@@ -8,7 +8,7 @@ import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { IDropDownMenuItem } from '../dropdown';
-import { AppState } from '../../../../store/app.reducer';
+import * as fromApp from '../../../../store/app.reducer'
 import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
 import * as fromData from '../../../../modules/data/store/data.reducer';
@@ -23,7 +23,8 @@ export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   columns: Array<Object>;
-  query?: Function;
+  query?: any;
+  resolveQuery?: { [key: string]: string }
 }
 
 export enum SortDirections {
@@ -37,7 +38,7 @@ export enum SortDirections {
   templateUrl: 'list.component.html',
   styleUrls: ['list.component.scss']
 })
-export class FiizListComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit {
+export class FiizListComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit, AfterViewChecked {
 
   public searchForm: FormGroup;
 
@@ -83,12 +84,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ];
 
   constructor(
-    private store: Store<AppState>,
+    private store: Store<fromApp.AppState>,
     private fb: FormBuilder,
-    private router: Router,
+    public flowService: FlowService,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
-    public flowService: FlowService
+    router: Router
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
@@ -228,19 +229,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['sort'] = 'ASC';
     }
 
-    if(this.options.query) {
-      if(typeof this.options.query === 'function') {
-        for(const key of Object.keys(this.options.query())) {
-          params[key] = await this.options.query()[key];
-        }
-      } else {
-        for(const [key, value] of Object.entries(this.options.query)) {
-          // @ts-ignore
-          params[key] = value;
-        }
-      }
-    }
-    return params;
+    return {...params, ...this.options.resolveQuery};
   }
 
   public performAction( value:any ){

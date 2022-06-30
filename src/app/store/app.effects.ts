@@ -54,7 +54,7 @@ export class AppEffects {
         // Map to Object
         const transformed: { [key: string]: INestedSetting } = Object.fromEntries(response);
 
-        localStorage.setItem('settings', JSON.stringify(transformed));
+        // localStorage.setItem('settings', JSON.stringify(transformed));
         return appActions.SetSettingsAction({ payload: transformed });
 
       })
@@ -95,7 +95,7 @@ export class AppEffects {
 
 
         const data = { roles, practiceAreas, callOutcomes, callObjections, callStatus, callTypes, eventOutcomes, eventTypes, eventObjections, offices };
-        localStorage.setItem('lookups', JSON.stringify(data));
+        // localStorage.setItem('lookups', JSON.stringify(data));
         this.store.dispatch(appActions.SetLookupsAction({ payload: data }) );
         return appActions.AppInitializedAction();
 
