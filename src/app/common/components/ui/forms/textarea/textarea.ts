@@ -22,8 +22,11 @@ export class FiizTextAreaComponent implements ControlValueAccessor {
   onTouched:any;
 
   writeValue(value: any): void {
-    const div = this.textarea.nativeElement;
-    this.renderer.setProperty(div, 'textContent', value);
+    if(this.textarea?.nativeElement) {
+      const div = this.textarea.nativeElement;
+      this.renderer.setProperty(div, 'textContent', value);
+    }
+
   }
 
   registerOnChange(fn: any): void {

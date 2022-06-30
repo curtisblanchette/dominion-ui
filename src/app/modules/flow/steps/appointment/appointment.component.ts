@@ -121,6 +121,15 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     //   // office : new FormControl('', [Validators.required])
     // });
 
+
+  }
+
+  public async ngAfterViewInit() {
+    for (const dropdown of this.dropdowns) {
+      const data: any = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
+      dropdown.items$ = of(CustomDataService.toDropdownItems(data.rows));
+    }
+
     this.objectionForm = this.fb.group({
       appt_objection: new FormControl('', [Validators.required])
     });
@@ -161,13 +170,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         let day: string = dayjs(date).format('dddd MMMM D, YYYY');
         this.timeSlots.push({[day]: freeSlots});
       });
-    }
-  }
-
-  public async ngAfterViewInit() {
-    for (const dropdown of this.dropdowns) {
-      const data: any = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
-      dropdown.items$ = of(CustomDataService.toDropdownItems(data.rows));
     }
   }
 

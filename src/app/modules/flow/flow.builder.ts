@@ -19,7 +19,7 @@ export class FlowBuilder {
   }
 
   public reset(): void {
-
+    this.process = new FlowProcess(this.store);
   }
 
   public async build(type?: string) {
@@ -94,6 +94,8 @@ export class FlowBuilder {
     }, {
       id: ModuleTypes.DEAL
     }, editOpp);
+
+
 
     const oppListRouter = FlowFactory.router('Router', '', [existingDeal_yes, existingDeal_no]);
     const toOppListRouter = FlowFactory.link(oppList, oppListRouter);
@@ -170,6 +172,12 @@ export class FlowBuilder {
     const apptRouter = FlowFactory.router('Router', '', [setAppt_yes, setAppt_no]);
     const apptLink = FlowFactory.link(setAppointment, apptRouter);
 
+    const toSetAppointment = FlowFactory.link(editOpp, setAppointment);
+
+    const end = FlowFactory.end();
+    const toInboundEnd = FlowFactory.link(recap, end);
+
+
     ///
     this.process
       .addStep(callType)
@@ -197,6 +205,10 @@ export class FlowBuilder {
       .addStep(editOpp)
       .addStep(createOpp)
       .addLink(toOppListRouter)
+      .addLink(toSetAppointment)
+
+      .addStep(end)
+      .addLink(toInboundEnd);
 
 
     // 'outbound'

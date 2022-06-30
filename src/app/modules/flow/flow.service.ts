@@ -43,6 +43,7 @@ export class FlowService {
 
   public async restart(context: FlowHostDirective): Promise<any> {
     this.store.dispatch(flowActions.ResetAction());
+    this.builder.reset();
     await this.start(context);
   }
 

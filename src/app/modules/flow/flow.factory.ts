@@ -386,6 +386,20 @@ export class FlowFactory {
     });
   }
 
+  public static end(): FlowStep {
+    return new FlowStep({
+      nodeText: 'End',
+      nodeIcon: 'address-book',
+      component: FlowTextComponent,
+      state: {
+        data: {
+          template: 'end'
+        }
+      }
+    });
+  }
+
+
   public static step(data: Omit<FlowStep, '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>) {
     return new FlowStep(data)
   }

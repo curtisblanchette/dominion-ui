@@ -11,7 +11,8 @@
         </div>
         <div *ngIf="showSlots">
           <label for="office">Location</label>
-          <fiiz-select #dropdown [module]="moduleType.OFFICE" [data]="{}" [remote]="true" id="office" [label]="'Office'" formControlName="officeId"></fiiz-select>
+          <fiiz-dropdown #dropdown [module]="ModuleTypes.OFFICE" id="office" type="search" [label]="'Office'" title="Select an Office" formControlName="officeId"></fiiz-dropdown>
+
         </div>
         <div *ngIf="showSlots">
           <label for="title">Title</label>

@@ -14,8 +14,6 @@ import { FlowService } from '../../flow.service';
 import * as fromFlow from '../../store/flow.reducer';
 import { DominionType } from 'src/app/common/models';
 
-// import { FlowMaps } from '../../../_core/classes/flow.lookupMap';
-import * as dayjs from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 
 
@@ -42,8 +40,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     private fb: FormBuilder,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
-    router: Router,
-    // private map:FlowMaps,
+    router: Router
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.callAPI = entityCollectionServiceFactory.create(ModuleTypes.CALL);
