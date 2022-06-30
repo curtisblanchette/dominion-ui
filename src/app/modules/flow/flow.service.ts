@@ -41,8 +41,9 @@ export class FlowService {
     // });
   }
 
-  public async restart(): Promise<any> {
-    // kill all flow storage
+  public async restart(context: FlowHostDirective): Promise<any> {
+    this.store.dispatch(flowActions.ResetAction());
+    await this.start(context);
   }
 
   public async start(context: FlowHostDirective, resume = false): Promise<any> {

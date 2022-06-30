@@ -108,6 +108,8 @@ export class FlowComponent implements OnInit, OnDestroy {
       break;
       case 'end-call': {
 
+        this.flowService.restart(this.flowHost);
+
       }
       break;
     }

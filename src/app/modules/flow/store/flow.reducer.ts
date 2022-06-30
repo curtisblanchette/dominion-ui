@@ -154,7 +154,7 @@ export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) =
 export const selectProcessId     = createSelector(selectFlow, (flow: FlowState) => flow.processId);
 
 export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => {
-  if(!flow?.currentStep.step) {
+  if(!flow?.currentStep?.step) {
     return {};
   }
   if(!(flow?.currentStep?.step instanceof FlowStep)) {
