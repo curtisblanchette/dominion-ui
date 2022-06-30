@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.9.20 (2022-06-30)
+
+
+### Bug Fixes
+
+* **develop:** fix objection button ([c7a2582](https://github.com/4iiz/dominion-ui/commit/c7a2582f41efa46c83c2582d8b78c68b518d918c))
+
 ### 1.9.19 (2022-06-30)
 
 ### 1.9.18 (2022-06-30)
