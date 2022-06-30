@@ -38,7 +38,7 @@ export class FlowBuilder {
     const createLead = FlowFactory.createLead();
     const editLead = FlowFactory.editLead(ModuleTypes.LEAD);
     const setLeadSource = FlowFactory.setLeadSource(ModuleTypes.LEAD);
-    const oppList = FlowFactory.selectExistingOpp({leadId: ModuleTypes.LEAD});
+    const oppList = FlowFactory.opportunityList({leadId: ModuleTypes.LEAD});
     const toOppList = FlowFactory.link(editLead, oppList);
     const createOpp = FlowFactory.createDeal(null, {lead: ModuleTypes.LEAD});
     const editOpp = FlowFactory.editDeal(ModuleTypes.DEAL, {lead: ModuleTypes.LEAD});
@@ -69,12 +69,11 @@ export class FlowBuilder {
     const toCallTypeRouter = FlowFactory.link(callType, callTypeRouter);
 
     const existingLead_yes = FlowFactory.condition({
-        variable: ModuleTypes.LEAD,
-        exists: true,
-      }, {
-        leadId: ModuleTypes.LEAD
-      }, editLead);
-
+      variable: ModuleTypes.LEAD,
+      exists: true,
+    }, {
+      leadId: ModuleTypes.LEAD
+    }, editLead);
 
     const existingLead_no = FlowFactory.condition({
       variable: 'lead',
@@ -104,12 +103,9 @@ export class FlowBuilder {
     const toRelationshipBuilding2 = FlowFactory.link(createOpp, relationshipBuilding);
 
     // outbound
-    const oppWithNoOutcomes = FlowFactory.selectExistingOpp( {
-      stageId: '2,4,5' // TODO get these from the lookups
-    });
+    const oppWithNoOutcomes = FlowFactory.noOutcomeList();
 
-    const contactOppsWithNoOutcomes = FlowFactory.selectExistingOpp( {
-      stageId: '2,4,5',
+    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( {
       contactId: ModuleTypes.CONTACT
     });
 

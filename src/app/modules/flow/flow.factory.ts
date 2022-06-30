@@ -233,7 +233,7 @@ export class FlowFactory {
     });
   };
 
-  public static selectExistingOpp(resolveQuery: {[key: string]: any} = {}): FlowStep {
+  public static opportunityList(resolveQuery: {[key: string]: any} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Opportunity List',
       nodeIcon: 'address-book',
@@ -248,6 +248,32 @@ export class FlowFactory {
           editable: false,
           perPage: 25,
           columns: [],
+          query: {
+          },
+          resolveQuery
+        }
+      }
+    });
+  };
+
+  public static noOutcomeList(resolveQuery: {[key: string]: any} = {}): FlowStep {
+    return new FlowStep({
+      nodeText: 'No Outcome List',
+      nodeIcon: 'address-book',
+      component: FlowListComponent,
+      state: {
+        module: ModuleTypes.DEAL,
+        data: {
+          title: 'Opportunity List',
+        },
+        options: {
+          searchable: false,
+          editable: false,
+          perPage: 25,
+          columns: [],
+          query: {
+            stageId: '2,4,5'
+          },
           resolveQuery
         }
       }

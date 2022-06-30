@@ -261,7 +261,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['sort'] = 'ASC';
     }
 
-    return {...params, ...this.options.resolveQuery};
+    return {...params, ...this.options.query};
   }
 
   public performAction( value:any ){
