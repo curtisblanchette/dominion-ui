@@ -99,7 +99,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     switch(action) {
       case 'objection': {
         // find the objection step somehow
-        const objection = this.flowService.builder.process.steps.find(step => step.component === FlowObjectionComponent);
+        const objection = this.flowService.builder.process.steps.find(step => step.component === "FlowObjectionComponent");
 
         if(objection && objection.id) {
           return this.goTo(objection.id);
