@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.9.16 (2022-06-30)
+
+
+### Bug Fixes
+
+* **serialization:** uncomment rest of flow ([a5284cc](https://github.com/4iiz/dominion-ui/commit/a5284cc4dcb643dcf0ee0a4c3e3a0c444b1d2fe6))
+
 ### 1.9.15 (2022-06-27)
 
 ### 1.9.14 (2022-06-27)
