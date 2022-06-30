@@ -38,7 +38,7 @@ export enum SortDirections {
   templateUrl: 'list.component.html',
   styleUrls: ['list.component.scss']
 })
-export class FiizListComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit, AfterViewChecked {
+export class FiizListComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit {
 
   public searchForm: FormGroup;
 
