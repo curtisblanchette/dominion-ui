@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, take } from 'rxjs';
@@ -64,11 +64,18 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @Input('data') public override data: any;
   @Input('module') public override module: ModuleTypes;
   @Input('options') public override options: IListOptions;
-
   @Input('loadInitial') loadInitial: boolean = false;
+
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
+
+
+  public template$: Observable<TemplateRef<any> | undefined>;
+  @ViewChild('main') mainTemplate: TemplateRef<any>;
+  @ViewChild('loading') loadingTemplate: TemplateRef<any>;
+  @ViewChild('noDataFound') noDataTemplate: TemplateRef<any>;
+  @ViewChild('initial') initial: TemplateRef<any>
 
   public actionItems: IDropDownMenuItem[] = [
     {
@@ -115,6 +122,26 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
 
+    this.template$ = this.loadingSubject$.asObservable().pipe(
+      untilDestroyed(this),
+      map((res) => {
+        console.log(res);
+        const [loading, loaded, data] = res;
+
+        switch(true) {
+          case !loading && loaded && data.length > 0: {
+            return this.mainTemplate;
+          }
+          case !loading && !loaded: {
+            return this.loadingTemplate;
+          }
+          case !loading && loaded && (!data.length || data.length === 0): {
+            return this.noDataTemplate;
+          }
+        }
+        return this.noDataTemplate;
+    }));
+
     this.columns = getColumns(this.module);
 
     // set the default sort column from ./searchable-columns.ts
@@ -123,6 +150,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
+
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
@@ -135,6 +163,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.page = 1;
       this.searchInModule();
     });
+
+
   }
 
   public onClick($event: any, record: any) {
@@ -186,6 +216,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       return this.module[0].toUpperCase() + this.module.substring(1, this.data.length);
     }
   }
+
+
 
   public onCreateNew() {
     this.selected = null;

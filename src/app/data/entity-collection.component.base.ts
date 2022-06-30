@@ -17,11 +17,11 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public additionalData: any;
 
   public entityMap$: Observable<any> = of([]);
-  public count$: Observable<number> = of(0);
-  public data$: Observable<DominionType[]> = of([]);
-  public loading$: Observable<boolean> = of(false);
-  public loaded$: Observable<boolean> = of(true);
-  public loadingSubject$: Subject<any> = new Subject<any>();
+  public count$: Observable<number>;
+  public data$: Observable<DominionType[]>;
+  public loading$: Observable<boolean>;
+  public loaded$: Observable<boolean>;
+  public loadingSubject$: Subject<[boolean, boolean, DominionType[]]> = new Subject<any>();
 
   public response$: Observable<any>;
   @Input('data') public data: any;
@@ -53,7 +53,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
         this.data$ = this._dynamicCollectionService.filteredEntities$;
         this.loading$ = this._dynamicCollectionService.loading$;
         this.loaded$ = this._dynamicCollectionService.loaded$;
-        this.count$ = this._dynamicCollectionService.count$; // <-- ** always returns the filteredEntities$.length (not the collectionState.count)
+        this.count$ = this._dynamicCollectionService.count$;
       }
 
       if(this.data.resolveAdditionalData && typeof this.data.resolveAdditionalData === 'function') {
@@ -67,21 +67,20 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
 
   ngOnDestroy() {
-    this.data$ = of([]);
     console.log('entity collection component destroyed');
   }
 
   public getById(id: string): Observable<any> {
 
-    this.loadingSubject$.next(true);
     this.loaded$ = of(false);
     this.loading$ = of(true);
+    this.loadingSubject$.next([false, true, []]);
     return this._dynamicService.getById(id).pipe(
       map((res: any) => {
         this.data$ = of(res);
-        this.loadingSubject$.next(false);
         this.loaded$ = of(true);
         this.loading$ = of(false);
+        this.loadingSubject$.next([false, true, res]);
         return res;
       })
     );
@@ -90,14 +89,14 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public getWithQuery(params: { [key: string]: any}): Observable<any> {
     this.loaded$ = of(false);
     this.loading$ = of(true);
-    this.loadingSubject$.next(true);
+    this.loadingSubject$.next([true, false, []]);
     return this._dynamicService.getWithQuery(params).pipe(
       map((res: any) => {
         this.count$ = of(res.count);
         this.data$ = of(res.count ? res.rows : res);
         this.loaded$ = of(true);
         this.loading$ = of(false);
-        this.loadingSubject$.next(false);
+        this.loadingSubject$.next([false, true, res.count ? res.rows : res]);
         return res;
       })
     );
