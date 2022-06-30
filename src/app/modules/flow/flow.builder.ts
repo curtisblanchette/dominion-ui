@@ -112,63 +112,67 @@ export class FlowBuilder {
       stageId: '2,4,5',
       contactId: ModuleTypes.CONTACT
     });
-    //
-    // const setAppointment = FlowFactory.setAppointment();
-    // const recap = FlowFactory.recap();
-    //
-    // const webLeads_yes = FlowFactory.condition(async () => {
-    //   return await this.getVariable('web_lead_options') === 'web_leads';
-    // }, oppWithNoOutcomes);
-    //
-    // const webLeads_no = FlowFactory.condition(async () => {
-    //   return await this.getVariable('web_lead_options') === 'contacts';
-    // }, searchNListContacts);
-    //
-    // const webLeadRouter = FlowFactory.router('Router', '', [webLeads_yes, webLeads_no]);
-    // const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
-    //
-    // const createContact = FlowFactory.createContact();
-    // const existingContact_no = FlowFactory.condition(async () => {
-    //   const contact = await this.getVariable('contact');
-    //   return !contact;
-    // }, createContact);
-    //
-    // const existingContact_yes = FlowFactory.condition(async () => {
-    //   const contact = await this.getVariable('contact');
-    //   return contact
-    // }, contactOppsWithNoOutcomes);
-    //
-    // const contactRouter = FlowFactory.router('Router', '', [existingContact_yes, existingContact_no]);
-    // const contactLink = FlowFactory.link(searchNListContacts, contactRouter);
-    //
-    // const existingOpp_no = FlowFactory.condition(async () => {
-    //   const deal = await this.getVariable('deal');
-    //   return !deal;
-    // }, createOpp);
-    //
-    // const existingOpp_yes = FlowFactory.condition(async () => {
-    //   const deal = await this.getVariable('deal');
-    //   return deal
-    // }, setAppointment);
-    //
-    // const oppRouter = FlowFactory.router('Router', '', [existingOpp_yes, existingOpp_no]);
-    // const oppLink2 = FlowFactory.link(oppWithNoOutcomes, oppRouter);
-    //
-    // const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
-    // const setApptLink2 = FlowFactory.link(contactOppsWithNoOutcomes, setAppointment);
-    // const setApptLink3 = FlowFactory.link(createOpp, setAppointment);
-    // const oppLink = FlowFactory.link(createContact, createOpp);
-    //
-    // const setAppt_yes = FlowFactory.condition( async() => {
-    //   return await this.getVariable('set_appointment');
-    // }, recap);
-    //
-    // const setAppt_no = FlowFactory.condition( async() => {
-    //   return await this.getVariable('set_appointment');
-    // }, recap);
-    //
-    // const apptRouter = FlowFactory.router('Router', '', [setAppt_yes, setAppt_no]);
-    // const apptLink = FlowFactory.link(setAppointment, apptRouter);
+
+    const setAppointment = FlowFactory.setAppointment();
+    const recap = FlowFactory.recap();
+
+    const webLeads_yes = FlowFactory.condition({
+      variable: 'web_lead_options',
+      equals: 'web_leads'
+    }, {}, oppWithNoOutcomes);
+
+    const webLeads_no = FlowFactory.condition({
+      variable: 'web_lead_options',
+      equals: 'contacts'
+    }, {}, searchNListContacts);
+
+    const webLeadRouter = FlowFactory.router('Router', '', [webLeads_yes, webLeads_no]);
+    const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
+
+    const createContact = FlowFactory.createContact();
+    const existingContact_no = FlowFactory.condition({
+      variable: ModuleTypes.CONTACT,
+      exists: false
+    }, {}, createContact);
+
+    const existingContact_yes = FlowFactory.condition({
+      variable: ModuleTypes.CONTACT,
+      exists: true
+    }, {}, contactOppsWithNoOutcomes);
+
+    const contactRouter = FlowFactory.router('Router', '', [existingContact_yes, existingContact_no]);
+    const contactLink = FlowFactory.link(searchNListContacts, contactRouter);
+
+    const existingOpp_no = FlowFactory.condition({
+      variable: ModuleTypes.DEAL,
+      exists: false
+    }, {}, createOpp);
+
+    const existingOpp_yes = FlowFactory.condition({
+      variable: ModuleTypes.DEAL,
+      exists: true
+    }, {}, setAppointment);
+
+    const oppRouter = FlowFactory.router('Router', '', [existingOpp_yes, existingOpp_no]);
+    const oppLink2 = FlowFactory.link(oppWithNoOutcomes, oppRouter);
+
+    const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
+    const setApptLink2 = FlowFactory.link(contactOppsWithNoOutcomes, setAppointment);
+    const setApptLink3 = FlowFactory.link(createOpp, setAppointment);
+    const oppLink = FlowFactory.link(createContact, createOpp);
+
+    const setAppt_yes = FlowFactory.condition( {
+      variable: 'set_appointment',
+      exists: true
+    }, {}, recap);
+
+    const setAppt_no = FlowFactory.condition({
+      variable: 'set_appointment',
+      exists: false
+    }, {}, recap);
+
+    const apptRouter = FlowFactory.router('Router', '', [setAppt_yes, setAppt_no]);
+    const apptLink = FlowFactory.link(setAppointment, apptRouter);
 
     ///
     this.process
@@ -190,7 +194,7 @@ export class FlowBuilder {
       .addStep(setLeadSource)
       .addStep(relationshipBuilding)
       .addLink(toRelationshipBuilding1)
-      // .addLink(toRelationshipBuilding2)
+      .addLink(toRelationshipBuilding2)
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
 
@@ -201,28 +205,28 @@ export class FlowBuilder {
 
     // 'outbound'
     this.process
-      // .addRouter(webLeadRouter)
+      .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
       .addStep(searchNListContacts)
-      // .addRouter(oppRouter)
-      // .addLink(oppLink2)
-      // .addLink(webLeadLink)
-      // .addRouter(contactRouter)
-      // .addLink(contactLink)
+      .addRouter(oppRouter)
+      .addLink(oppLink2)
+      .addLink(webLeadLink)
+      .addRouter(contactRouter)
+      .addLink(contactLink)
       .addStep(oppList)
       .addLink(toOppList)
-      // .addStep(createContact)
+      .addStep(createContact)
 
-      // .addStep(oppWithNoOutcomes)
-      // .addStep(contactOppsWithNoOutcomes)
-      // .addStep(setAppointment)
-      // .addLink(setApptLink)
-      // .addLink(setApptLink2)
-      // .addLink(setApptLink3)
-      // .addRouter(apptRouter)
-      // .addStep(recap)
-      // .addLink(apptLink)
-      // .addLink(oppLink)
+      .addStep(oppWithNoOutcomes)
+      .addStep(contactOppsWithNoOutcomes)
+      .addStep(setAppointment)
+      .addLink(setApptLink)
+      .addLink(setApptLink2)
+      .addLink(setApptLink3)
+      .addRouter(apptRouter)
+      .addStep(recap)
+      .addLink(apptLink)
+      .addLink(oppLink)
 
     // global
 

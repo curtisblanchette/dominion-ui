@@ -138,7 +138,7 @@ export class FlowFactory {
     });
   };
 
-  public static createContact(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static createContact(resolveId: ModuleTypes | null = null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'address-book',
