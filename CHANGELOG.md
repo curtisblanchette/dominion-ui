@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.9.21 (2022-06-30)
+
+
+### Bug Fixes
+
+* **develop:** ensure the builder resets and fix office selector in set appointment step ([7d8f586](https://github.com/4iiz/dominion-ui/commit/7d8f5861dd823f935b6bd18645d782d754fa342e))
+
 ### 1.9.20 (2022-06-30)
 
 
