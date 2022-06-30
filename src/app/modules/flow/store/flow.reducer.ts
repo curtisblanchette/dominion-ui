@@ -27,11 +27,11 @@ const getInitialStateByKey = (key: string): any| (FlowStep|FlowRouter|FlowLink)[
 
     switch(key) {
       case 'steps': // @ts-ignore
-        return data.flow.steps.map(step => (new FlowStep(step))) || [];
+        return data && data.flow.steps.map(step => (new FlowStep(step))) || [];
       case 'links': // @ts-ignore
-        return data.flow.links.map(link => (new FlowLink(link))) || [];
+        return data && data.flow.links.map(link => (new FlowLink(link))) || [];
       case 'routers': // @ts-ignore
-        return data.flow.routers.map(router => (new FlowRouter(router))) || [];
+        return data && data.flow.routers.map(router => (new FlowRouter(router))) || [];
       case 'currentStep': {
         // const { step, variables, valid } = data.flow.currentStep;
         return data.flow.currentStep;
