@@ -44,7 +44,7 @@ export const EventModel: {[key: string]: IModel} = {
   },
   [Fields.START_TIME]: {
     label: 'Start Time',
-    type: 'daytime',
+    type: 'both',
     defaultValue: null,
     validators: [
       Validators.required
@@ -52,7 +52,7 @@ export const EventModel: {[key: string]: IModel} = {
   },
   [Fields.END_TIME]: {
     label: 'End Time',
-    type: 'daytime',
+    type: 'both',
     defaultValue: null,
     validators: [
       Validators.required

@@ -1,19 +1,18 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
 <div class="input-wrapper" [ngClass]="{'disabled': isDisabled}">
-  <dp-date-picker
-    #picker
-    [id]="id" 
-    (change)="valueChanged()" 
-    [minDate]="min"
-    [maxDate]="max"
-    [config]="config"
-    [(ngModel)]="value" 
-    [mode]="mode" 
+  <input 
+    [owlDateTime]="dt1" 
+    [owlDateTimeTrigger]="dt1" 
+    [placeholder]="placeholder"
+    [min]="min"
+    [max]="max"
+    [(ngModel)]="value"
     (ngModelChange)="changed($event)" 
-    [autofocus]="autofocus" 
-    required
-  >
-  </dp-date-picker>
-  	<!-- <input id="{{id}}" type="text" [disabled]="isDisabled" [fiizMinDate]="min" [fiizMaxDate]="max"  fiizDatePicker required/> -->
+  />
+  <owl-date-time 
+    #dt1
+    [pickerType]="pickerType"
+    [pickerMode]="'popup'"
+    [hour12Timer]="true"
+  ></owl-date-time>
 </div>
-

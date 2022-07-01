@@ -1,0 +1,38 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/functions';
+@import '~src/assets/css/mixins';
+
+@mixin selectedStyle() {
+    background: tint($green0, 25)!important;
+    color: shade($green0, 95)!important;
+
+    &:hover {
+        background: tint($green0, 15)!important;
+    }
+}
+
+.owl-dt-container {
+    background-color: $darkBlue;
+}
+
+.owl-dt-calendar-table .owl-dt-calendar-cell{
+    color: $text1;
+}
+
+.owl-dt-calendar-table .owl-dt-calendar-cell-selected {
+    @include selectedStyle();
+}
+
+.owl-dt-calendar-cell-disabled>.owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-selected){
+    color: rgb(255 255 255 / 35%) !important;
+}
+.owl-dt-timer-hour12{
+    color: $text1;       
+}
+.owl-dt-timer-hour12 .owl-dt-timer-hour12-box:focus .owl-dt-control-button-content,
+.owl-dt-timer-hour12 .owl-dt-timer-hour12-box:hover .owl-dt-control-button-content {
+    background: rgba(0,0,0,0.1);
+}
+.owl-dt-calendar-table .owl-dt-calendar-header{
+    color: text1;
+}

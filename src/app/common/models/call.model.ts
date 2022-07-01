@@ -22,7 +22,7 @@ export const CallModel: {[key: string]: IModel} = {
   ...timestamps,
   [Fields.START_TIME]: {
     label: 'Start Time',
-    type: 'daytime',
+    type: 'both',
     defaultValue: new Date(),
     validators: [
       Validators.required

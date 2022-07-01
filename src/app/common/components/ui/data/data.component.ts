@@ -5,13 +5,12 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
-import { IDatePickerConfig } from 'ng2-date-picker/lib/date-picker/date-picker-config.model';
 
 import * as fromApp from '../../../../store/app.reducer'
-import { DropdownItem, FiizSelectComponent } from '../forms';
+import { DropdownItem, FiizDatePickerComponent, FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
-import { Dayjs } from 'dayjs';
+import { Dayjs, ManipulateType } from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
@@ -26,7 +25,7 @@ import { FormInvalidError } from '../../../../modules/flow';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
-import { DatePickerComponent } from 'ng2-date-picker';
+import { INestedSetting } from '../../../../store/app.effects';
 
 export interface FiizDataComponentOptions {
   controls?: boolean;
@@ -48,14 +47,29 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public submitText: string;
   public id: string | null;
-  public datePickerConfig: IDatePickerConfig = {
-    showGoToCurrent: false
+
+  public configuration:any = {
+    // Events, Calls
+    'startTime' : {
+      min : dayjs().format(), // Default as now
+      max : null
+    },
+    'endTime' : {
+      min : null,
+      max : null
+    },
+    // Campaigns
+    'startDate' : {
+      min : null,
+      max : null
+    },
+    'endDate' : {
+      min : null,
+      max : null
+    }
   };
 
-  public startMinDate: Dayjs | string | undefined = dayjs();
-  public startMaxDate: Dayjs | string | undefined = undefined;
-  public endMinDate: Dayjs | string | undefined = undefined;
-  public endMaxDate: Dayjs | string | undefined = undefined;
+  public appointmentSettings: INestedSetting;
 
   @Input('module') public override module: ModuleTypes;
   @Input('data') public override data: any;
@@ -63,7 +77,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
-  @ViewChildren('pickers') pickers:QueryList<ElementRef>;
+  @ViewChildren('picker') pickers: QueryList<FiizDatePickerComponent>;
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
   @Output('onFailure') onFailure: EventEmitter<Error> = new EventEmitter<Error>();
@@ -92,6 +106,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.data = state.data;
     }
     this.form = this.fb.group({});
+
+    this.store.select(fromApp.selectSettingGroup('appointment')).subscribe((settings: INestedSetting) => {
+      this.appointmentSettings = settings;
+    });
+
   }
 
   public override async ngAfterContentInit() {
@@ -144,11 +163,15 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           this.form.setValue(entity, {emitEvent: true});
 
           // workaround issue: https://github.com/angular/angular/issues/14542
-          of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();          
+          of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();
+          console.log('call from here');
+          await this.dateValidation();
         }
+      } else {
+        await this.resolveDropdowns();
+        await this.dateValidation();
       }
-    });
-    this.dateValidation();
+    });    
   }
 
   public async ngAfterViewInit() {
@@ -169,23 +192,51 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   }
 
-  public dateValidation(){    
+  public async dateValidation(): Promise<void>{
     if( this.pickers ){
-      console.log('has pickers');
-      this.pickers.map( (item:ElementRef, index:number, array:ElementRef<any>[]) => {
-        console.log(item);
-        console.log(index);
-        console.log(array);
-      })    
-      this.form.get('startTime')?.valueChanges.subscribe( (value:any) => {
-        console.log('value',value);
-        if( !this.form.get('endTime')?.value ){
-          this.form.patchValue({'endTime' : dayjs(value).add(30, 'minutes') });
-          this.endMinDate = value;
-        }
-      });
-    }
 
+      let ids:Array<string> = [];
+
+      for(const picker of this.pickers) {
+        ids.push(picker.id);
+      }
+
+      if( this.module == ModuleTypes.EVENT && ids.includes('startTime') && ids.includes('endTime') ){
+
+        if( this.options.state == 'edit' ){
+          if( this.form.get('startTime')?.value ){
+            this.configuration.endTime.min = this.form.get('startTime')?.value;
+          }
+        }
+
+        this.form.get('startTime')?.valueChanges.subscribe( (value:any) => {
+          const duration = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['value'] || 30;
+          const unit = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['unit'] || 'minutes';
+          const endTime = dayjs(value).add(duration, unit as ManipulateType).format();
+          if( this.options.state == 'create' ){
+            this.form.patchValue({'endTime' : endTime });
+            this.configuration.endTime.min = value;
+          } else {
+            this.configuration.endTime.min = value;
+          }
+        });
+      }
+
+      if( this.module == ModuleTypes.CALL && ids.includes('startTime') ){
+        this.configuration.startTime.min = null;
+      }
+
+      if( this.module == ModuleTypes.CAMPAIGN ){
+        this.form.get('startDate')?.valueChanges.subscribe((value:any) => {
+          this.configuration.endDate.min = dayjs(value).add(1, 'day').format();
+        });
+        this.form.get('endDate')?.valueChanges.subscribe((value:any) => {
+          this.configuration.startDate.max = dayjs(value).subtract(1, 'day').format();
+        });
+      }
+
+    }
+    return;
   }
 
 

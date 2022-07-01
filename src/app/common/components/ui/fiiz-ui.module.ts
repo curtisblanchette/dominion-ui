@@ -31,6 +31,7 @@ import { FiizStrokedDirective } from './button/stroked.directive';
 import { FiizWarningDirective } from './button/warning.directive';
 import { FiizPrimaryDirective } from './button/primary.directive';
 import { DpDatePickerModule } from 'ng2-date-picker';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,9 @@ import { DpDatePickerModule } from 'ng2-date-picker';
     NgxPaginationModule,
     ReactiveFormsModule,
     SharedModule,
-    DpDatePickerModule
+    DpDatePickerModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
     // DirectivesModule
   ],
   exports: [

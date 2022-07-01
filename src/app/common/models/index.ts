@@ -13,7 +13,7 @@ import { OfficeModel } from './office.model';
 
 export interface IModel {
   label: string;
-  type: 'text' | 'email' | 'tel' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'day' | 'daytime' | 'virtual' | 'timestamp' | 'dropdown-search',
+  type: 'text' | 'email' | 'tel' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'calendar' | 'timer' | 'both' | 'virtual' | 'timestamp' | 'dropdown-search',
   service?: string;
   defaultValue?: any;
   validators?: Validators[]

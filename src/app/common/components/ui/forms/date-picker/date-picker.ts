@@ -22,10 +22,11 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
   @Input('label') public label: string | number | boolean | undefined;
 
   @Input('id') id!: string;
-  @Input('mode') mode: "day"|"month"|"time"|"daytime";
+  @Input('pickerType') pickerType: "calendar"|"timer"|"both";
+  @Input('placeholder') placeholder: string = "Select Date";
 
-  @Input('min') min!: Dayjs | string | undefined;
-  @Input('max') max!: Dayjs | string | undefined;
+  @Input('min') min!: Dayjs | string | null;
+  @Input('max') max!: Dayjs | string | null;
 
   @Input() isDisabled!: boolean;
 
@@ -70,7 +71,9 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
   }
 
   writeValue(value: any) {
-    this.value = value;
+    if( value ){
+      this.value = dayjs(value).format();
+    }
   }
 
   registerOnChange(fn: any) {
@@ -87,9 +90,9 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
 
   changed(value: Dayjs) {
     if(value && dayjs(value).isValid() ){
-      this.value = value;
-      this.onChange(this.value.format());
-      this.change.emit(this.value.format());
+      this.value = dayjs(value).format();
+      this.onChange(this.value);
+      this.change.emit(this.value);
       this.onTouched();
     }
 
