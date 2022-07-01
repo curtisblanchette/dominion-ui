@@ -41,6 +41,7 @@ export class FlowBuilder {
     const oppList = FlowFactory.opportunityList({leadId: ModuleTypes.LEAD});
     const toOppList = FlowFactory.link(editLead, oppList);
     const createOpp = FlowFactory.createDeal(null, {lead: ModuleTypes.LEAD});
+    const createOpp1 = FlowFactory.createDeal1();
     const editOpp = FlowFactory.editDeal(ModuleTypes.DEAL, {lead: ModuleTypes.LEAD});
 
     const relationshipBuilding = FlowFactory.relationshipBuilding();
@@ -117,7 +118,6 @@ export class FlowBuilder {
       contactId: ModuleTypes.CONTACT
     });
     
-
     const webLeads_yes = FlowFactory.condition({
       variable: 'web_lead_options',
       equals: 'web_leads'
