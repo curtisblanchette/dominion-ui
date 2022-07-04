@@ -188,7 +188,7 @@ export class FlowFactory {
     });
   };
 
-  
+
   public static createDeal1(): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
@@ -210,7 +210,7 @@ export class FlowFactory {
       }
     });
   };
-  
+
   public static editDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Deal Info',
@@ -356,7 +356,7 @@ export class FlowFactory {
     return FlowFactory.step(data);
   }
 
-  public static setAppointment():FlowStep {
+  public static setAppointment(resolvePayloadAdditions: {[key: string]: ModuleTypes} = {}):FlowStep {
     return new FlowStep({
       nodeText: 'Set Appointment',
       nodeIcon: 'address-book',
@@ -364,18 +364,18 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.EVENT,
         data: {
-          title: 'Set Appointment'
+          title: 'Set Appointment',
         },
         options: {
           state: 'create',
           fields: [
-            EventFields.CONTACT_ID,
             EventFields.TITLE,
             EventFields.DESCRIPTION,
             EventFields.TYPE_ID,
             EventFields.START_TIME,
-            EventFields.END_TIME
-          ]
+            EventFields.END_TIME,
+          ],
+          resolvePayloadAdditions
         }
       }
     });
@@ -438,7 +438,7 @@ export class FlowFactory {
     return new FlowLink(data);
   }
 
-  public static router(nodeText: string, nodeIcon: string, conditions: FlowCondition[]): FlowRouter {
+  public static router(nodeText: string, nodeIcon: string = 'fa-split', conditions: FlowCondition[]): FlowRouter {
     const data = {nodeText, nodeIcon, conditions};
     return new FlowRouter(data);
   }

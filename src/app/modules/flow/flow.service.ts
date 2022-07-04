@@ -108,28 +108,34 @@ export class FlowService {
     // find a link where the "from" is equal to "currentStep"
     let step = this.findNextStep();
 
-    if (step instanceof FlowRouter) {
-      const init = <FlowRouter>step;
-      step = await init.evaluate();
-    }
+    try{
+      if (step instanceof FlowRouter) {
+        const init = <FlowRouter>step;
+        step = await init.evaluate();
+      }
 
-    if(typeof this.cmpReference.instance.onSave === 'function') {
+      if(typeof this.cmpReference.instance.onSave === 'function') {
         await this.cmpReference.instance.onSave();
+      }
+
+      if(typeof this.cmpReference.instance.onNext === 'function') {
+        this.cmpReference.instance.onNext();
+      }
+
+      if (step?.id) {
+        this.createHistoryEntry();
+
+        this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
+        return await this.renderComponent(host, <FlowStep>step);
+      }
+
+      // TODO THIS SHOULD ONLY FIRE IF THERE'S ACTUALLY NO STEP FOUND
+
+    } catch(e) {
+      console.error(e);
+      throw new NoStepFoundError(step?.id);
     }
 
-    if(typeof this.cmpReference.instance.onNext === 'function') {
-      this.cmpReference.instance.onNext();
-    }
-
-    if (step?.id) {
-      this.createHistoryEntry();
-
-      this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
-      return await this.renderComponent(host, <FlowStep>step);
-    }
-
-    // TODO THIS SHOULD ONLY FIRE IF THERE'S ACTUALLY NO STEP FOUND
-    throw new NoStepFoundError(step?.id);
 
   }
 
@@ -200,6 +206,8 @@ export class FlowService {
           /**
            * If the select record has entity relationships ,
            * store them as entity variables
+           * if there are multiple contacts, we're only showing the first one.
+           * TODO make multiple contacts/leads work
            */
           if( value.record?.contactId || ( value.record?.contacts && value.record?.contacts.length ) ){
             variable[ModuleTypes.CONTACT] = value.record?.contactId || value.record?.contacts[0]?.id;

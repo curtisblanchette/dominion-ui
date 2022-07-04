@@ -117,11 +117,11 @@ export class FlowBuilder {
     const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( {
       contactId: ModuleTypes.CONTACT
     });
-    
+
     const webLeads_yes = FlowFactory.condition({
       variable: 'web_lead_options',
       equals: 'web_leads'
-    }, {}, oppWithNoOutcomes);   
+    }, {}, oppWithNoOutcomes);
 
     const webLeads_no = FlowFactory.condition({
       variable: 'web_lead_options',
@@ -156,7 +156,8 @@ export class FlowBuilder {
       exists: true
     }, {}, setAppointment);
 
-    const oppRouter = FlowFactory.router('Router', '', [existingOpp_yes, existingOpp_no]);
+    const oppRouter = FlowFactory.router('Router', undefined, [existingOpp_yes, existingOpp_no]);
+
     const oppLink2 = FlowFactory.link(oppWithNoOutcomes, oppRouter);
 
     // const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
@@ -174,7 +175,7 @@ export class FlowBuilder {
       exists: false
     }, {}, recap);
 
-    const apptRouter = FlowFactory.router('Router', '', [setAppt_yes, setAppt_no]);
+    const apptRouter = FlowFactory.router('Router', undefined, [setAppt_yes, setAppt_no]);
     const apptLink = FlowFactory.link(setAppointment, apptRouter);
 
     const toSetAppointment = FlowFactory.link(editOpp, setAppointment);
@@ -206,7 +207,7 @@ export class FlowBuilder {
       .addLink(toRelationshipBuilding2)
       .addLink(inboundSetApptLink)
       .addLink(inboundSetApptLink1)
-      .addStep(setAppointment)      
+      .addStep(setAppointment)
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
 
@@ -236,7 +237,6 @@ export class FlowBuilder {
 
       .addStep(oppWithNoOutcomes)
       .addStep(contactOppsWithNoOutcomes)
-      .addStep(setAppointment)
       // .addLink(setApptLink)
       // .addLink(setApptLink2)
       .addLink(setApptLink3)

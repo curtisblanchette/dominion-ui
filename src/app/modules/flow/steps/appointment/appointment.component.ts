@@ -9,6 +9,7 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { FlowService } from '../../flow.service';
 import * as fromApp from '../../../../store/app.reducer';
 import * as flowActions from '../../store/flow.actions';
+import * as fromFlow from '../../store/flow.reducer';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -22,6 +23,7 @@ import { DominionType, models } from '../../../../common/models';
 import { INestedSetting } from '../../../../store/app.effects';
 import { ManipulateType } from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
+
 
 @UntilDestroy()
 @Component({
@@ -42,7 +44,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public showSlots: boolean = true;
   public offices$: Observable<DropdownItem[]>;
 
-  @Input('data') public override data: any;
+  // @Input('data') public override data: any;
 
   @ViewChildren('slotBtn') slotBtn: QueryList<ElementRef>;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
@@ -80,7 +82,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     });
 
     this.form.removeControl('set_appointment');
-    
+
     let payload = this.form.value;
 
     if (this.form.valid) {
@@ -93,7 +95,14 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         }
         case 'create': {
           // append additional data as payload attachments
-          payload = {...payload, ...this.additionalData};
+          if(Object.keys(this.options.resolvePayloadAdditions).length) {
+
+            for(const key in Object.keys(this.options.resolvePayloadAdditions)) {
+              payload[key] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(this.options.resolvePayloadAdditions[key])));
+            }
+          }
+
+          payload['contactId'] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey('contact')));
 
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});

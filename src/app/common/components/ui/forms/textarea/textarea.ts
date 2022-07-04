@@ -12,6 +12,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   }]
 })
 export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewInit {
+
+  @Input('label') public label: string | undefined;
+  @Input('id') id!: string;
   @Input('autofocus') autofocus = false;
   @Input('placeholder') placeholder = '';
   @ViewChild('textarea', { read: ElementRef }) textarea:ElementRef;
@@ -47,7 +50,7 @@ export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewIni
     const div = this.textarea.nativeElement;
     const action = isDisabled ? 'addClass' : 'removeClass';
     this.renderer[action](div, 'disabled');
-  }  
+  }
 
   change($event:any) {
     this.onChange($event.target.value);

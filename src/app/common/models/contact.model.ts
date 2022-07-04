@@ -56,12 +56,12 @@ export const ContactModel: { [key: string]: IModel } = {
       Validators.email
     ]
   },
-  [Fields.LEAD_ID]: {
-    label: 'Lead Id',
-    type: 'dropdown-search',
-    service: ModuleTypes.LEAD,
-    defaultValue: '',
-    validators: [
-    ]
-  }
+  // [Fields.LEAD_ID]: {
+  //   label: 'Lead Id',
+  //   type: 'dropdown-search',
+  //   service: ModuleTypes.LEAD,
+  //   defaultValue: '',
+  //   validators: [
+  //   ]
+  // }
 }

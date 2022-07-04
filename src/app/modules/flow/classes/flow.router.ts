@@ -11,10 +11,6 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
 
   constructor(
     data: Omit<FlowRouter, OmitMethods>,
-    // nodeText: string,
-    // nodeIcon: string,
-    // conditions: FlowCondition[],
-    // id?: string,
   ) {
     super(data.nodeText, data.nodeIcon, data.id);
     this.conditions = data.conditions;
