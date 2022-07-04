@@ -402,8 +402,7 @@ export class FlowFactory {
       component: FlowTextComponent,
       state: {
         data: {
-          title: 'Recap',
-          body: 'Recap',
+          title: 'Recap Process / Verify Contact ',
           template: 'recap'
         }
       }
@@ -417,6 +416,7 @@ export class FlowFactory {
       component: FlowTextComponent,
       state: {
         data: {
+          title: 'End',
           template: 'end'
         }
       }

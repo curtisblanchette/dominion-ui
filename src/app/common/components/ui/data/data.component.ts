@@ -106,7 +106,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this.buildForm(this.options.fields);
 
-
     this.data$.pipe(
       untilDestroyed(this),
       delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
@@ -127,7 +126,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
               delete entity[prop];
             }
           });
-          await this.resolveDropdowns();
+          // await this.resolveDropdowns();
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
 
@@ -161,6 +160,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (this.id) {
       this.getData();
     }
+
 
   }
 

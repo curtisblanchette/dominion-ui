@@ -104,9 +104,17 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
           payload['contactId'] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey('contact')));
 
-          return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
+          return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res: DominionType | undefined) => {
+            res = res as IEvent;
+
             this._dynamicCollectionService.setFilter({id: res?.id});
-            this.store.dispatch(flowActions.AddVariablesAction({payload: {[this.module]: res?.id}}));
+            const payload = {
+              [this.module]: res?.id,
+              appt_start_time: res?.startTime,
+              appt_end_time: res?.endTime
+            }
+            this.store.dispatch(flowActions.AddVariablesAction({payload}));
+
           }) || Promise.resolve(this.cleanForm());
         }
       }

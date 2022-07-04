@@ -1,11 +1,13 @@
 import { Router } from '@angular/router';
 import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
-import { map, Observable, of, Subject } from 'rxjs';
+import { map, Observable, of, Subject, take } from 'rxjs';
 import { DominionType, types } from '../common/models';
 import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfaces';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { AfterContentInit, Inject, Input, OnDestroy } from '@angular/core';
 import { ModuleTypes } from './entity-metadata';
+import { FiizSelectComponent } from '../common/components/ui/forms';
+
 
 @UntilDestroy()
 export class EntityCollectionComponentBase implements AfterContentInit, OnDestroy {
@@ -24,6 +26,9 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public loadingSubject$: Subject<[boolean, boolean, DominionType[]]> = new Subject<any>();
 
   public response$: Observable<any>;
+
+  public parentContext: any;
+
   @Input('data') public data: any;
   @Input('options') public options: any;
   @Input('module') public module: ModuleTypes;
@@ -43,25 +48,44 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
   }
 
+  /**
+   * A lot of classes extended this data collection base
+   * we need to get the parent component context to set nonStandard members like items$
+   * which aren't available at the child base class
+   * @param parentContext
+   */
+  public async setContext(parentContext: any) {
+    this.parentContext = parentContext;
+
+    if(parentContext instanceof FiizSelectComponent) {
+      if(this.options?.remote) {
+
+        this.parentContext.items$ = this._dynamicService.getWithQuery({}).pipe(take(1), map((res: any) => {
+          return res.map((res: any)=> {
+            return {id: res.id, label: res.name };
+          })
+        }));
+      }
+    }
+  }
+
   public async ngAfterContentInit() {
-    if( this.data ){
 
-      if (this.module) {
-        this._dynamicCollectionService = this.createService(types[this.module], this.entityCollectionServiceFactory);
-        this._dynamicService = this.dataServiceFactory.create(this.module);
+    if (this.module) {
+      this._dynamicCollectionService = this.createService(types[this.module], this.entityCollectionServiceFactory);
+      this._dynamicService = this.dataServiceFactory.create(this.module);
 
-        this.data$ = this._dynamicCollectionService.filteredEntities$;
-        this.loading$ = this._dynamicCollectionService.loading$;
-        this.loaded$ = this._dynamicCollectionService.loaded$;
-        this.count$ = this._dynamicCollectionService.count$;
-      }
+      this.data$ = this._dynamicCollectionService.filteredEntities$;
+      this.loading$ = this._dynamicCollectionService.loading$;
+      this.loaded$ = this._dynamicCollectionService.loaded$;
+      this.count$ = this._dynamicCollectionService.count$;
+    }
 
-      if(this.data.resolveAdditionalData && typeof this.data.resolveAdditionalData === 'function') {
-        /**
-         * if the step was passed an additionalData <Promise> resolve it now
-         */
-        this.additionalData = await this.data.resolveAdditionalData();
-      }
+    if(this.data?.resolveAdditionalData && typeof this.data?.resolveAdditionalData === 'function') {
+      /**
+       * if the step was passed an additionalData <Promise> resolve it now
+       */
+      this.additionalData = await this.data.resolveAdditionalData();
     }
   }
 
@@ -86,7 +110,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
     );
   }
 
-  public getWithQuery(params: { [key: string]: any}): Observable<any> {
+  public getWithQuery(params: { [key: string]: any} = {}): Observable<any> {
     this.loaded$ = of(false);
     this.loading$ = of(true);
     this.loadingSubject$.next([true, false, []]);

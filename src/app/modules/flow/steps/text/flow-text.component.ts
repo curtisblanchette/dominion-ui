@@ -15,6 +15,7 @@ import * as fromFlow from '../../store/flow.reducer';
 import { DominionType } from 'src/app/common/models';
 
 import { ModuleTypes } from '../../../../data/entity-metadata';
+import { ContactModel } from '../../../../common/models/contact.model';
 
 
 @UntilDestroy()
@@ -33,6 +34,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public allVars:any = {};
   public callAPI:any;
   public noteAPI:any;
+  public ModuleTypes: any;
+  public contactFields: any = ContactModel;
 
   constructor(
     private store: Store<fromFlow.FlowState>,
@@ -43,10 +46,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     router: Router
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
+    this.ModuleTypes = ModuleTypes;
+
     this.callAPI = entityCollectionServiceFactory.create(ModuleTypes.CALL);
     this.noteAPI = entityCollectionServiceFactory.create(ModuleTypes.NOTE);
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
-    this.webLeadTypes$ = of([ { id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' } ]);
+    this.webLeadTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
   }
 
   public async ngOnInit(){

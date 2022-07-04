@@ -57,6 +57,7 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
           break;
         }
       }
+      console.warn(`No conditions for ${this.nodeText} evaluated to 'true'`);
     }
     return step;
   }

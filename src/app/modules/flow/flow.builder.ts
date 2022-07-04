@@ -69,7 +69,7 @@ export class FlowBuilder {
       equals: 'outbound'
     }, {},  webLeadsType);
 
-    const callTypeRouter = FlowFactory.router('Router', '', [inboundCond, outboundCond]);
+    const callTypeRouter = FlowFactory.router('Call Type', '', [inboundCond, outboundCond]);
     const toCallTypeRouter = FlowFactory.link(callType, callTypeRouter);
 
     const existingLead_yes = FlowFactory.condition({
@@ -84,7 +84,7 @@ export class FlowBuilder {
       exists: false,
     }, {}, createLead);
 
-    const searchNListLeadsRouter = FlowFactory.router('Router', '', [existingLead_yes, existingLead_no]);
+    const searchNListLeadsRouter = FlowFactory.router('Lead Exists', '', [existingLead_yes, existingLead_no]);
     const toSearchNListLeadsRouter = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
 
     const existingDeal_no = FlowFactory.condition({
@@ -99,9 +99,7 @@ export class FlowBuilder {
       id: ModuleTypes.DEAL
     }, editOpp);
 
-
-
-    const oppListRouter = FlowFactory.router('Router', '', [existingDeal_yes, existingDeal_no]);
+    const oppListRouter = FlowFactory.router('Opportunity Exists', '', [existingDeal_yes, existingDeal_no]);
     const toOppListRouter = FlowFactory.link(oppList, oppListRouter);
 
     const setLeadSourceLink = FlowFactory.link(createLead, setLeadSource);
@@ -128,7 +126,7 @@ export class FlowBuilder {
       equals: 'contacts'
     }, {}, searchNListContacts);
 
-    const webLeadRouter = FlowFactory.router('Router', '', [webLeads_yes, webLeads_no]);
+    const webLeadRouter = FlowFactory.router('Outbound Type', '', [webLeads_yes, webLeads_no]);
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
 
     const createContact = FlowFactory.createContact();
@@ -142,7 +140,7 @@ export class FlowBuilder {
       exists: true
     }, {}, contactOppsWithNoOutcomes);
 
-    const contactRouter = FlowFactory.router('Router', '', [existingContact_yes, existingContact_no]);
+    const contactRouter = FlowFactory.router('Contact Exists', '', [existingContact_yes, existingContact_no]);
     const contactLink = FlowFactory.link(searchNListContacts, contactRouter);
 
     // Outbound Web Lead Conditions and Routers
@@ -156,7 +154,7 @@ export class FlowBuilder {
       exists: true
     }, {}, setAppointment);
 
-    const oppRouter = FlowFactory.router('Router', undefined, [existingOpp_yes, existingOpp_no]);
+    const oppRouter = FlowFactory.router('Opportunity Exists', undefined, [existingOpp_yes, existingOpp_no]);
 
     const oppLink2 = FlowFactory.link(oppWithNoOutcomes, oppRouter);
 
@@ -165,18 +163,18 @@ export class FlowBuilder {
     const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
     // const oppLink = FlowFactory.link(createContact, createOpp1);
 
-    const setAppt_yes = FlowFactory.condition( {
-      variable: 'set_appointment',
-      exists: true
-    }, {}, recap);
+    // const setAppt_yes = FlowFactory.condition( {
+    //   variable: 'set_appointment',
+    //   exists: true
+    // }, {}, recap);
+    //
+    // const setAppt_no = FlowFactory.condition({
+    //   variable: 'set_appointment',
+    //   exists: false
+    // }, {}, recap);
 
-    const setAppt_no = FlowFactory.condition({
-      variable: 'set_appointment',
-      exists: false
-    }, {}, recap);
-
-    const apptRouter = FlowFactory.router('Router', undefined, [setAppt_yes, setAppt_no]);
-    const apptLink = FlowFactory.link(setAppointment, apptRouter);
+    // const apptRouter = FlowFactory.router('Router', undefined, [setAppt_yes, setAppt_no]);
+    const apptLink = FlowFactory.link(setAppointment, recap);
 
     const toSetAppointment = FlowFactory.link(editOpp, setAppointment);
 
@@ -240,7 +238,7 @@ export class FlowBuilder {
       // .addLink(setApptLink)
       // .addLink(setApptLink2)
       .addLink(setApptLink3)
-      .addRouter(apptRouter)
+      // .addRouter(apptRouter)
       .addStep(recap)
       .addLink(apptLink)
       // .addLink(oppLink)

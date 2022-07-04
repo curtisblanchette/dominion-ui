@@ -2,10 +2,8 @@
   <div class="flow-layout__main">
 
     <section class="flow-layout__sidebar">
-      <div style="padding: 30px;">
-        <fiiz-tab-nav [items]="[{key: 'timeline', label: 'Timeline'}, {key: 'notes', label: 'Notes'}]" (onSelect)="$event === 'timeline' ? tabIndex = 1 : tabIndex = 0 "></fiiz-tab-nav>
-        <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
-      </div>
+      <fiiz-tab-nav [items]="[{key: 'timeline', label: 'Timeline'}, {key: 'notes', label: 'Notes'}]" (onSelect)="$event === 'timeline' ? tabIndex = 1 : tabIndex = 0 "></fiiz-tab-nav>
+      <ng-container *ngTemplateOutlet="tabIndex ? flowTimeline : flowNotes"></ng-container>
     </section>
     <section class="fab-button">
       <fiiz-dropdown type="button" (onClick)="handleFabAction($event)" [items]="menuItems" position="bottom-right"></fiiz-dropdown>

@@ -28,6 +28,7 @@ router-outlet {
     background: #0A1930;
     height: 100%;
     flex: 1;
+    padding: 30px 0;
 
     fiiz-tab-nav {
       margin: 16px 0;
@@ -38,12 +39,13 @@ router-outlet {
     display: flex;
     flex-direction: row;
     height: 100%;
+    gap: 1vw;
   }
 
   &__content {
     display: flex;
     flex-direction: column;
-    flex: 2.5;
+    flex: 3;
     justify-content: space-around;
     overflow: hidden;
   }

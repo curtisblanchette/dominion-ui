@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FlowState } from '../../store/flow.reducer';
 import * as flowActions from '../../store/flow.actions';
@@ -14,7 +14,7 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
   `,
   styleUrls: ['../_base.scss']
 })
-export class FlowDataComponent implements OnDestroy, OnSave, OnBack, OnNext {
+export class FlowDataComponent implements AfterViewInit, OnDestroy, OnSave, OnBack, OnNext {
 
   @Input('module') module: ModuleTypes;
   @Input('data') data: any;
@@ -26,6 +26,10 @@ export class FlowDataComponent implements OnDestroy, OnSave, OnBack, OnNext {
     private store: Store<FlowState>
   ) {
 
+  }
+
+  public async ngAfterViewInit() {
+    await this.cmp.resolveDropdowns();
   }
 
   updateValidity(isValid: boolean) {
