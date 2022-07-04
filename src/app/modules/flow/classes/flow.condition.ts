@@ -1,22 +1,17 @@
-import { FlowBaseModel, FlowStep, FlowRouter } from "./index";
+import { FlowBaseModel, FlowStep, FlowRouter } from './index';
 import { FlowSerialization } from './flow.serialization';
 import { cloneDeep } from 'lodash';
-import { Inject } from '@angular/core';
-import { Store } from '@ngrx/store';
-import * as fromFlow from '../store/flow.reducer';
-import { lastValueFrom, take } from 'rxjs';
 import { accumulateVariables, FlowState } from '../store/flow.reducer';
-import { AppState } from '../../../store/app.reducer';
 import { ModuleTypes } from '../../../data/entity-metadata';
 
 export class FlowListParams {
-  public _params: {[key: string]: string} = {};
+  public _params: { [key: string]: string } = {};
 
   public setParam(param: string, value: string) {
     this._params = Object.assign(this._params, {[param]: value});
   }
 
-  public getParams(): {[key: string]: string} {
+  public getParams(): { [key: string]: string } {
     return this._params;
   }
 }
@@ -43,7 +38,7 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
   public to: (FlowStep | FlowRouter) | Omit<(FlowStep | FlowRouter), OmitMethods>;
 
   constructor(
-    data: Omit<FlowCondition, OmitMethods>,
+    data: Omit<FlowCondition, OmitMethods>
   ) {
     super(data.id);
     this.evaluation = data.evaluation;
@@ -54,20 +49,19 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
   public async evaluate(): Promise<boolean> {
 
     let result = false;
-    if(this.evaluation.hasOwnProperty('variable')) {
+    if (this.evaluation.hasOwnProperty('variable')) {
 
-      if(this.evaluation.hasOwnProperty('equals')){
+      if (this.evaluation.hasOwnProperty('equals')) {
         result = await this.getVariable(this.evaluation.variable) === this.evaluation.equals;
       }
 
-      if(this.evaluation.hasOwnProperty('exists')) {
-        result = !!await this.getVariable(this.evaluation.variable);
+      if (this.evaluation.hasOwnProperty('exists')) {
+        let variable = await this.getVariable(this.evaluation.variable);
+        result = this.evaluation.exists && !!variable || false;
       }
 
       return result;
-
     }
-
 
     return <any>this.evaluation;
   }
@@ -75,23 +69,23 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
   public resolveParams(): FlowListParams {
     const params = new FlowListParams();
 
-    for(const key in Object.keys(this.forwardParams)) {
-       const value = this.getVariable(key)
-       params.setParam(key, value);
+    for (const key in Object.keys(this.forwardParams)) {
+      const value = this.getVariable(key)
+      params.setParam(key, value);
     }
 
     return params;
   }
 
   public _serialize(): FlowCondition {
-    this.to = (<FlowStep|FlowRouter>this.to)._serialize();
+    this.to = (<FlowStep | FlowRouter>this.to)._serialize();
 
     return this;
   }
 
   public _deserialize(): FlowCondition {
-    const data: FlowCondition = { ...cloneDeep(this) };
-        // this.evaluation = fn;
+    const data: FlowCondition = {...cloneDeep(this)};
+    // this.evaluation = fn;
     // data.component = new (<any>FlowStep)[data.component]();
     return new FlowCondition(data);
   }
