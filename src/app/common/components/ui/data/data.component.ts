@@ -215,11 +215,15 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           const endTime = dayjs(value).add(duration, unit as ManipulateType).format();
           if( this.options.state == 'create' ){
             this.form.patchValue({'endTime' : endTime });
-            this.configuration.endTime.min = value;
-          } else {
-            this.configuration.endTime.min = value;
           }
+          this.configuration.endTime.min = value;
+          this.configuration.startTime.max = value;
         });
+
+        this.form.get('endTime')?.valueChanges.subscribe( (value:any) => {
+          this.configuration.startTime.max = value;
+        });
+
       }
 
       if( this.module == ModuleTypes.CALL && ids.includes('startTime') ){
