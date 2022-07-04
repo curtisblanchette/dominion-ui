@@ -181,7 +181,6 @@ export class FlowFactory {
           controls: false,
           state: 'create',
           fields: [
-            DealFields.LEAD_ID,
             DealFields.NAME
           ],
         }
@@ -189,6 +188,29 @@ export class FlowFactory {
     });
   };
 
+  
+  public static createDeal1(): FlowStep {
+    return new FlowStep({
+      nodeText: 'Create Opportunity',
+      nodeIcon: 'address-book',
+      component: FlowDataComponent,
+      state: {
+        module: ModuleTypes.DEAL,
+        data: {
+          title: 'Create Opportunity'
+        },
+        options: {
+          controls: false,
+          state: 'create',
+          fields: [
+            DealFields.LEAD_ID,
+            DealFields.NAME
+          ],
+        }
+      }
+    });
+  };
+  
   public static editDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Deal Info',
@@ -345,7 +367,9 @@ export class FlowFactory {
           title: 'Set Appointment'
         },
         options: {
+          state: 'create',
           fields: [
+            EventFields.CONTACT_ID,
             EventFields.TITLE,
             EventFields.DESCRIPTION,
             EventFields.TYPE_ID,
