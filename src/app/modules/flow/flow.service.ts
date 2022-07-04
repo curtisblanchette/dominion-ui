@@ -209,7 +209,7 @@ export class FlowService {
           }
 
           this.setValidity(!!value.record);
-          if( Object(variable).length ){
+          if( Object.keys(variable).length ){
             this.addVariables(variable);
           }
         });
