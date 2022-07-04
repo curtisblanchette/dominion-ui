@@ -96,6 +96,8 @@ export class FlowService {
 
   public findNextStep(): FlowNode | undefined  {
     // find a link where the "from" is equal to "currentStep"
+    // console.log( this.builder );
+    // console.log( this.builder.process.currentStep?.step?.id );
     const link = this.builder.process.links.find((link: any) => {
       return link.from.id === this.builder.process.currentStep?.step?.id
     });
@@ -189,21 +191,27 @@ export class FlowService {
          * @param {onCreate} EventEmitter
          */
         this.cmpReference.instance.values.subscribe((value: any) => {
-          const variable = { [value.module as ModuleTypes]: value.record?.id || null };
+          let variable:{ [key:string] : string } = {};
+
+          if( value.record?.id ){
+            variable[value.module as ModuleTypes] = value.record?.id;
+          }
 
           /**
            * If the select record has entity relationships ,
            * store them as entity variables
            */
-          if( value.record?.contactId || value.record?.contacts ){
-            variable[ModuleTypes.CONTACT] = value.record?.contactId || value.record?.contacts[0].id;
+          if( value.record?.contactId || ( value.record?.contacts && value.record?.contacts.length ) ){
+            variable[ModuleTypes.CONTACT] = value.record?.contactId || value.record?.contacts[0]?.id;
           }
-          if( value.record?.leadId || value.record?.leads ){
-            variable[ModuleTypes.LEAD] = value.record.leadId || value.record?.leads[0].id;
+          if( value.record?.leadId || ( value.record?.leads && value.record?.leads.length ) ){
+            variable[ModuleTypes.LEAD] = value.record.leadId || value.record?.leads[0]?.id;
           }
 
           this.setValidity(!!value.record);
-          this.addVariables(variable);
+          if( Object(variable).length ){
+            this.addVariables(variable);
+          }
         });
 
         this.cmpReference.instance.onCreate.subscribe((val: boolean) => {

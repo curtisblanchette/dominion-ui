@@ -145,10 +145,11 @@ export class FlowBuilder {
     const contactRouter = FlowFactory.router('Router', '', [existingContact_yes, existingContact_no]);
     const contactLink = FlowFactory.link(searchNListContacts, contactRouter);
 
+    // Outbound Web Lead Conditions and Routers
     const existingOpp_no = FlowFactory.condition({
       variable: ModuleTypes.DEAL,
       exists: false
-    }, {}, createOpp);
+    }, {}, createOpp1);
 
     const existingOpp_yes = FlowFactory.condition({
       variable: ModuleTypes.DEAL,
@@ -158,10 +159,10 @@ export class FlowBuilder {
     const oppRouter = FlowFactory.router('Router', '', [existingOpp_yes, existingOpp_no]);
     const oppLink2 = FlowFactory.link(oppWithNoOutcomes, oppRouter);
 
-    const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
-    const setApptLink2 = FlowFactory.link(contactOppsWithNoOutcomes, setAppointment);
+    // const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
+    // const setApptLink2 = FlowFactory.link(contactOppsWithNoOutcomes, setAppointment);
     const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
-    const oppLink = FlowFactory.link(createContact, createOpp1);
+    // const oppLink = FlowFactory.link(createContact, createOpp1);
 
     const setAppt_yes = FlowFactory.condition( {
       variable: 'set_appointment',
@@ -236,13 +237,13 @@ export class FlowBuilder {
       .addStep(oppWithNoOutcomes)
       .addStep(contactOppsWithNoOutcomes)
       .addStep(setAppointment)
-      .addLink(setApptLink)
-      .addLink(setApptLink2)
+      // .addLink(setApptLink)
+      // .addLink(setApptLink2)
       .addLink(setApptLink3)
       .addRouter(apptRouter)
       .addStep(recap)
       .addLink(apptLink)
-      .addLink(oppLink)
+      // .addLink(oppLink)
 
     // global
 

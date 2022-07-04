@@ -61,7 +61,15 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
       }
 
       if(this.evaluation.hasOwnProperty('exists')) {
-        result = !!await this.getVariable(this.evaluation.variable);
+        let response = await this.getVariable(this.evaluation.variable);
+        if( response == undefined ){
+          if( !this.evaluation.exists ){
+            result = true;
+          }
+        } else {
+          result = !!response;
+        }
+        console.log('result', result);
       }
 
       return result;
