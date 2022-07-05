@@ -25,7 +25,6 @@ export class FlowDataComponent implements AfterViewInit, OnDestroy, OnSave, OnBa
   constructor(
     private store: Store<FlowState>
   ) {
-
   }
 
   public async ngAfterViewInit() {

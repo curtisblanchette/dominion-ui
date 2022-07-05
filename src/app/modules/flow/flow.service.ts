@@ -1,17 +1,20 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, FlowStepClassMap, FlowDataComponent } from './index';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, FlowStepClassMap } from './index';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, take } from 'rxjs';
+import { firstValueFrom, of, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
 import { DominionType } from '../../common/models';
 import { DefaultDataServiceFactory } from '@ngrx/data';
 import { ModuleTypes } from '../../data/entity-metadata';
-import { FlowState } from './store/flow.reducer';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ICall, ICallNote } from '@4iiz/corev2';
+import { UpdateStr } from '@ngrx/entity/src/models';
 
 export interface IHistory {
   prevStepId: string;
@@ -21,29 +24,28 @@ export interface IHistory {
 
 @Injectable({providedIn: 'root'})
 export class FlowService {
-  public cache: { [key: string]: any } = {};
-
   public builder: FlowBuilder;
   public cmpReference: any;
   public callService: CustomDataService<DominionType>;
+  public currentCall: ICall | undefined;
+  public note: ICallNote | undefined
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<fromFlow.FlowState>,
-    private dataServiceFactory: DefaultDataServiceFactory
+    private dataServiceFactory: DefaultDataServiceFactory,
+    private http: HttpClient
   ) {
     this.builder = new FlowBuilder(this.store, this);
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
-
-    // this.store.select(fromFlow.selectFlow).subscribe((flow: FlowState) => {
-    //   console.log(flow);
-    // });
   }
 
   public async restart(context: FlowHostDirective): Promise<any> {
     this.store.dispatch(flowActions.ResetAction());
     this.builder.reset();
+    this.note = undefined;
+    this.currentCall = undefined;
     await this.start(context);
   }
 
@@ -75,18 +77,41 @@ export class FlowService {
       startTime: new Date().toISOString(),
       direction: direction
     }, false).pipe(take(1)).subscribe((res) =>{
+      this.currentCall = res;
       this.addVariables({call_direction: direction})
     });
   }
 
-  public updateCall(data: any): void {
-    this.callService.update(data).pipe(take(1)).subscribe((res) => {
+  public updateCall(payload: any): void {
+    let data = {
+      id: this.currentCall?.id,
+      changes: payload
+    }
+    this.callService.update( <UpdateStr<any>>data, false).pipe(take(1)).subscribe((res) => {
       const variables: any = {};
-      for(const key of Object.keys(data)) {
-         variables[`call_${key}`] = data[key];
+      for(const key of Object.keys(res)) {
+         variables[`call_${key}`] = res[key];
       }
       this.addVariables(variables);
     });
+  }
+
+  public async createNote(content: string): Promise<ICallNote>  {
+    const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.currentCall?.id}/notes`, {
+      content
+    })) as ICallNote;
+    this.note = note;
+
+    return note;
+  }
+
+  public async updateNote(content: string): Promise<ICallNote> {
+    const note = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/calls/${this.currentCall?.id}/notes/${this.note?.id}`, {
+      content
+    })) as ICallNote;
+    this.note = note;
+
+    return note;
   }
 
   public async goTo(context: FlowHostDirective, id: string) {
@@ -94,10 +119,7 @@ export class FlowService {
     await this.renderComponent(context, <FlowStep>step);
   }
 
-  public findNextStep(): FlowNode | undefined  {
-    // find a link where the "from" is equal to "currentStep"
-    // console.log( this.builder );
-    // console.log( this.builder.process.currentStep?.step?.id );
+  public findNextStep(): FlowNode | FlowStep | FlowRouter | undefined {
     const link = this.builder.process.links.find((link: any) => {
       return link.from.id === this.builder.process.currentStep?.step?.id
     });
@@ -110,7 +132,7 @@ export class FlowService {
 
     try{
       if (step instanceof FlowRouter) {
-        const init = <FlowRouter>step;
+        const init: FlowRouter = step;
         step = await init.evaluate();
       }
 
@@ -128,8 +150,6 @@ export class FlowService {
         this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
         return await this.renderComponent(host, <FlowStep>step);
       }
-
-      // TODO THIS SHOULD ONLY FIRE IF THERE'S ACTUALLY NO STEP FOUND
 
     } catch(e) {
       console.error(e);
@@ -165,7 +185,6 @@ export class FlowService {
       if(this.builder.process.currentStep.step.release) {
         this.builder.process.currentStep.step.release();
       }
-
 
       const historyEntry: FlowStepHistoryEntry = {
         id: this.builder.process.currentStep?.step?.id,

@@ -10,6 +10,10 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   public override nodeText: string;
   public override nodeIcon: string;
   public component: any; // TODO make this type right
+
+  public beforeRoutingTriggers: any;
+  public afterRoutingTriggers: any;
+
   public state: any;
 
   private readonly _constructedAt: number = 0;
@@ -21,6 +25,9 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     super(data.nodeText, data.nodeIcon, data.id);
     this.component = data.component;
     this.state = data.state;
+
+    this.beforeRoutingTriggers = data.beforeRoutingTriggers;
+    this.afterRoutingTriggers = data.afterRoutingTriggers;
 
     this._constructedAt = new Date().getTime();
 
@@ -46,6 +53,14 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     // we need to keep the step.component class name so that it can be retrieved again
     if(typeof this.component !== 'string'){
       this.component = this.component.name;
+    }
+
+    if(typeof this.beforeRoutingTriggers === 'function') {
+      this.beforeRoutingTriggers = this.beforeRoutingTriggers.toString();
+    }
+
+    if(typeof this.afterRoutingTriggers === 'function') {
+      this.afterRoutingTriggers = this.afterRoutingTriggers.toString();
     }
 
     return this;

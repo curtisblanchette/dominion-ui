@@ -45,7 +45,6 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
       this.options = state.options;
       this.data = state.data;
     }
-
   }
 
   /**
@@ -67,6 +66,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
         }));
       }
     }
+
   }
 
   public async ngAfterContentInit() {

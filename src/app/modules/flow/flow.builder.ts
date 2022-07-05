@@ -30,8 +30,8 @@ export class FlowBuilder {
 
     const objection = FlowFactory.objection();
     // select call type
-    const callType = FlowFactory.callTypeDecision();
-    const searchNListLeads = FlowFactory.searchNListLeads()
+    const callType = FlowFactory.callTypeDecision(undefined, (vars: any) => { this.flowService.startCall(vars.call_type) });
+    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead}) });
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListContacts = FlowFactory.searchNListContacts()
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
@@ -56,12 +56,7 @@ export class FlowBuilder {
     // inbound
     const inboundCond = FlowFactory.condition({
       variable: 'call_type',
-      equals: 'inbound',
-      trigger: {
-        service: 'FlowService',
-        fn: 'startCall',
-        args: ['inbound']
-      }
+      equals: 'inbound'
     },{}, searchNListLeads);
 
     const outboundCond = FlowFactory.condition({

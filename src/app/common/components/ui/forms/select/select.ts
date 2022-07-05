@@ -72,11 +72,6 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
 
   public async ngAfterViewInit() {
     this.setContext(this);
-    // if(this.remote) {
-    //   const service = this.createService(this.module, this.entityCollectionServiceFactory);
-    //   service.load();
-    //   this.items$ = service.filteredEntities$ as any;
-    // }
   }
 
 

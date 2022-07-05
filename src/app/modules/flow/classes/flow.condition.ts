@@ -23,11 +23,6 @@ export interface IEvaluation {
   forwardParams?: {
     [key: string]: ModuleTypes
   };
-  trigger?: {
-    service: 'FlowService';
-    fn: string;
-    args: ['inbound'];
-  };
 }
 
 type OmitMethods = '_serialize' | '_deserialize' | 'evaluate' | 'resolveParams' | 'getVariable';

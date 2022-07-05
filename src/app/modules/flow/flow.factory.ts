@@ -7,11 +7,13 @@ import { ModuleTypes } from '../../data/entity-metadata';
 
 export class FlowFactory {
 
-  public static objection(): FlowStep {
+  public static objection(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Objection',
       nodeIcon: 'address-book',
       component: FlowObjectionComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         data: {
           title: 'Objection',
@@ -22,11 +24,13 @@ export class FlowFactory {
     });
   }
 
-  public static callTypeDecision(): FlowStep {
+  public static callTypeDecision(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Call Type',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         data: {
           title: 'Call Type',
@@ -37,11 +41,13 @@ export class FlowFactory {
     });
   }
 
-  public static webLeadsType(): FlowStep {
+  public static webLeadsType(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Search and List',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         data: {
           title: 'Search and List',
@@ -52,11 +58,13 @@ export class FlowFactory {
     });
   }
 
-  public static searchNListLeads(): FlowStep {
+  public static searchNListLeads(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Search Leads',
       nodeIcon: 'address-book',
       component: FlowListComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.LEAD,
         data: {
@@ -73,11 +81,13 @@ export class FlowFactory {
   }
 
 
-  public static searchNListContacts(): FlowStep {
+  public static searchNListContacts(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Search Contacts',
       nodeIcon: 'address-book',
       component: FlowListComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.CONTACT,
         data: {
@@ -93,11 +103,13 @@ export class FlowFactory {
     })
   }
 
-  public static createLead(): FlowStep {
+  public static createLead(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.LEAD,
         data: {
@@ -118,11 +130,13 @@ export class FlowFactory {
     });
   };
 
-  public static editLead(resolveId: ModuleTypes | null): FlowStep {
+  public static editLead(resolveId: ModuleTypes | null, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.LEAD,
         data: {
@@ -138,11 +152,13 @@ export class FlowFactory {
     });
   };
 
-  public static createContact(resolveId: ModuleTypes | null = null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static createContact(resolveId: ModuleTypes | null = null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.CONTACT,
         data: {
@@ -165,11 +181,13 @@ export class FlowFactory {
     });
   }
 
-  public static createDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static createDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.DEAL,
         data: {
@@ -189,11 +207,13 @@ export class FlowFactory {
   };
 
 
-  public static createDeal1(): FlowStep {
+  public static createDeal1(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.DEAL,
         data: {
@@ -211,11 +231,13 @@ export class FlowFactory {
     });
   };
 
-  public static editDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static editDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Deal Info',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.DEAL,
         data: {
@@ -232,11 +254,13 @@ export class FlowFactory {
     });
   };
 
-  public static setLeadSource(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static setLeadSource(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Select Lead Source',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.LEAD,
         data: {
@@ -255,11 +279,13 @@ export class FlowFactory {
     });
   };
 
-  public static opportunityList(resolveQuery: {[key: string]: any} = {}): FlowStep {
+  public static opportunityList(resolveQuery: {[key: string]: any} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Opportunity List',
       nodeIcon: 'address-book',
       component: FlowListComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.DEAL,
         data: {
@@ -278,11 +304,13 @@ export class FlowFactory {
     });
   };
 
-  public static noOutcomeList(resolveQuery: {[key: string]: any} = {}): FlowStep {
+  public static noOutcomeList(resolveQuery: {[key: string]: any} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'No Outcome List',
       nodeIcon: 'address-book',
       component: FlowListComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.DEAL,
         data: {
@@ -302,11 +330,13 @@ export class FlowFactory {
     });
   };
 
-  public static relationshipBuilding(resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static relationshipBuilding(resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Relationship Building',
       nodeIcon: 'fa-gear',
       component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         data: {
           title: 'Relationship Building',
@@ -318,11 +348,13 @@ export class FlowFactory {
     })
   }
 
-  public static powerQuestion(resolveData: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static powerQuestion(resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Power Question',
       nodeIcon: 'fa-address-book',
       component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         data: {
           title: 'Power Question',
@@ -334,11 +366,13 @@ export class FlowFactory {
     })
   }
 
-  public static searchNListWebLeads(resolveQuery: {[key: string]: ModuleTypes} = {}): FlowStep {
+  public static searchNListWebLeads(resolveQuery: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'address-book',
       component: FlowListComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.LEAD,
         data: {
@@ -356,11 +390,13 @@ export class FlowFactory {
     return FlowFactory.step(data);
   }
 
-  public static setAppointment(resolvePayloadAdditions: {[key: string]: ModuleTypes} = {}):FlowStep {
+  public static setAppointment(resolvePayloadAdditions: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}):FlowStep {
     return new FlowStep({
       nodeText: 'Set Appointment',
       nodeIcon: 'address-book',
       component: FlowAppointmentComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.EVENT,
         data: {
@@ -381,11 +417,13 @@ export class FlowFactory {
     });
   }
 
-  public static verifyInfo(): FlowStep {
+  public static verifyInfo(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Verify',
       nodeIcon: 'address-book',
       component: FlowDataComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         module: ModuleTypes.CONTACT,
         data: {
@@ -395,11 +433,13 @@ export class FlowFactory {
     });
   };
 
-  public static recap(): FlowStep {
+  public static recap(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Recap',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         data: {
           title: 'Recap Process / Verify Contact ',
@@ -409,11 +449,13 @@ export class FlowFactory {
     });
   }
 
-  public static end(): FlowStep {
+  public static end(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'End',
       nodeIcon: 'address-book',
       component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
       state: {
         data: {
           title: 'End',

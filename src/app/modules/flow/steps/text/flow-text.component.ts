@@ -49,7 +49,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.ModuleTypes = ModuleTypes;
 
     this.callAPI = entityCollectionServiceFactory.create(ModuleTypes.CALL);
-    this.noteAPI = entityCollectionServiceFactory.create(ModuleTypes.NOTE);
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.webLeadTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
   }

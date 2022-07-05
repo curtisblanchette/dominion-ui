@@ -17,6 +17,7 @@ export class FlowProcess extends FlowBaseModel {
   public links: FlowLink[] = [];
   public currentStep: FlowCurrentStep | null;
   public stepHistory: FlowStepHistoryEntry[];
+  public variables: { [key: string]: any };
 
   constructor(
     @Inject(Store) private store: Store<fromFlow.FlowState>,
@@ -54,6 +55,10 @@ export class FlowProcess extends FlowBaseModel {
     });
     this.store.select(fromFlow.selectStepHistory).subscribe(stepHistory => {
       this.stepHistory = stepHistory;
+    });
+
+    this.store.select(fromFlow.selectAllVariables).subscribe(variables => {
+      this.variables = variables;
     });
 
     if(!this.id) {
