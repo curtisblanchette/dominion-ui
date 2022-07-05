@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.9.26 (2022-07-04)
+
+
+### Bug Fixes
+
+* **develop:** bugfix galore ([8c1af3a](https://github.com/4iiz/dominion-ui/commit/8c1af3a2a72c595d0964ab5a76711f1096aadf2e))
+
 ### 1.9.25 (2022-07-04)
 
 ### 1.9.24 (2022-07-04)
