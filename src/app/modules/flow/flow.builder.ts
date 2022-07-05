@@ -40,9 +40,9 @@ export class FlowBuilder {
     const setLeadSource = FlowFactory.setLeadSource(ModuleTypes.LEAD);
     const oppList = FlowFactory.opportunityList({leadId: ModuleTypes.LEAD});
     const toOppList = FlowFactory.link(editLead, oppList);
-    const createOpp = FlowFactory.createDeal(null, {lead: ModuleTypes.LEAD});
+    const createOpp = FlowFactory.createDeal(null, { leadId: ModuleTypes.LEAD });
     const createOpp1 = FlowFactory.createDeal1();
-    const editOpp = FlowFactory.editDeal(ModuleTypes.DEAL, {lead: ModuleTypes.LEAD});
+    const editOpp = FlowFactory.editDeal(ModuleTypes.DEAL, {leadId: ModuleTypes.LEAD});
 
     const relationshipBuilding = FlowFactory.relationshipBuilding();
     const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);

@@ -1,6 +1,5 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType, models } from '../../../models';
@@ -18,7 +17,6 @@ import { firstValueFrom, lastValueFrom, map, of, take } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay } from 'rxjs/operators';
-import * as flowActions from '../../../../modules/flow/store/flow.actions';
 import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
 import { FormInvalidError } from '../../../../modules/flow';
 
@@ -60,7 +58,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   constructor(
     private store: Store<fromApp.AppState>,
     private route: ActivatedRoute,
-    private flowService: FlowService,
     private fb: FormBuilder,
     public navigation: NavigationService,
     private http: HttpClient,
@@ -89,10 +86,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.id = this.data.id
     }
 
-    this.store.select(fromFlow.selectVariableByKey(this.data.module)).pipe(untilDestroyed(this)).subscribe(variable => {
-      // TODO maybe we use this to set the id?
-      // console.log(variable);
-    });
     switch (this.options.state) {
       case 'create': {
         this.submitText = `Create New ${this.module}`;
@@ -144,14 +137,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.id = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveId)).pipe(take(1)));
     }
 
-    if(this.data.hasOwnProperty('additionalData')) {
-      for (const key of Object.keys(this.additionalData)) {
-        this.additionalData[key] = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(key)));
+    if(this.data.hasOwnProperty('resolveData')) {
+      for (const key of Object.keys(this.data.resolveData)) {
+        this.additionalData[key] = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveData[key])).pipe(take(1)));
       }
-    }
-
-    if (this.data.resolveAdditionalData && typeof this.data.resolveAdditionalData === 'function') {
-      this.additionalData = await this.data.resolveAdditionalData();
     }
 
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
@@ -283,7 +272,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});
-            this.store.dispatch(flowActions.AddVariablesAction({payload: { [this.module]: res?.id }}));
+            this.onSuccess.next( { [this.module]: res?.id });
           }) || Promise.resolve(this.cleanForm());
         }
       }
@@ -295,7 +284,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.form.markAsPristine();
     this.form.updateValueAndValidity();
     this.form.enable();
-    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    this.isValid.next(true);
+
   }
 
   private getControlData() {

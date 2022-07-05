@@ -68,6 +68,7 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
 
   public _deserialize(): FlowStep {
     const data: FlowStep = { ...cloneDeep(this) };
+
     // data.component = new (<FlowStepdata.component)();
     return new FlowStep(data);
   }

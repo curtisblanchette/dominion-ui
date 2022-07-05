@@ -10,7 +10,7 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
   selector: 'flow-data',
   template: `
     <div>{{options.dictation}}</div>
-    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="updateValidity($event)"></fiiz-data>
+    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="updateValidity($event)" (onSuccess)="onSuccess($event)"></fiiz-data>
   `,
   styleUrls: ['../_base.scss']
 })
@@ -37,6 +37,11 @@ export class FlowDataComponent implements AfterViewInit, OnDestroy, OnSave, OnBa
 
   onSave(): Promise<any> {
     return this.cmp.save();
+  }
+
+  onSuccess(record: {[key:string]: string }) {
+    // variables to be saved after a step should come back here.
+    this.store.dispatch(flowActions.AddVariablesAction({payload: record }));
   }
 
   onBack() {

@@ -16,7 +16,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public _dynamicService: EntityCollectionDataService<DominionType>;
 
   public type: any;
-  public additionalData: any;
+  public additionalData: any = {};
 
   public entityMap$: Observable<any> = of([]);
   public count$: Observable<number>;
