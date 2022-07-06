@@ -40,7 +40,6 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   @Input('position') position:string = 'bottom-right';
   @Input('showDefault') showDefault!: boolean;
 
-
   @HostBinding('attr.disabled')
   isDisabled = false;
 
@@ -66,20 +65,17 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
     dataServiceFactory: DefaultDataServiceFactory,
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
-
-
-  }
-
-  public async ngAfterViewInit() {
     this.setContext(this);
   }
 
+  public async ngAfterViewInit() {
+    await this.resolveDropdowns();
+  }
 
   async ngOnInit() {
     if( this.default ){
       this.label = this.default;
     }
-
   }
 
   public toggle() {
@@ -90,7 +86,6 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
     this.label = item.label;
     this.default = item.id;
   }
-
 
   async writeValue(value: string) {
     this.selected = await firstValueFrom(this.items$).then(items => items.find(item => item.id == value));

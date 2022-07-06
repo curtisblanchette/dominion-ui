@@ -2,7 +2,6 @@
 import { ActionReducer, INIT, UPDATE } from "@ngrx/store";
 import { AppState } from './app.reducer';
 import * as flowActions from '../modules/flow/store/flow.actions';
-import { FlowStep } from '../modules/flow';
 
 export const hydrationMetaReducer = (
   reducer: ActionReducer<AppState>

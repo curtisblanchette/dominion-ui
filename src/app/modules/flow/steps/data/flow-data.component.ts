@@ -14,7 +14,7 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
   `,
   styleUrls: ['../_base.scss']
 })
-export class FlowDataComponent implements AfterViewInit, OnDestroy, OnSave, OnBack, OnNext {
+export class FlowDataComponent implements OnDestroy, OnSave, OnBack, OnNext {
 
   @Input('module') module: ModuleTypes;
   @Input('data') data: any;
@@ -25,10 +25,6 @@ export class FlowDataComponent implements AfterViewInit, OnDestroy, OnSave, OnBa
   constructor(
     private store: Store<FlowState>
   ) {
-  }
-
-  public async ngAfterViewInit() {
-    await this.cmp.resolveDropdowns();
   }
 
   updateValidity(isValid: boolean) {

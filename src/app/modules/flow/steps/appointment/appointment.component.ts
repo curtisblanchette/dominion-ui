@@ -133,10 +133,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public async ngAfterViewInit() {
-    for (const dropdown of this.dropdowns) {
-      const data: any = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
-      dropdown.items$ = of(CustomDataService.toDropdownItems(data.rows));
-    }
     this.initEventSlots();
   }
 

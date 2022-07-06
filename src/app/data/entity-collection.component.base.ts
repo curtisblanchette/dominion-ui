@@ -7,6 +7,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { AfterContentInit, Inject, Input, OnDestroy } from '@angular/core';
 import { ModuleTypes } from './entity-metadata';
 import { FiizSelectComponent } from '../common/components/ui/forms';
+import { delay } from 'rxjs/operators';
 
 
 @UntilDestroy()
@@ -53,20 +54,8 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
    * which aren't available at the child base class
    * @param parentContext
    */
-  public async setContext(parentContext: any) {
+  public setContext(parentContext: any) {
     this.parentContext = parentContext;
-
-    if(parentContext instanceof FiizSelectComponent) {
-      if(this.options?.remote) {
-
-        this.parentContext.items$ = this._dynamicService.getWithQuery({}).pipe(take(1), map((res: any) => {
-          return res.map((res: any)=> {
-            return {id: res.id, label: res.name };
-          })
-        }));
-      }
-    }
-
   }
 
   public async ngAfterContentInit() {
@@ -86,6 +75,20 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
        * if the step was passed an additionalData <Promise> resolve it now
        */
       this.additionalData = await this.data.resolveAdditionalData();
+    }
+  }
+
+  public resolveDropdowns() {
+    if(this.parentContext instanceof FiizSelectComponent) {
+      if(this.options?.remote) {
+
+        this.parentContext.items$ = this._dynamicService.getWithQuery({}).pipe(
+          map((res: any) => {
+            return res.map((res: any)=> {
+              return {id: res.id, label: res.name };
+            });
+          }));
+      }
     }
   }
 

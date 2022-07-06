@@ -150,7 +150,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
               delete entity[prop];
             }
           });
-          // await this.resolveDropdowns();
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
 
@@ -160,7 +159,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           await this.dateValidation();
         }
       } else {
-        await this.resolveDropdowns();
         await this.dateValidation();
       }
     });
@@ -237,19 +235,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         });
       }
 
-    }
-    return;
-  }
-
-
-  /**
-   * Get Data for Dropdowns.
-   * @return void
-   */
-  public async resolveDropdowns(): Promise<void> {
-    for(const dropdown of this.dropdowns) {
-      const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[dropdown.module]}`)) as DropdownItem[];
-      dropdown.items$ = of(CustomDataService.toDropdownItems(data));
     }
     return;
   }

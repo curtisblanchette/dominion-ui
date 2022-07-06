@@ -87,43 +87,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'recap' : {
 
-        if( this.allVars.set_appointment ){
-
-          const eventPayload = {
-            dealId : this.allVars.deal,
-            contactId : this.allVars.contact,
-            title : this.allVars.event_title,
-            description : this.allVars.event_desc,
-            startTime : this.allVars.appt_date_time,
-            endTime : this.allVars.appt_end_date_time,
-            // typeId : await this.map.eventType(),
-            officeId : this.allVars.office
-          };
-
-          // const callPayload = {
-          //   leadId : this.allVars.lead,
-          //   dealId : this.allVars.deal,
-          //   startTime : dayjs().format(),
-          //   direction : this.allVars.call_type,
-          //   // outcomeId : await this.map.callOutcome(),
-          //   // typeId : await this.map.callType(),
-          //   // statusId : await this.map.callStatus(),
-          //   description : '', // Need a field for it as of now
-          //   trackingNumber : '', // Not required as of now
-          //   dialledNumber : '' // Not required as of now
-          // };
-
-          const notesPayload = {
-            entityId : this.allVars.deal,
-            entityName : `${ModuleTypes.DEAL.charAt(0).toUpperCase()}${ModuleTypes.DEAL.slice(1)}`,
-            content : this.allVars.notes || ''
-          };
-
-          this._dynamicCollectionService.add(<DominionType><unknown>eventPayload).subscribe().add();
-          // this.callAPI.add(<DominionType><unknown>callPayload).subscribe().add();
-          this.noteAPI.add(<DominionType><unknown>notesPayload).subscribe().add();
-
-        }
       }
         break;
     }
