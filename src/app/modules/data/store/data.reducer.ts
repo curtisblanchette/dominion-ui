@@ -13,7 +13,7 @@ export const reducer = createReducer(
   initialState,
   on(dataActions.GetPerPageAction, (state) => ({ ...state })),
   on(dataActions.SetPerPageAction, (state, {payload}) =>  {
-    localStorage.setItem('perPage', payload);
+    // localStorage.setItem('perPage', payload);
     return ({ ...state, perPage: payload })
   }),
 

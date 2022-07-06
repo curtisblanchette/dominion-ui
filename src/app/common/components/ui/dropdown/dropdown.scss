@@ -30,18 +30,22 @@
 
   &__content {
     position: absolute;
-    z-index: 1;
     list-style: none;
     background-color: $slate4;
-    @include elevate(2);
     padding: 0;
     margin: 0;
     top: 54px;
     border-radius: $button-border-radius;
     white-space: nowrap;
     min-width: 100%;
+    z-index: 10;
 
-    li {
+    &__wrapper {
+      background: $slate3;
+      @include elevate(2);
+    }
+
+    div {
 
       i {
         padding-right: 10px;

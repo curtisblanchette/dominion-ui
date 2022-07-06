@@ -1,4 +1,6 @@
 @import '../../assets/css/mixins';
+@import '../../assets/css/functions';
+
 // colors
 $grey1: #E9E9E9;
 $grey2: #CAD2E2;
@@ -35,6 +37,8 @@ $input-margin-bottom: 0; //14px;
 $focusring: inset 0 0 1px 2px $blue3;
 $focusring-moz-mac:  inset 0 0 0 1px -moz-mac-focusring;
 
+
+
 // button defaults
 $button-border-radius: 6px;
 $button-padding-lr: 1.5em;
@@ -46,3 +50,6 @@ $text1: #C6CEED;
 $container-width: 1440px;
 $navbar-height: 64px;
 $full-height-minus-navbar: calc(100% - #{$navbar-height});
+
+
+$placeholder-color: shade($text1, 25%);

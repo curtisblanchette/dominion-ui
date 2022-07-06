@@ -11,7 +11,6 @@ export enum ModuleTypes {
   LEAD_SOURCE = 'leadSource',
   ROLE = 'role',
   PRACTICE_AREA = 'practiceArea',
-  NOTE = 'note',
   OFFICE = 'office'
 }
 
@@ -46,7 +45,6 @@ const entityMetadata: EntityMetadataMap = {
   [ModuleTypes.CAMPAIGN]: {},
   [ModuleTypes.LEAD_SOURCE]: {},
   [ModuleTypes.OFFICE]: {},
-  [ModuleTypes.NOTE]: {},
 
   role: { noChangeTracking: true },
   [ModuleTypes.PRACTICE_AREA]: { noChangeTracking: true },
@@ -71,7 +69,6 @@ export const pluralNames = {
   [ModuleTypes.EVENT]: 'events',
   [ModuleTypes.CAMPAIGN]: 'campaigns',
   [ModuleTypes.LEAD_SOURCE]: 'leadSources',
-  [ModuleTypes.NOTE]: 'notes',
   [ModuleTypes.OFFICE]: 'offices',
 
   role: 'roles',

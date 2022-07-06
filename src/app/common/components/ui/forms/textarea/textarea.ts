@@ -1,4 +1,4 @@
-import { Component, forwardRef, HostBinding, Input, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, Renderer2, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -11,19 +11,31 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     multi: true
   }]
 })
-export class FiizTextAreaComponent implements ControlValueAccessor {
+export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewInit {
+
+  @Input('label') public label: string | undefined;
+  @Input('id') id!: string;
   @Input('autofocus') autofocus = false;
   @Input('placeholder') placeholder = '';
-  @ViewChild('textarea') textarea:any;
+  @ViewChild('textarea', { read: ElementRef }) textarea:ElementRef;
 
   @Input('height') height = '35px';
 
   onChange:any;
   onTouched:any;
 
+  constructor(private renderer: Renderer2) {}
+
+  public ngAfterViewInit() {
+
+  }
+
   writeValue(value: any): void {
-    const div = this.textarea.nativeElement;
-    this.renderer.setProperty(div, 'textContent', value);
+    if(this.textarea?.nativeElement) {
+      const div = this.textarea.nativeElement;
+      this.renderer.setProperty(div, 'textContent', value);
+    }
+
   }
 
   registerOnChange(fn: any): void {
@@ -38,9 +50,6 @@ export class FiizTextAreaComponent implements ControlValueAccessor {
     const div = this.textarea.nativeElement;
     const action = isDisabled ? 'addClass' : 'removeClass';
     this.renderer[action](div, 'disabled');
-  }
-
-  constructor(private renderer: Renderer2) {
   }
 
   change($event:any) {

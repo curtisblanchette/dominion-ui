@@ -6,7 +6,7 @@ import { firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
-import { FlowHostDirective } from '../index';
+import { FlowHostDirective, FlowStep } from '../index';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
@@ -67,5 +67,38 @@ export class FlowEffects {
       })
     ), { dispatch: false }
   );
+
+  onNextStep$ = createEffect((): any =>
+  this.actions$.pipe(
+    ofType(flowActions.NextStepAction),
+    withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
+    tap(async (action: any) => {
+      let [payload, variables]: [any, any] = action;
+      let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
+
+      if(!step) {
+        const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
+        console.log(router);
+      }
+
+      if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
+        await (<FlowStep>step).beforeRoutingTriggers(variables);
+      }
+      if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
+        const fn = eval((<FlowStep>step).beforeRoutingTriggers);
+        await fn(variables);
+      }
+
+      if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
+        await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(variables);
+      }
+      if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
+        const fn = eval(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers);
+        await fn(variables);
+      }
+
+      return;
+    })
+  ), { dispatch: false })
 
 }

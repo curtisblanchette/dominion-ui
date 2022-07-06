@@ -4,7 +4,7 @@ import { FlowHostDirective, FlowObjectionComponent, FlowStep, FlowStepHistoryEnt
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
 
@@ -58,13 +58,17 @@ export class FlowComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
 
+
   }
 
   public async ngOnInit() {
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
-    await this.flowService.start(this.flowHost);
+
+    // quickly check for an existing process and pass it to start command
+    const processExists = await lastValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
+    await this.flowService.start(this.flowHost, !!processExists.length);
 
   }
 
@@ -95,7 +99,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     switch(action) {
       case 'objection': {
         // find the objection step somehow
-        const objection = this.flowService.builder.process.steps.find(step => step.component === FlowObjectionComponent);
+        const objection = this.flowService.builder.process.steps.find(step => step.component === "FlowObjectionComponent");
 
         if(objection && objection.id) {
           return this.goTo(objection.id);
@@ -103,6 +107,8 @@ export class FlowComponent implements OnInit, OnDestroy {
       }
       break;
       case 'end-call': {
+
+        this.flowService.restart(this.flowHost);
 
       }
       break;
@@ -117,7 +123,7 @@ export class FlowComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this.store.dispatch(flowActions.ResetAction());
+    // this.store.dispatch(flowActions.ResetAction());
   }
 
   public menuClickAction(event: string) {

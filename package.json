@@ -1,6 +1,6 @@
 {
   "name": "dominion-ui",
-  "version": "1.9.15",
+  "version": "1.9.29",
   "scripts": {
     "ng": "ng",
     "start": "ng serve ",
@@ -19,7 +19,7 @@
   },
   "private": true,
   "dependencies": {
-    "@4iiz/corev2": "0.2.2",
+    "@4iiz/corev2": "0.4.2",
     "@angular/animations": "~13.2.0",
     "@angular/cdk": "^13.2.6",
     "@angular/common": "~13.2.0",
@@ -43,6 +43,7 @@
     "intl-tel-input": "^17.0.16",
     "lodash": "^4.17.21",
     "ng2-date-picker": "^13.1.1",
+    "ngrx-store-localstorage": "^13.0.1",
     "ngx-pagination": "^5.1.1",
     "ngx-toastr": "^14.3.0",
     "normalize.css": "^8.0.1",

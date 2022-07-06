@@ -1,6 +1,5 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FlowService } from '../../../../modules/flow/flow.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType, models } from '../../../models';
@@ -15,11 +14,10 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { ModuleTypes, uriOverrides } from '../../../../data/entity-metadata';
-import { firstValueFrom, map, of, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, map, of, take } from 'rxjs';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay } from 'rxjs/operators';
-import * as flowActions from '../../../../modules/flow/store/flow.actions';
 import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
 import { FormInvalidError } from '../../../../modules/flow';
 
@@ -86,7 +84,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   constructor(
     private store: Store<fromApp.AppState>,
     private route: ActivatedRoute,
-    private flowService: FlowService,
     private fb: FormBuilder,
     public navigation: NavigationService,
     private http: HttpClient,
@@ -119,11 +116,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     if (!this.id) {
       this.id = this.data.id
     }
-    console.log('after content init');
-    this.store.select(fromFlow.selectVariableByKey(this.data.module)).pipe(untilDestroyed(this)).subscribe(variable => {
-      // TODO maybe we use this to set the id?
-      // console.log(variable);
-    });
+
     switch (this.options.state) {
       case 'create': {
         this.submitText = `Create New ${this.module}`;
@@ -136,7 +129,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
 
     this.buildForm(this.options.fields);
-
 
     this.data$.pipe(
       untilDestroyed(this),
@@ -158,7 +150,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
               delete entity[prop];
             }
           });
-          await this.resolveDropdowns();          
+          // await this.resolveDropdowns();
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
 
@@ -171,24 +163,30 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         await this.resolveDropdowns();
         await this.dateValidation();
       }
-    });    
+    });
   }
 
   public async ngAfterViewInit() {
-    if (this.data.resolveId && typeof this.data.resolveId === 'function') {
-      /**
-       * if the step was passed a resolveId <Promise> resolve it now
-      */
-      this.id = await this.data.resolveId();
+
+    // if the step was module to resolve the ID for - do it now
+    if(this.data.hasOwnProperty('resolveId')) {
+      this.id = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveId)).pipe(take(1)));
+    }
+
+    if(this.data.hasOwnProperty('resolveData')) {
+      for (const key of Object.keys(this.data.resolveData)) {
+        this.additionalData[key] = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveData[key])).pipe(take(1)));
+      }
     }
 
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
-    
+
 
     if (this.id) {
       this.getData();
-    }    
+    }
+
 
   }
 
@@ -268,7 +266,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       const control = models[this.module][field];
 
       if (!['virtual', 'timestamp'].includes(control.type)) {
-
         form[field] = new FormControl(control.defaultValue, control.validators);
       }
 
@@ -348,7 +345,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public async save(): Promise<any> {
     let payload = this.form.value;
-    console.log('payload',payload);
+
     if (this.form.valid) {
       this.form.disable();
 
@@ -363,7 +360,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});
-            this.store.dispatch(flowActions.AddVariablesAction({payload: { [this.module]: res?.id }}));
+            this.onSuccess.next( { [this.module]: res?.id });
           }) || Promise.resolve(this.cleanForm());
         }
       }
@@ -375,7 +372,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.form.markAsPristine();
     this.form.updateValueAndValidity();
     this.form.enable();
-    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    this.isValid.next(true);
+
   }
 
   private getControlData() {

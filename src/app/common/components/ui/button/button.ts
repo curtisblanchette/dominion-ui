@@ -1,5 +1,5 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, AfterContentChecked, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'fiiz-button',
@@ -14,7 +14,7 @@ export class FiizButtonComponent implements AfterViewInit, AfterViewInit {
   @Input('theme') theme: string = 'light';
   @Input('disabled') isDisabled: boolean;
   @Input('class') class: string = '';
-  @Input('loading') loading$: Observable<boolean>;
+  @Input('loading') loading$: Observable<boolean> = of(false);
 
   @ViewChild('el') el: ElementRef;
 

@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, take } from 'rxjs';
@@ -8,7 +8,7 @@ import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
 import * as pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { IDropDownMenuItem } from '../dropdown';
-import { AppState } from '../../../../store/app.reducer';
+import * as fromApp from '../../../../store/app.reducer'
 import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
 import * as fromData from '../../../../modules/data/store/data.reducer';
@@ -23,7 +23,8 @@ export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   columns: Array<Object>;
-  query?: Function;
+  query?: any;
+  resolveQuery?: { [key: string]: string }
 }
 
 export enum SortDirections {
@@ -63,11 +64,18 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @Input('data') public override data: any;
   @Input('module') public override module: ModuleTypes;
   @Input('options') public override options: IListOptions;
-
   @Input('loadInitial') loadInitial: boolean = false;
+
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
+
+
+  public template$: Observable<TemplateRef<any> | undefined>;
+  @ViewChild('main') mainTemplate: TemplateRef<any>;
+  @ViewChild('loading') loadingTemplate: TemplateRef<any>;
+  @ViewChild('noDataFound') noDataTemplate: TemplateRef<any>;
+  @ViewChild('initial') initial: TemplateRef<any>
 
   public actionItems: IDropDownMenuItem[] = [
     {
@@ -83,12 +91,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   ];
 
   constructor(
-    private store: Store<AppState>,
+    private store: Store<fromApp.AppState>,
     private fb: FormBuilder,
-    private router: Router,
+    public flowService: FlowService,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
-    public flowService: FlowService
+    router: Router
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
@@ -114,6 +122,26 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
 
+    this.template$ = this.loadingSubject$.asObservable().pipe(
+      untilDestroyed(this),
+      map((res) => {
+        console.log(res);
+        const [loading, loaded, data] = res;
+
+        switch(true) {
+          case !loading && loaded && data.length > 0: {
+            return this.mainTemplate;
+          }
+          case !loading && !loaded: {
+            return this.loadingTemplate;
+          }
+          case !loading && loaded && (!data.length || data.length === 0): {
+            return this.noDataTemplate;
+          }
+        }
+        return this.noDataTemplate;
+    }));
+
     this.columns = getColumns(this.module);
 
     // set the default sort column from ./searchable-columns.ts
@@ -122,6 +150,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
+
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
@@ -134,6 +163,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.page = 1;
       this.searchInModule();
     });
+
+
   }
 
   public onClick($event: any, record: any) {
@@ -186,6 +217,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     }
   }
 
+
+
   public onCreateNew() {
     this.selected = null;
     this.values.emit( { module: this.module, record: null });
@@ -228,19 +261,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['sort'] = 'ASC';
     }
 
-    if(this.options.query) {
-      if(typeof this.options.query === 'function') {
-        for(const key of Object.keys(this.options.query())) {
-          params[key] = await this.options.query()[key];
-        }
-      } else {
-        for(const [key, value] of Object.entries(this.options.query)) {
-          // @ts-ignore
-          params[key] = value;
-        }
-      }
-    }
-    return params;
+    return {...params, ...this.options.query};
   }
 
   public performAction( value:any ){

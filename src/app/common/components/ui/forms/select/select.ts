@@ -1,4 +1,4 @@
-import { Component, forwardRef, HostBinding, Input, OnInit, HostListener } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input, OnInit, HostListener, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -22,7 +22,7 @@ export interface DropdownItem {
     multi: true
   }],
 })
-export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit {
+export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit, AfterViewInit {
   public selected!: any;
 
   @Input('items') items$: Observable<DropdownItem[]> = of([]);
@@ -32,6 +32,7 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
 
   @Input('id') id!: string;
   @Input('module') override module: ModuleTypes;
+  @Input('options') override options: { remote?: boolean };
 
   @Input('size') size!: 'small' | 'large';
   @Input('default') default: string | number | boolean | undefined;
@@ -39,7 +40,6 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   @Input('position') position:string = 'bottom-right';
   @Input('showDefault') showDefault!: boolean;
 
-  @Input('remote') remote: boolean = false;
 
   @HostBinding('attr.disabled')
   isDisabled = false;
@@ -67,12 +67,13 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
-    // if(this.remote) {
-    //   const service = this.createService(this.module, entityCollectionServiceFactory);
-    //   service.load();
-    //   this.items$ = service.filteredEntities$ as any;
-    // }
+
   }
+
+  public async ngAfterViewInit() {
+    this.setContext(this);
+  }
+
 
   async ngOnInit() {
     if( this.default ){

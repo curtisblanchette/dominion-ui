@@ -27,10 +27,7 @@
   </div>
   <div class="flex-table__body">
 
-    <ng-container [ngTemplateOutlet]="main" *ngIf="(loaded$ | async) && (data$ | async)?.length"></ng-container>
-    <ng-container [ngTemplateOutlet]="loading" *ngIf="loading$ | async"></ng-container>
-    <ng-container [ngTemplateOutlet]="noDataFound" *ngIf="(loaded$ | async) && (data$ | async)?.length == 0"></ng-container>
-    <ng-container [ngTemplateOutlet]="initial" *ngIf="!(loaded$ | async) && !(loading$ | async)"></ng-container>
+    <ng-container [ngTemplateOutlet]="template$ | async"></ng-container>
 
   </div>
   <div class="flex-table__footer">

@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.9.29 (2022-07-05)
+
+### 1.9.28 (2022-07-05)
+
+### 1.9.27 (2022-07-05)
+
+### 1.9.26 (2022-07-04)
+
+
+### Bug Fixes
+
+* **develop:** bugfix galore ([8c1af3a](https://github.com/4iiz/dominion-ui/commit/8c1af3a2a72c595d0964ab5a76711f1096aadf2e))
+
+### 1.9.25 (2022-07-04)
+
+### 1.9.24 (2022-07-04)
+
+### 1.9.23 (2022-07-04)
+
+### 1.9.22 (2022-07-04)
+
+### 1.9.21 (2022-06-30)
+
+
+### Bug Fixes
+
+* **develop:** ensure the builder resets and fix office selector in set appointment step ([7d8f586](https://github.com/4iiz/dominion-ui/commit/7d8f5861dd823f935b6bd18645d782d754fa342e))
+
+### 1.9.20 (2022-06-30)
+
+
+### Bug Fixes
+
+* **develop:** fix objection button ([c7a2582](https://github.com/4iiz/dominion-ui/commit/c7a2582f41efa46c83c2582d8b78c68b518d918c))
+
+### 1.9.19 (2022-06-30)
+
+### 1.9.18 (2022-06-30)
+
+### 1.9.17 (2022-06-30)
+
+### 1.9.16 (2022-06-30)
+
+
+### Bug Fixes
+
+* **serialization:** uncomment rest of flow ([a5284cc](https://github.com/4iiz/dominion-ui/commit/a5284cc4dcb643dcf0ee0a4c3e3a0c444b1d2fe6))
+
 ### 1.9.15 (2022-06-27)
 
 ### 1.9.14 (2022-06-27)

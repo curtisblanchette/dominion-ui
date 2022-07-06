@@ -26,6 +26,11 @@ import { ToastrModule } from 'ngx-toastr';
 import { ErrorInterceptor } from './common/interceptors/Error.interceptor';
 import { DataModule } from './modules/data/data.module';
 
+import { MetaReducer } from "@ngrx/store";
+import { hydrationMetaReducer } from './store/hydration.reducer';
+
+export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,7 +49,10 @@ import { DataModule } from './modules/data/data.module';
     StoreModule.forRoot({
       app: reducer
     }, {
+      metaReducers,
       runtimeChecks: {
+        // strictStateSerializability: true,
+        // strictActionSerializability: true,
         strictStateImmutability: false,
         strictActionImmutability: false,
       }

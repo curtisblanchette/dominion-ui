@@ -10,7 +10,7 @@
 
   &.has-label {
     margin-top: 30px;
-    color: rgba(198, 203, 237, .62);
+
   }
 
   &.ng-invalid {
@@ -52,6 +52,7 @@
   }
 
   label {
+    color: rgba(198, 203, 237, .62);
     text-transform: uppercase;
     font-size: 10px;
     margin-bottom: 0;
@@ -153,4 +154,24 @@
 
 ::-ms-input-placeholder { /* Microsoft Edge */
   color: #A7B2D2;
+}
+
+input::-webkit-input-placeholder {
+  color: $placeholder-color;
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+  color: $placeholder-color;
+}
+
+input::-moz-placeholder {  /* Firefox 19+ */
+  color: $placeholder-color;
+}
+
+input:-ms-input-placeholder {
+  color: $placeholder-color;
+}
+
+input::placeholder {
+  color: $placeholder-color;
 }

@@ -30,7 +30,7 @@ export class SystemEffects {
         // transform it into a DropdownItem[]
         res = res.map((ws: any) => ({id: ws.id, label: ws.name}));
 
-        localStorage.setItem('workspaces', JSON.stringify(res));
+        // localStorage.setItem('workspaces', JSON.stringify(res));
         return systemActions.SetWorkspacesAction({payload: res});
       })
     )

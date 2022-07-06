@@ -1,22 +1,35 @@
 <div *ngIf="data">
-  <h3>{{data.title}}</h3>
-  <p>{{data.body}}</p>
-  <ng-container [ngSwitch]="data.template">
 
+  <ng-container [ngSwitch]="data.template">
     <ng-template [ngSwitchCase]="'call-type'" *ngIf="form">
+      <h3>{{data.title}}</h3>
+      <p>{{data.body}}</p>
       <form [formGroup]="form">
         <fiiz-radio [items]="callTypes$" formControlName="call_type"></fiiz-radio>
       </form>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'web-lead'" *ngIf="form">
+      <h3>{{data.title}}</h3>
+      <p>{{data.body}}</p>
+
       <form [formGroup]="form">
         <fiiz-radio [items]="webLeadTypes$" formControlName="web_lead_options"></fiiz-radio>
       </form>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'relationship-building'">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet aperiam autem, dolore dolorem eum explicabo laborum maiores quae quasi! Animi corporis dolorum eum expedita iste placeat sapiente tenetur vel!</p>
+      <h3 style="text-align: center;">{{data.title}}</h3>
+      <p style="text-align: center;">{{data.body}}</p>
+
+      <p class="dictation">Excellent, so you were telling me your case is regarding...</p>
+      <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead'}" [options]="{state: 'edit', fields: ['practiceAreaId']}"></fiiz-data>
+      <p class="dictation">Fantastic, and which city are you calling from today?</p>
+      <fiiz-data [module]="ModuleTypes.ADDRESS" [data]="{id: undefined}" [options]="{state: 'edit', fields: ['stateCode']}"></fiiz-data>
+
+      <p style="text-align: center;">Remember to respond appropriately after they share their story in order to build a relationship based on the information that they share!</p>
+
+      <p class="dictation">Do you have a few minutes so that I can ask you some questions to see how we might be able to help you?</p>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'power-question'">
@@ -24,11 +37,26 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'recap'" >
-      This is the Recap Window, Where some information can be shown
-      <ul>
-        <li>Appointment Date Time : {{ allVars.appt_date_time }}</li>
-      </ul>
+
+      <div style="display: flex; flex-direction: row;">
+        <div style="flex:1;">
+          <p class="dictation">We will be sending information before, during the process and at the end of the process, so it is important that we verify the email.</p>
+          <b>Appointment Time:</b> {{ allVars.appt_start_time | date : 'longDate' }} at {{ allVars.appt_start_time | date : 'shortTime' }}
+          <p class="dictation">Here's the deal. At your consult, you will need to make a decision. Either you will decide to do nothing and keep your life the same as it is today, or you will choose one of the paths we identify to make your life better</p>
+          <p class="dictation">We always suggest that you bring some money to start the process; whatever is in your possibilities. Are there any family members or friends who must be involved to help you decide on how you are going to make your life better?</p>
+        </div>
+        <div style="flex: 1;">
+          <fiiz-data #contactForm [module]="ModuleTypes.CONTACT" [data]="{ resolveId: 'contact' }" [options]="{state: 'edit', fields: ['email'] }"></fiiz-data>
+          <fiiz-data #addressForm [module]="ModuleTypes.ADDRESS" [data]="{ resolveId: 'address' }" [options]="{state: 'edit', fields: ['line1', 'line2', 'city', 'stateCode', 'zipCode', 'countryCode'] }"></fiiz-data>
+        </div>
+      </div>
     </ng-template>
+
+    <ng-template [ngSwitchCase]="'end'">
+      <p>All information for this call has been captured. Thank you!</p>
+      <fiiz-button primary>End Call</fiiz-button>
+    </ng-template>
+
 
 
     <ng-template ngSwitchDefault>This would be a default template</ng-template>
