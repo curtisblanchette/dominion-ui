@@ -64,6 +64,21 @@ router-outlet {
       margin: 0;
     }
   }
+
+  &__floating {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    top: 25px;
+    left: 0;
+    right: 40px;
+    z-index: 9;
+  }
+
 }
 
 .container {

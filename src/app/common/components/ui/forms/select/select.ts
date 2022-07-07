@@ -1,4 +1,4 @@
-import { Component, forwardRef, HostBinding, Input, OnInit, HostListener, AfterViewInit } from '@angular/core';
+import { Component, forwardRef, HostBinding, Input, OnInit, HostListener, AfterViewInit, AfterContentInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { firstValueFrom, Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -22,7 +22,7 @@ export interface DropdownItem {
     multi: true
   }],
 })
-export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit, AfterViewInit {
+export class FiizSelectComponent extends EntityCollectionComponentBase implements ControlValueAccessor, OnInit, AfterViewInit, AfterContentInit {
   public selected!: any;
 
   @Input('items') items$: Observable<DropdownItem[]> = of([]);
@@ -68,8 +68,13 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
     this.setContext(this);
   }
 
-  public async ngAfterViewInit() {
+  public override async ngAfterContentInit() {
+    await super.ngAfterContentInit();
     await this.resolveDropdowns();
+  }
+
+  public async ngAfterViewInit() {
+    // await this.resolveDropdowns();
   }
 
   async ngOnInit() {
