@@ -55,10 +55,10 @@
     "zone.js": "^0.11.6"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~13.2.5",
+    "@angular-devkit/build-angular": "~14.0.5",
     "@angular/cli": "^14.0.5",
-    "@angular/compiler-cli": "~13.2.0",
-    "@ngrx/store-devtools": "^13.1.0",
+    "@angular/compiler-cli": "~14.0.5",
+    "@ngrx/store-devtools": "^14.0.1",
     "@types/intl-tel-input": "^17.0.4",
     "@types/jasmine": "~3.10.0",
     "@types/lodash": "^4.14.180",
@@ -71,6 +71,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "node-sass": "^7.0.1",
-    "typescript": "~4.5.2"
+    "typescript": "~4.6.2"
   }
 }
