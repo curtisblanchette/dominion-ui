@@ -12,6 +12,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { FlowEffects } from './store/flow.effects';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { FlowRouting } from './flow.routing';
+import { FlowBuilder } from './flow.builder';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { FlowRouting } from './flow.routing';
     NgxPaginationModule
   ],
   providers: [
-    FlowService
+    FlowService,
+    FlowBuilder
   ]
 })
 export class FlowModule {}

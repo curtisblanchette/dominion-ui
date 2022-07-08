@@ -1,5 +1,5 @@
 import { FlowProcess } from './classes/flow.process';
-import { Inject } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
@@ -7,6 +7,7 @@ import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
 
+@Injectable({providedIn: 'root'})
 export class FlowBuilder {
 
   public process: FlowProcess;
