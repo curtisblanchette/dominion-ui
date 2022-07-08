@@ -61,8 +61,9 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   public async ngAfterContentInit() {
 
     if (this.module) {
-      this._dynamicCollectionService = this.createService(types[this.module], this.entityCollectionServiceFactory);
-      this._dynamicService = this.dataServiceFactory.create(this.module);
+      const entityName = this.options.path ? this.options.path : this.module;
+      this._dynamicCollectionService = this.createService(entityName, this.entityCollectionServiceFactory);
+      this._dynamicService = this.dataServiceFactory.create(entityName);
 
       this.data$ = this._dynamicCollectionService.filteredEntities$;
       this.loading$ = this._dynamicCollectionService.loading$;
@@ -130,8 +131,8 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
   }
 
   /** return a service that has a dynamic type defined */
-  createService<T>(module: T, factory: EntityCollectionServiceFactory): EntityCollectionService<T> {
-    return factory.create<T>(this.module);
+  createService<T>(module:string , factory: EntityCollectionServiceFactory): EntityCollectionService<T> {
+    return factory.create<T>(module);
   }
 
 

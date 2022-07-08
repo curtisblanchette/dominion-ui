@@ -23,7 +23,9 @@ export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   columns: Array<Object>;
+  createNew?:boolean;
   query?: any;
+  path? : string;
   resolveQuery?: { [key: string]: string }
 }
 
@@ -125,7 +127,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.template$ = this.loadingSubject$.asObservable().pipe(
       untilDestroyed(this),
       map((res) => {
-        console.log(res);
         const [loading, loaded, data] = res;
 
         switch(true) {
