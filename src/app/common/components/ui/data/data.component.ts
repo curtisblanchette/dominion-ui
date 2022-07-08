@@ -24,6 +24,8 @@ import { FormInvalidError } from '../../../../modules/flow';
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
 import { INestedSetting } from '../../../../store/app.effects';
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+const PNF = require('google-libphonenumber').PhoneNumberFormat;
 
 export interface FiizDataComponentOptions {
   controls?: boolean;
@@ -149,13 +151,15 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
               delete entity[prop];
             }
+            
+
           });
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
 
           // workaround issue: https://github.com/angular/angular/issues/14542
           of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();
-          console.log('call from here');
+
           await this.dateValidation();
         }
       } else {
@@ -254,18 +258,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         form[field] = new FormControl(control.defaultValue, control.validators);
       }
 
-      if (['day', 'daytime'].includes(control.type)) {
-        form[field] = new FormControl({value: undefined, disabled: control.disabled}, [
-          ...control.validators
-          // (control: any) => {
-          //   return dayjs(control.value, 'DD-MM-YYYY').isBefore(dayjs()) ? {minDate: 'minDate Invalid'} : undefined
-          // },
-          // control => this.validationMaxDate && this.config &&
-          // dayjs(control.value, 'DD-MM-YYYY' || DemoComponent.getDefaultFormatByMode(this.pickerMode))
-          //   .isAfter(this.validationMaxDate)
-          //   ? {maxDate: 'maxDate Invalid'} : undefined
-        ])
-      }
+      // if (['calendar', 'timer', 'both'].includes(control.type)) {
+      //   form[field] = new FormControl({value: control.defaultValue, disabled: control.disabled}, [
+      //     ...control.validators
+      //   ])
+      // }
 
     }
     this.form = this.fb.group(form);
