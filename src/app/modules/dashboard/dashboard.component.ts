@@ -5,6 +5,7 @@ import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
 import { buttons } from './dashboard.buttons';
 import { bigButtons } from './dashboard.animations';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface IDashboardButton {
   title: string;
@@ -15,6 +16,7 @@ export interface IDashboardButton {
   roles?: string[];
 }
 
+@UntilDestroy()
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -32,7 +34,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private store: Store<fromLogin.LoginState>
   ) {
-    this.store.select(fromLogin.selectUser).subscribe((user: any) => {
+    this.store.select(fromLogin.selectUser).pipe(untilDestroyed(this)).subscribe((user: any) => {
       if (user) {
         this.user = user as User;
         this.quickStartMenu = buttons.user.get(user.roles);

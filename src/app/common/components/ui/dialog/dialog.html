@@ -1,0 +1,10 @@
+<div style="  background: white;  border-radius: 4px; padding: 24px;">
+  <i *ngIf="icon" class="fa fa-{{icon}} icon"></i>
+  <h3 class="title">{{title}}</h3>
+  <p class="subtitle">{{subtitle}}</p>
+  <div [innerHTML]="body | safe: 'html'" *ngIf="body"></div>
+  <div class="actions">
+    <button class="outline full-width" (click)="onCancel()" *ngIf="cancelText">{{cancelText}}</button>
+    <button class="{{submitButtonColor}} full-width" (click)="onSubmit()" *ngIf="submitText">{{submitText}}</button>
+  </div>
+</div>

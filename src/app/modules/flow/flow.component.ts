@@ -57,19 +57,15 @@ export class FlowComponent implements OnInit, OnDestroy {
     private flowService: FlowService,
     private router: Router
   ) {
-
-
-  }
-
-  public async ngOnInit() {
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
+  }
 
+  public async ngOnInit() {
     // quickly check for an existing process and pass it to start command
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
     await this.flowService.start(this.flowHost, !!processExists.length);
-
   }
 
   public onNext($event: Event) {

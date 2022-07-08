@@ -6,7 +6,9 @@ import * as fromApp from '../../store/app.reducer';
 import * as systemActions from './store/system.actions';
 import { DropdownItem } from '../../common/components/ui/forms';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-system',
   templateUrl: './system.component.html',
@@ -34,7 +36,7 @@ export class SystemComponent implements OnDestroy {
     this.loading$ = this.store.select(fromSystem.loading);
 
     /** initialized means that the AppState has been successfully populated */
-    this.initialized$ = this.store.select(fromApp.selectInitialized).subscribe(val => {
+    this.initialized$ = this.store.select(fromApp.selectInitialized).pipe(untilDestroyed(this)).subscribe(val => {
       this._initialized = val;
       if(this._initialized) {
         this.userInviteForm = this.createUserInviteForm();

@@ -39,7 +39,7 @@ router-outlet {
     display: flex;
     flex-direction: row;
     height: 100%;
-    gap: 1vw;
+    gap: 2vw;
   }
 
   &__content {
@@ -67,6 +67,8 @@ router-outlet {
 
   &__floating {
     display: flex;
+    gap: 1em;
+    width: 100%;
     position: absolute;
     flex-direction: row;
     justify-content: flex-end;

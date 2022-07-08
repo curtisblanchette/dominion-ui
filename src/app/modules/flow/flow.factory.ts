@@ -312,7 +312,7 @@ export class FlowFactory {
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
-        module: ModuleTypes.DEAL,
+        module: ModuleTypes.EVENT,
         data: {
           title: 'Opportunity List',
         },
@@ -322,7 +322,9 @@ export class FlowFactory {
           perPage: 25,
           columns: [],
           query: {
-            stageId: '2,4,5'
+            stageId: '2,4,5',
+            outcome: null,
+
           },
           resolveQuery
         }
@@ -390,6 +392,30 @@ export class FlowFactory {
     return FlowFactory.step(data);
   }
 
+  public static appointmentList(resolveQuery: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}):FlowStep {
+    const data = {
+      nodeText: 'Search Appointments',
+      nodeIcon: 'table-list',
+      component: FlowListComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
+      state: {
+        module: ModuleTypes.EVENT,
+        data: {
+          title: 'Search Appointments',
+        },
+        options: {
+          searchable: true,
+          editable: false,
+          perPage: 25,
+          columns: [],
+          resolveQuery
+        }
+      }
+    };
+    return FlowFactory.step(data);
+  }
+
   public static setAppointment(resolvePayloadAdditions: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}):FlowStep {
     return new FlowStep({
       nodeText: 'Set Appointment',
@@ -403,7 +429,7 @@ export class FlowFactory {
           title: 'Set Appointment',
         },
         options: {
-          state: 'create',
+          state: 'set',
           fields: [
             EventFields.TITLE,
             EventFields.DESCRIPTION,
@@ -432,6 +458,23 @@ export class FlowFactory {
       }
     });
   };
+
+  public static reasonForCall(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+    return new FlowStep({
+      nodeText: 'Reason For Call',
+      nodeIcon: 'address-book',
+      component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
+      state: {
+        data: {
+          title: 'Reason for Call',
+          template: 'reason-for-call'
+        }
+      }
+    });
+  }
+
 
   public static recap(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({

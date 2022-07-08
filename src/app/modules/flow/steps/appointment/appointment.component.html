@@ -1,5 +1,10 @@
 <div class="flex_main_wrapper">
+  <ng-container [ngTemplateOutlet]="vars.appointment_action === 'set' ? setAppointment : cancelReschedule"></ng-container>
+</div>
 
+
+<!-- Set Appointment Template -->
+<ng-template #setAppointment>
   <div class="flex_main_wrapper__header">
     <div class="flex_main_wrapper__header__title">
       Set Appointment
@@ -53,5 +58,19 @@
       "May I have a good email address for you and I will send you a confirmation of your appointment, it will also include driving directions to our office."
     </div>
   </ng-container>
+</ng-template>
+<!-- End -->
 
-</div>
+
+<!-- Cancel/Reschedule Appointment Template -->
+<ng-template #cancelReschedule>
+  <div class="flex_main_wrapper__header">
+    <div class="flex_main_wrapper__header__title">
+      Cancel/Reschedule Appointment
+    </div>
+    <div class="flex_main_wrapper__form">
+
+    </div>
+  </div>
+</ng-template>
+<!-- End -->

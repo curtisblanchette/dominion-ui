@@ -1,0 +1,35 @@
+
+:host {
+
+  .icon {
+    display: block;
+    font-size: 40px;
+    margin: 0 auto;
+    text-align: center;
+    color: #1D607D;
+  }
+  .title, .subtitle {
+    text-align:center;
+  }
+
+  .title {
+    font-weight: 700;
+    font-size: 32px;
+  }
+  .subtitle {
+    font-size:16px;
+  }
+}
+
+.actions {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+
+  button:first-child {
+    margin-right:5px;
+  }
+  button:last-child {
+    margin-left: 5px;
+  }
+}

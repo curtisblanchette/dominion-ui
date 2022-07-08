@@ -5,8 +5,8 @@
 
 :host {
   overflow: hidden;
-
-
+  border-radius: $button-border-radius;
+  @include elevate(1);
 
   fiiz-loading {
     width: 44px;
@@ -22,10 +22,11 @@
     justify-content: flex-start;
     gap: 1em;
     border: none;
-    background: $grey1;
+    background: $slate4;
     border-radius: $button-border-radius;
     font-size: 14px;
     font-weight: 500;
+    color: shade($text1, 10%);
     padding: 0 $button-padding-lr;
     height: 44px;
     line-height: 44px;
@@ -33,17 +34,16 @@
     transition: background .1s ease-in-out, width .25s ease-out;
     text-transform: capitalize;
 
-
     &.full-width {
       justify-content:space-around;
     }
 
     &:hover {
-      background: shade($grey1, 10%);
+      background: shade($slate4, 10%);
     }
 
     &:active {
-      background: shade($grey1, 20%);
+      background: shade($slate4, 20%);
     }
 
     &:focus {
@@ -184,7 +184,7 @@
 
     button {
       background: $red0;
-      color: #051323;
+      color: shade($red0, 60%);
       font-weight: 600;
 
       &:hover {

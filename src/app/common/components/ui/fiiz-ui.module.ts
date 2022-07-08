@@ -62,6 +62,9 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angul
     FiizListComponent,
     FiizDataComponent
   ],
+  providers: [
+
+  ],
   imports: [
     CommonModule,
     FormsModule,

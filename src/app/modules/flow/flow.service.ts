@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, of, take } from 'rxjs';
+import { firstValueFrom, Observable, of, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
@@ -15,6 +15,9 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ICall, ICallNote } from '@4iiz/corev2';
 import { UpdateStr } from '@ngrx/entity/src/models';
+import { User } from '../login/models/user';
+import * as fromLogin from '../login/store/login.reducer';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface IHistory {
   prevStepId: string;
@@ -22,6 +25,7 @@ export interface IHistory {
   data: any;
 }
 
+@UntilDestroy()
 @Injectable({providedIn: 'root'})
 export class FlowService {
   public builder: FlowBuilder;
@@ -29,6 +33,7 @@ export class FlowService {
   public callService: CustomDataService<DominionType>;
   public currentCall: ICall | undefined;
   public note: ICallNote | undefined
+  public user$: Observable<User | null>;
 
   constructor(
     private router: Router,
@@ -39,6 +44,7 @@ export class FlowService {
   ) {
     this.builder = new FlowBuilder(this.store, this);
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
+    this.user$ = this.store.select(fromLogin.selectUser);
   }
 
   public async restart(context: FlowHostDirective): Promise<any> {

@@ -2,7 +2,7 @@
 <form [formGroup]="form" (ngSubmit)="save()">
 
   <ng-container *ngFor="let control of controlData">
-    <fiiz-input *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
+    <fiiz-input #inputList *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
     <fiiz-date-picker
       *ngIf="['calendar', 'timer', 'both'].includes(control.type)"
       #picker

@@ -10,20 +10,17 @@ import { FlowService } from '../../flow.service';
 import * as fromApp from '../../../../store/app.reducer';
 import * as flowActions from '../../store/flow.actions';
 import * as fromFlow from '../../store/flow.reducer';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable, of, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DropdownItem, FiizSelectComponent } from '../../../../common/components/ui/forms';
-import { environment } from '../../../../../environments/environment';
-import { uriOverrides } from '../../../../data/entity-metadata';
-import { CustomDataService } from '../../../../data/custom.dataservice';
 import { HttpClient } from '@angular/common/http';
 import { FormInvalidError, OnSave } from '../../classes';
 import { DominionType, models } from '../../../../common/models';
 import { INestedSetting } from '../../../../store/app.effects';
 import { ManipulateType } from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
-
+import { Fields } from '../../../../common/models/event.model';
 
 @UntilDestroy()
 @Component({
@@ -43,8 +40,10 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public form: FormGroup;
   public showSlots: boolean = true;
   public offices$: Observable<DropdownItem[]>;
+  public vars: any;
+  public id: string;
 
-  // @Input('data') public override data: any;
+  @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], resolvePayloadAdditions: any };
 
   @ViewChildren('slotBtn') slotBtn: QueryList<ElementRef>;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
@@ -70,6 +69,10 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.store.select(fromApp.selectSettingByKey('timezone')).subscribe((res) => {
       this.timeZone = res.value;
     });
+
+    this.store.select(fromFlow.selectAllVariables).subscribe((res: any) => {
+      this.vars = res;
+    });
   }
 
   public async onSave() {
@@ -89,11 +92,20 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       this.form.disable();
 
       switch (this.options.state) {
-        case 'edit': {
-          return this.form.dirty && this._dynamicCollectionService.update(<DominionType>payload).toPromise()
+
+        case 'reschedule': {
+          // delete and create new
+          return this.form.dirty && this._dynamicCollectionService.delete(this.id).toPromise()
             .then(() => this.cleanForm()) || Promise.resolve(this.cleanForm());
         }
-        case 'create': {
+
+        case 'cancel': {
+          // delete appointment by id
+          return this.form.dirty && this._dynamicCollectionService.delete(this.id).toPromise()
+            .then(() => this.cleanForm()) || Promise.resolve(this.cleanForm());
+        }
+
+        case 'set': {
           // append additional data as payload attachments
           if(Object.keys(this.options.resolvePayloadAdditions).length) {
 
@@ -133,7 +145,19 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public async ngAfterViewInit() {
+
+    // if the step was module to resolve the ID for - do it now
+    if(this.data.hasOwnProperty('resolveId')) {
+      this.id = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveId)).pipe(take(1)));
+    }
+
+    if (this.id) {
+      this.getData();
+    }
+
+
     this.initEventSlots();
+
   }
 
   public initEventSlots(){
@@ -186,6 +210,11 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       this.flowService.addVariables(value);
       this.checkValidity();
     });
+  }
+
+  public getData() {
+    this._dynamicCollectionService.getByKey(this.id);
+    this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
   }
 
   public setEventTime(event: any) {

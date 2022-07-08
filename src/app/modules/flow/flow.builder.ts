@@ -2,10 +2,12 @@ import { FlowProcess } from './classes/flow.process';
 import { Inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
+import * as flowActions from './store/flow.actions';
 import { FlowFactory } from './flow.factory';
 import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
+import { FlowAppointmentComponent } from './steps';
 
 @Injectable({providedIn: 'root'})
 export class FlowBuilder {
@@ -225,8 +227,7 @@ export class FlowBuilder {
       .addLink(webLeadLink)
       .addRouter(contactRouter)
       .addLink(contactLink)
-      .addStep(oppList)
-      .addLink(toOppList)
+
       .addStep(createContact)
 
       .addStep(oppWithNoOutcomes)
