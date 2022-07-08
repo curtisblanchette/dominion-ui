@@ -64,10 +64,10 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
 
 
   writeValue(value: number) {
-    this.value = value;
-
     if(this.intlTelInput && value) {
       this.intlTelInput.setNumber(value.toString());
+    } else {
+      this.value = value;
     }
   }
 

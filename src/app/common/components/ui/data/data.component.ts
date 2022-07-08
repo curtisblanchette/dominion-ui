@@ -152,9 +152,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
               delete entity[prop];
             }
             
-            if(  models[this.module][prop] &&  models[this.module][prop].type && models[this.module][prop].type === 'tel' ){
-              entity[prop] = phoneUtil.format( phoneUtil.parse(entity[prop]) , PNF.NATIONAL);
-            }
 
           });
           this.form.addControl('id', new FormControl('', Validators.required));
@@ -162,7 +159,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
           // workaround issue: https://github.com/angular/angular/issues/14542
           of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();
-          
+
           await this.dateValidation();
         }
       } else {
