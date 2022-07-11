@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { firstValueFrom, mergeMap } from 'rxjs';
 import * as appActions from './app.actions';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ISettingResponse } from '@4iiz/corev2';
 import { Store } from '@ngrx/store';
+import { ToastrService } from 'ngx-toastr';
 import { AppState } from './app.reducer';
 
 export interface INestedSetting {
-  [key: string]: { value: any; unit: string; }
+  [key: string]: { id:number, value: any; unit: string; }
 }
 
 @Injectable()
@@ -18,7 +19,8 @@ export class AppEffects {
   constructor(
     private actions$: Actions,
     private http: HttpClient,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private toastr: ToastrService,
   ) {
 
   }
@@ -43,7 +45,7 @@ export class AppEffects {
          **/
         const toNestedSetting = (setting: ISettingResponse): INestedSetting => {
           return {
-            [setting.name]: { value: setting.value, unit: setting.unit }
+            [setting.name]: { id : setting.id, value: setting.value, unit: setting.unit }
           }
         }
 
@@ -59,6 +61,22 @@ export class AppEffects {
 
       })
     )
+  );
+
+  updateSettings$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(appActions.UpdateSettingsAction),
+      mergeMap(async ( action:any ) => {
+        const response = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/settings/${action['payload']['id']}`, { value : action['payload']['value'], unit : action['payload']['unit']} )).catch((err:HttpErrorResponse) => {
+          return err;
+        });
+        if( response instanceof HttpErrorResponse ){
+          this.toastr.error(response.error.name || '', response.error.message);
+        } else {
+          return true;
+        }
+      })
+    ), { dispatch: false }
   );
 
   getLookups$ = createEffect((): any =>

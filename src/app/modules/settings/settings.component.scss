@@ -1,0 +1,20 @@
+.settings-section {
+    
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    &__header {
+
+    }
+
+    &__form {
+        margin-bottom: 15px;
+    }
+
+    &__fields {
+        margin-bottom: 10px;
+    }
+
+}

@@ -1,16 +1,36 @@
 <div class="page-heading">
-  <h2 class="page-heading__title">Workspace Settings</h2>
+  <h2 class="page-heading__title">Workspace Settings</h2>   
+
+  <section class="settings-section">
+    <div class="settings-section__header">
+      <h3>General</h3>
+    </div>
+    <div class="settings-section__form">
+      <form [formGroup]="generalForm" (ngSubmit)="updateData()">
+        <ng-container *ngFor="let setting of generalSettings$ | async | keyvalue">
+          <div class="settings-section__fields">
+            <strong>{{getSettingDisplayName(setting.key)}}:</strong> 
+            <fiiz-input
+              type="text"
+              id="{{setting.key}}"
+              formControlName="{{setting.key}}"
+              placeholder="{{getSettingDisplayName(setting.key)}}"
+            >
+            </fiiz-input> 
+          </div>
+        </ng-container>
+        <div class="form-controls">
+          <fiiz-button primary class="full-width" type="submit">Update General Settings</fiiz-button>
+        </div>
+      </form>
+    </div>
+  </section>
 
   <h3>Appointments</h3>
   <div *ngFor="let setting of appointmentSettings$ | async | keyvalue">
     <strong>{{getSettingDisplayName(setting.key)}}:</strong> {{setting.value.value}} {{setting.value.unit}}
   </div>
 
-  <h3>General</h3>
-  <div *ngFor="let setting of generalSettings$ | async | keyvalue">
-    <strong>{{getSettingDisplayName(setting.key)}}:</strong> {{setting.value.value}} {{setting.value.unit}}
-  </div>
-
-  <pre>{{byKey$ | async | json}}</pre>
+  <!-- <pre>{{byKey$ | async | json}}</pre> -->
 </div>
 
