@@ -38,7 +38,7 @@ export class OutcomeFormComponent implements OnInit {
           searchable: true,
           editable: false,
           createNew: false,
-          path: 'noOutcomeList',
+          query : { savedSearch : 'no-outcome-list'},
           columns: []
         },
         page: 1,

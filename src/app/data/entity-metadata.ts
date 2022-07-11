@@ -57,8 +57,7 @@ const entityMetadata: EntityMetadataMap = {
   eventOutcome: { noChangeTracking: true },
   eventObjection: { noChangeTracking: true },
   eventType:  { noChangeTracking: true },
-  lostReason: { noChangeTracking: true },
-  noOutcomeList: { noChangeTracking: true }
+  lostReason: { noChangeTracking: true }
 };
 
 export const pluralNames = {
@@ -111,5 +110,4 @@ export const uriOverrides: { [key: string]: string } = {
   eventObjection: 'event-objections',
   eventType: 'event-types',
   lostReason: 'lost-reasons',
-  noOutcomeList: 'events/list/no-outcome-list'
 }

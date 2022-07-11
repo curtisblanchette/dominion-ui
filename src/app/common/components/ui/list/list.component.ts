@@ -25,7 +25,6 @@ export interface IListOptions {
   columns: Array<Object>;
   createNew?:boolean;
   query?: any;
-  path? : string;
   resolveQuery?: { [key: string]: string }
 }
 
