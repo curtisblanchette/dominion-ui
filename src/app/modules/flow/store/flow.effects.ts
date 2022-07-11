@@ -26,9 +26,9 @@ export class FlowEffects {
   goToStepById$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(flowActions.GoToStepByIdAction),
-      tap((action: { id: string, host: FlowHostDirective }) => {
+      tap((action: { id: string }) => {
         const id = action.id;
-        this.flowService.next(action.host);
+        this.flowService.next();
       })
     ), { dispatch: false }
   );
@@ -37,9 +37,7 @@ export class FlowEffects {
     this.actions$.pipe(
       ofType(flowActions.SetProcessIdAction),
       mergeMap( (action: any) => (
-        firstValueFrom(this.http.post(`${environment.dominion_api_url}/flow/summaries`, {
-          id: action.processId
-        }))
+        this.http.post(`${environment.dominion_api_url}/flow/summaries`, { id: action.processId })
       ))
     ), { dispatch: false }
   )
@@ -69,25 +67,25 @@ export class FlowEffects {
   );
 
   onNextStep$ = createEffect((): any =>
-  this.actions$.pipe(
-    ofType(flowActions.NextStepAction),
-    withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
-    tap(async (action: any) => {
-      let [payload, variables]: [any, any] = action;
-      let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
+    this.actions$.pipe(
+      ofType(flowActions.NextStepAction),
+      withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
+      tap(async (action: any) => {
+        let [payload, variables]: [any, any] = action;
+        let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
 
-      if(!step) {
-        const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
-        console.log(router);
-      }
+        if(!step) {
+          const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
+          console.log(router);
+        }
 
-      if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
-        await (<FlowStep>step).beforeRoutingTriggers(variables);
-      }
-      if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
-        const fn = eval((<FlowStep>step).beforeRoutingTriggers);
-        await fn(variables);
-      }
+        if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
+          await (<FlowStep>step).beforeRoutingTriggers(variables);
+        }
+        if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
+          const fn = eval((<FlowStep>step).beforeRoutingTriggers);
+          await fn(variables);
+        }
 
       if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
         await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(variables);
@@ -97,8 +95,9 @@ export class FlowEffects {
         await fn(variables);
       }
 
-      return;
-    })
-  ), { dispatch: false })
+        return;
+      })
+    ), { dispatch: false }
+  );
 
 }

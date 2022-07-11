@@ -40,7 +40,7 @@ export const AddRouterAction = createAction(
 
 export const UpdateCurrentStepAction = createAction(
   ActionTypes.UPDATE_CURRENT_STEP,
-  props<{ step?: FlowStep, variables?: {[key: string]: any}, valid?: boolean }>()
+  props<{ step: FlowStep, variables?: {[key: string]: any}, valid?: boolean }>()
 );
 
 export const SetStepHistoryAction = createAction(
@@ -50,7 +50,7 @@ export const SetStepHistoryAction = createAction(
 
 export const GoToStepByIdAction = createAction(
   ActionTypes.GO_TO_STEP,
-  props<{ id: string, host: FlowHostDirective}>()
+  props<{ id: string }>()
 );
 
 export const ResetAction = createAction(

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
 import { FlowHostDirective, FlowObjectionComponent, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
@@ -15,7 +15,7 @@ import { Dialog } from '@angular/cdk/dialog';
   styleUrls: ['../../../assets/css/_container.scss', './flow.component.scss'],
   animations: FlowTransitions
 })
-export class FlowComponent implements OnInit, OnDestroy {
+export class FlowComponent implements AfterViewInit, OnDestroy {
 
   animationIndex = 0;
   tabIndex = 1;
@@ -65,16 +65,17 @@ export class FlowComponent implements OnInit, OnDestroy {
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
   }
 
-  public async ngOnInit() {
-    // quickly check for an existing process and pass it to start command
+  public async ngAfterViewInit() {
+    // check for an existing process and pass it to start command
+    this.flowService.flowHost = this.flowHost;
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
-    await this.flowService.start(this.flowHost, !!processExists.length);
+    await this.flowService.start(!!processExists.length);
   }
 
   public onNext($event: Event) {
     $event.stopPropagation();
     this.animationIndex++;
-    return this.flowService.next(this.flowHost)
+    return this.flowService.next()
       .catch((err) => {
         if (err instanceof NoStepFoundError) {
           console.warn(err);
@@ -86,7 +87,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     $event.stopPropagation();
     this.animationIndex--;
 
-    return this.flowService.back(this.flowHost)
+    return this.flowService.back()
       .catch((err) => {
         if (err instanceof NoStepFoundError) {
           console.warn(err);
@@ -140,7 +141,7 @@ export class FlowComponent implements OnInit, OnDestroy {
     const next = this.flowService.builder.process.steps.findIndex(x => x.id === id);
     const current = this.flowService.builder.process.steps.findIndex(x => x.id === this.flowService?.builder.process.currentStep?.step?.id);
     next < current ? this.animationIndex-- : this.animationIndex++;
-    return this.flowService.goTo(this.flowHost, id);
+    return this.flowService.goTo(id);
   }
 
   public ngOnDestroy() {

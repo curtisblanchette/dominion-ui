@@ -10,7 +10,7 @@ import { Inject } from '@angular/core';
 import { FlowBaseModel } from './flow.baseModel';
 import { ProcessNotFoundError } from './flow.errors';
 import { Subscription } from 'rxjs';
-
+import { v4 as uuidv4 } from 'uuid';
 
 export class FlowProcess extends FlowBaseModel {
 
@@ -41,21 +41,15 @@ export class FlowProcess extends FlowBaseModel {
     }
     FlowProcess._instance = this;
 
-    this.store.select(fromFlow.selectFlow).subscribe(state => {
-      // is there an existing process? resume
-      // otherwise build
-      if(state.processId) {
-        this.id = state.processId;
-      }
+    if(!this.id) {
+      throw new ProcessNotFoundError();
+    } else {
+      this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
+    }
 
-      // getting Flow objects from their deserialized selectors below
-        // this.steps = state.steps;
-        // this.routers = state.routers;
-        // this.links = state.links;
-        // this.currentStep = state.currentStep;
-        // this.stepHistory = state.stepHistory;
+    this.store.select(fromFlow.selectProcessId).subscribe(id => {
+      this.id = id;
     });
-
     this.steps$ = this.store.select(fromFlow.selectSteps).subscribe(steps => {
       this.steps = steps;
     });
@@ -71,20 +65,14 @@ export class FlowProcess extends FlowBaseModel {
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory).subscribe(stepHistory => {
       this.stepHistory = stepHistory;
     });
-
     this.variables$ = this.store.select(fromFlow.selectAllVariables).subscribe(variables => {
       this.variables = variables;
     });
-
-    if(!this.id) {
-      throw new ProcessNotFoundError();
-    } else {
-      this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
-    }
-
   }
 
   public reset(): FlowProcess {
+    this.id = uuidv4();
+    this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
     this.store.dispatch(flowActions.ResetAction());
     return this;
   }

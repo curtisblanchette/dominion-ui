@@ -22,13 +22,14 @@ export class FiizDialogComponent {
     },
     public dialog: DialogRef
   ) {
-    Object.assign({
-      title: '',
-      body: '',
+    this.data = Object.assign({
+      title: 'Warning',
+      body: 'Something might happen!',
       buttons: {
         default: {
-          label: 'Ok', type: 'default', fn: () => {
-          }
+          label: 'Ok',
+          type: 'default',
+          fn: () => {}
         }
       }
     }, this.data);

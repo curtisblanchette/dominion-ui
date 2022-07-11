@@ -2,12 +2,10 @@ import { FlowProcess } from './classes/flow.process';
 import { Inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
-import * as flowActions from './store/flow.actions';
 import { FlowFactory } from './flow.factory';
 import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
-import { FlowAppointmentComponent } from './steps';
 
 @Injectable({providedIn: 'root'})
 export class FlowBuilder {
@@ -22,7 +20,7 @@ export class FlowBuilder {
   }
 
   public reset(): void {
-    this.process = new FlowProcess(this.store);
+    this.process.reset()
   }
 
   public async build(type?: string) {
@@ -34,7 +32,7 @@ export class FlowBuilder {
     const objection = FlowFactory.objection();
     // select call type
     const callType = FlowFactory.callTypeDecision(undefined, (vars: any) => { this.flowService.startCall(vars.call_type) });
-    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead}) });
+    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead});  });
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListContacts = FlowFactory.searchNListContacts()
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
