@@ -4,8 +4,6 @@
     <section class="flow-layout__sidebar">
       <fiiz-tab-nav [items]="[{key: 'notes', label: 'Notes'}, {key: 'timeline', label: 'Timeline'}]" (onSelect)="$event === 'notes' ? tabIndex = 1 : tabIndex = 0 "></fiiz-tab-nav>
       <ng-container *ngTemplateOutlet="tabIndex ? flowNotes : flowTimeline"></ng-container>
-      <fiiz-button>Objection</fiiz-button>
-      <fiiz-button>End Call</fiiz-button>
     </section>
     <section class="fab-button">
 

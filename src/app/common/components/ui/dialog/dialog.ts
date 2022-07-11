@@ -1,61 +1,56 @@
-// import { Component, Inject } from '@angular/core';
-// // import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-//
-// @Component({
-//   selector: 'dialog-content',
-//   templateUrl: './dialog.component.html',
-//   styleUrls: ['./dialog.component.scss']
-// })
-// export class DialogComponent {
-//   constructor(
-//     public dialogRef: MatDialogRef<DialogComponent>,
-//     @Inject(MAT_DIALOG_DATA) public data: {
-//       title: string;
-//       subtitle?: string;
-//       body?: string;
-//       icon: string;
-//       cancelText: string;
-//       submitText: string;
-//       submitButtonColor?: 'warning' | 'primary' | 'secondary'
-//     }) { }
-//
-//   onNoClick(): void {
-//     this.dialogRef.close();
-//   }
-//
-//   onCancel() {
-//     this.dialogRef.close(0);
-//   }
-//
-//   get cancelText() {
-//     return this.data.cancelText;
-//   }
-//
-//   onSubmit() {
-//     this.dialogRef.close(1);
-//   }
-//
-//   get submitText() {
-//     return this.data.submitText;
-//   }
-//
-//   get submitButtonColor() {
-//     return this.data.submitButtonColor || 'primary';
-//   }
-//
-//   get icon() {
-//     return this.data.icon;
-//   }
-//
-//   get title() {
-//     return this.data.title;
-//   }
-//
-//   get subtitle() {
-//     return this.data.subtitle;
-//   }
-//
-//   get body() {
-//     return this.data.body;
-//   }
-// }
+import { Component,  Inject } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+
+@Component({
+  selector: 'fiiz-dialog',
+  templateUrl: './dialog.html',
+  styleUrls: ['./dialog.scss']
+})
+export class FiizDialogComponent {
+
+  constructor(
+    @Inject(DIALOG_DATA) public data: {
+      title: string;
+      body: string;
+      buttons: {
+        [key: string]: {
+          label: string,
+          type: 'submit' | 'cancel' | 'custom' | 'default'
+          fn?: Function
+        }
+      }
+    },
+    public dialog: DialogRef
+  ) {
+    Object.assign({
+      title: '',
+      body: '',
+      buttons: {
+        default: {
+          label: 'Ok', type: 'default', fn: () => {
+          }
+        }
+      }
+    }, this.data);
+  }
+
+  onNoClick(): void {
+    this.onCancel();
+  }
+
+  onCancel() {
+    if(typeof this.data?.buttons['cancel']?.fn === 'function') {
+      this.data.buttons['cancel'].fn();
+    }
+
+    this.dialog.close();
+  }
+
+  onSubmit() {
+    if(typeof this.data?.buttons['submit']?.fn === 'function') {
+      this.data.buttons['submit'].fn();
+    }
+
+    this.dialog.close(1);
+  }
+}

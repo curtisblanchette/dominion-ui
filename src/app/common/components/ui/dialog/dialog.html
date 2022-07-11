@@ -1,10 +1,16 @@
-<div style="  background: white;  border-radius: 4px; padding: 24px;">
-  <i *ngIf="icon" class="fa fa-{{icon}} icon"></i>
-  <h3 class="title">{{title}}</h3>
-  <p class="subtitle">{{subtitle}}</p>
-  <div [innerHTML]="body | safe: 'html'" *ngIf="body"></div>
+
+<div class="header">
+  <div class="title">{{data.title}}</div>
+</div>
+<div class="content">
+  <div class="body" [innerHTML]="data.body | safe: 'html'" *ngIf="data.body"></div>
+</div>
+<div class="footer">
   <div class="actions">
-    <button class="outline full-width" (click)="onCancel()" *ngIf="cancelText">{{cancelText}}</button>
-    <button class="{{submitButtonColor}} full-width" (click)="onSubmit()" *ngIf="submitText">{{submitText}}</button>
+    <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['default']">{{data.buttons['default'].label}}</fiiz-button>
+    <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['cancel']">{{data.buttons['cancel'].label}}</fiiz-button>
+    <fiiz-button primary (click)="onSubmit()" *ngIf="data.buttons['submit']">{{data.buttons['submit'].label}}</fiiz-button>
   </div>
 </div>
+
+

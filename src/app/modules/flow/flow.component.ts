@@ -1,12 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
-import { FlowHostDirective, FlowObjectionComponent, FlowStep, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
+import { FlowHostDirective, FlowObjectionComponent, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { lastValueFrom, Observable, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
+import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   templateUrl: './flow.component.html',
@@ -55,7 +57,8 @@ export class FlowComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<fromFlow.FlowState>,
     private flowService: FlowService,
-    private router: Router
+    private router: Router,
+    private dialog: Dialog
   ) {
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
@@ -104,7 +107,29 @@ export class FlowComponent implements OnInit, OnDestroy {
       break;
       case 'end-call': {
 
-        this.flowService.restart(this.flowHost);
+        this.dialog.open(FiizDialogComponent, {
+          data: {
+            title: `You're about to end the call`,
+            body: `Are you sure you are ready to end the current call?`,
+            buttons: {
+              cancel: {
+                label: 'Cancel',
+                type: 'cancel',
+                fn: () => {
+                  // pass a function to be executed when this button is clicked
+                  // you may need to .bind() the external instances prototype to it
+                }
+              },
+              submit: {
+                label: `Yes, i'm sure.`,
+                type: 'submit',
+                fn: this.flowService.restart.bind(this.flowService)
+              }
+            }
+          }
+        });
+
+
 
       }
       break;

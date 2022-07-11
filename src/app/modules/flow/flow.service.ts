@@ -34,6 +34,7 @@ export class FlowService {
   public currentCall: ICall | undefined;
   public note: ICallNote | undefined
   public user$: Observable<User | null>;
+  public flowHost: FlowHostDirective;
 
   constructor(
     private router: Router,
@@ -47,15 +48,17 @@ export class FlowService {
     this.user$ = this.store.select(fromLogin.selectUser);
   }
 
-  public async restart(context: FlowHostDirective): Promise<any> {
+  public async restart(): Promise<any> {
     this.store.dispatch(flowActions.ResetAction());
     this.builder.reset();
     this.note = undefined;
     this.currentCall = undefined;
-    await this.start(context);
+    await this.start(this.flowHost);
   }
 
   public async start(context: FlowHostDirective, resume = false): Promise<any> {
+
+    this.flowHost = context;
 
     if(!resume) {
       await this.builder.build();
