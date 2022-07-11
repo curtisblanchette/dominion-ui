@@ -187,7 +187,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this._dynamicCollectionService.clearCache();
 
 
-    if (this.id) {
+    if (this.data.id) {
+      this.id = this.data.id;
       this.getData();
     }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -6,7 +6,7 @@ import { firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
-import { FlowHostDirective, FlowStep } from '../index';
+import { FlowStep } from '../index';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
@@ -17,11 +17,21 @@ export class FlowEffects {
     private actions$: Actions,
     private router: Router,
     private store: Store<fromFlow.FlowState>,
-    private flowService: FlowService,
-    private http: HttpClient
+    private http: HttpClient,
+    public flowService: FlowService,
   ) {
 
   }
+
+  onUpdateCurrentStep$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(flowActions.UpdateCurrentStepAction),
+      switchMap(async (action: { step: FlowStep }) => {
+
+        this.flowService.renderComponent(action.step);
+      })
+    ), { dispatch: false }
+  );
 
   goToStepById$ = createEffect((): any =>
     this.actions$.pipe(
@@ -70,34 +80,35 @@ export class FlowEffects {
     this.actions$.pipe(
       ofType(flowActions.NextStepAction),
       withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
-      tap(async (action: any) => {
+      mergeMap(async (action: any) => {
         let [payload, variables]: [any, any] = action;
         let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
 
         if(!step) {
           const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
           console.log(router);
-        }
+        } else {
+          if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
+            await (<FlowStep>step).beforeRoutingTriggers(variables);
+          }
+          if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
+            const fn = eval((<FlowStep>step).beforeRoutingTriggers);
+            await fn(variables, step);
+          }
 
-        if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
-          await (<FlowStep>step).beforeRoutingTriggers(variables);
-        }
-        if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
-          const fn = eval((<FlowStep>step).beforeRoutingTriggers);
-          await fn(variables);
-        }
+          if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
+            await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(variables);
+          }
+          if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
+            const fn = eval(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers);
+            await fn(variables, this.flowService.builder?.process?.currentStep?.step);
+          }
 
-      if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
-        await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(variables);
-      }
-      if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
-        const fn = eval(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers);
-        await fn(variables);
-      }
-
-        return;
+          return flowActions.UpdateCurrentStepAction({ step });
+        }
+        return flowActions.GoToStepByIdAction({id: ''});
       })
-    ), { dispatch: false }
+    ), { dispatch: true }
   );
 
 }

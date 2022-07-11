@@ -38,7 +38,6 @@ import { FlowBuilder } from './flow.builder';
     NgxPaginationModule
   ],
   providers: [
-    FlowService,
     FlowBuilder
   ]
 })

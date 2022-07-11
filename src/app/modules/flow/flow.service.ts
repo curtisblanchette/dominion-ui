@@ -17,6 +17,7 @@ import { ICall, ICallNote } from '@4iiz/corev2';
 import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromLogin from '../login/store/login.reducer';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IHistory {
   prevStepId: string;
@@ -26,22 +27,22 @@ export interface IHistory {
 
 @Injectable({providedIn: 'root'})
 export class FlowService {
-  public builder: FlowBuilder;
+  public id: string = uuidv4();
   public cmpReference: any;
   public callService: CustomDataService<DominionType>;
   public currentCall: ICall | undefined;
   public note: ICallNote | undefined
   public user$: Observable<User | null>;
-  public flowHost: FlowHostDirective;
+  public flowHost!: FlowHostDirective;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<fromFlow.FlowState>,
     private dataServiceFactory: DefaultDataServiceFactory,
-    private http: HttpClient
+    private http: HttpClient,
+    public builder: FlowBuilder,
   ) {
-    this.builder = new FlowBuilder(this.store, this);
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
     this.user$ = this.store.select(fromLogin.selectUser);
   }
@@ -62,16 +63,14 @@ export class FlowService {
     const step: FlowStep = this.builder.process.steps[0];
 
     if (step && step.id) {
-      this.store.dispatch(flowActions.UpdateCurrentStepAction({step: step}));
-      return this.renderComponent(step);
+      return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step }));
     }
     throw new NoStepFoundError();
   }
 
   public async resume(): Promise<any> {
     // resuming from store
-    const step = this.builder.process.currentStep?.step as FlowStep;
-    return this.renderComponent(step);
+    return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: this.builder.process.currentStep?.step as FlowStep }));
   }
 
   public startCall(direction: string): void {
@@ -197,8 +196,6 @@ export class FlowService {
   }
 
   public async renderComponent(step: FlowStep): Promise<void> {
-    this.store.dispatch(flowActions.UpdateCurrentStepAction({step: step, valid: false, variables: []}));
-
     const viewContainerRef = this.flowHost.viewContainerRef;
     viewContainerRef.clear();
 

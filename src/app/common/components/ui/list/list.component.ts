@@ -24,7 +24,7 @@ export interface IListOptions {
   editable: boolean;
   columns: Array<Object>;
   query?: any;
-  resolveQuery?: { [key: string]: string }
+  // resolveQuery?: { [key: string]: string }
 }
 
 export enum SortDirections {

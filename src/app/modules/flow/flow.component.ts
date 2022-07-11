@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
 import { FlowHostDirective, FlowObjectionComponent, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
@@ -15,7 +15,7 @@ import { Dialog } from '@angular/cdk/dialog';
   styleUrls: ['../../../assets/css/_container.scss', './flow.component.scss'],
   animations: FlowTransitions
 })
-export class FlowComponent implements AfterViewInit, OnDestroy {
+export class FlowComponent implements AfterContentInit, OnDestroy {
 
   animationIndex = 0;
   tabIndex = 1;
@@ -65,7 +65,7 @@ export class FlowComponent implements AfterViewInit, OnDestroy {
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
   }
 
-  public async ngAfterViewInit() {
+  public async ngAfterContentInit() {
     // check for an existing process and pass it to start command
     this.flowService.flowHost = this.flowHost;
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
