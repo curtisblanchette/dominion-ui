@@ -82,6 +82,8 @@ export class FlowEffects {
       withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
       mergeMap(async (action: any) => {
         let [payload, variables]: [any, any] = action;
+        let frozenVars = Object.freeze({...variables});
+
         let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
 
         if(!step) {
@@ -89,19 +91,19 @@ export class FlowEffects {
           console.log(router);
         } else {
           if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
-            await (<FlowStep>step).beforeRoutingTriggers(variables);
+            await (<FlowStep>step).beforeRoutingTriggers(frozenVars);
           }
           if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
             const fn = eval((<FlowStep>step).beforeRoutingTriggers);
-            await fn(variables, step);
+            await fn(frozenVars, step);
           }
 
           if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
-            await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(variables);
+            await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(frozenVars);
           }
           if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
             const fn = eval(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers);
-            await fn(variables, this.flowService.builder?.process?.currentStep?.step);
+            await fn(frozenVars, this.flowService.builder?.process?.currentStep?.step);
           }
 
           return flowActions.UpdateCurrentStepAction({ step });

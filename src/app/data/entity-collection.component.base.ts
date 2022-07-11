@@ -69,13 +69,6 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
       this.loaded$ = this._dynamicCollectionService.loaded$;
       this.count$ = this._dynamicCollectionService.count$;
     }
-
-    if(this.data?.resolveAdditionalData && typeof this.data?.resolveAdditionalData === 'function') {
-      /**
-       * if the step was passed an additionalData <Promise> resolve it now
-       */
-      this.additionalData = await this.data.resolveAdditionalData();
-    }
   }
 
   public resolveDropdowns() {

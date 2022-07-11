@@ -13,10 +13,9 @@ import { ManipulateType } from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { HttpClient } from '@angular/common/http';
 import { ModuleTypes } from '../../../../data/entity-metadata';
-import { combineLatest, lastValueFrom, Observable, of, take } from 'rxjs';
+import { of, take } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay } from 'rxjs/operators';
-import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
 import { FormInvalidError } from '../../../../modules/flow';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
@@ -66,7 +65,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   };
 
   public appointmentSettings: INestedSetting;
-  public awaitValidations$: Observable<any>;
 
   @Input('module') public override module: ModuleTypes;
   @Input('data') public override data: any;
@@ -171,26 +169,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
-
-    // if the step was module to resolve the ID for - do it now
-    if(this.data.hasOwnProperty('resolveId')) {
-      this.id = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveId)).pipe(take(1)));
-    }
-
-    if(this.data.hasOwnProperty('resolveData')) {
-      for (const key of Object.keys(this.data.resolveData)) {
-        this.additionalData[key] = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveData[key])).pipe(take(1)));
-      }
-    }
-
-    this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
-    this._dynamicCollectionService.clearCache();
-
-
     if (this.data.id) {
       this.id = this.data.id;
       this.getData();
     }
+
+    this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
+    this._dynamicCollectionService.clearCache();
 
   }
 
@@ -340,7 +325,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         }
         case 'create': {
           // append additional data as payload attachments
-          payload = { ...payload, ...this.additionalData };
+          payload = { ...payload, ...this.data.payload };
 
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});

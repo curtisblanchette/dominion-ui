@@ -48,7 +48,7 @@ export class FlowBuilder {
     });
     const toOppList = FlowFactory.link(editLead, oppList);
     const createOpp = FlowFactory.createDeal( (vars: any, step: any) => {
-      step.state.data.leadId = vars.lead;
+      step.state.data['payload'] = { leadId: vars.lead };
     });
     const createOpp1 = FlowFactory.createDeal1();
     const editOpp = FlowFactory.editDeal((vars: any, step: any) => {
