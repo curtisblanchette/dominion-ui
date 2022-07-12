@@ -72,7 +72,9 @@ export class FlowBuilder {
     const powerQuestion = FlowFactory.powerQuestion();
     const toPowerQuestion = FlowFactory.link(relationshipBuilding, powerQuestion);
 
-    const setAppointment = FlowFactory.setAppointment();
+    const setAppointment = FlowFactory.setAppointment(() => {
+
+    });
     const recap = FlowFactory.recap();
 
     // inbound
