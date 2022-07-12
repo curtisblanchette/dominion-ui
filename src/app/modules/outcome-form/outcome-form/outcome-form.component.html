@@ -11,6 +11,14 @@
     </ng-contatainer>
   </div>
 
-  <fiiz-data [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="{controls: false, state: 'edit', dictation: '', fields: ['outcomeId']}" ></fiiz-data>
+  <ng-container *ngIf="allLoaded">
+      <fiiz-data [module]="ModuleTypes.CONTACT" [data]="{id: contactId}" [options]="contactOptions"></fiiz-data>
+      <fiiz-data [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="eventOptions"></fiiz-data>
+      <div class="button-control">
+        <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>
+        <fiiz-button primary type="button" (click)="updateEvent()" [disabled]="!formIsValid" >Update Event</fiiz-button>
+      </div>
+  </ng-container>
+
 </div>
 
