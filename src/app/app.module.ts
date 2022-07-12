@@ -29,6 +29,7 @@ import { OutcomeFormModule } from './modules/outcome-form/outcome-form.module';
 
 import { MetaReducer } from "@ngrx/store";
 import { hydrationMetaReducer } from './store/hydration.reducer';
+import { FlowService } from './modules/flow/flow.service';
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 
@@ -75,6 +76,7 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     OutcomeFormModule
   ],
   providers: [
+    FlowService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptor,

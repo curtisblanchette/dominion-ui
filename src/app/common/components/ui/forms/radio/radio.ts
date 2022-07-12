@@ -25,7 +25,7 @@ export class FiizRadioComponent implements ControlValueAccessor, AfterViewInit {
   @Input('label') public label: string | undefined;
   @Input('icon') icon: string | undefined;
   @Input('id') id!: string;
-
+  @Input('name') name = '';
   @Input('placeholder') placeholder = '';
 
   @Input('items') items$: Observable<RadioItem[]> = of([]);

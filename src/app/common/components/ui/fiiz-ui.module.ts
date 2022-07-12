@@ -32,6 +32,8 @@ import { FiizWarningDirective } from './button/warning.directive';
 import { FiizPrimaryDirective } from './button/primary.directive';
 import { DpDatePickerModule } from 'ng2-date-picker';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
+import { FiizDialogComponent } from './dialog/dialog';
+import { Dialog, DIALOG_SCROLL_STRATEGY_PROVIDER } from '@angular/cdk/dialog';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,12 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angul
     FiizSelectComponent,
     FiizDropDownComponent,
     FiizListComponent,
-    FiizDataComponent
+    FiizDataComponent,
+    FiizDialogComponent
+  ],
+  providers: [
+    Dialog,
+    DIALOG_SCROLL_STRATEGY_PROVIDER
   ],
   imports: [
     CommonModule,
@@ -100,7 +107,8 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angul
     FiizSelectComponent,
     FiizDropDownComponent,
     FiizListComponent,
-    FiizDataComponent
+    FiizDataComponent,
+    FiizDialogComponent
   ]
 })
 export class FiizUIModule {

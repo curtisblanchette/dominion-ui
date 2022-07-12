@@ -132,7 +132,7 @@ export class FlowFactory {
     });
   };
 
-  public static editLead(resolveId: ModuleTypes | null, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static editLead(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'user-pen',
@@ -142,8 +142,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.LEAD,
         data: {
-          title: 'Review Lead Info',
-          resolveId
+          title: 'Review Lead Info'
         },
         options: {
           controls: false,
@@ -183,7 +182,7 @@ export class FlowFactory {
     });
   }
 
-  public static createDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static createDeal(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'landmark',
@@ -194,15 +193,13 @@ export class FlowFactory {
         module: ModuleTypes.DEAL,
         data: {
           title: 'Create Opportunity',
-          resolveId,
-          resolveData
         },
         options: {
           controls: false,
           state: 'create',
           fields: [
             DealFields.NAME
-          ],
+          ]
         }
       }
     });
@@ -233,7 +230,7 @@ export class FlowFactory {
     });
   };
 
-  public static editDeal(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static editDeal(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Review Deal Info',
       nodeIcon: 'marker',
@@ -244,8 +241,6 @@ export class FlowFactory {
         module: ModuleTypes.DEAL,
         data: {
           title: 'Review Deal Info',
-          resolveId,
-          resolveData
         },
         options: {
           controls: false,
@@ -281,7 +276,7 @@ export class FlowFactory {
     });
   };
 
-  public static opportunityList(resolveQuery: {[key: string]: any} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static opportunityList(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'Opportunity List',
       nodeIcon: 'table-list',
@@ -300,14 +295,13 @@ export class FlowFactory {
           perPage: 25,
           columns: [],
           query: {
-          },
-          resolveQuery
+          }
         }
       }
     });
   };
 
-  public static noOutcomeList(resolveQuery: {[key: string]: any} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static noOutcomeList(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({
       nodeText: 'No Outcome List',
       nodeIcon: 'table-list',
@@ -315,7 +309,7 @@ export class FlowFactory {
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
-        module: ModuleTypes.DEAL,
+        module: ModuleTypes.EVENT,
         data: {
           title: 'Opportunity List',
         },
@@ -326,9 +320,10 @@ export class FlowFactory {
           perPage: 25,
           columns: [],
           query: {
-            stageId: '2,4,5'
-          },
-          resolveQuery
+            stageId: '2,4,5',
+            outcome: null,
+
+          }
         }
       }
     });
@@ -370,7 +365,7 @@ export class FlowFactory {
     })
   }
 
-  public static searchNListWebLeads(resolveQuery: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static searchNListWebLeads(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'table-list',
@@ -387,8 +382,30 @@ export class FlowFactory {
           editable: false,
           createNew:true,
           perPage: 25,
-          columns: [],
-          resolveQuery
+          columns: []
+        }
+      }
+    };
+    return FlowFactory.step(data);
+  }
+
+  public static appointmentList(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}):FlowStep {
+    const data = {
+      nodeText: 'Search Appointments',
+      nodeIcon: 'table-list',
+      component: FlowListComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
+      state: {
+        module: ModuleTypes.EVENT,
+        data: {
+          title: 'Search Appointments',
+        },
+        options: {
+          searchable: true,
+          editable: false,
+          perPage: 25,
+          columns: []
         }
       }
     };
@@ -408,7 +425,7 @@ export class FlowFactory {
           title: 'Set Appointment',
         },
         options: {
-          state: 'create',
+          state: 'set',
           fields: [
             EventFields.TITLE,
             EventFields.DESCRIPTION,
@@ -437,6 +454,23 @@ export class FlowFactory {
       }
     });
   };
+
+  public static reasonForCall(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+    return new FlowStep({
+      nodeText: 'Reason For Call',
+      nodeIcon: 'address-book',
+      component: FlowTextComponent,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
+      state: {
+        data: {
+          title: 'Reason for Call',
+          template: 'reason-for-call'
+        }
+      }
+    });
+  }
+
 
   public static recap(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
     return new FlowStep({

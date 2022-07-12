@@ -1,0 +1,54 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/functions';
+@import '~src/assets/css/mixins';
+
+$padding: 40px;
+:host {
+  .header, .content, .footer {
+    padding: 0 $padding;
+  }
+  .header { padding-top: $padding; }
+  .footer { padding-bottom: $padding; }
+
+  .icon {
+    display: block;
+    font-size: 40px;
+    margin: 0 auto;
+    text-align: center;
+
+  }
+
+  .title {
+    text-align: center;
+    color: $green1;
+    line-height: 34px;
+    font-size:18px;
+    margin-bottom: 1.4em;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid $green1;
+    opacity: .2;
+    margin: 0 -2em;
+  }
+
+  .body {
+    margin-top: 30px;
+    font-size: 14px;
+    text-align: center;
+  }
+}
+
+.actions {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+
+  button:first-child {
+    margin-right:5px;
+  }
+  button:last-child {
+    margin-left: 5px;
+  }
+}

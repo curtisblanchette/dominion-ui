@@ -6,19 +6,16 @@ import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from '../../../../store/app.reducer'
-import { DropdownItem, FiizDatePickerComponent, FiizSelectComponent } from '../forms';
+import { FiizDatePickerComponent, FiizInputComponent, FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
-import { Dayjs, ManipulateType } from 'dayjs';
+import { ManipulateType } from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
-import { ModuleTypes, uriOverrides } from '../../../../data/entity-metadata';
-import { firstValueFrom, lastValueFrom, map, of, take } from 'rxjs';
-import { CustomDataService } from '../../../../data/custom.dataservice';
+import { ModuleTypes } from '../../../../data/entity-metadata';
+import { of, take } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay } from 'rxjs/operators';
-import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
 import { FormInvalidError } from '../../../../modules/flow';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
@@ -81,6 +78,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   @Output('onFailure') onFailure: EventEmitter<Error> = new EventEmitter<Error>();
   @Output('isValid') isValid: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  @ViewChildren('inputList') inputList: QueryList<FiizInputComponent>
+
   constructor(
     private store: Store<fromApp.AppState>,
     private route: ActivatedRoute,
@@ -92,7 +91,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     router: Router
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
-    route.paramMap.subscribe(params => {
+    route.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
       this.id = params.get('id');
     });
 
@@ -104,7 +103,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
     this.form = this.fb.group({});
 
-    this.store.select(fromApp.selectSettingGroup('appointment')).subscribe((settings: INestedSetting) => {
+    this.store.select(fromApp.selectSettingGroup('appointment')).pipe(untilDestroyed(this)).subscribe((settings: INestedSetting) => {
       this.appointmentSettings = settings;
     });
 
@@ -133,7 +132,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.data$.pipe(
       untilDestroyed(this),
       delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
-    ).subscribe(async (record: any) => {
+    ).pipe(untilDestroyed(this)).subscribe(async (record: any) => {
       if (record[0]) {
         let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
 
@@ -149,13 +148,18 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
               delete entity[prop];
             }
+
+
           });
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
 
-          // workaround issue: https://github.com/angular/angular/issues/14542
-          of('').pipe(delay(0), map(() => this.isValid.next(this.form.valid))).subscribe();
-          console.log('call from here');
+          of('').pipe(
+            untilDestroyed(this),
+            delay(100) // workaround issue: https://github.com/angular/angular/issues/14542
+          ).subscribe(() => this.isValid.next(this.form.valid) )
+
+
           await this.dateValidation();
         }
       } else {
@@ -165,26 +169,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
-
-    // if the step was module to resolve the ID for - do it now
-    if(this.data.hasOwnProperty('resolveId')) {
-      this.id = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveId)).pipe(take(1)));
-    }
-
-    if(this.data.hasOwnProperty('resolveData')) {
-      for (const key of Object.keys(this.data.resolveData)) {
-        this.additionalData[key] = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveData[key])).pipe(take(1)));
-      }
+    if (this.data.id) {
+      this.id = this.data.id;
+      this.getData();
     }
 
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
-
-
-    if (this.id) {
-      this.getData();
-    }
-
 
   }
 
@@ -205,7 +196,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           }
         }
 
-        this.form.get('startTime')?.valueChanges.subscribe( (value:any) => {
+        this.form.get('startTime')?.valueChanges.pipe(untilDestroyed(this)).subscribe( (value:any) => {
           const duration = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['value'] || 30;
           const unit = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['unit'] || 'minutes';
           const endTime = dayjs(value).add(duration, unit as ManipulateType).format();
@@ -216,7 +207,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           this.configuration.startTime.max = value;
         });
 
-        this.form.get('endTime')?.valueChanges.subscribe( (value:any) => {
+        this.form.get('endTime')?.valueChanges.pipe(untilDestroyed(this)).subscribe( (value:any) => {
           this.configuration.startTime.max = value;
         });
 
@@ -227,10 +218,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       }
 
       if( this.module == ModuleTypes.CAMPAIGN ){
-        this.form.get('startDate')?.valueChanges.subscribe((value:any) => {
+        this.form.get('startDate')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value:any) => {
           this.configuration.endDate.min = dayjs(value).add(1, 'day').format();
         });
-        this.form.get('endDate')?.valueChanges.subscribe((value:any) => {
+        this.form.get('endDate')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value:any) => {
           this.configuration.startDate.max = dayjs(value).subtract(1, 'day').format();
         });
       }
@@ -254,18 +245,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         form[field] = new FormControl(control.defaultValue, control.validators);
       }
 
-      if (['day', 'daytime'].includes(control.type)) {
-        form[field] = new FormControl({value: undefined, disabled: control.disabled}, [
-          ...control.validators
-          // (control: any) => {
-          //   return dayjs(control.value, 'DD-MM-YYYY').isBefore(dayjs()) ? {minDate: 'minDate Invalid'} : undefined
-          // },
-          // control => this.validationMaxDate && this.config &&
-          // dayjs(control.value, 'DD-MM-YYYY' || DemoComponent.getDefaultFormatByMode(this.pickerMode))
-          //   .isAfter(this.validationMaxDate)
-          //   ? {maxDate: 'maxDate Invalid'} : undefined
-        ])
-      }
+      // if (['calendar', 'timer', 'both'].includes(control.type)) {
+      //   form[field] = new FormControl({value: control.defaultValue, disabled: control.disabled}, [
+      //     ...control.validators
+      //   ])
+      // }
 
     }
     this.form = this.fb.group(form);
@@ -315,7 +299,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       for(const watch of watchFields[this.module]){
         const field = watch.when;
         if(this.form.controls.hasOwnProperty(field)){
-          this.form.controls[field].valueChanges.subscribe(async (res: number) => {
+          this.form.controls[field].valueChanges.pipe(untilDestroyed(this)).subscribe(async (res: number) => {
             const dropdown = this.dropdowns.find(cmp => cmp.id === field);
             const options = await dropdown?.items$.pipe(take(1)).toPromise();
             const value = options?.find(opt => opt.label === watch.equals)?.id;
@@ -341,7 +325,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         }
         case 'create': {
           // append additional data as payload attachments
-          payload = { ...payload, ...this.additionalData };
+          payload = { ...payload, ...this.data.payload };
 
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});

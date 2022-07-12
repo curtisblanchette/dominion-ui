@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -6,7 +6,7 @@ import { firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
-import { FlowHostDirective, FlowStep } from '../index';
+import { FlowStep } from '../index';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
@@ -17,18 +17,28 @@ export class FlowEffects {
     private actions$: Actions,
     private router: Router,
     private store: Store<fromFlow.FlowState>,
-    private flowService: FlowService,
-    private http: HttpClient
+    private http: HttpClient,
+    public flowService: FlowService,
   ) {
 
   }
 
+  onUpdateCurrentStep$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(flowActions.UpdateCurrentStepAction),
+      switchMap(async (action: { step: FlowStep }) => {
+
+        this.flowService.renderComponent(action.step);
+      })
+    ), { dispatch: false }
+  );
+
   goToStepById$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(flowActions.GoToStepByIdAction),
-      tap((action: { id: string, host: FlowHostDirective }) => {
+      tap((action: { id: string }) => {
         const id = action.id;
-        this.flowService.next(action.host);
+        this.flowService.next();
       })
     ), { dispatch: false }
   );
@@ -37,9 +47,7 @@ export class FlowEffects {
     this.actions$.pipe(
       ofType(flowActions.SetProcessIdAction),
       mergeMap( (action: any) => (
-        firstValueFrom(this.http.post(`${environment.dominion_api_url}/flow/summaries`, {
-          id: action.processId
-        }))
+        this.http.post(`${environment.dominion_api_url}/flow/summaries`, { id: action.processId })
       ))
     ), { dispatch: false }
   )
@@ -69,36 +77,40 @@ export class FlowEffects {
   );
 
   onNextStep$ = createEffect((): any =>
-  this.actions$.pipe(
-    ofType(flowActions.NextStepAction),
-    withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
-    tap(async (action: any) => {
-      let [payload, variables]: [any, any] = action;
-      let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
+    this.actions$.pipe(
+      ofType(flowActions.NextStepAction),
+      withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
+      mergeMap(async (action: any) => {
+        let [payload, variables]: [any, any] = action;
+        let frozenVars = Object.freeze({...variables});
 
-      if(!step) {
-        const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
-        console.log(router);
-      }
+        let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
 
-      if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
-        await (<FlowStep>step).beforeRoutingTriggers(variables);
-      }
-      if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
-        const fn = eval((<FlowStep>step).beforeRoutingTriggers);
-        await fn(variables);
-      }
+        if(!step) {
+          const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
+          console.log(router);
+        } else {
+          if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
+            await (<FlowStep>step).beforeRoutingTriggers(frozenVars);
+          }
+          if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
+            const fn = eval((<FlowStep>step).beforeRoutingTriggers);
+            await fn(frozenVars, step);
+          }
 
-      if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
-        await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(variables);
-      }
-      if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
-        const fn = eval(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers);
-        await fn(variables);
-      }
+          if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
+            await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(frozenVars);
+          }
+          if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
+            const fn = eval(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers);
+            await fn(frozenVars, this.flowService.builder?.process?.currentStep?.step);
+          }
 
-      return;
-    })
-  ), { dispatch: false })
+          return flowActions.UpdateCurrentStepAction({ step });
+        }
+        return flowActions.GoToStepByIdAction({id: ''});
+      })
+    ), { dispatch: true }
+  );
 
 }

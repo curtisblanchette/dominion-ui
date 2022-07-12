@@ -1,0 +1,16 @@
+
+<div class="header">
+  <div class="title">{{data.title}}</div>
+</div>
+<div class="content">
+  <div class="body" [innerHTML]="data.body | safe: 'html'" *ngIf="data.body"></div>
+</div>
+<div class="footer">
+  <div class="actions">
+    <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['default']">{{data.buttons['default'].label}}</fiiz-button>
+    <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['cancel']">{{data.buttons['cancel'].label}}</fiiz-button>
+    <fiiz-button primary (click)="onSubmit()" *ngIf="data.buttons['submit']">{{data.buttons['submit'].label}}</fiiz-button>
+  </div>
+</div>
+
+

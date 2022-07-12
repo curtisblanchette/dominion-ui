@@ -36,12 +36,12 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
   }
 
   public async ngOnInit() {
-    if(this.options.resolveQuery){
-      for (const key of Object.keys(this.options.resolveQuery)) {
-        this.options.query[key] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(this.options.resolveQuery[key])).pipe(take(1)));
-      }
-      console.log('FlowListComponent OnInit', this.options.resolveQuery);
-    }
+    // if(this.options.resolveQuery){
+    //   for (const key of Object.keys(this.options.resolveQuery)) {
+    //     this.options.query[key] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(this.options.resolveQuery[key])).pipe(take(1)));
+    //   }
+    //   console.log('FlowListComponent OnInit', this.options.resolveQuery);
+    // }
 
   }
 

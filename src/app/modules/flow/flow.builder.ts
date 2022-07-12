@@ -1,5 +1,5 @@
 import { FlowProcess } from './classes/flow.process';
-import { Inject } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowFactory } from './flow.factory';
@@ -7,42 +7,54 @@ import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
 
+@Injectable({providedIn: 'root'})
 export class FlowBuilder {
 
   public process: FlowProcess;
 
   constructor(
-    @Inject(Store) private store: Store<fromFlow.FlowState>,
-    @Inject(Store) private flowService: FlowService
+    private store: Store<fromFlow.FlowState>,
+    @Inject(Injector) private readonly injector: Injector
   ) {
     this.process = new FlowProcess(this.store);
   }
 
+  private get flowService() {
+    return this.injector.get(FlowService);
+  }
+
   public reset(): void {
-    this.process = new FlowProcess(this.store);
+    this.process.reset();
   }
 
   public async build(type?: string) {
     /**
      * Everything that is passed to factory functions must be Serializable!
-     * This means no Functions!
      */
-
     const objection = FlowFactory.objection();
     // select call type
     const callType = FlowFactory.callTypeDecision(undefined, (vars: any) => { this.flowService.startCall(vars.call_type) });
-    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead}) });
+    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead});  });
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListContacts = FlowFactory.searchNListContacts()
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const createLead = FlowFactory.createLead();
-    const editLead = FlowFactory.editLead(ModuleTypes.LEAD);
+    const editLead = FlowFactory.editLead((vars: any, step: any) => {
+      step.state.data.id = vars.lead;
+    });
     const setLeadSource = FlowFactory.setLeadSource(ModuleTypes.LEAD);
-    const oppList = FlowFactory.opportunityList({leadId: ModuleTypes.LEAD});
+    const oppList = FlowFactory.opportunityList((vars: any, step: any) => {
+      step.state.options.query['leadId'] = vars.lead
+    });
     const toOppList = FlowFactory.link(editLead, oppList);
-    const createOpp = FlowFactory.createDeal(null, { leadId: ModuleTypes.LEAD });
+    const createOpp = FlowFactory.createDeal( (vars: any, step: any) => {
+      step.state.data['payload'] = { leadId: vars.lead };
+    });
     const createOpp1 = FlowFactory.createDeal1();
-    const editOpp = FlowFactory.editDeal(ModuleTypes.DEAL, {leadId: ModuleTypes.LEAD});
+    const editOpp = FlowFactory.editDeal((vars: any, step: any) => {
+      step.state.data.id = vars.deal;
+      step.state.data.leadId = vars.lead;
+    });
 
     const relationshipBuilding = FlowFactory.relationshipBuilding();
     const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);
@@ -107,8 +119,8 @@ export class FlowBuilder {
     // outbound
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
 
-    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( {
-      contactId: ModuleTypes.CONTACT
+    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( (vars: any, step: any) => {
+      step.state.data.contactId = vars.contact;
     });
 
     const webLeads_yes = FlowFactory.condition({
@@ -224,8 +236,7 @@ export class FlowBuilder {
       .addLink(webLeadLink)
       .addRouter(contactRouter)
       .addLink(contactLink)
-      .addStep(oppList)
-      .addLink(toOppList)
+
       .addStep(createContact)
 
       .addStep(oppWithNoOutcomes)

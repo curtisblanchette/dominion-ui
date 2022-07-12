@@ -23,21 +23,19 @@ const getInitialStateByKey = (key: string): any| (FlowStep|FlowRouter|FlowLink)[
     // let items: (FlowStep|FlowLink|FlowRouter)[] = [];
 
     return setTimeout(() => {
-
-
-    switch(key) {
-      case 'steps': // @ts-ignore
-        return data && data.flow.steps.map(step => (new FlowStep(step))) || [];
-      case 'links': // @ts-ignore
-        return data && data.flow.links.map(link => (new FlowLink(link))) || [];
-      case 'routers': // @ts-ignore
-        return data && data.flow.routers.map(router => (new FlowRouter(router))) || [];
-      case 'currentStep': {
-        // const { step, variables, valid } = data.flow.currentStep;
-        return data.flow.currentStep;
+      switch(key) {
+        case 'steps': // @ts-ignore
+          return data && data.flow.steps.map(step => (new FlowStep(step))) || [];
+        case 'links': // @ts-ignore
+          return data && data.flow.links.map(link => (new FlowLink(link))) || [];
+        case 'routers': // @ts-ignore
+          return data && data.flow.routers.map(router => (new FlowRouter(router))) || [];
+        case 'currentStep': {
+          // const { step, variables, valid } = data.flow.currentStep;
+          return data.flow.currentStep;
+        }
       }
-    }
-    }, 0)
+    }, 0);
     // return items;
   }
 }
@@ -55,25 +53,71 @@ export const initialState: FlowState = {
 export const reducer = createReducer(
   initialState,
 
-  on(flowActions.AddStepAction, (state, { payload }) => ({ ...state, steps: [ ...state.steps, payload ]})),
-  on(flowActions.AddLinkAction, (state, { payload }) => ({ ...state, links: [ ...state.links, payload ]})),
-  on(flowActions.AddRouterAction, (state, { payload }) => ({ ...state, routers: [ ...state.routers, payload ]})),
-  on(flowActions.UpdateCurrentStepAction, (state, { step, valid, variables }) => ({ ...state, currentStep: { ...state.currentStep, step, valid, variables } })),
-  on(flowActions.SetStepHistoryAction, (state, { payload }) => ({ ...state, stepHistory: [ ...state.stepHistory, payload ] })),
+  on(flowActions.AddStepAction, (state, { payload }) => ({
+    ...state,
+    steps: [ ...state.steps, payload ]
+  })),
+  on(flowActions.AddLinkAction, (state, { payload }) => ({
+    ...state,
+    links: [ ...state.links, payload ]
+  })),
+  on(flowActions.AddRouterAction, (state, { payload }) => ({
+    ...state,
+    routers: [ ...state.routers, payload ]
+  })),
+  on(flowActions.UpdateCurrentStepAction, (state, { step, valid, variables }) => ({
+    ...state,
+    currentStep: {...state.currentStep, step, valid, variables },
+    breadcrumbs: addToBreadcrumbs(state.breadcrumbs, step.id)
+  })),
+
+  on(flowActions.SetStepHistoryAction, (state, { payload }) => ({
+    ...state,
+    stepHistory: [ ...state.stepHistory, payload ]
+  })),
+
   on(flowActions.GoToStepByIdAction, (state, { id }) => ({ ...state })),
-  on(flowActions.ResetAction, (state) => ({...state, processId: undefined, steps: [], routers: [], links: [], currentStep: undefined, stepHistory: [], breadcrumbs: [] })),
-  on(flowActions.AddVariablesAction, (state, { payload }) => ({ ...state, currentStep: { ...state.currentStep, variables: payload }})),
-  on(flowActions.SetValidityAction, (state, { payload }) => {
-    return ({ ...state, currentStep: { ...state.currentStep, valid: payload  }})
-  }),
 
-  on(flowActions.NextStepAction, (state, { stepId }) => ({...state, breadcrumbs: addToBreadcrumbs(state.breadcrumbs, stepId)}) ),
-  on(flowActions.PrevStepAction, (state, { }) => ({ ...state, breadcrumbs: [...state.breadcrumbs.slice(0, -1)] })),
+  on(flowActions.ResetAction, (state) => ({
+    ...state,
+    steps: [],
+    routers: [],
+    links: [],
+    currentStep: undefined,
+    stepHistory: [],
+    breadcrumbs: []
+  })),
 
-  on(flowActions.SetProcessIdAction, (state, { processId }) => ({ ...state, processId: processId }))
+  on(flowActions.AddVariablesAction, (state, { payload }) => ({
+    ...state,
+    currentStep: {
+      ...state.currentStep,
+      variables: payload
+    }
+  })),
+
+  on(flowActions.SetValidityAction, (state, { payload }) => ({
+    ...state,
+    currentStep: { ...state.currentStep, valid: payload  }
+  })),
+
+  on(flowActions.NextStepAction, (state, { stepId }) => ({...state}) ),
+
+  on(flowActions.PrevStepAction, (state, { }) => ({
+    ...state,
+    breadcrumbs: [...state.breadcrumbs.slice(0, -1)]
+  })),
+
+  on(flowActions.SetProcessIdAction, (state, { processId }) => ({
+    ...state,
+    processId: processId
+  }))
 );
 
-const addToBreadcrumbs = (breadcrumbs: string[], stepId: string) => {
+const addToBreadcrumbs = (breadcrumbs: string[], stepId: string | undefined) => {
+  if (!stepId) {
+    return breadcrumbs;
+  }
   if(breadcrumbs[breadcrumbs.length - 1] === stepId) {
     return breadcrumbs;
   }

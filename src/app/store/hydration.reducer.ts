@@ -19,7 +19,7 @@ export const hydrationMetaReducer = (
     }
 
     if(action.type === flowActions.AddStepAction.type) {
-      console.log(action);
+      // console.log(action);
       action.payload = action.payload._serialize();
     }
 
