@@ -72,8 +72,24 @@ export class FlowBuilder {
     const powerQuestion = FlowFactory.powerQuestion();
     const toPowerQuestion = FlowFactory.link(relationshipBuilding, powerQuestion);
 
-    const setAppointment = FlowFactory.setAppointment(() => {
+    const setAppointment = FlowFactory.setAppointment((vars: any, step: any) => {
+      // globals
+      step.state.options.payload = {
+        contactId: vars.contact,
+        dealId: vars.deal
+      };
 
+      switch(true) {
+        // event selected
+        case !!vars.event: {
+          step.state.options.state = 'cancel';
+        }
+        break;
+        // no event selected
+        case !vars.event: {
+          step.state.options.state = 'set';
+        }
+      }
     });
     const recap = FlowFactory.recap();
 

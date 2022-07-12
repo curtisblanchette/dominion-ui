@@ -6,6 +6,7 @@ export const ActionTypes = {
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
   ADD_VARIABLES: '[Flow] Add Variables',
+  REMOVE_VARIABLE: '[Flow] Remove Variable',
   UPDATE_CURRENT_STEP: '[Flow] Update Current Step',
   SET_STEP_HISTORY: '[Flow] Set Step History',
   GO_TO_STEP: '[Flow] Go to step',
@@ -60,6 +61,11 @@ export const ResetAction = createAction(
 export const AddVariablesAction = createAction(
   ActionTypes.ADD_VARIABLES,
   props<{ payload: any }>()
+);
+
+export const RemoveVariableAction = createAction(
+  ActionTypes.REMOVE_VARIABLE,
+  props<{ key: string }>()
 );
 
 export const SetValidityAction = createAction(

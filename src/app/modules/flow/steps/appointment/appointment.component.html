@@ -1,5 +1,5 @@
 <div class="flex_main_wrapper">
-  <ng-container [ngTemplateOutlet]="vars.appointment_action === 'set' ? setAppointment : cancelReschedule"></ng-container>
+  <ng-container [ngTemplateOutlet]="options.state === 'set' ? setAppointment : cancelReschedule"></ng-container>
 </div>
 
 

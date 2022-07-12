@@ -4,6 +4,7 @@ import { DominionType } from '../../../../common/models';
 import { FlowState } from '../../store/flow.reducer';
 import { Store } from '@ngrx/store';
 import { FiizListComponent } from '../../../../common/components/ui/list/list.component';
+import { ModuleTypes } from '../../../../data/entity-metadata';
 
 @Component({
   selector: 'flow-list',
@@ -41,9 +42,33 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
     console.log('Flow List component destroy');
   }
 
-  public EmitValues( value: {module: string, record: DominionType } ) {
-    this.values.next(value)
+  public emitValues( value: { module: string, record: any } ): void {
+    this.values.next(value);
+
+    let variables: any = {};
+
+
+    variables[value.module] = value.record?.id;
+
+    /**
+     * If selected record has relationships...
+     * Store them variables, Yo!
+     * @example `Sometimes they have multiple contacts, but we're only showing the first one.`
+     * TODO make multiple contacts/leads work
+     */
+    if( value?.record?.contactId || ( value.record?.contacts && value.record?.contacts.length ) ){
+      variables[ModuleTypes.CONTACT] = value.record?.contactId || value.record?.contacts[0]?.id;
+    }
+    if( value.record?.leadId || ( value.record?.leads && value.record?.leads.length ) ){
+      variables[ModuleTypes.LEAD] = value.record.leadId || value.record?.leads[0]?.id;
+    }
+
+    this.flowService.addVariables(variables);
+
+
+    return this.values.next(value);
   }
+
 
   public create($event: Event) {
     this.onCreate.next(true);

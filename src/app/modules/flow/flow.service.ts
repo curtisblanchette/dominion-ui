@@ -222,30 +222,9 @@ export class FlowService {
          * @param {onCreate} EventEmitter
          */
         this.cmpReference.instance.values.subscribe((value: any) => {
-          let variable:{ [key:string] : string } = {};
-
-          if( value.record?.id ){
-            variable[value.module as ModuleTypes] = value.record?.id;
-          }
-
-          /**
-           * If the select record has entity relationships ,
-           * store them as entity variables
-           * if there are multiple contacts, we're only showing the first one.
-           * TODO make multiple contacts/leads work
-           */
-          if( value.record?.contactId || ( value.record?.contacts && value.record?.contacts.length ) ){
-            variable[ModuleTypes.CONTACT] = value.record?.contactId || value.record?.contacts[0]?.id;
-          }
-          if( value.record?.leadId || ( value.record?.leads && value.record?.leads.length ) ){
-            variable[ModuleTypes.LEAD] = value.record.leadId || value.record?.leads[0]?.id;
-          }
-
           this.setValidity(!!value.record);
-          if( Object.keys(variable).length ){
-            this.addVariables(variable);
-          }
         });
+
 
         this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
           const _injector = this.flowHost.viewContainerRef.parentInjector;
@@ -274,6 +253,9 @@ export class FlowService {
     this.store.dispatch(flowActions.SetValidityAction({payload: value}));
   }
 
+  public removeVariable(key: string) {
+    this.store.dispatch(flowActions.RemoveVariableAction({key}));
+  }
   public addVariables(data: any) {
     if (data) {
       let allVars = {...this.builder.process.currentStep?.variables, ...data};

@@ -1,5 +1,5 @@
 <div class="flex_main_wrapper">
     <h3 class="title">{{data.title}}</h3>
     <p class="dictation" *ngIf="data.dictation">{{data.dictation}}</p>
-    <fiiz-list #cmp [data]="data" [module]="module" [options]="options" (values)="EmitValues($event)" (onCreate)="create($event)"></fiiz-list>
+    <fiiz-list #cmp [data]="data" [module]="module" [options]="options" (values)="emitValues($event)" (onCreate)="create($event)"></fiiz-list>
 </div>
