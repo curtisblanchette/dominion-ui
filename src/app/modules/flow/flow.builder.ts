@@ -16,7 +16,10 @@ export class FlowBuilder {
     private store: Store<fromFlow.FlowState>,
     @Inject(Injector) private readonly injector: Injector
   ) {
-    this.process = new FlowProcess(this.store);
+    this.store.select(fromFlow.selectProcessId).subscribe(processId => {
+      this.process = new FlowProcess(store, processId);
+    });
+
   }
 
   private get flowService() {

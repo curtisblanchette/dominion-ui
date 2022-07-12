@@ -34,7 +34,7 @@ export class FlowFactory {
       state: {
         data: {
           title: 'Call Type',
-          body: 'Select one of the call types below.',
+          body: 'Select from one of the call types below.',
           template: 'call-type'
         }
       }

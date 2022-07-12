@@ -144,4 +144,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     return this.form.valid;
   }
 
+  public endCall() {
+    return this.flowService.restart();
+  }
+
 }

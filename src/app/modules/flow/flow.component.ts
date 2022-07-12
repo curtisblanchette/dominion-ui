@@ -61,7 +61,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
 
   constructor(
     private store: Store<fromFlow.FlowState>,
-    private flowService: FlowService,
+    public flowService: FlowService,
     private router: Router,
     private dialog: Dialog,
     private http: HttpClient
@@ -77,16 +77,18 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
     await this.flowService.start(!!processExists.length);
 
-    this.tinymce.onKeyUp.pipe(
-      untilDestroyed(this),
-      map((action: any) => {
-        return action.event.currentTarget.innerHTML;
-      }),
-      debounceTime(1000),
-      distinctUntilChanged()
-    ).subscribe((html: string) => {
-      this.saveNotes(html);
-    });
+    if(this.tinymce){
+      this.tinymce.onKeyUp.pipe(
+        untilDestroyed(this),
+        map((action: any) => {
+          return action.event.currentTarget.innerHTML;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe((html: string) => {
+        this.saveNotes(html);
+      });
+    }
   }
 
   public onNext($event: Event) {

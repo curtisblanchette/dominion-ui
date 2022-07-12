@@ -54,7 +54,7 @@
 
     <ng-template [ngSwitchCase]="'end'">
       <p>All information for this call has been captured. Thank you!</p>
-      <fiiz-button primary>End Call</fiiz-button>
+      <fiiz-button primary (click)="endCall()">End Call</fiiz-button>
     </ng-template>
 
 

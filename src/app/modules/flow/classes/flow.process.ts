@@ -14,8 +14,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class FlowProcess extends FlowBaseModel {
 
-  private static _instance?: FlowProcess;
-
   public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
   public links: FlowLink[] = [];
@@ -34,18 +32,14 @@ export class FlowProcess extends FlowBaseModel {
     @Inject(Store) private store: Store<fromFlow.FlowState>,
     id?: string,
   ) {
+
     super(id);
 
-    if (FlowProcess._instance) {
-      return FlowProcess._instance;
-    }
-    FlowProcess._instance = this;
-
-    if(!this.id) {
-      throw new ProcessNotFoundError();
-    } else {
-      this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
-    }
+    // if(!this.id) {
+    //   throw new ProcessNotFoundError();
+    // } else {
+    //   this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
+    // }
 
     this.store.select(fromFlow.selectProcessId).subscribe(id => {
       this.id = id;

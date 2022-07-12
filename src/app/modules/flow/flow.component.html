@@ -29,10 +29,12 @@
       apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
       outputFormat="html"
       #tinymce
+      *ngIf="flowService.noteId"
       [initialValue]="(notes$ | async)"
       [(ngModel)]="notesData"
       [init]="tinymceOptions"
     ></editor>
+    <div *ngIf="!flowService.noteId" style="text-align: center;padding: 20px 0; opacity: .5;">Awaiting an active call.</div>
   </div>
 </ng-template>
 
