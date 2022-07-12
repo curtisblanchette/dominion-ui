@@ -73,6 +73,7 @@ export class FlowFactory {
         options: {
           searchable: true,
           editable: false,
+          createNew:true,
           perPage: 25,
           columns: [],
           query: {}
@@ -97,6 +98,7 @@ export class FlowFactory {
         options: {
           searchable: true,
           editable: false,
+          createNew: false,
           perPage: 25,
           columns: [],
           query: {}
@@ -289,9 +291,11 @@ export class FlowFactory {
         options: {
           searchable: false,
           editable: false,
+          createNew:true,
           perPage: 25,
           columns: [],
-          query: {}
+          query: {
+          }
         }
       }
     });
@@ -312,6 +316,7 @@ export class FlowFactory {
         options: {
           searchable: false,
           editable: false,
+          createNew:true,
           perPage: 25,
           columns: [],
           query: {
@@ -372,6 +377,7 @@ export class FlowFactory {
         options: {
           searchable: true,
           editable: false,
+          createNew:true,
           perPage: 25,
           columns: [],
           query: {}

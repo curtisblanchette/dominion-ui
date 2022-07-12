@@ -8,7 +8,7 @@
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-    <fiiz-button stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
+    <fiiz-button *ngIf="options.createNew" stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
   </div>
 </form>
 
@@ -62,7 +62,7 @@
     <span>Try another search term or create a new {{moduleName}}.</span>
   </div>
   <div class="message-block" style="padding-top: 4%;">
-    <fiiz-button stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
+    <fiiz-button *ngIf="options.createNew" stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
   </div>
 </ng-template>
 
