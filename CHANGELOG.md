@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.11.0 (2022-07-12)
+
+
+### Features
+
+* **develop:** add notes saving debounced, more fixes ([b40445b](https://github.com/4iiz/dominion-ui/commit/b40445ba757f7ae5e980f9731c5289fc2c2a360e))
+
 ### 1.10.5 (2022-07-11)
 
 ### 1.10.4 (2022-07-11)
