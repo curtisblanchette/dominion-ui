@@ -65,12 +65,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @Input('data') public override data: any;
   @Input('module') public override module: ModuleTypes;
   @Input('options') public override options: IListOptions;
-  @Input('loadInitial') loadInitial: boolean = false;
 
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
-  @Output('btnValue') btnValue:EventEmitter<any> = new EventEmitter();
-
+  @Output('btnValue') btnValue: EventEmitter<any> = new EventEmitter();
 
   public template$: Observable<TemplateRef<any> | undefined>;
   @ViewChild('main') mainTemplate: TemplateRef<any>;

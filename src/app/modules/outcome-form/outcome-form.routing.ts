@@ -1,34 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { OutcomeFormComponent } from './outcome-form.component';
-import { FiizListComponent } from '../../common/components/ui/list/list.component';
-import { FiizDataComponent } from '../../common/components/ui/data/data.component';
+import { NoOutcomeListComponent } from './no-outcome-list/no-outcome-list.component';
+import { OutcomeFormComponent } from './outcome-form/outcome-form.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: OutcomeFormComponent,
-    children : [
-      {
-        path: 'edit/:id',
-        children : [
-          {
-            path : 'event',
-            component: FiizDataComponent,
-            outlet: 'aux'
-          }
-        ]
-      },
+    children: [
+      { path: '', redirectTo: 'list', pathMatch: 'full' },
       {
         path: 'list',
-        children : [
-          {
-            path : 'event',
-            component: FiizListComponent,
-            outlet: 'aux'
-          }
-        ]
+        component: NoOutcomeListComponent
+      },
+      {
+        path: ':id',
+        component: OutcomeFormComponent
       }
     ]
   }

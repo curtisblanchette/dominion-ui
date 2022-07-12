@@ -1,22 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { OutcomeFormComponent } from './outcome-form.component';
 import { FiizUIModule } from '../../common/components/ui/fiiz-ui.module';
 import { OutcomeFormRouting } from './outcome-form.routing';
-import { NavigationService } from '../../common/navigation.service';
+import { OutcomeFormComponent } from './outcome-form/outcome-form.component';
+import { NoOutcomeListComponent } from './no-outcome-list/no-outcome-list.component';
 
 @NgModule({
-    declarations: [
-        OutcomeFormComponent,
-    ],
-    imports: [
-        CommonModule,
-        FiizUIModule,
-        OutcomeFormRouting
-    ],
-    providers: [
-        NavigationService
-    ]
+  declarations: [
+    NoOutcomeListComponent,
+    OutcomeFormComponent
+  ],
+  imports: [
+    CommonModule,
+    FiizUIModule,
+    OutcomeFormRouting
+  ]
 })
-export class OutcomeFormModule { }
+export class OutcomeFormModule {
+}

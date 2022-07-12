@@ -1,0 +1,16 @@
+<div class="page-heading">
+  <h2 class="page-heading__title">Outcome Form</h2>
+</div>
+
+<div class="page-content">
+  <h3>History</h3>
+  <div class="note" style="display: flex; flex-direction: row;" *ngFor="let call of calls">
+    <ng-contatainer *ngFor="let note of call.notes">
+      <div>{{note.createdAt | date}}</div>
+      <div>{{note.content}}</div>
+    </ng-contatainer>
+  </div>
+
+  <fiiz-data [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="{controls: false, state: 'edit', dictation: '', fields: ['outcomeId']}" ></fiiz-data>
+</div>
+

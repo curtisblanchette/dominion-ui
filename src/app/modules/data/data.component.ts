@@ -15,6 +15,7 @@ import { models } from '../../common/models';
 export class DataComponent implements OnInit {
 
   private readonly listOptions: IListOptions;
+  public contentClass: string;
 
   constructor(
     private store: Store<DataState>,
@@ -37,6 +38,7 @@ export class DataComponent implements OnInit {
   public onActivate(componentRef: FiizListComponent | FiizDataComponent){
     // if it's a list, subscribe to the `values` emitter
     if(componentRef instanceof FiizListComponent) {
+      this.contentClass = 'list';
       componentRef.values.pipe(untilDestroyed(this)).subscribe(res => {
         if( res.record && res.record.id ){
           this.router.navigate([`/data/edit/${res.record.id}`, { outlets: {'aux': [res.module]} }], {
