@@ -141,7 +141,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   async ngOnInit(): Promise<any> {
-    this.flowService.addVariables({set_appointment: true}); //  default to true
+
   }
 
   public async ngAfterViewInit() {

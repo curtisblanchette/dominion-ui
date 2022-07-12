@@ -56,7 +56,7 @@
 
 <ng-template #noDataFound>
   <div class="message-block" style="padding-top: 5%;">
-    We could not find a {{moduleName}} with the term "{{searchForm.value.key}}"
+    We could not find any {{moduleName}}s <ng-container *ngIf="searchForm.controls.search.value">with the term "{{searchForm.controls.search.value}}"</ng-container>
   </div>
   <div class="message-block">
     <span>Try another search term or create a new {{moduleName}}.</span>

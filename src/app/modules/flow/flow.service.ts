@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, Observable, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
@@ -30,8 +30,8 @@ export class FlowService {
   public id: string = uuidv4();
   public cmpReference: any;
   public callService: CustomDataService<DominionType>;
-  public currentCall: ICall | undefined;
-  public note: ICallNote | undefined
+  public callId: string | undefined;
+  public noteId: string | undefined;
   public user$: Observable<User | null>;
   public flowHost!: FlowHostDirective;
 
@@ -50,8 +50,8 @@ export class FlowService {
   public async restart(): Promise<any> {
     this.store.dispatch(flowActions.ResetAction());
     this.builder.reset();
-    this.note = undefined;
-    this.currentCall = undefined;
+    this.noteId = undefined;
+    this.callId = undefined;
     await this.start();
   }
 
@@ -70,6 +70,13 @@ export class FlowService {
 
   public async resume(): Promise<any> {
     // resuming from store
+    const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
+
+    if(vars['call']) {
+      this.callId = <string>vars['call'];
+      this.noteId = <string>vars['note'];
+    }
+
     return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: this.builder.process.currentStep?.step as FlowStep }));
   }
 
@@ -77,14 +84,16 @@ export class FlowService {
     this.callService.add({
       startTime: new Date().toISOString(),
       direction: direction
-    }, false).pipe(take(1)).subscribe((res) =>{
-      this.currentCall = res;
+    }, false).pipe(take(1)).subscribe(async (res) =>{
+      this.callId = res.id
+      this.addVariables({call: this.callId});
+      await this.createNote('');
     });
   }
 
   public updateCall(payload: any): void {
     let data = {
-      id: this.currentCall?.id,
+      id: this.callId,
       changes: payload
     }
     this.callService.update( <UpdateStr<any>>data, false).pipe(take(1)).subscribe((res) => {
@@ -97,26 +106,27 @@ export class FlowService {
   }
 
   public async createNote(content: string): Promise<ICallNote>  {
-    const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.currentCall?.id}/notes`, {
+    const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.callId}/notes`, {
       content
     })) as ICallNote;
-    this.note = note;
-
+    this.noteId = note.id;
+    this.addVariables({note: note.id});
     return note;
   }
 
   public async updateNote(content: string): Promise<ICallNote> {
-    const note = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/calls/${this.currentCall?.id}/notes/${this.note?.id}`, {
+    const note = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, {
       content
     })) as ICallNote;
-    this.note = note;
 
     return note;
   }
 
-  public async goTo(id: string) {
+  public async goTo(id: string): Promise<void> {
     const step = this.builder.process.steps.find(x => x.id === id);
-    await this.renderComponent(<FlowStep>step);
+    if(step) {
+      this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step }));
+    }
   }
 
   public findNextStep(): FlowNode | FlowStep | FlowRouter | undefined {
@@ -126,7 +136,7 @@ export class FlowService {
     return <FlowStep|FlowRouter>link?.to;
   }
 
-  public async next(): Promise<any> {
+  public async next(): Promise<void> {
     // find a link where the "from" is equal to "currentStep"
     let step = this.findNextStep();
 
@@ -147,8 +157,7 @@ export class FlowService {
       if (step?.id) {
         this.createHistoryEntry();
 
-        this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
-        return await this.renderComponent(<FlowStep>step);
+        return this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
       }
 
     } catch(e) {
@@ -169,17 +178,16 @@ export class FlowService {
     completedSteps.pop() // remove the current step
     const prevStep = completedSteps.pop(); // grab the last item from the array
 
-    if (prevStep) {
+    if (prevStep?.id) {
       this.createHistoryEntry();
-      this.store.dispatch(flowActions.PrevStepAction({host: this.flowHost}));
-      return await this.renderComponent(<FlowStep>prevStep);
+      return this.store.dispatch(flowActions.PrevStepAction({stepId: prevStep.id}));
     }
 
     throw new NoStepFoundError();
 
   }
 
-  private createHistoryEntry(): void {
+  public createHistoryEntry(): void {
     if (this.builder.process.currentStep?.step?.id) {
       // releasing the step sets step._destroyedAt
       if(this.builder.process.currentStep.step.release) {

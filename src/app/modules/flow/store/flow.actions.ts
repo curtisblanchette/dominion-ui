@@ -74,6 +74,5 @@ export const NextStepAction = createAction(
 
 export const PrevStepAction = createAction(
   ActionTypes.PREV_STEP,
-  props<{ host: FlowHostDirective }>()
+  props<{ stepId: string }>()
 )
-

@@ -9,7 +9,11 @@ import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';
+import { HttpClient } from '@angular/common/http';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
+@UntilDestroy()
 @Component({
   templateUrl: './flow.component.html',
   styleUrls: ['../../../assets/css/_container.scss', './flow.component.scss'],
@@ -53,12 +57,14 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   ];
 
   @ViewChild(FlowHostDirective, {static: true}) flowHost!: FlowHostDirective;
+  @ViewChild('tinymce') tinymce: any;
 
   constructor(
     private store: Store<fromFlow.FlowState>,
     private flowService: FlowService,
     private router: Router,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private http: HttpClient
   ) {
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
@@ -70,6 +76,17 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     this.flowService.flowHost = this.flowHost;
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
     await this.flowService.start(!!processExists.length);
+
+    this.tinymce.onKeyUp.pipe(
+      untilDestroyed(this),
+      map((action: any) => {
+        return action.event.currentTarget.innerHTML;
+      }),
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe((html: string) => {
+      this.saveNotes(html);
+    });
   }
 
   public onNext($event: Event) {
@@ -159,8 +176,8 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     this.router.navigate(['dashboard']);
   }
 
-  public saveNotes( event:any ) {
-    this.flowService.addVariables({notes : this.notesData});
+  public saveNotes( html:any ) {
+    this.flowService.updateNote(html);
   }
 
 }

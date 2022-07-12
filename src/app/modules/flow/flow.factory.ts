@@ -7,7 +7,7 @@ import { ModuleTypes } from '../../data/entity-metadata';
 
 export class FlowFactory {
 
-  public static objection(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static objection(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Objection',
       nodeIcon: 'address-book',
@@ -24,7 +24,7 @@ export class FlowFactory {
     });
   }
 
-  public static callTypeDecision(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static callTypeDecision(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Call Type',
       nodeIcon: 'phone-volume',
@@ -41,7 +41,7 @@ export class FlowFactory {
     });
   }
 
-  public static webLeadsType(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static webLeadsType(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Search and List',
       nodeIcon: 'address-book',
@@ -58,7 +58,7 @@ export class FlowFactory {
     });
   }
 
-  public static searchNListLeads(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static searchNListLeads(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Search Leads',
       nodeIcon: 'address-book',
@@ -68,20 +68,21 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.LEAD,
         data: {
-          title: 'Lead List',
+          title: 'Search Leads',
         },
         options: {
           searchable: true,
           editable: false,
           perPage: 25,
-          columns: []
+          columns: [],
+          query: {}
         }
       }
     })
   }
 
 
-  public static searchNListContacts(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static searchNListContacts(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Search Contacts',
       nodeIcon: 'address-book',
@@ -97,13 +98,14 @@ export class FlowFactory {
           searchable: true,
           editable: false,
           perPage: 25,
-          columns: []
+          columns: [],
+          query: {}
         }
       }
     })
   }
 
-  public static createLead(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static createLead(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'user-plus',
@@ -130,7 +132,7 @@ export class FlowFactory {
     });
   };
 
-  public static editLead(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static editLead(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'user-pen',
@@ -151,7 +153,7 @@ export class FlowFactory {
     });
   };
 
-  public static createContact(resolveId: ModuleTypes | null = null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static createContact(resolveId: ModuleTypes | null = null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'user-pen',
@@ -180,7 +182,7 @@ export class FlowFactory {
     });
   }
 
-  public static createDeal(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static createDeal(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'landmark',
@@ -204,7 +206,7 @@ export class FlowFactory {
   };
 
 
-  public static createDeal1(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static createDeal1(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'landmark',
@@ -228,7 +230,7 @@ export class FlowFactory {
     });
   };
 
-  public static editDeal(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static editDeal(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Review Deal Info',
       nodeIcon: 'marker',
@@ -249,7 +251,7 @@ export class FlowFactory {
     });
   };
 
-  public static setLeadSource(resolveId: ModuleTypes | null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static setLeadSource(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Select Lead Source',
       nodeIcon: 'crosshairs',
@@ -259,9 +261,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.LEAD,
         data: {
-          title: 'Select a Campaign',
-          resolveId,
-          resolveData
+          title: 'Select a Campaign'
         },
         options: {
           controls: false,
@@ -274,7 +274,7 @@ export class FlowFactory {
     });
   };
 
-  public static opportunityList(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static opportunityList(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Opportunity List',
       nodeIcon: 'table-list',
@@ -291,14 +291,13 @@ export class FlowFactory {
           editable: false,
           perPage: 25,
           columns: [],
-          query: {
-          }
+          query: {}
         }
       }
     });
   };
 
-  public static noOutcomeList(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static noOutcomeList(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'No Outcome List',
       nodeIcon: 'table-list',
@@ -318,14 +317,13 @@ export class FlowFactory {
           query: {
             stageId: '2,4,5',
             outcome: null,
-
           }
         }
       }
     });
   };
 
-  public static relationshipBuilding(resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static relationshipBuilding(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Relationship Building',
       nodeIcon: 'handshake',
@@ -336,14 +334,13 @@ export class FlowFactory {
         data: {
           title: 'Relationship Building',
           // body: '',
-          template: 'relationship-building',
-          resolveData
+          template: 'relationship-building'
         }
       }
     })
   }
 
-  public static powerQuestion(resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static powerQuestion(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Power Question',
       nodeIcon: 'clipboard-question',
@@ -354,14 +351,13 @@ export class FlowFactory {
         data: {
           title: 'Power Question',
           // body: '',
-          template: 'power-question',
-          resolveData
+          template: 'power-question'
         }
       }
     })
   }
 
-  public static searchNListWebLeads(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static searchNListWebLeads(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'table-list',
@@ -377,14 +373,15 @@ export class FlowFactory {
           searchable: true,
           editable: false,
           perPage: 25,
-          columns: []
+          columns: [],
+          query: {}
         }
       }
     };
     return FlowFactory.step(data);
   }
 
-  public static appointmentList(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}):FlowStep {
+  public static appointmentList(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined):FlowStep {
     const data = {
       nodeText: 'Search Appointments',
       nodeIcon: 'table-list',
@@ -398,16 +395,18 @@ export class FlowFactory {
         },
         options: {
           searchable: true,
+          createNew: true,
           editable: false,
           perPage: 25,
-          columns: []
+          columns: [],
+          query: {}
         }
       }
     };
     return FlowFactory.step(data);
   }
 
-  public static setAppointment(resolvePayloadAdditions: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}):FlowStep {
+  public static setAppointment(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Set Appointment',
       nodeIcon: 'calendar-plus',
@@ -427,14 +426,13 @@ export class FlowFactory {
             EventFields.TYPE_ID,
             EventFields.START_TIME,
             EventFields.END_TIME,
-          ],
-          resolvePayloadAdditions
+          ]
         }
       }
     });
   }
 
-  public static verifyInfo(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static verifyInfo(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Verify',
       nodeIcon: 'calendar-check',
@@ -450,7 +448,7 @@ export class FlowFactory {
     });
   };
 
-  public static reasonForCall(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static reasonForCall(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Reason For Call',
       nodeIcon: 'address-book',
@@ -467,7 +465,7 @@ export class FlowFactory {
   }
 
 
-  public static recap(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static recap(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Recap',
       nodeIcon: 'address-book',
@@ -483,7 +481,7 @@ export class FlowFactory {
     });
   }
 
-  public static end(beforeRoutingTriggers: any = {}, afterRoutingTriggers: any = {}): FlowStep {
+  public static end(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'End',
       nodeIcon: 'flag-checkered',

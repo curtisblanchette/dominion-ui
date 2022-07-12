@@ -1,8 +1,7 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
-
-import * as flowActions from './flow.actions';
 import { FlowCurrentStep, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
 import { cloneDeep } from 'lodash';
+import * as flowActions from './flow.actions';
 
 export interface FlowState {
   processId: string | undefined;

@@ -24,7 +24,6 @@ export interface IListOptions {
   editable: boolean;
   columns: Array<Object>;
   query?: any;
-  // resolveQuery?: { [key: string]: string }
 }
 
 export enum SortDirections {
@@ -112,7 +111,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
 
-    this.perPage$ = this.store.select(fromData.selectPerPage).pipe(map(value => {
+    this.perPage$ = this.store.select(fromData.selectPerPage).pipe(untilDestroyed(this), map(value => {
       this.perPage = value; // ngx-pagination doesn't like observable itemsPerPage
       this.searchInModule();
       return value;

@@ -33,16 +33,22 @@ export class FlowBuilder {
      */
     const objection = FlowFactory.objection();
     // select call type
-    const callType = FlowFactory.callTypeDecision(undefined, (vars: any) => { this.flowService.startCall(vars.call_type) });
+    const callType = FlowFactory.callTypeDecision(undefined, (vars: any) => { this.flowService.startCall(vars.call_type); });
     const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead});  });
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListContacts = FlowFactory.searchNListContacts()
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
+    const appointmentList = FlowFactory.appointmentList((vars: any, step: any) => {
+      step.state.options.query['dealId'] = vars.deal;
+    });
+
     const createLead = FlowFactory.createLead();
     const editLead = FlowFactory.editLead((vars: any, step: any) => {
       step.state.data.id = vars.lead;
     });
-    const setLeadSource = FlowFactory.setLeadSource(ModuleTypes.LEAD);
+    const setLeadSource = FlowFactory.setLeadSource((vars: any, step: any) => {
+      step.state.data.id = vars.lead;
+    });
     const oppList = FlowFactory.opportunityList((vars: any, step: any) => {
       step.state.options.query['leadId'] = vars.lead
     });
@@ -54,9 +60,13 @@ export class FlowBuilder {
     const editOpp = FlowFactory.editDeal((vars: any, step: any) => {
       step.state.data.id = vars.deal;
       step.state.data.leadId = vars.lead;
+    }, (vars:any, step: any) => {
+      this.flowService.updateCall({dealId: vars.deal});
     });
 
-    const relationshipBuilding = FlowFactory.relationshipBuilding();
+    const relationshipBuilding = FlowFactory.relationshipBuilding(undefined, (vars: any, step: any) => {
+      this.flowService.addVariables({appointment_action: 'set'});
+    });
     const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);
 
     const powerQuestion = FlowFactory.powerQuestion();
@@ -114,7 +124,9 @@ export class FlowBuilder {
     const toRelationshipBuilding2 = FlowFactory.link(createOpp, relationshipBuilding);
 
     const inboundSetApptLink = FlowFactory.link(relationshipBuilding, setAppointment);
-    const inboundSetApptLink1 = FlowFactory.link(editOpp, setAppointment);
+    const inboundSetApptLink1 = FlowFactory.link(editOpp, appointmentList);
+
+    const appointListToSetAppointment = FlowFactory.link(appointmentList, setAppointment);
 
     // outbound
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
@@ -195,7 +207,9 @@ export class FlowBuilder {
       .addLink(toCallTypeRouter)
       .addRouter(callTypeRouter)
       .addStep(searchNListLeads)
-      .addStep(webLeadsType);
+      .addStep(webLeadsType)
+      .addStep(appointmentList)
+      .addLink(appointListToSetAppointment);
 
     // 'inbound'
     this.process

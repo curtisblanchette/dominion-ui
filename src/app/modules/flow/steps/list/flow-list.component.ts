@@ -1,10 +1,8 @@
-import { AfterContentInit, AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FlowService } from '../../flow.service';
 import { DominionType } from '../../../../common/models';
 import { FlowState } from '../../store/flow.reducer';
 import { Store } from '@ngrx/store';
-import { firstValueFrom, take } from 'rxjs';
-import * as fromFlow from '../../store/flow.reducer';
 import { FiizListComponent } from '../../../../common/components/ui/list/list.component';
 
 @Component({
@@ -32,16 +30,10 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
 
   public async ngAfterContentInit() {
 
-    console.log('FlowListComponent AfterContentInit', this.options.resolveQuery);
+    console.log('FlowListComponent AfterContentInit');
   }
 
   public async ngOnInit() {
-    // if(this.options.resolveQuery){
-    //   for (const key of Object.keys(this.options.resolveQuery)) {
-    //     this.options.query[key] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(this.options.resolveQuery[key])).pipe(take(1)));
-    //   }
-    //   console.log('FlowListComponent OnInit', this.options.resolveQuery);
-    // }
 
   }
 

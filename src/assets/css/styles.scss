@@ -18,7 +18,9 @@
 @import "ng2-date-picker";
 @import "owl-date-picker";
 @import "dialog";
-
+html.cdk-global-scrollblock {
+  top: 0!important;
+}
 html, body {
   height: 100%;
 }
