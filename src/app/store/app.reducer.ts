@@ -6,19 +6,25 @@ export interface AppState {
   settings: any;
   lookups: any;
   initialized: boolean;
-
+  loading: boolean;
 }
 
 export const initialState: AppState = {
   settings: localStorage.getItem('settings') && JSON.parse(localStorage.getItem('settings') || '') || null,
   lookups: localStorage.getItem('lookups') && JSON.parse(localStorage.getItem('lookups') || '' ) || null,
-  initialized: localStorage.getItem('initialized') && JSON.parse(localStorage.getItem('initialized') || 'false' ) || false
+  initialized: localStorage.getItem('initialized') && JSON.parse(localStorage.getItem('initialized') || 'false' ) || false,
+  loading: false
 };
 
 export const reducer = createReducer(
   initialState,
   on(appActions.GetSettingsAction, (state) => ({ ...state })),
   on(appActions.SetSettingsAction, (state, {payload}) => ({ ...state, settings: payload })),
+  on(appActions.UpdateSettingsAction, (state, {payload, keys} ) => {
+    state.settings[keys[0]][keys[1]] = payload;
+    return {...state, loading:true};
+  }),
+  on(appActions.UpdateSettingsSuccessAction, (state) => ({ ...state, loading: false })),
   on(appActions.ClearSettingsAction, (state) => ({ ...state, settings: null })),
 
   on(appActions.GetLookupsAction, (state) => ({ ...state })),
@@ -41,6 +47,7 @@ export const selectPracticeAreas = createSelector(selectApp, (state: AppState) =
 export const selectOffices = createSelector(selectApp, (state: AppState) => state.lookups.offices);
 
 export const selectInitialized = createSelector(selectApp, (state: AppState) => state.initialized);
+export const loading = createSelector(selectApp, (state: AppState) => state.loading);
 
 const findByKey = (obj: any, kee: string): any => {
   if (kee in obj) return obj[kee];

@@ -1,8 +1,11 @@
 import { createAction, props } from '@ngrx/store';
+import { INestedSetting } from './app.effects';
 
 export const ActionTypes = {
   GET_SETTINGS: '[App] Get Settings',
   SET_SETTINGS: '[App] Set Settings',
+  UPDATE_SETTINGS: '[App] Update Settings',
+  UPDATE_SETTINGS_SUCCESS: '[App] Update Settings Success',
   CLEAR_SETTINGS: '[App] Clear Settings',
   GET_ROLES: '[App] Get Roles',
   SET_ROLES: '[App] Set Roles',
@@ -19,6 +22,15 @@ export const GetSettingsAction = createAction(
 export const SetSettingsAction = createAction(
   ActionTypes.SET_SETTINGS,
   props<{ payload: any }>()
+);
+
+export const UpdateSettingsAction = createAction(
+  ActionTypes.UPDATE_SETTINGS,
+  props<{ payload: any, keys:Array<any> }>()
+);
+
+export const UpdateSettingsSuccessAction = createAction(
+  ActionTypes.UPDATE_SETTINGS_SUCCESS
 );
 
 export const GetLookupsAction = createAction(
