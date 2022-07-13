@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { firstValueFrom, mergeMap } from 'rxjs';
+import { firstValueFrom, map, mergeMap } from 'rxjs';
 import * as appActions from './app.actions';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -73,10 +73,21 @@ export class AppEffects {
         if( response instanceof HttpErrorResponse ){
           this.toastr.error(response.error.name || '', response.error.message);
         } else {
-          return true;
+          this.store.dispatch( appActions.UpdateSettingsSuccessAction() );
         }
       })
     ), { dispatch: false }
+  );
+
+  updateSettingsSuccess$ = createEffect(
+    ():any =>
+    this.actions$.pipe(
+      ofType(appActions.UpdateSettingsSuccessAction),
+      map((action) => {
+        this.toastr.success('', 'Settings Updated!'); 
+      })
+    ),
+    { dispatch : false }
   );
 
   getLookups$ = createEffect((): any =>
