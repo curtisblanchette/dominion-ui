@@ -1,11 +1,10 @@
-<div class="dashboard">
+<div class="page-heading">
+  <h2 class="page-heading__title" *ngIf="user">Welcome back, {{user.fullName}}</h2>
+  <div class="page-heading__subtitle">Select a task from one of the quickstart options below to get started</div>
+  <a href="#" (click)="logout()">Logout</a>
+</div>
 
-  <div class="page-heading">
-    <h2 class="page-heading__title" *ngIf="user">Welcome back, {{user.fullName}}</h2>
-    <div class="page-heading__subtitle">Select a task from one of the quickstart options below to get started</div>
-    <a href="#" (click)="logout()">Logout</a>
-  </div>
-
+<div class="container">
 
   <h3>Quickstart</h3>
   <section class="dashboard__quickstart" *ngIf="quickStartMenu.length" @bigButtons>

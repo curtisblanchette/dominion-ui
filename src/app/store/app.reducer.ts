@@ -31,7 +31,7 @@ export const reducer = createReducer(
   on(appActions.SetLookupsAction, (state, {payload}) => ({ ...state, lookups: payload })),
 
   on(appActions.ClearRolesAction, (state) => ({ ...state, roles: null })),
-  on(appActions.AppInitializedAction, (state) => ({...state, initialized: true}))
+  on(appActions.AppInitializedAction, (state) => ({...state, loading: false, initialized: true}))
 
 );
 
@@ -49,10 +49,10 @@ export const selectOffices = createSelector(selectApp, (state: AppState) => stat
 export const selectInitialized = createSelector(selectApp, (state: AppState) => state.initialized);
 export const loading = createSelector(selectApp, (state: AppState) => state.loading);
 
-const findByKey = (obj: any, kee: string): any => {
-  if (kee in obj) return obj[kee];
+const findByKey = (obj: any, key: string): any => {
+  if (key in obj) return obj[key];
   for(let n of Object.values(obj).filter(Boolean).filter(v => typeof v === 'object')) {
-    let found = findByKey(n, kee)
+    let found = findByKey(n, key)
     if (found) return found
   }
 }

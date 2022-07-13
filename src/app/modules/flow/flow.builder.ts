@@ -59,7 +59,7 @@ export class FlowBuilder {
     const createOpp = FlowFactory.createDeal( (vars: any, step: any) => {
       step.state.data['payload'] = { leadId: vars.lead };
     });
-    const createOpp1 = FlowFactory.createDeal1();
+    // const createOpp1 = FlowFactory.createDeal1();
     const editOpp = FlowFactory.editDeal((vars: any, step: any) => {
       step.state.data.id = vars.deal;
       step.state.data.leadId = vars.lead;
@@ -153,7 +153,7 @@ export class FlowBuilder {
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
 
     const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( (vars: any, step: any) => {
-      step.state.data.contactId = vars.contact;
+      step.state.options.query.contactId = vars.contact;
     });
 
     const webLeads_yes = FlowFactory.condition({
@@ -170,6 +170,9 @@ export class FlowBuilder {
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
 
     const createContact = FlowFactory.createContact();
+
+    // You''ll never actually get here because we dont' want people randomly creating contacts in flow this way.
+    // the step has `createNew: false`
     const existingContact_no = FlowFactory.condition({
       variable: ModuleTypes.CONTACT,
       exists: false
@@ -187,7 +190,7 @@ export class FlowBuilder {
     const existingOpp_no = FlowFactory.condition({
       variable: ModuleTypes.DEAL,
       exists: false
-    }, {}, createOpp1);
+    }, {}, createOpp);
 
     const existingOpp_yes = FlowFactory.condition({
       variable: ModuleTypes.DEAL,
@@ -200,7 +203,7 @@ export class FlowBuilder {
 
     // const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
     // const setApptLink2 = FlowFactory.link(contactOppsWithNoOutcomes, setAppointment);
-    const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
+    // const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
     // const oppLink = FlowFactory.link(createContact, createOpp1);
 
     // const setAppt_yes = FlowFactory.condition( {
@@ -265,7 +268,7 @@ export class FlowBuilder {
       .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
       .addStep(searchNListContacts)
-      .addStep(createOpp1)
+      // .addStep(createOpp1)
       .addRouter(oppRouter)
       .addLink(oppLink2)
       .addLink(webLeadLink)
@@ -278,7 +281,7 @@ export class FlowBuilder {
       .addStep(contactOppsWithNoOutcomes)
       // .addLink(setApptLink)
       // .addLink(setApptLink2)
-      .addLink(setApptLink3)
+      // .addLink(setApptLink3)
       // .addRouter(apptRouter)
       .addStep(recap)
       .addLink(apptLink)

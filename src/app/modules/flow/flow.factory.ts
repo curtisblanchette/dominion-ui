@@ -208,29 +208,28 @@ export class FlowFactory {
   };
 
 
-  public static createDeal1(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
-    return new FlowStep({
-      nodeText: 'Create Opportunity',
-      nodeIcon: 'landmark',
-      component: FlowDataComponent,
-      beforeRoutingTriggers,
-      afterRoutingTriggers,
-      state: {
-        module: ModuleTypes.DEAL,
-        data: {
-          title: 'Create Opportunity'
-        },
-        options: {
-          controls: false,
-          state: 'create',
-          fields: [
-            DealFields.LEAD_ID,
-            DealFields.NAME
-          ],
-        }
-      }
-    });
-  };
+  // public static createDeal1(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
+  //   return new FlowStep({
+  //     nodeText: 'Create Opportunity',
+  //     nodeIcon: 'landmark',
+  //     component: FlowDataComponent,
+  //     beforeRoutingTriggers,
+  //     afterRoutingTriggers,
+  //     state: {
+  //       module: ModuleTypes.DEAL,
+  //       data: {
+  //         title: 'Create Opportunity'
+  //       },
+  //       options: {
+  //         controls: false,
+  //         state: 'create',
+  //         fields: [
+  //           DealFields.NAME
+  //         ],
+  //       }
+  //     }
+  //   });
+  // };
 
   public static editDeal(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
@@ -311,7 +310,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.EVENT,
         data: {
-          title: 'Opportunity List',
+          title: 'No Outcome List',
         },
         options: {
           searchable: false,
