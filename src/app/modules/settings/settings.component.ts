@@ -59,14 +59,14 @@ export class SettingsComponent implements OnInit {
   }
 
   public initForms(){
-    
+
     this.generalSettings$.forEach(element => {
       Object.entries(element).map( (el:Array<any>) => {
         this.generalForm.addControl(el[0], new FormControl(el[1]['value'], Validators.required));
       });
     });
-    
-    
+
+
     this.appointmentSettings$.forEach(element => {
       Object.entries(element).map( (el:Array<any>) => {
         const formName = `appt[${el[1]['id']}][${[el[0]]}][value]`;
@@ -84,7 +84,7 @@ export class SettingsComponent implements OnInit {
 
   public updateData( type:string ){
     switch ( type ) {
-      case 'general': 
+      case 'general':
         if( this.generalForm.valid ){
           const values = this.generalForm.value;
           this.generalSettings$.forEach(element => {
@@ -92,12 +92,12 @@ export class SettingsComponent implements OnInit {
               const updatedData:INestedSetting = { id : el[1]['id'], value : values[el[0]], unit : el[1]['unit']  };
               this.store.dispatch( AppAction.UpdateSettingsAction( {payload : updatedData, keys : ['general',el[0]]} ));
             });
-          });          
+          });
         } else {
           this.toastr.error('', 'Form is Invalid');
-        }      
+        }
       break;
-      
+
       case 'appt':
         if( this.apptForm.valid ){
           const values = this.apptForm.value;
@@ -111,9 +111,9 @@ export class SettingsComponent implements OnInit {
           });
         }
       break;
-      
+
     }
-    
+
   }
 
 }

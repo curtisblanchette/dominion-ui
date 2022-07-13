@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { FlowComponent } from "./flow.component";
-import { FlowService } from "./flow.service";
 import { FlowHostDirective, FlowDataComponent, FlowListComponent, FlowTextComponent, FlowNotesComponent, FlowTimelineComponent, FlowAppointmentComponent, FlowObjectionComponent } from './index';
 import { CommonModule } from "@angular/common";
 import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
@@ -13,6 +12,7 @@ import { FlowEffects } from './store/flow.effects';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { FlowRouting } from './flow.routing';
 import { FlowBuilder } from './flow.builder';
+import { DictationPipe } from '../../common/pipes/dictation.pipe';
 
 @NgModule({
   declarations: [
@@ -24,7 +24,8 @@ import { FlowBuilder } from './flow.builder';
     FlowDataComponent,
     FlowListComponent,
     FlowAppointmentComponent,
-    FlowHostDirective
+    FlowHostDirective,
+    DictationPipe,
   ],
   imports: [
     StoreModule.forFeature('flow', reducer),
@@ -39,6 +40,9 @@ import { FlowBuilder } from './flow.builder';
   ],
   providers: [
     FlowBuilder
+  ],
+  exports: [
+    DictationPipe
   ]
 })
 export class FlowModule {}
