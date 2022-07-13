@@ -1,12 +1,7 @@
 import { Injectable, Pipe, PipeTransform } from '@angular/core';
-import * as dayjs from 'dayjs';
-const customParseFormat = require('dayjs/plugin/customParseFormat')
-dayjs.extend(customParseFormat);
-import { validate as isUuid } from "uuid";
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import * as fromLogin from '../../modules/login/store/login.reducer';
-import { ISettingResponse, IUser } from '@4iiz/corev2';
 
 @Pipe({
   name: 'dictate'
