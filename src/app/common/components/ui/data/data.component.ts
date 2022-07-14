@@ -169,8 +169,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
-    if (this.data.id) {
-      this.id = this.data.id;
+    if ( this.data.id || this.id ) {
+      this.id = !this.id ? this.data.id : this.id;
       this.getData();
     }
 

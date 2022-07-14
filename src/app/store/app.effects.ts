@@ -73,10 +73,10 @@ export class AppEffects {
         if( response instanceof HttpErrorResponse ){
           this.toastr.error(response.error.name || '', response.error.message);
         } else {
-          this.store.dispatch( appActions.UpdateSettingsSuccessAction() );
+          return appActions.UpdateSettingsSuccessAction();
         }
       })
-    ), { dispatch: false }
+    )
   );
 
   updateSettingsSuccess$ = createEffect(
