@@ -25,6 +25,7 @@ import { AppEffects } from './store/app.effects';
 import { ToastrModule } from 'ngx-toastr';
 import { ErrorInterceptor } from './common/interceptors/Error.interceptor';
 import { DataModule } from './modules/data/data.module';
+import { OutcomeFormModule } from './modules/outcome-form/outcome-form.module';
 
 import { MetaReducer } from "@ngrx/store";
 import { hydrationMetaReducer } from './store/hydration.reducer';
@@ -71,7 +72,8 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
-    DataModule
+    DataModule,
+    OutcomeFormModule
   ],
   providers: [
     FlowService,

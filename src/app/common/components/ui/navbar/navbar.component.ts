@@ -50,6 +50,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       name: 'System',
       path: 'system',
       roles: ['system']
+    },
+    {
+      name: 'No Outcome',
+      path: 'no-outcome',
+      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     }
   ];
 

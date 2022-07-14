@@ -77,6 +77,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
   @Output('onFailure') onFailure: EventEmitter<Error> = new EventEmitter<Error>();
   @Output('isValid') isValid: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output('values') values: EventEmitter<any> = new EventEmitter();
 
   @ViewChildren('inputList') inputList: QueryList<FiizInputComponent>
 
@@ -157,7 +158,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           of('').pipe(
             untilDestroyed(this),
             delay(100) // workaround issue: https://github.com/angular/angular/issues/14542
-          ).subscribe(() => this.isValid.next(this.form.valid) )
+          ).subscribe(() => { this.isValid.next(this.form.valid); this.values.next(this.form.value); })
 
 
           await this.dateValidation();
@@ -169,8 +170,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
-    if ( this.data.id || this.id ) {
-      this.id = !this.id ? this.data.id : this.id;
+    if (!this.id || this.data?.id) {
+      this.id = this.data?.id;
+    }
+    if (this.id) {
       this.getData();
     }
 
@@ -255,6 +258,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.form = this.fb.group(form);
     this.form.statusChanges.pipe(untilDestroyed(this)).subscribe((valid: any) => {
       this.isValid.next(valid === 'VALID');
+      this.values.next(this.form.value);
     });
     this.controlData = this.getControlData();
 
@@ -342,7 +346,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.form.updateValueAndValidity();
     this.form.enable();
     this.isValid.next(true);
-
+    this.values.next(this.form.value);
   }
 
   private getControlData() {
