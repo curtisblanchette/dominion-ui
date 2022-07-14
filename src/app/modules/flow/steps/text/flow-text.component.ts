@@ -37,7 +37,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public callReasons$: Observable<DropdownItem[]>;
   public answerOptions$: Observable<DropdownItem[]>;
   public callOutcomes$: Observable<DropdownItem[]>;
-  public allVars:any = {};
+  public vars$: Observable<any>;
   public callAPI:any;
   public noteAPI:any;
   public ModuleTypes: any;
@@ -67,10 +67,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       { id : 'wrong-number', label : 'Wrong Number' },
       { id : 'not-working', label : 'Not Working (Disconnected)' },
     ]);
+    this.vars$ = this.store.select(fromFlow.selectAllVariables);
   }
 
   public async ngOnInit(){
-    this.allVars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
     if (this.data) {
       this.initForm();
     }
@@ -142,6 +142,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   public get isValid() {
     return this.form.valid;
+  }
+
+  public endCall() {
+    return this.flowService.restart();
   }
 
 }

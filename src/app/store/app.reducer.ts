@@ -1,31 +1,37 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import * as appActions from './app.actions';
 import { INestedSetting } from './app.effects';
+import { getInitialStateByKey } from './util';
 
 export interface AppState {
   settings: any;
   lookups: any;
   initialized: boolean;
-
+  loading: boolean;
 }
 
 export const initialState: AppState = {
-  settings: localStorage.getItem('settings') && JSON.parse(localStorage.getItem('settings') || '') || null,
-  lookups: localStorage.getItem('lookups') && JSON.parse(localStorage.getItem('lookups') || '' ) || null,
-  initialized: localStorage.getItem('initialized') && JSON.parse(localStorage.getItem('initialized') || 'false' ) || false
+  settings: getInitialStateByKey('app.settings') || null,
+  lookups: getInitialStateByKey('app.lookups') || null,
+  initialized: getInitialStateByKey('app.initialized') || false,
+  loading: false
 };
 
 export const reducer = createReducer(
   initialState,
   on(appActions.GetSettingsAction, (state) => ({ ...state })),
   on(appActions.SetSettingsAction, (state, {payload}) => ({ ...state, settings: payload })),
-  on(appActions.ClearSettingsAction, (state) => ({ ...state, settings: null })),
+  on(appActions.UpdateSettingsAction, (state, {payload, keys} ) => {
+    state.settings[keys[0]][keys[1]] = payload;
+    return {...state, loading: true};
+  }),
+  on(appActions.UpdateSettingsSuccessAction, (state) => ({ ...state, loading: false })),
 
   on(appActions.GetLookupsAction, (state) => ({ ...state })),
   on(appActions.SetLookupsAction, (state, {payload}) => ({ ...state, lookups: payload })),
 
-  on(appActions.ClearRolesAction, (state) => ({ ...state, roles: null })),
-  on(appActions.AppInitializedAction, (state) => ({...state, initialized: true}))
+  on(appActions.ClearAction, (state) => ({ ...state, roles: null, settings: null, initialized: false, loading: false })),
+  on(appActions.AppInitializedAction, (state) => ({...state, loading: false, initialized: true}))
 
 );
 
@@ -41,11 +47,12 @@ export const selectPracticeAreas = createSelector(selectApp, (state: AppState) =
 export const selectOffices = createSelector(selectApp, (state: AppState) => state.lookups.offices);
 
 export const selectInitialized = createSelector(selectApp, (state: AppState) => state.initialized);
+export const loading = createSelector(selectApp, (state: AppState) => state.loading);
 
-const findByKey = (obj: any, kee: string): any => {
-  if (kee in obj) return obj[kee];
+const findByKey = (obj: any, key: string): any => {
+  if (key in obj) return obj[key];
   for(let n of Object.values(obj).filter(Boolean).filter(v => typeof v === 'object')) {
-    let found = findByKey(n, kee)
+    let found = findByKey(n, key)
     if (found) return found
   }
 }
@@ -57,3 +64,5 @@ const findByProperty = (obj: any, predicate: Function): any => {
     if (found) return found
   }
 }
+
+

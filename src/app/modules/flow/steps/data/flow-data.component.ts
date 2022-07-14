@@ -9,6 +9,7 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
 @Component({
   selector: 'flow-data',
   template: `
+    <h3 class="title">{{data.title}}</h3>
     <div>{{options.dictation}}</div>
     <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="updateValidity($event)" (onSuccess)="onSuccess($event)"></fiiz-data>
   `,

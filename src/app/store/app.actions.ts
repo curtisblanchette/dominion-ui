@@ -1,14 +1,14 @@
 import { createAction, props } from '@ngrx/store';
+import { INestedSetting } from './app.effects';
 
 export const ActionTypes = {
   GET_SETTINGS: '[App] Get Settings',
   SET_SETTINGS: '[App] Set Settings',
-  CLEAR_SETTINGS: '[App] Clear Settings',
-  GET_ROLES: '[App] Get Roles',
-  SET_ROLES: '[App] Set Roles',
+  UPDATE_SETTINGS: '[App] Update Settings',
+  UPDATE_SETTINGS_SUCCESS: '[App] Update Settings Success',
   GET_LOOKUPS: '[App] Get Lookups',
   SET_LOOKUPS: '[App] Set Lookups',
-  CLEAR_ROLES: '[App] Clear Roles',
+  CLEAR: '[App] Clear Store',
   INITIALIZED: '[App] State Initialized'
 };
 
@@ -21,6 +21,15 @@ export const SetSettingsAction = createAction(
   props<{ payload: any }>()
 );
 
+export const UpdateSettingsAction = createAction(
+  ActionTypes.UPDATE_SETTINGS,
+  props<{ payload: any, keys:Array<any> }>()
+);
+
+export const UpdateSettingsSuccessAction = createAction(
+  ActionTypes.UPDATE_SETTINGS_SUCCESS
+);
+
 export const GetLookupsAction = createAction(
   ActionTypes.GET_LOOKUPS,
 );
@@ -30,22 +39,8 @@ export const SetLookupsAction = createAction(
   props<{ payload: any }>()
 );
 
-
-export const ClearSettingsAction = createAction(
-  ActionTypes.CLEAR_SETTINGS,
-);
-
-export const GetRolesAction = createAction(
-  ActionTypes.GET_ROLES,
-);
-
-export const SetRolesAction = createAction(
-  ActionTypes.SET_ROLES,
-  props<{ payload: any }>()
-);
-
-export const ClearRolesAction = createAction(
-  ActionTypes.CLEAR_ROLES,
+export const ClearAction = createAction(
+  ActionTypes.CLEAR,
 );
 
 export const AppInitializedAction = createAction(

@@ -1,8 +1,7 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
-
-import * as flowActions from './flow.actions';
 import { FlowCurrentStep, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
+import * as flowActions from './flow.actions';
 
 export interface FlowState {
   processId: string | undefined;
@@ -14,8 +13,7 @@ export interface FlowState {
   breadcrumbs: string[];
 }
 
-// need to serialize/deserialize the step/flow/router objects
-const getInitialStateByKey = (key: string): any| (FlowStep|FlowRouter|FlowLink)[] | FlowCurrentStep | undefined => {
+const getInitialStateByKey = (key: string): any | (FlowStep|FlowRouter|FlowLink)[] | FlowCurrentStep | undefined => {
   let state = localStorage.getItem('state') || '';
 
   if (state) {
@@ -24,30 +22,36 @@ const getInitialStateByKey = (key: string): any| (FlowStep|FlowRouter|FlowLink)[
 
     return setTimeout(() => {
       switch(key) {
-        case 'steps': // @ts-ignore
+        case 'flow.steps': // @ts-ignore
           return data && data.flow.steps.map(step => (new FlowStep(step))) || [];
-        case 'links': // @ts-ignore
+        case 'flow.links': // @ts-ignore
           return data && data.flow.links.map(link => (new FlowLink(link))) || [];
-        case 'routers': // @ts-ignore
+        case 'flow.routers': // @ts-ignore
           return data && data.flow.routers.map(router => (new FlowRouter(router))) || [];
-        case 'currentStep': {
+        case 'flow.currentStep': {
           // const { step, variables, valid } = data.flow.currentStep;
           return data.flow.currentStep;
         }
       }
+
+      // Lodash _.get enables dot.notation objects queries
+      const value = get(state, key);
+      if(value) {
+        return value;
+      }
     }, 0);
-    // return items;
+
   }
 }
 
 export const initialState: FlowState = {
-  processId: localStorage.getItem('processId') || undefined,
-  steps: <FlowStep[]>getInitialStateByKey('steps') || [],
-  routers: <FlowRouter[]>getInitialStateByKey('routers') || [],
-  links: <FlowLink[]>getInitialStateByKey('links') || [],
+  processId: getInitialStateByKey('flow.processId') || undefined,
+  steps: <FlowStep[]>getInitialStateByKey('flow.steps') || [],
+  routers: <FlowRouter[]>getInitialStateByKey('flow.routers') || [],
+  links: <FlowLink[]>getInitialStateByKey('flow.links') || [],
   currentStep: <FlowCurrentStep>getInitialStateByKey('currentStep') || { step: undefined, variables: {}, valid: false },
-  stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]'),
-  breadcrumbs: JSON.parse(localStorage.getItem('breadcrumbs') || '[]') || []
+  stepHistory: getInitialStateByKey('flow.stepHistory') || [],
+  breadcrumbs: getInitialStateByKey('flow.breadcrumbs') || []
 };
 
 export const reducer = createReducer(
@@ -83,6 +87,7 @@ export const reducer = createReducer(
     steps: [],
     routers: [],
     links: [],
+    processId: undefined,
     currentStep: undefined,
     stepHistory: [],
     breadcrumbs: []
@@ -111,8 +116,46 @@ export const reducer = createReducer(
   on(flowActions.SetProcessIdAction, (state, { processId }) => ({
     ...state,
     processId: processId
+  })),
+
+  on(flowActions.ClearAction, (state) => ({
+    ...state,
+    processId: undefined,
+    steps: [],
+    routers: [],
+    links: [],
+    currentStep: undefined,
+    breadcrumbs: []
   }))
 );
+
+export const getObjectByDeepKey = (obj: any): any => {
+  let result = null;
+  if(obj instanceof Array) {
+    for(let i = 0; i < obj.length; i++) {
+      result = getObjectByDeepKey(obj[i]);
+      if (result) {
+        break;
+      }
+    }
+  } else {
+    for(let prop in obj) {
+      console.log(prop + ': ' + obj[prop]);
+      if(prop == 'id') {
+        if(obj[prop] == 1) {
+          return obj;
+        }
+      }
+      if(obj[prop] instanceof Object || obj[prop] instanceof Array) {
+        result = getObjectByDeepKey(obj[prop]);
+        if (result) {
+          break;
+        }
+      }
+    }
+  }
+  return result;
+}
 
 const addToBreadcrumbs = (breadcrumbs: string[], stepId: string | undefined) => {
   if (!stepId) {
@@ -214,8 +257,8 @@ export const selectStepHistory   = createSelector(selectFlow, (flow: FlowState) 
 export const selectAllVariables  = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.stepHistory));
 // @ts-ignore
 export const selectVariableByKey = (key: string) => createSelector(selectCurrentStep, selectAllVariables, (currentStep, variables:{[key: string]: string | number | Date }) => {
-  const allVars = {...variables, ...currentStep?.variables};
-  return allVars[key];
+  const alllets = {...variables, ...currentStep?.variables};
+  return alllets[key];
 });
 
 export const selectStepById       = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id).map((step: any) => step._deserialize() ));
@@ -240,3 +283,4 @@ export function accumulateVariables(history: FlowStepHistoryEntry[]): {[key: str
 
   return items;
 }
+

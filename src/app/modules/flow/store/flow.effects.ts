@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
+import { EMPTY, firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
@@ -26,10 +26,7 @@ export class FlowEffects {
   onUpdateCurrentStep$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(flowActions.UpdateCurrentStepAction),
-      switchMap(async (action: { step: FlowStep }) => {
-
-        this.flowService.renderComponent(action.step);
-      })
+      switchMap(async (action: { step: FlowStep }) => this.flowService.renderComponent(action.step))
     ), { dispatch: false }
   );
 
@@ -76,6 +73,34 @@ export class FlowEffects {
     ), { dispatch: false }
   );
 
+  onPrevStep$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(flowActions.PrevStepAction),
+      withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
+      mergeMap(async (action: any) => {
+        let [payload, variables]: [any, any] = action;
+        let frozenVars = Object.freeze({...variables});
+        let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
+
+
+
+        if(!step) {
+          const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
+          console.log(router);
+        } else {
+
+          if(typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
+            const fn = eval((<FlowStep>step).beforeRoutingTriggers);
+            await fn(frozenVars, step);
+          }
+
+          return flowActions.UpdateCurrentStepAction({ step });
+        }
+        return EMPTY;
+      }
+    )
+  ));
+
   onNextStep$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(flowActions.NextStepAction),
@@ -90,25 +115,27 @@ export class FlowEffects {
           const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
           console.log(router);
         } else {
-          if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'function') {
-            await (<FlowStep>step).beforeRoutingTriggers(frozenVars);
-          }
-          if((<FlowStep>step).beforeRoutingTriggers && typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
-            const fn = eval((<FlowStep>step).beforeRoutingTriggers);
-            await fn(frozenVars, step);
+
+          // triggers can update variables that we'll need while creating history entries
+          if(typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
+            const sourceMapComment = `\n //# sourceURL=afterRoutingTrigger.js \n`;
+            let code = this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers;
+            code = code.concat(sourceMapComment);
+            const afterFn = eval(code);
+            await afterFn(frozenVars, this.flowService.builder?.process?.currentStep?.step);
           }
 
-          if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'function') {
-            await this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers(frozenVars);
-          }
-          if(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers && typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
-            const fn = eval(this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers);
-            await fn(frozenVars, this.flowService.builder?.process?.currentStep?.step);
+          if(typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
+            const sourceMapComment = `\n //# sourceURL=beforeRoutingTrigger.js \n`;
+            let code = (<FlowStep>step).beforeRoutingTriggers
+            code = code.concat(sourceMapComment);
+            const beforeFn = eval(code);
+            await beforeFn(frozenVars, step);
           }
 
           return flowActions.UpdateCurrentStepAction({ step });
         }
-        return flowActions.GoToStepByIdAction({id: ''});
+        return EMPTY;
       })
     ), { dispatch: true }
   );

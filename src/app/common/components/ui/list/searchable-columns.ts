@@ -25,7 +25,6 @@ const modules = new Map([
   ]],
   [ModuleTypes.CALL, [
     {id: 'createdAt', label: 'Created'},
-    {id: 'name', label: 'Name'},
   ]],
   [ModuleTypes.CAMPAIGN, [
     {id: 'createdAt', label: 'Created'},
@@ -41,6 +40,11 @@ const modules = new Map([
     {id: 'createdAt', label: 'Created'},
     {id: 'title', label: 'Title'}
   ]],
+  [ModuleTypes.LEAD_SOURCE, [
+    {id : 'createdAt', label : 'Created'},
+    {id : 'name', label : 'Name'},
+    {id : 'status', label : 'Status'}
+  ]]
 ]);
 
 export const getSearchableColumns = (module: ModuleTypes): DropdownItem[] => modules.get(module)!;

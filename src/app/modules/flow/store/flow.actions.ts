@@ -6,6 +6,7 @@ export const ActionTypes = {
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
   ADD_VARIABLES: '[Flow] Add Variables',
+  REMOVE_VARIABLE: '[Flow] Remove Variable',
   UPDATE_CURRENT_STEP: '[Flow] Update Current Step',
   SET_STEP_HISTORY: '[Flow] Set Step History',
   GO_TO_STEP: '[Flow] Go to step',
@@ -15,7 +16,9 @@ export const ActionTypes = {
   NEXT_STEP: '[Flow] Next Step',
   PREV_STEP: '[Flow] Previous Step',
   UPDATE_BREADCRUMBS: '[Flow] Update Breadcrumbs',
-  SET_PROCESS_ID: '[Flow] Set Process Id'
+  SET_PROCESS_ID: '[Flow] Set Process Id',
+
+  CLEAR: '[Flow] Clear Store'
 };
 
 export const AddStepAction = createAction(
@@ -62,6 +65,11 @@ export const AddVariablesAction = createAction(
   props<{ payload: any }>()
 );
 
+export const RemoveVariableAction = createAction(
+  ActionTypes.REMOVE_VARIABLE,
+  props<{ key: string }>()
+);
+
 export const SetValidityAction = createAction(
   ActionTypes.SET_VALIDITY,
   props<{ payload: boolean }>()
@@ -74,6 +82,9 @@ export const NextStepAction = createAction(
 
 export const PrevStepAction = createAction(
   ActionTypes.PREV_STEP,
-  props<{ host: FlowHostDirective }>()
+  props<{ stepId: string }>()
 )
 
+export const ClearAction = createAction(
+  ActionTypes.CLEAR
+)

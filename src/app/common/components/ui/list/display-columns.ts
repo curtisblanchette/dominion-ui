@@ -26,6 +26,7 @@ const columns = new Map([
   ]],
   [ModuleTypes.CALL, [
     {id: 'dialledNumber', label: 'Dialled'},
+    {id: 'deal', label: 'Deal'},
     {id: 'status', label: 'Status'},
     {id: 'outcome', label: 'Outcome'},
     {id: 'direction', label: 'Direction'},

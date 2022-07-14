@@ -40,10 +40,10 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public form: FormGroup;
   public showSlots: boolean = true;
   public offices$: Observable<DropdownItem[]>;
-  public vars: any;
+  public vars$: Observable<any>;
   public id: string;
 
-  @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], resolvePayloadAdditions: any };
+  @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
   @ViewChildren('slotBtn') slotBtn: QueryList<ElementRef>;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
@@ -70,9 +70,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       this.timeZone = res.value;
     });
 
-    this.store.select(fromFlow.selectAllVariables).subscribe((res: any) => {
-      this.vars = res;
-    });
+    this.vars$ = this.store.select(fromFlow.selectAllVariables);
   }
 
   public async onSave() {
@@ -86,7 +84,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
     this.form.removeControl('set_appointment');
 
-    let payload = this.form.value;
+    let payload = {...this.form.value, ...this.options.payload};
 
     if (this.form.valid) {
       this.form.disable();
@@ -106,16 +104,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         }
 
         case 'set': {
-          // append additional data as payload attachments
-          if(Object.keys(this.options.resolvePayloadAdditions).length) {
-
-            for(const key in Object.keys(this.options.resolvePayloadAdditions)) {
-              payload[key] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey(this.options.resolvePayloadAdditions[key])));
-            }
-          }
-
-          payload['contactId'] = await firstValueFrom(this.store.select(fromFlow.selectVariableByKey('contact')));
-
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res: DominionType | undefined) => {
             res = res as IEvent;
 
@@ -141,7 +129,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   async ngOnInit(): Promise<any> {
-    this.flowService.addVariables({set_appointment: true}); //  default to true
+
   }
 
   public async ngAfterViewInit() {

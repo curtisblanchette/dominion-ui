@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, Observable, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
@@ -13,7 +13,7 @@ import { DefaultDataServiceFactory } from '@ngrx/data';
 import { ModuleTypes } from '../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ICall, ICallNote } from '@4iiz/corev2';
+import { ICallNote } from '@4iiz/corev2';
 import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromLogin from '../login/store/login.reducer';
@@ -30,8 +30,8 @@ export class FlowService {
   public id: string = uuidv4();
   public cmpReference: any;
   public callService: CustomDataService<DominionType>;
-  public currentCall: ICall | undefined;
-  public note: ICallNote | undefined
+  public callId: string | undefined;
+  public noteId: string | undefined;
   public user$: Observable<User | null>;
   public flowHost!: FlowHostDirective;
 
@@ -50,14 +50,13 @@ export class FlowService {
   public async restart(): Promise<any> {
     this.store.dispatch(flowActions.ResetAction());
     this.builder.reset();
-    this.note = undefined;
-    this.currentCall = undefined;
+    this.noteId = undefined;
+    this.callId = undefined;
     await this.start();
   }
 
   public async start(resume = false): Promise<any> {
     if(resume) return this.resume();
-
     // we're starting a new guy
     await this.builder.build();
     const step: FlowStep = this.builder.process.steps[0];
@@ -70,6 +69,13 @@ export class FlowService {
 
   public async resume(): Promise<any> {
     // resuming from store
+    const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
+
+    if(vars['call']) {
+      this.callId = <string>vars['call'];
+      this.noteId = <string>vars['note'];
+    }
+
     return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: this.builder.process.currentStep?.step as FlowStep }));
   }
 
@@ -77,14 +83,16 @@ export class FlowService {
     this.callService.add({
       startTime: new Date().toISOString(),
       direction: direction
-    }, false).pipe(take(1)).subscribe((res) =>{
-      this.currentCall = res;
+    }, false).pipe(take(1)).subscribe(async (res) =>{
+      this.callId = res.id
+      this.addVariables({call: this.callId});
+      await this.createNote('');
     });
   }
 
   public updateCall(payload: any): void {
     let data = {
-      id: this.currentCall?.id,
+      id: this.callId,
       changes: payload
     }
     this.callService.update( <UpdateStr<any>>data, false).pipe(take(1)).subscribe((res) => {
@@ -97,26 +105,27 @@ export class FlowService {
   }
 
   public async createNote(content: string): Promise<ICallNote>  {
-    const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.currentCall?.id}/notes`, {
+    const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.callId}/notes`, {
       content
     })) as ICallNote;
-    this.note = note;
-
+    this.noteId = note.id;
+    this.addVariables({note: note.id});
     return note;
   }
 
   public async updateNote(content: string): Promise<ICallNote> {
-    const note = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/calls/${this.currentCall?.id}/notes/${this.note?.id}`, {
+    const note = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, {
       content
     })) as ICallNote;
-    this.note = note;
 
     return note;
   }
 
-  public async goTo(id: string) {
+  public async goTo(id: string): Promise<void> {
     const step = this.builder.process.steps.find(x => x.id === id);
-    await this.renderComponent(<FlowStep>step);
+    if(step) {
+      this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step }));
+    }
   }
 
   public findNextStep(): FlowNode | FlowStep | FlowRouter | undefined {
@@ -126,7 +135,7 @@ export class FlowService {
     return <FlowStep|FlowRouter>link?.to;
   }
 
-  public async next(): Promise<any> {
+  public async next(): Promise<void> {
     // find a link where the "from" is equal to "currentStep"
     let step = this.findNextStep();
 
@@ -147,8 +156,7 @@ export class FlowService {
       if (step?.id) {
         this.createHistoryEntry();
 
-        this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
-        return await this.renderComponent(<FlowStep>step);
+        return this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
       }
 
     } catch(e) {
@@ -169,17 +177,16 @@ export class FlowService {
     completedSteps.pop() // remove the current step
     const prevStep = completedSteps.pop(); // grab the last item from the array
 
-    if (prevStep) {
+    if (prevStep?.id) {
       this.createHistoryEntry();
-      this.store.dispatch(flowActions.PrevStepAction({host: this.flowHost}));
-      return await this.renderComponent(<FlowStep>prevStep);
+      return this.store.dispatch(flowActions.PrevStepAction({stepId: prevStep.id}));
     }
 
     throw new NoStepFoundError();
 
   }
 
-  private createHistoryEntry(): void {
+  public createHistoryEntry(): void {
     if (this.builder.process.currentStep?.step?.id) {
       // releasing the step sets step._destroyedAt
       if(this.builder.process.currentStep.step.release) {
@@ -214,30 +221,9 @@ export class FlowService {
          * @param {onCreate} EventEmitter
          */
         this.cmpReference.instance.values.subscribe((value: any) => {
-          let variable:{ [key:string] : string } = {};
-
-          if( value.record?.id ){
-            variable[value.module as ModuleTypes] = value.record?.id;
-          }
-
-          /**
-           * If the select record has entity relationships ,
-           * store them as entity variables
-           * if there are multiple contacts, we're only showing the first one.
-           * TODO make multiple contacts/leads work
-           */
-          if( value.record?.contactId || ( value.record?.contacts && value.record?.contacts.length ) ){
-            variable[ModuleTypes.CONTACT] = value.record?.contactId || value.record?.contacts[0]?.id;
-          }
-          if( value.record?.leadId || ( value.record?.leads && value.record?.leads.length ) ){
-            variable[ModuleTypes.LEAD] = value.record.leadId || value.record?.leads[0]?.id;
-          }
-
           this.setValidity(!!value.record);
-          if( Object.keys(variable).length ){
-            this.addVariables(variable);
-          }
         });
+
 
         this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
           const _injector = this.flowHost.viewContainerRef.parentInjector;
@@ -266,6 +252,9 @@ export class FlowService {
     this.store.dispatch(flowActions.SetValidityAction({payload: value}));
   }
 
+  public removeVariable(key: string) {
+    this.store.dispatch(flowActions.RemoveVariableAction({key}));
+  }
   public addVariables(data: any) {
     if (data) {
       let allVars = {...this.builder.process.currentStep?.variables, ...data};

@@ -1,0 +1,45 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: min-content 1fr min-content;
+  gap: 2em;
+
+  .item {
+    //grid-column-start:
+  }
+
+  .settings-module {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 5;
+
+    &__header {
+
+    }
+
+    &__form {
+      flex-grow: inherit;
+      margin-bottom: 15px;
+
+      .form-controls {
+        margin-top: 1em;
+      }
+    }
+
+    &__fields {
+      margin-bottom: 10px;
+    }
+
+    &__div {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      align-items: center;
+      align-content: center;
+      gap: 10px;
+    }
+
+  }
+}

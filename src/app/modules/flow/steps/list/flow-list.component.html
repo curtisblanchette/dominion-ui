@@ -1,8 +1,5 @@
 <div class="flex_main_wrapper">
-
-    <p class="dictation">Thank you for calling the Law Offices of Diener Law, this is Miguel, how may I assist you today?</p>
-
-    <fiiz-list #cmp [data]="data" [module]="module" [options]="options" (values)="EmitValues($event)" (onCreate)="create($event)"></fiiz-list>
-
-
+    <h3 class="title">{{data.title}}</h3>
+    <p class="dictation" *ngIf="data.dictation">{{data.dictation | dictate}}</p>
+    <fiiz-list #cmp [data]="data" [module]="module" [options]="options" (values)="emitValues($event)" (onCreate)="create($event)"></fiiz-list>
 </div>

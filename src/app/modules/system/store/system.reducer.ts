@@ -2,6 +2,8 @@ import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/
 
 import * as systemActions from './system.actions';
 import { DropdownItem } from '../../../common/components/ui/forms';
+import { getInitialStateByKey } from '../../../store/util';
+
 
 export interface SystemState {
   workspaces: DropdownItem[];
@@ -10,8 +12,8 @@ export interface SystemState {
 }
 
 export const initialState: SystemState = {
-  workspaces: localStorage.getItem('workspaces') && JSON.parse(localStorage.getItem('workspaces') || '[]') || [],
-  actingFor: localStorage.getItem('actingFor') && localStorage.getItem('actingFor') || null,
+  workspaces: getInitialStateByKey('system.workspaces') || [],
+  actingFor: getInitialStateByKey('system.actingFor') || null,
   loading: false
 };
 
@@ -22,7 +24,8 @@ export const reducer = createReducer(
   on(systemActions.SetActingForAction, (state, { id }) => ({ ...state, actingFor: id })),
   on(systemActions.SendInvitationAction, (state) => ({...state, loading: true})),
   on(systemActions.SendInvitationSuccessAction, (state) => ({...state, loading: false})),
-  on(systemActions.SendInvitationErrorAction, (state) => ({...state, loading: false}))
+  on(systemActions.SendInvitationErrorAction, (state) => ({...state, loading: false})),
+  on(systemActions.ClearAction, (state) => ({...state, workspaces: [], loading: false, actingFor: null})),
 );
 
 export const selectSystem = createFeatureSelector<SystemState>('system');

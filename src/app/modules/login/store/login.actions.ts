@@ -6,7 +6,6 @@ export const ActionTypes = {
   LOGIN_SUCCESSFUL: '[Login] Login Successful',
   GET_USER: '[Login] Get User',
   LOGIN_ERROR: '[Login] Login Error',
-  FETCH_USER: '[Login] Fetch User Record',
   UPDATE_RECORD: '[Login] Update User',
   LOGOUT: '[Login] Logout',
   REFRESH_TOKEN: '[Login] Refresh Token',
@@ -48,8 +47,7 @@ export const LoginSuccessfulAction = createAction(
 );
 
 export const GetUserAction = createAction(
-  ActionTypes.GET_USER,
-  props<{ payload: User }>()
+  ActionTypes.GET_USER
 );
 
 export const LoginErrorAction = createAction(
