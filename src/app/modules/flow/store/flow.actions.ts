@@ -16,7 +16,9 @@ export const ActionTypes = {
   NEXT_STEP: '[Flow] Next Step',
   PREV_STEP: '[Flow] Previous Step',
   UPDATE_BREADCRUMBS: '[Flow] Update Breadcrumbs',
-  SET_PROCESS_ID: '[Flow] Set Process Id'
+  SET_PROCESS_ID: '[Flow] Set Process Id',
+
+  CLEAR: '[Flow] Clear Store'
 };
 
 export const AddStepAction = createAction(
@@ -81,4 +83,8 @@ export const NextStepAction = createAction(
 export const PrevStepAction = createAction(
   ActionTypes.PREV_STEP,
   props<{ stepId: string }>()
+)
+
+export const ClearAction = createAction(
+  ActionTypes.CLEAR
 )

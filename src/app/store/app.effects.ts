@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { firstValueFrom, map, mergeMap } from 'rxjs';
+import { firstValueFrom, forkJoin, map, mergeMap, tap } from 'rxjs';
 import * as appActions from './app.actions';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -84,7 +84,7 @@ export class AppEffects {
     this.actions$.pipe(
       ofType(appActions.UpdateSettingsSuccessAction),
       map((action) => {
-        this.toastr.success('', 'Settings Updated!'); 
+        this.toastr.success('', 'Settings Updated!');
       })
     ),
     { dispatch : false }
@@ -93,43 +93,42 @@ export class AppEffects {
   getLookups$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(appActions.GetLookupsAction),
-      mergeMap(async() => {
-        let practiceAreas = await firstValueFrom(this.http.get(environment.dominion_api_url + '/practice-areas')) as any;
-        let roles = await firstValueFrom(this.http.get(environment.dominion_api_url + '/roles')) as any;
+      tap(() => {
+        return forkJoin({
+          practiceAreas: this.http.get(environment.dominion_api_url + '/practice-areas'),
+          roles: this.http.get(environment.dominion_api_url + '/roles'),
+          // Call Lookups
+          callOutcomes: this.http.get(environment.dominion_api_url + '/call-outcomes'),
+          callObjections: this.http.get(environment.dominion_api_url + '/call-objections'),
+          callStatuses: this.http.get(environment.dominion_api_url + '/call-statuses'),
+          callTypes: this.http.get(environment.dominion_api_url + '/call-types'),
+          // Event lookups
+          eventOutcomes: this.http.get(environment.dominion_api_url + '/event-outcomes'),
+          eventTypes: this.http.get(environment.dominion_api_url + '/event-types'),
+          eventObjections: this.http.get(environment.dominion_api_url + '/event-objections'),
 
-        // Call Lookups
-        let callOutcomes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-outcomes')) as any;
-        let callObjections = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-objections')) as any;
-        let callStatus = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-statuses')) as any;
-        let callTypes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-types')) as any;
+          offices: this.http.get(environment.dominion_api_url + '/offices'),
+        }).subscribe((res: any) => {
 
-        // Event lookups
-        let eventOutcomes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/event-outcomes')) as any;
-        let eventTypes = await firstValueFrom(this.http.get(environment.dominion_api_url + '/event-types')) as any;
-        let eventObjections = await firstValueFrom(this.http.get(environment.dominion_api_url + '/event-objections')) as any;
-
-        let offices = await firstValueFrom(this.http.get(environment.dominion_api_url + '/offices')) as any;
-
-        // transform it into a DropdownItem[]
-        roles = roles.map((r: any) => ({id: r.id, label: r.name }));
-        practiceAreas = practiceAreas.map((r: any) => ({id: r.id, label: r.name }));
-        callOutcomes = callOutcomes.map((r: any) => ({id: r.id, label: r.name }));
-        callObjections = callObjections.map((r: any) => ({id: r.id, label: r.name }));
-        callStatus = callStatus.map((r: any) => ({id: r.id, label: r.name }));
-        callTypes = callTypes.map((r: any) => ({id: r.id, label: r.name }));
-        eventOutcomes = eventOutcomes.map((r: any) => ({id: r.id, label: r.name }));
-        eventObjections = eventObjections.map((r: any) => ({id: r.id, label: r.name }));
-        eventTypes = eventTypes.map((r: any) => ({id: r.id, label: r.name }));
-        offices = offices.rows.map((r: any) => ({id: r.id, label: r.name }));
+          // transform it into a DropdownItem[]
+          const roles = res.roles.map((r: any) => ({id: r.id, label: r.name }));
+          const practiceAreas = res.practiceAreas.map((r: any) => ({id: r.id, label: r.name }));
+          const callOutcomes = res.callOutcomes.map((r: any) => ({id: r.id, label: r.name }));
+          const callObjections = res.callObjections.map((r: any) => ({id: r.id, label: r.name }));
+          const callStatuses = res.callStatuses.map((r: any) => ({id: r.id, label: r.name }));
+          const callTypes = res.callTypes.map((r: any) => ({id: r.id, label: r.name }));
+          const eventOutcomes = res.eventOutcomes.map((r: any) => ({id: r.id, label: r.name }));
+          const eventObjections = res.eventObjections.map((r: any) => ({id: r.id, label: r.name }));
+          const eventTypes = res.eventTypes.map((r: any) => ({id: r.id, label: r.name }));
+          const offices = res.offices.rows.map((r: any) => ({id: r.id, label: r.name }));
 
 
-        const data = { roles, practiceAreas, callOutcomes, callObjections, callStatus, callTypes, eventOutcomes, eventTypes, eventObjections, offices };
-        // localStorage.setItem('lookups', JSON.stringify(data));
-        this.store.dispatch(appActions.SetLookupsAction({ payload: data }) );
-        return appActions.AppInitializedAction();
-
-      })
-    ), { dispatch: true }
+          const data = { roles, practiceAreas, callOutcomes, callObjections, callStatuses, callTypes, eventOutcomes, eventTypes, eventObjections, offices };
+          this.store.dispatch(appActions.SetLookupsAction({ payload: data }) );
+          this.store.dispatch(appActions.AppInitializedAction());
+        });
+      }),
+    ), { dispatch: false }
   )
 
 }

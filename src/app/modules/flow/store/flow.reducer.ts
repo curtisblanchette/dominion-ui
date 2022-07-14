@@ -1,6 +1,6 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import { FlowCurrentStep, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import * as flowActions from './flow.actions';
 
 export interface FlowState {
@@ -13,8 +13,7 @@ export interface FlowState {
   breadcrumbs: string[];
 }
 
-// need to serialize/deserialize the step/flow/router objects
-const getInitialStateByKey = (key: string): any| (FlowStep|FlowRouter|FlowLink)[] | FlowCurrentStep | undefined => {
+const getInitialStateByKey = (key: string): any | (FlowStep|FlowRouter|FlowLink)[] | FlowCurrentStep | undefined => {
   let state = localStorage.getItem('state') || '';
 
   if (state) {
@@ -23,30 +22,36 @@ const getInitialStateByKey = (key: string): any| (FlowStep|FlowRouter|FlowLink)[
 
     return setTimeout(() => {
       switch(key) {
-        case 'steps': // @ts-ignore
+        case 'flow.steps': // @ts-ignore
           return data && data.flow.steps.map(step => (new FlowStep(step))) || [];
-        case 'links': // @ts-ignore
+        case 'flow.links': // @ts-ignore
           return data && data.flow.links.map(link => (new FlowLink(link))) || [];
-        case 'routers': // @ts-ignore
+        case 'flow.routers': // @ts-ignore
           return data && data.flow.routers.map(router => (new FlowRouter(router))) || [];
-        case 'currentStep': {
+        case 'flow.currentStep': {
           // const { step, variables, valid } = data.flow.currentStep;
           return data.flow.currentStep;
         }
       }
+
+      // Lodash _.get enables dot.notation objects queries
+      const value = get(state, key);
+      if(value) {
+        return value;
+      }
     }, 0);
-    // return items;
+
   }
 }
 
 export const initialState: FlowState = {
-  processId: localStorage.getItem('processId') || undefined,
-  steps: <FlowStep[]>getInitialStateByKey('steps') || [],
-  routers: <FlowRouter[]>getInitialStateByKey('routers') || [],
-  links: <FlowLink[]>getInitialStateByKey('links') || [],
+  processId: getInitialStateByKey('flow.processId') || undefined,
+  steps: <FlowStep[]>getInitialStateByKey('flow.steps') || [],
+  routers: <FlowRouter[]>getInitialStateByKey('flow.routers') || [],
+  links: <FlowLink[]>getInitialStateByKey('flow.links') || [],
   currentStep: <FlowCurrentStep>getInitialStateByKey('currentStep') || { step: undefined, variables: {}, valid: false },
-  stepHistory: JSON.parse(localStorage.getItem('stepHistory') || '[]'),
-  breadcrumbs: JSON.parse(localStorage.getItem('breadcrumbs') || '[]') || []
+  stepHistory: getInitialStateByKey('flow.stepHistory') || [],
+  breadcrumbs: getInitialStateByKey('flow.breadcrumbs') || []
 };
 
 export const reducer = createReducer(
@@ -82,6 +87,7 @@ export const reducer = createReducer(
     steps: [],
     routers: [],
     links: [],
+    processId: undefined,
     currentStep: undefined,
     stepHistory: [],
     breadcrumbs: []
@@ -110,6 +116,16 @@ export const reducer = createReducer(
   on(flowActions.SetProcessIdAction, (state, { processId }) => ({
     ...state,
     processId: processId
+  })),
+
+  on(flowActions.ClearAction, (state) => ({
+    ...state,
+    processId: undefined,
+    steps: [],
+    routers: [],
+    links: [],
+    currentStep: undefined,
+    breadcrumbs: []
   }))
 );
 
@@ -267,3 +283,4 @@ export function accumulateVariables(history: FlowStepHistoryEntry[]): {[key: str
 
   return items;
 }
+

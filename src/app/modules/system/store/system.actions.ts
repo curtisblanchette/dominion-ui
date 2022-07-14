@@ -7,7 +7,8 @@ export const ActionTypes = {
   SET_ACTING_FOR: '[System] Set Acting For',
   SEND_INVITATION: '[System] Send Invitation',
   SEND_INVITATION_SUCCESS: '[System] Invitation Sent Successfully',
-  INVITATION_ERROR: '[System] Invation Error'
+  INVITATION_ERROR: '[System] Invation Error',
+  CLEAR: '[System] Clear'
 };
 
 export const GetWorkspacesAction = createAction(
@@ -36,4 +37,8 @@ export const SendInvitationSuccessAction = createAction(
 
 export const SendInvitationErrorAction = createAction(
   ActionTypes.INVITATION_ERROR
+);
+
+export const ClearAction = createAction(
+  ActionTypes.CLEAR
 );

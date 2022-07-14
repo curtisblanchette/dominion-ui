@@ -8,12 +8,13 @@ import { FlowStepHistoryEntry } from './flow.stepHistory';
 import * as flowActions from '../store/flow.actions';
 import { Inject } from '@angular/core';
 import { FlowBaseModel } from './flow.baseModel';
-import { ProcessNotFoundError } from './flow.errors';
 import { Subscription } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
-export class FlowProcess extends FlowBaseModel {
+export class FlowProcess {
+// export class FlowProcess extends FlowBaseModel {
 
+  public id: string | undefined;
   public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
   public links: FlowLink[] = [];
@@ -33,13 +34,12 @@ export class FlowProcess extends FlowBaseModel {
     id?: string,
   ) {
 
-    super(id);
+    // super(id);
 
-    // if(!this.id) {
-    //   throw new ProcessNotFoundError();
-    // } else {
-    //   this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
-    // }
+    if(id) {
+      // this.id = id;
+      // this.store.dispatch(flowActions.SetProcessIdAction({processId: id}));
+    }
 
     this.store.select(fromFlow.selectProcessId).subscribe(id => {
       this.id = id;
@@ -67,7 +67,6 @@ export class FlowProcess extends FlowBaseModel {
   public reset(): FlowProcess {
     this.id = uuidv4();
     this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
-    this.store.dispatch(flowActions.ResetAction());
     return this;
   }
 
