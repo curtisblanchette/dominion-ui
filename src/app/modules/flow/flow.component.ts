@@ -74,8 +74,8 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   public async ngAfterContentInit() {
     // check for an existing process and pass it to start command
     this.flowService.flowHost = this.flowHost;
-    const processExists = await lastValueFrom(this.store.select(fromFlow.selectStepHistory).pipe(take(1)));
-    await this.flowService.start(!!processExists.length);
+    const processExists = await lastValueFrom(this.store.select(fromFlow.selectProcessId).pipe(take(1)));
+    await this.flowService.start(!!processExists);
 
     if(this.tinymce){
       this.tinymce.onKeyUp.pipe(
@@ -164,18 +164,6 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    // this.store.dispatch(flowActions.ResetAction());
-  }
-
-  public menuClickAction(event: string) {
-    if (event == 'end-call') {
-      this.endCall();
-    }
-  }
-
-  public endCall() {
-    this.store.dispatch(flowActions.ResetAction());
-    this.router.navigate(['dashboard']);
   }
 
   public saveNotes( html:any ) {

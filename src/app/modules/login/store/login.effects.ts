@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { firstValueFrom, map, mergeMap, tap, throwError } from 'rxjs';
+import { firstValueFrom, map, mergeMap, tap, throwError, withLatestFrom } from 'rxjs';
 
 import * as appActions from '../../../store/app.actions';
 import * as loginActions from './login.actions';
+import * as flowActions from '../../../modules/flow/store/flow.actions';
+import * as systemActions from '../../system/store/system.actions';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
 
@@ -56,7 +58,6 @@ export class LoginEffects {
                 id,
                 username: email,
               });
-              // localStorage.setItem('user', btoa(JSON.stringify(user)));
               return loginActions.LoginSuccessfulAction({payload: user._serialize()});
             }).catch(e => {
               switch(e.code) {
@@ -86,8 +87,9 @@ export class LoginEffects {
           this.router.navigate(['login'], { queryParamsHandling: 'preserve' });
         }),
         tap(async () => {
-          this.store.dispatch(appActions.ClearRolesAction());
-          this.store.dispatch(appActions.ClearSettingsAction());
+          this.store.dispatch(flowActions.ClearAction());
+          this.store.dispatch(appActions.ClearAction());
+          this.store.dispatch(systemActions.ClearAction());
         })
       ),
     { dispatch: false }
@@ -97,13 +99,16 @@ export class LoginEffects {
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.GetUserAction),
-        map((action: any) => action.payload ),
-        mergeMap((user: User) =>{
+        withLatestFrom(this.store.select(fromLogin.selectUser)),
+        mergeMap((user:any) =>{
           return this.http.get(environment.dominion_api_url + '/users/me').pipe(
             map((res: any) => {
               // merge the two user records
-              res.roles = res.roles.map((role: {id: string, name: string}) => role.name);
-              return loginActions.UpdateUserAction({payload: new User({...user, ...res })._serialize()});
+              if(!res.roles.includes('system')) {
+                res.roles = res.roles.map((role: {id: string, name: string}) => role.name);
+              }
+
+              return loginActions.UpdateUserAction({payload: new User({ ...user[1], ...res })._serialize()});
             })
           );
         })
@@ -141,10 +146,10 @@ export class LoginEffects {
           // because settings are workspace specific
           // system users will fetch app settings when switching workspaces
           if(!action.roles.includes('system')) {
-            this.store.dispatch(loginActions.GetUserAction({payload: action}));
-            return appActions.GetSettingsAction();
+            this.store.dispatch(loginActions.GetUserAction());
           }
-          return appActions.ClearSettingsAction();
+
+          return appActions.ClearAction();
 
         })
       ),
@@ -167,9 +172,7 @@ export class LoginEffects {
       this.actions$.pipe(
         ofType(loginActions.UpdateUserAction),
         map((action) => {
-          // localStorage.setItem('user', btoa(JSON.stringify(action.payload)));
           return loginActions.RefreshFlagAction({ payload: true });
-          // return action.payload;
         })
       ),
     { dispatch: true }

@@ -13,7 +13,7 @@ import { DefaultDataServiceFactory } from '@ngrx/data';
 import { ModuleTypes } from '../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ICall, ICallNote } from '@4iiz/corev2';
+import { ICallNote } from '@4iiz/corev2';
 import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromLogin from '../login/store/login.reducer';
@@ -57,7 +57,6 @@ export class FlowService {
 
   public async start(resume = false): Promise<any> {
     if(resume) return this.resume();
-
     // we're starting a new guy
     await this.builder.build();
     const step: FlowStep = this.builder.process.steps[0];

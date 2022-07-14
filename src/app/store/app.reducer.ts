@@ -1,6 +1,7 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import * as appActions from './app.actions';
 import { INestedSetting } from './app.effects';
+import { getInitialStateByKey } from './util';
 
 export interface AppState {
   settings: any;
@@ -10,9 +11,9 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
-  settings: localStorage.getItem('settings') && JSON.parse(localStorage.getItem('settings') || '') || null,
-  lookups: localStorage.getItem('lookups') && JSON.parse(localStorage.getItem('lookups') || '' ) || null,
-  initialized: localStorage.getItem('initialized') && JSON.parse(localStorage.getItem('initialized') || 'false' ) || false,
+  settings: getInitialStateByKey('app.settings') || null,
+  lookups: getInitialStateByKey('app.lookups') || null,
+  initialized: getInitialStateByKey('app.initialized') || false,
   loading: false
 };
 
@@ -25,12 +26,11 @@ export const reducer = createReducer(
     return {...state, loading: true};
   }),
   on(appActions.UpdateSettingsSuccessAction, (state) => ({ ...state, loading: false })),
-  on(appActions.ClearSettingsAction, (state) => ({ ...state, settings: null })),
 
   on(appActions.GetLookupsAction, (state) => ({ ...state })),
   on(appActions.SetLookupsAction, (state, {payload}) => ({ ...state, lookups: payload })),
 
-  on(appActions.ClearRolesAction, (state) => ({ ...state, roles: null })),
+  on(appActions.ClearAction, (state) => ({ ...state, roles: null, settings: null, initialized: false, loading: false })),
   on(appActions.AppInitializedAction, (state) => ({...state, loading: false, initialized: true}))
 
 );
@@ -64,3 +64,5 @@ const findByProperty = (obj: any, predicate: Function): any => {
     if (found) return found
   }
 }
+
+

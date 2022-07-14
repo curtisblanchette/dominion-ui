@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromSystem from './store/system.reducer';
+import * as loginActions from '../login/store/login.actions';
 import * as fromApp from '../../store/app.reducer';
 import * as systemActions from './store/system.actions';
 import { DropdownItem } from '../../common/components/ui/forms';
@@ -46,8 +47,8 @@ export class SystemComponent implements OnDestroy {
   }
 
   onChange($event: any) {
-    // localStorage.setItem('actingFor', $event.target.value);
     this.store.dispatch(systemActions.SetActingForAction({id: $event.target.value}));
+    this.store.dispatch(loginActions.GetUserAction());
   }
 
   createUserInviteForm(): FormGroup {
