@@ -22,7 +22,7 @@ export const reducer = createReducer(
   on(appActions.SetSettingsAction, (state, {payload}) => ({ ...state, settings: payload })),
   on(appActions.UpdateSettingsAction, (state, {payload, keys} ) => {
     state.settings[keys[0]][keys[1]] = payload;
-    return {...state, loading: false};
+    return {...state, loading: true};
   }),
   on(appActions.UpdateSettingsSuccessAction, (state) => ({ ...state, loading: false })),
   on(appActions.ClearSettingsAction, (state) => ({ ...state, settings: null })),
