@@ -17,9 +17,6 @@ export class FlowBuilder {
     private store: Store<fromFlow.FlowState>,
     @Inject(Injector) private readonly injector: Injector
   ) {
-    this.store.select(fromFlow.selectProcessId).pipe(take(1)).subscribe(processId => {
-      this.process = new FlowProcess(store, processId || uuidv4());
-    });
 
   }
 
@@ -27,11 +24,8 @@ export class FlowBuilder {
     return this.injector.get(FlowService);
   }
 
-  public reset(): void {
-    this.process.reset();
-  }
-
   public async build(type?: string) {
+    this.process = new FlowProcess(this.store, uuidv4());
     /**
      * Everything that is passed to factory functions must be Serializable!
      */

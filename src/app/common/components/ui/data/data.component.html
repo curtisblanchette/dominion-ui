@@ -18,7 +18,7 @@
     <fiiz-dropdown style="width: 100%;" *ngIf="control.type === 'dropdown-search'" type="search" [formControlName]="control.key" [id]="control.key" [label]="control.label" [title]="control.label" [module]="control.service" ></fiiz-dropdown>
   </ng-container>
 
-  <div class="controls" *ngIf="options.controls">
+  <div class="form-controls" *ngIf="options.controls">
     <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>
     <fiiz-button #submit type="submit" primary [loading]="loadingSubject$" [disabled]="(loadingSubject$ | async) || form.invalid">{{submitText}}</fiiz-button>
   </div>

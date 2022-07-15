@@ -6,7 +6,7 @@ import { CustomDataService } from '../../../data/custom.dataservice';
 import { DominionType } from '../../../common/models';
 import { DefaultDataServiceFactory } from '@ngrx/data';
 import { firstValueFrom, take } from 'rxjs';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ActivatedRoute } from '@angular/router';
 
 import { NavigationService } from '../../../common/navigation.service';
@@ -39,21 +39,21 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
   public formValidation:{ [ key:string ] : boolean } = {};
 
   public contactOptions = {
-    controls: false, 
-    state: 'edit', 
-    dictation: '', 
+    controls: false,
+    state: 'edit',
+    dictation: '',
     fields: [
-      ContactFields.FIRST_NAME, 
-      ContactFields.LAST_NAME, 
+      ContactFields.FIRST_NAME,
+      ContactFields.LAST_NAME,
       ContactFields.EMAIL,
       ContactFields.PHONE
     ]
   };
 
   public eventOptions = {
-    controls: false, 
-    state: 'edit', 
-    dictation: '', 
+    controls: false,
+    state: 'edit',
+    dictation: '',
     fields: [Fields.OUTCOME_ID]
   };
 
@@ -78,7 +78,7 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
     }
   }
 
-  public async getData( id:string ){
+  public async getData( id:string ) {
     this.event = await firstValueFrom( this.eventService.getById(id).pipe(take(1)) );
     if( this.event ){
       this.contactId = this.event.contactId;
@@ -97,7 +97,7 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.childrenComponent.changes.subscribe((comps: QueryList<FiizDataComponent>) => {
+    this.childrenComponent.changes.pipe(untilDestroyed(this)).subscribe((comps: QueryList<FiizDataComponent>) => {
       if( comps ){
         for( let c of comps ){
           c.isValid.subscribe( valid => {
@@ -111,7 +111,7 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
     });
   }
 
-  get formIsValid(){    
+  get formIsValid(){
     return Object.values(this.formValidation).every(Boolean);
   }
 
@@ -131,13 +131,13 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
       delete eventData.changes.id;
       delete contactData.changes.id;
 
-      this.eventService.update( eventData ).subscribe();
-      this.contactService.update( contactData ).subscribe();      
-      
+      this.eventService.update( eventData ).pipe(take(1)).subscribe();
+      this.contactService.update( contactData ).pipe(take(1)).subscribe();
+
     } else {
       console.warn('Form in Invalid');
     }
-    
+
   }
 
 }

@@ -10,6 +10,8 @@
   <form (ngSubmit)="submitUserInvite()"  [formGroup]="userInviteForm" *ngIf="userInviteForm?.controls">
     <fiiz-input label="Email" placeholder="Email Address" [formControlName]="'email'"></fiiz-input>
     <fiiz-select label="Role" [items]="roles$" [formControlName]="'role'"></fiiz-select>
-    <fiiz-button type="submit" stroked [loading]="loading$ | async">Send Invitation</fiiz-button>
+    <div class="form-controls">
+      <fiiz-button type="submit" stroked [loading]="loading$">Send Invitation</fiiz-button>
+    </div>
   </form>
 </ng-template>
