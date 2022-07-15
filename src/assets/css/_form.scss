@@ -1,0 +1,11 @@
+form {
+  flex-grow: inherit;
+  margin-bottom: 15px;
+
+  .form-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 1em;
+  }
+}

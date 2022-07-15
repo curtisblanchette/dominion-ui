@@ -3,22 +3,25 @@
 </div>
 
 <div class="page-content">
-  <h3>History</h3>
-  <div class="note" style="display: flex; flex-direction: row;" *ngFor="let call of calls">
-    <ng-contatainer *ngFor="let note of call.notes">
-      <div>{{note.createdAt | date}}</div>
-      <div>{{note.content}}</div>
-    </ng-contatainer>
-  </div>
 
-  <ng-container *ngIf="allLoaded">
+  <div class="fields" *ngIf="allLoaded">
       <fiiz-data [module]="ModuleTypes.CONTACT" [data]="{id: contactId}" [options]="contactOptions"></fiiz-data>
       <fiiz-data [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="eventOptions"></fiiz-data>
       <div class="button-control">
         <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>
         <fiiz-button primary type="button" (click)="updateEvent()" [disabled]="!formIsValid" >Update Event</fiiz-button>
       </div>
-  </ng-container>
+  </div>
+
+  <div class="notes">
+    <h3>History</h3>
+    <div class="note" style="display: flex; flex-direction: row;" *ngFor="let call of calls">
+      <ng-contatainer *ngFor="let note of call.notes">
+        <div>{{note.createdAt | date}}</div>
+        <div>{{note.content}}</div>
+      </ng-contatainer>
+    </div>
+  </div>
 
 </div>
 

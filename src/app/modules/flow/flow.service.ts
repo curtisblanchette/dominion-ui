@@ -18,6 +18,7 @@ import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
+import { FlowProcess } from './classes/flow.process';
 
 export interface IHistory {
   prevStepId: string;
@@ -49,7 +50,6 @@ export class FlowService {
 
   public async restart(): Promise<any> {
     this.store.dispatch(flowActions.ResetAction());
-    this.builder.reset();
     this.noteId = undefined;
     this.callId = undefined;
     await this.start();
@@ -69,6 +69,7 @@ export class FlowService {
 
   public async resume(): Promise<any> {
     // resuming from store
+    this.builder.process = new FlowProcess(this.store);
     const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
 
     if(vars['call']) {

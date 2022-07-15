@@ -38,7 +38,7 @@ export class FlowProcess {
 
     if(id) {
       // this.id = id;
-      // this.store.dispatch(flowActions.SetProcessIdAction({processId: id}));
+      this.store.dispatch(flowActions.SetProcessIdAction({processId: id}));
     }
 
     this.store.select(fromFlow.selectProcessId).subscribe(id => {
@@ -62,12 +62,6 @@ export class FlowProcess {
     this.variables$ = this.store.select(fromFlow.selectAllVariables).subscribe(variables => {
       this.variables = variables;
     });
-  }
-
-  public reset(): FlowProcess {
-    this.id = uuidv4();
-    this.store.dispatch(flowActions.SetProcessIdAction({processId: this.id}));
-    return this;
   }
 
   public addStep(step: FlowStep): FlowProcess {

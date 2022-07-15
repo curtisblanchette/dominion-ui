@@ -6,6 +6,7 @@ import { FlowFactory } from './flow.factory';
 import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable({providedIn: 'root'})
 export class FlowBuilder {
@@ -16,13 +17,6 @@ export class FlowBuilder {
     private store: Store<fromFlow.FlowState>,
     @Inject(Injector) private readonly injector: Injector
   ) {
-    this.store.select(fromFlow.selectProcessId).pipe(take(1)).subscribe(processId => {
-      if(processId) {
-        this.process = new FlowProcess(store, processId);
-      } else {
-        this.process = new FlowProcess(store);
-      }
-    });
 
   }
 
@@ -30,11 +24,8 @@ export class FlowBuilder {
     return this.injector.get(FlowService);
   }
 
-  public reset(): void {
-    this.process.reset();
-  }
-
   public async build(type?: string) {
+    this.process = new FlowProcess(this.store, uuidv4());
     /**
      * Everything that is passed to factory functions must be Serializable!
      */
