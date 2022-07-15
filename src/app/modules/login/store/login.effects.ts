@@ -108,7 +108,7 @@ export class LoginEffects {
                 res.roles = res.roles.map((role: {id: string, name: string}) => role.name);
               }
 
-              return loginActions.UpdateUserAction({payload: new User({ ...user[1], ...res })._serialize()});
+              return loginActions.UpdateUserAction({payload: new User({  ...res, ...user[1] })._serialize()});
             })
           );
         })
