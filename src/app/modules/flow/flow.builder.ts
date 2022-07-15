@@ -6,6 +6,7 @@ import { FlowFactory } from './flow.factory';
 import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable({providedIn: 'root'})
 export class FlowBuilder {
@@ -17,9 +18,7 @@ export class FlowBuilder {
     @Inject(Injector) private readonly injector: Injector
   ) {
     this.store.select(fromFlow.selectProcessId).pipe(take(1)).subscribe(processId => {
-      if(processId) {
-        this.process = new FlowProcess(store, processId);
-      }
+      this.process = new FlowProcess(store, processId || uuidv4());
     });
 
   }
