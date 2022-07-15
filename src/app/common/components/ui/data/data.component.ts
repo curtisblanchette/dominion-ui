@@ -21,6 +21,7 @@ import { FormInvalidError } from '../../../../modules/flow';
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
 import { INestedSetting } from '../../../../store/app.effects';
+import { FiizDropDownComponent } from '../dropdown';
 
 export interface FiizDataComponentOptions {
   controls?: boolean;
@@ -72,6 +73,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
+  @ViewChildren('searchDropdowns') searchDropdowns: QueryList<FiizDropDownComponent>;
   @ViewChildren('picker') pickers: QueryList<FiizDatePickerComponent>;
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
@@ -359,6 +361,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.id = null;
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
+  }
+
+  public getDropdownObjects( data:any ){
+    if( data && data.leadSource ){
+      const dropdown = this.searchDropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
+      dropdown?.setTheValue(data.leadSource.name, data.leadSource.id);
+    }
   }
 
   public override ngOnDestroy() {

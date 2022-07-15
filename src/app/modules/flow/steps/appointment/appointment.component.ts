@@ -163,15 +163,17 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
           bookedSlots = data.map((appt: IEvent) => dayjs(appt.startTime));
         }
 
-        let startTime = dayjs().startOf('day').add(this.appointmentSettings['day_start'].value, this.appointmentSettings['day_start'].unit as ManipulateType);
-        const endTime = dayjs().startOf('day').add(this.appointmentSettings['day_end'].value, this.appointmentSettings['day_end'].unit as ManipulateType);
+        let startTime = dayjs(date).startOf('day').add(this.appointmentSettings['day_start'].value, this.appointmentSettings['day_start'].unit as ManipulateType);
+        const endTime = dayjs(date).startOf('day').add(this.appointmentSettings['day_end'].value, this.appointmentSettings['day_end'].unit as ManipulateType);
 
         while (endTime.diff(startTime, 'h') > 0) {
           const find = bookedSlots.filter(slot => {
             return startTime.diff(slot, 'm') == 0
           });
           if (!find.length) {
-            freeSlots.push(startTime.format('hh:mm a'));
+            if( dayjs().isBefore(startTime) ){
+              freeSlots.push(startTime.format('hh:mm a'));
+            }
           }
           startTime = startTime.add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType);
         }

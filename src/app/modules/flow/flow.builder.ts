@@ -19,6 +19,8 @@ export class FlowBuilder {
     this.store.select(fromFlow.selectProcessId).pipe(take(1)).subscribe(processId => {
       if(processId) {
         this.process = new FlowProcess(store, processId);
+      } else {
+        this.process = new FlowProcess(store);
       }
     });
 
@@ -81,7 +83,8 @@ export class FlowBuilder {
       // globals
       step.state.options.payload = {
         contactId: vars.contact,
-        dealId: vars.deal
+        dealId: vars.deal,
+        leadId: vars.lead
       };
 
       switch(true) {

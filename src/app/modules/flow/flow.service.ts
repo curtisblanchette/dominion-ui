@@ -1,4 +1,4 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, FlowStepClassMap } from './index';
+import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, FlowStepClassMap, FlowTextComponent } from './index';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -200,6 +200,18 @@ export class FlowService {
       } as FlowStepHistoryEntry;
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
     }
+  }
+
+  public isLastStep( type = 'next' ):boolean {
+    if( 'next' == type ){
+      const next = this.findNextStep();
+      if( next instanceof FlowStep && next.component === 'FlowTextComponent' ){
+        return next.state.data.title === 'End';
+      } else {
+        return false;
+      }
+    }
+    return this.builder.process.currentStep?.step?.nodeText === 'End';
   }
 
   public async renderComponent(step: FlowStep): Promise<void> {

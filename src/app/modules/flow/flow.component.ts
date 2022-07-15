@@ -27,6 +27,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   valid$: Observable<boolean | undefined>;
   notes$: Observable<string | null | undefined>;
   notesData:any;
+  public lastStep:boolean = false;
 
   public tinymceOptions = {
     branding: false,
@@ -69,6 +70,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
+    this.lastStep = this.flowService.isLastStep();
   }
 
   public async ngAfterContentInit() {
@@ -94,6 +96,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   public onNext($event: Event) {
     $event.stopPropagation();
     this.animationIndex++;
+    this.lastStep = this.flowService.isLastStep('next');
     return this.flowService.next()
       .catch((err) => {
         if (err instanceof NoStepFoundError) {
@@ -105,7 +108,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   public onBack($event: Event) {
     $event.stopPropagation();
     this.animationIndex--;
-
+    this.lastStep = false;
     return this.flowService.back()
       .catch((err) => {
         if (err instanceof NoStepFoundError) {
