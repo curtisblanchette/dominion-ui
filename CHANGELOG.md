@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.11.12 (2022-07-15)
+
+
+### Bug Fixes
+
+* **develop:** swap user override order ([7a2e32c](https://github.com/4iiz/dominion-ui/commit/7a2e32ccdd9f53fc014434f83f607147dab62f56))
+
 ### 1.11.11 (2022-07-14)
 
 ### 1.11.10 (2022-07-14)
