@@ -130,10 +130,12 @@ export class FlowService {
   }
 
   public findNextStep(): FlowNode | FlowStep | FlowRouter | undefined {
-    const link = this.builder.process.links.find((link: any) => {
-      return link.from.id === this.builder.process.currentStep?.step?.id
-    });
-    return <FlowStep|FlowRouter>link?.to;
+    if( this.builder.process && this.builder.process.links ){
+      const link = this.builder.process.links.find((link: any) => {
+        return link.from.id === this.builder.process.currentStep?.step?.id
+      });
+      return <FlowStep|FlowRouter>link?.to;
+    }
   }
 
   public async next(): Promise<void> {
@@ -206,13 +208,12 @@ export class FlowService {
   public isLastStep( type = 'next' ):boolean {
     if( 'next' == type ){
       const next = this.findNextStep();
+      console.log('next',next);
       if( next instanceof FlowStep && next.component === 'FlowTextComponent' ){
-        return next.state.data.title === 'End';
-      } else {
-        return false;
+        return next.state.data.lastStep;
       }
     }
-    return this.builder.process.currentStep?.step?.nodeText === 'End';
+    return false;
   }
 
   public async renderComponent(step: FlowStep): Promise<void> {

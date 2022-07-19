@@ -1,5 +1,5 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
-<div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title }" [ngClass]="{'fiiz-dropdown-disabled': disabled}" >
+<div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title }" [ngClass]="{'disabled': disabled}" >
     <ng-container [ngSwitch]="dropdownType">
 
         <fiiz-button class="dropdown fiiz-dropdown-button__dropdown">

@@ -139,6 +139,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
                 label: 'Cancel',
                 type: 'cancel',
                 fn: () => {
+                  this.lastStep = false;
                   // pass a function to be executed when this button is clicked
                   // you may need to .bind() the external instances prototype to it
                 }
@@ -151,9 +152,6 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
             }
           }
         });
-
-
-
       }
       break;
     }

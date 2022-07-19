@@ -5,6 +5,7 @@ import { firstValueFrom, lastValueFrom, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
+import { RadioItem } from '../../../../common/components/ui/forms/radio';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
 
@@ -32,7 +33,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   @Input('data') override data: any;
   public form: FormGroup;
   public fields: Array<any> = [];
-  public callTypes$: Observable<DropdownItem[]>;
+  public callTypes$: Observable<RadioItem[]>;
   public webLeadTypes$: Observable<DropdownItem[]>;
   public callReasons$: Observable<DropdownItem[]>;
   public answerOptions$: Observable<DropdownItem[]>;
@@ -113,13 +114,19 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'relationship-building': {
-
+        form['practiceAreaId'] = new FormControl('', [Validators.required]);
+        form['state'] = new FormControl('', []);
       }
         break;
 
       case 'recap' : {
-
+        this.store.dispatch(flowActions.SetValidityAction({payload: true}));
       }
+        break;
+      
+      default :
+        /** If there is no form, the step's validity should be true */
+        this.store.dispatch(flowActions.SetValidityAction({payload: true}));
         break;
     }
 
@@ -135,8 +142,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       });
     }
 
-    /** If there is no form, the step's validity should be true */
-    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    
 
   }
 

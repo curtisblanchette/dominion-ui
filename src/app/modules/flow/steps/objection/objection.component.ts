@@ -5,7 +5,7 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../store/app.reducer';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { FiizSelectComponent } from '../../../../common/components/ui/forms';
 import { firstValueFrom, of } from 'rxjs';
@@ -14,6 +14,7 @@ import { uriOverrides } from '../../../../data/entity-metadata';
 import { CustomDataService } from '../../../../data/custom.dataservice';
 import { HttpClient } from '@angular/common/http';
 import * as flowActions from '../../store/flow.actions';
+import { DominionType } from '../../../../common/models';
 
 @Component({
   selector: 'flow-objection',
@@ -27,6 +28,8 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   @Input('options') public override options: any;
 
   @ViewChild(FiizSelectComponent) dropdown: FiizSelectComponent;
+
+  public form: FormGroup;
 
   constructor(
     private store: Store<AppState>,
@@ -46,6 +49,11 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
       this.options = state.options;
       this.data = state.data;
     }
+
+    this.form = this.fb.group({
+      'objection' : new FormControl('', Validators.required)
+    });
+
   }
 
   public async ngAfterViewInit() {
@@ -55,8 +63,11 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
     this.dropdown.items$ = of(CustomDataService.toDropdownItems(data));
   }
 
-  public save() {
-
+  public async onSave():Promise<any> {
+    console.log(this.form.value);
+    if (this.form.valid) {
+      // return this._dynamicCollectionService.add(<DominionType>this.form.value).toPromise().then();
+    }    
   }
 
   public handleChange(objection: any) {

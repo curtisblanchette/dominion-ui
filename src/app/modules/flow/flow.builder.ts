@@ -220,6 +220,8 @@ export class FlowBuilder {
     const end = FlowFactory.end();
     const toInboundEnd = FlowFactory.link(recap, end);
 
+    const toObjectionEnd = FlowFactory.link(objection, end);
+
 
     ///
     this.process
@@ -286,7 +288,8 @@ export class FlowBuilder {
     // global
 
     this.process
-      .addStep(objection);
+      .addStep(objection)
+      .addLink(toObjectionEnd);
 
   }
 

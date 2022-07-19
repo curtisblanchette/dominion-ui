@@ -159,7 +159,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
           of('').pipe(
             untilDestroyed(this),
-            delay(100) // workaround issue: https://github.com/angular/angular/issues/14542
+            delay(200) // workaround issue: https://github.com/angular/angular/issues/14542
           ).subscribe(() => { this.isValid.next(this.form.valid); this.values.next(this.form.value); })
 
 
@@ -249,12 +249,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       if (!['virtual', 'timestamp'].includes(control.type)) {
         form[field] = new FormControl(control.defaultValue, control.validators);
       }
-
-      // if (['calendar', 'timer', 'both'].includes(control.type)) {
-      //   form[field] = new FormControl({value: control.defaultValue, disabled: control.disabled}, [
-      //     ...control.validators
-      //   ])
-      // }
 
     }
     this.form = this.fb.group(form);

@@ -221,7 +221,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public checkValidity() {
     let isValid: boolean = false;
-    if ( this.form.value.event_title != '' && this.form.value.office != '' && this.selectedBtnId ) {
+    if ( this.form.get('title')?.value && this.form.get('officeId')?.value && this.selectedBtnId ) {
       isValid = true;
       this.flowService.addVariables({
         appt_date: dayjs(this.selectedBtnId).format('YYYY-MM-DD'),
