@@ -1,5 +1,5 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
-<div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title }" >
+<div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title }" [ngClass]="{'disabled': disabled}" >
     <ng-container [ngSwitch]="dropdownType">
 
         <fiiz-button class="dropdown fiiz-dropdown-button__dropdown">
@@ -12,20 +12,20 @@
     <div #dropdownList class="fiiz-dropdown-button__content fiiz-dropdown-button-{{position}}" *ngIf="showDropDowns" [@dropDownMenu]="" [ngSwitch]="type" >
 
         <ng-template [ngIf]="dropdownType === 'search'">
-          <form [formGroup]="searchForm">
-            <fiiz-input
-              formControlName="search"
-              autocomplete="off"
-              (keyup)="onKeyUpEvent($event)"
-              type="text"
-              placeholder="Search..."
-              class="search"
-              id="search-dropdown"
-            ></fiiz-input>
-          </form>
+            <form [formGroup]="searchForm">
+                <fiiz-input
+                formControlName="search"
+                autocomplete="off"
+                (keyup)="onKeyUpEvent($event)"
+                type="text"
+                placeholder="Search..."
+                class="search"
+                id="search-dropdown"
+                ></fiiz-input>
+            </form>
             <div class="fiiz-dropdown-button__content__wrapper">
 
-              <fiiz-button tabindex="0"  *ngFor="let item of items; let i = index; let last = last;" [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}" (click)="setTheValue(item.label, item.id)" style="border-radius: 0;">
+              <fiiz-button tabindex="0" *ngFor="let item of items; let i = index; let last = last;" [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}" (click)="setTheValue(item.label, item.id)" style="border-radius: 0;">
                   {{ item.label }}
               </fiiz-button>
 

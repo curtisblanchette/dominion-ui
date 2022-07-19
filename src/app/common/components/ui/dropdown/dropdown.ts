@@ -56,16 +56,20 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   public totalRecords: number;
   public currentIndex: number = -1;
 
+  public apiData:Array<any>;
+
   @Input('items') items: IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[];
   @Input('position') position: string = 'top-right';
   @Input('title') title!: string | number | boolean | undefined;
   @Input('id') id!: string;
   @Input('default') default: string | number | boolean | undefined;
+  @Input('disabled') disabled: boolean = false;
 
   @Input('type') dropdownType!: 'anchor' | 'button' | 'search';
   @Input('module') moduleName: string | undefined;
 
   @Output('onClick') onClick: EventEmitter<any> = new EventEmitter();
+  @Output('getValues') getValues: EventEmitter<any> = new EventEmitter();
 
   @HostBinding('class.has-label')
   @Input('label') public label: string | undefined;
@@ -74,7 +78,9 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   clickInside($event: any) {
     $event.stopPropagation();
     if ($event.target.id !== 'search-dropdown') { // This is to enter input search params
-      this.toggle();
+      if(!this.disabled){
+        this.toggle();
+      }
     }
   }
 
@@ -133,6 +139,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}`, {params})) as any;
       if (data && data.rows) {
         this.totalRecords = data.count || 0;
+        this.apiData = data.rows;
         this.items = data.rows.map((item: any) => {
           return {
             label: item.name ? item.name : item.fullName,
@@ -165,6 +172,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onChange(id);
     this.onTouched();
     this.title = label;
+    if( this.apiData ){
+      const find = this.apiData.find( c => c.id === id );
+      this.getValues.emit(find);
+    }
   }
 
   public emitTheValue(value: string) {

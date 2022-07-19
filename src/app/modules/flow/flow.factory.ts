@@ -497,7 +497,8 @@ export class FlowFactory {
       state: {
         data: {
           title: 'End',
-          template: 'end'
+          template: 'end',
+          lastStep : true
         }
       }
     });

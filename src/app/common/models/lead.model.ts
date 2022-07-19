@@ -57,7 +57,6 @@ export const LeadModel: {[key: string]: IModel} = {
     type: 'email',
     defaultValue: null,
     validators: [
-      Validators.required,
       Validators.email
     ]
   },

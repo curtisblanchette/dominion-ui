@@ -14,7 +14,7 @@
         <ng-template flowHost></ng-template>
         <div class="flow-layout__controls">
           <fiiz-button (click)="onBack($event)" stroked *ngIf="(stepHistory$ | async)?.length > 0">Back</fiiz-button>
-          <fiiz-button type="submit" [disabled]="!(valid$ | async)" primary (click)="onNext($event)" style="margin-left: auto;">Next</fiiz-button>
+          <fiiz-button *ngIf="!lastStep" type="submit" [disabled]="!(valid$ | async)" primary (click)="onNext($event)" style="margin-left: auto;">Next</fiiz-button>
         </div>
       </div>
 

@@ -21,6 +21,7 @@ import { FormInvalidError } from '../../../../modules/flow';
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
 import { INestedSetting } from '../../../../store/app.effects';
+import { FiizDropDownComponent } from '../dropdown';
 
 export interface FiizDataComponentOptions {
   controls?: boolean;
@@ -72,6 +73,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
+  @ViewChildren('searchDropdowns') searchDropdowns: QueryList<FiizDropDownComponent>;
   @ViewChildren('picker') pickers: QueryList<FiizDatePickerComponent>;
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
@@ -157,7 +159,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
           of('').pipe(
             untilDestroyed(this),
-            delay(100) // workaround issue: https://github.com/angular/angular/issues/14542
+            delay(200) // workaround issue: https://github.com/angular/angular/issues/14542
           ).subscribe(() => { this.isValid.next(this.form.valid); this.values.next(this.form.value); })
 
 
@@ -247,12 +249,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       if (!['virtual', 'timestamp'].includes(control.type)) {
         form[field] = new FormControl(control.defaultValue, control.validators);
       }
-
-      // if (['calendar', 'timer', 'both'].includes(control.type)) {
-      //   form[field] = new FormControl({value: control.defaultValue, disabled: control.disabled}, [
-      //     ...control.validators
-      //   ])
-      // }
 
     }
     this.form = this.fb.group(form);
@@ -359,6 +355,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.id = null;
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
+  }
+
+  public getDropdownObjects( data:any ){
+    if( data && data.leadSource ){
+      const dropdown = this.searchDropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
+      dropdown?.setTheValue(data.leadSource.name, data.leadSource.id);
+    }
   }
 
   public override ngOnDestroy() {

@@ -96,6 +96,10 @@
         font-size: 14px;
       }
 
+      & input.search:disabled {
+        opacity: 1 !important;
+      }
+
     }
 
     &__item {
@@ -104,6 +108,9 @@
 
     fiiz-input{
       margin-bottom: 0px;
+      & input:disabled {
+        opacity: 1 !important;
+      }
     }
 
     &__wrapper {
@@ -121,7 +128,10 @@
   }
 }
 
-
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .fiiz-dropdown-button-bottom-right {
   right: 0;
