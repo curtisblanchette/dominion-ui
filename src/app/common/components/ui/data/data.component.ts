@@ -5,7 +5,8 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
 
-import * as fromApp from '../../../../store/app.reducer'
+import * as fromApp from '../../../../store/app.reducer';
+import * as fromFlow from '../../../../modules/flow/store/flow.reducer';
 import { FiizDatePickerComponent, FiizInputComponent, FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
@@ -13,7 +14,7 @@ import { ManipulateType } from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { HttpClient } from '@angular/common/http';
 import { ModuleTypes } from '../../../../data/entity-metadata';
-import { of, take } from 'rxjs';
+import { firstValueFrom, of, take } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { delay } from 'rxjs/operators';
 import { FormInvalidError } from '../../../../modules/flow';
@@ -108,7 +109,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this.store.select(fromApp.selectSettingGroup('appointment')).pipe(untilDestroyed(this)).subscribe((settings: INestedSetting) => {
       this.appointmentSettings = settings;
-    });
+    });    
 
   }
 
@@ -130,7 +131,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         break;
     }
 
-    this.buildForm(this.options.fields);
+    await this.buildForm(this.options.fields);
 
     this.data$.pipe(
       untilDestroyed(this),
@@ -240,14 +241,28 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
   }
 
-  private buildForm(fields:  string[]) {
+  private async buildForm(fields:  string[]) {
+
+    const currentStepId = await firstValueFrom( this.store.select(fromFlow.selectCurrentStepId).pipe(take(1)) );
+    let existingData:any;
+    if( currentStepId ){
+      existingData = await firstValueFrom( this.store.select(fromFlow.selectStepHistory).pipe(take(1)) ).then( steps => steps.find( step => step.id == currentStepId )?.variables );
+      if( existingData && existingData[this.module] && existingData.payload ){
+        this.id = existingData[this.module];
+      }
+    }
+
     let form: { [key: string]: FormControl } = {};
 
     for (const field of fields) {
       const control = models[this.module][field];
 
       if (!['virtual', 'timestamp'].includes(control.type)) {
-        form[field] = new FormControl(control.defaultValue, control.validators);
+        let defaultValue = control.defaultValue;
+        if( existingData && existingData.payload && existingData.payload[field] ){
+          defaultValue = existingData.payload[field];
+        }
+        form[field] = new FormControl(defaultValue, control.validators);
       }
 
     }
@@ -314,11 +329,16 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public async save(): Promise<any> {
     let payload = this.form.value;
-
+    let action:string = this.options.state;
+    if( this.id ){
+      action = 'edit';
+      payload.id = this.id;
+    }
     if (this.form.valid) {
       this.form.disable();
 
-      switch (this.options.state) {
+      switch (action) {
+      // switch (this.options.state) {
         case 'edit': {
           return this.form.dirty && this._dynamicCollectionService.update(<DominionType>payload).toPromise()
             .then(() => this.cleanForm()) || Promise.resolve(this.cleanForm());
@@ -329,7 +349,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});
-            this.onSuccess.next( { [this.module]: res?.id });
+            this.onSuccess.next( { [this.module]: res?.id, payload : res });
           }) || Promise.resolve(this.cleanForm());
         }
       }
