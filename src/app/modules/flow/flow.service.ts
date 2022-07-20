@@ -213,7 +213,6 @@ export class FlowService {
   public isLastStep( type = 'next' ):boolean {
     if( 'next' == type ){
       const next = this.findNextStep();
-      console.log('next',next);
       if( next instanceof FlowStep && next.component === 'FlowTextComponent' ){
         return next.state.data.lastStep;
       }
@@ -274,6 +273,7 @@ export class FlowService {
   public removeVariable(key: string) {
     this.store.dispatch(flowActions.RemoveVariableAction({key}));
   }
+  
   public addVariables(data: any) {
     if (data) {
       let allVars = {...this.builder.process.currentStep?.variables, ...data};
@@ -297,7 +297,7 @@ export class FlowService {
     const currentStepId = await firstValueFrom( this.store.select(fromFlow.selectCurrentStepId).pipe(take(1)) );
     let existingData:any;
     if( currentStepId ){
-      existingData = await firstValueFrom( this.store.select(fromFlow.selectStepHistory).pipe(take(1)) ).then( steps => steps.find( step => step.id == currentStepId )?.variables );      
+      existingData = await firstValueFrom( this.store.select(fromFlow.selectStepHistory).pipe(take(1)) ).then( steps => steps.reverse().find( step => step.id == currentStepId )?.variables );      
     }
     return existingData;
   }

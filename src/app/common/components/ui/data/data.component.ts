@@ -44,6 +44,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public submitText: string;
   public id: string | null;
+  public ModuleTypes:any;
 
   public configuration:any = {
     // Events, Calls
@@ -111,6 +112,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.appointmentSettings = settings;
     });    
 
+    this.ModuleTypes = ModuleTypes;
   }
 
   public override async ngAfterContentInit() {
@@ -366,7 +368,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   private getControlData() {
-    return this.options.fields.map(field => ({key: field, ...models[this.module][field]}));
+    return this.options.fields.map(field => ({key: field, ...models[this.module][field], module:this.module}));
   }
 
   public resetForm() {

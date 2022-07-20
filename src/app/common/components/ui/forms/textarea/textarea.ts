@@ -13,6 +13,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewInit {
 
+  @HostBinding('class.has-label')
   @Input('label') public label: string | undefined;
   @Input('id') id!: string;
   @Input('autofocus') autofocus = false;

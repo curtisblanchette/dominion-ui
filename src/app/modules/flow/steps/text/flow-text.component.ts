@@ -3,7 +3,8 @@ import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms'
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { firstValueFrom, map, delay, startWith } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Observable, of, take } from 'rxjs';
+import { UpdateStr } from '@ngrx/entity/src/models';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -12,8 +13,6 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import * as flowActions from '../../store/flow.actions';
 import { FlowService } from '../../flow.service';
 import * as fromFlow from '../../store/flow.reducer';
-
-
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
 import { environment } from '../../../../../environments/environment';
@@ -21,6 +20,7 @@ import { CustomDataService } from '../../../../data/custom.dataservice';
 import { RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
+import { DominionType } from '../../../../common/models';
 
 
 @UntilDestroy()
@@ -40,11 +40,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public answerOptions$: Observable<DropdownItem[]>;
   public callOutcomes$: Observable<DropdownItem[]>;
   public vars$: Observable<any>;
-  public callAPI:any;
-  public noteAPI:any;
   public ModuleTypes: any;
   public contactFields: any = ContactModel;
   public formValidation:{ [ key:string ] : boolean } = {};
+  public formValues:{ [ key:string ] : any } = {};
+  public leadService: CustomDataService<DominionType>;
+  public contactService: CustomDataService<DominionType>;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -60,7 +61,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.ModuleTypes = ModuleTypes;
 
-    this.callAPI = entityCollectionServiceFactory.create(ModuleTypes.CALL);
+    this.leadService = dataServiceFactory.create(ModuleTypes.LEAD) as CustomDataService<DominionType>;
+    this.contactService = dataServiceFactory.create(ModuleTypes.CONTACT) as CustomDataService<DominionType>;
+
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.webLeadTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
     this.callReasons$ = of([{ id : 'cancel/reschedule', label : 'Cancel/Reschedule' }, { id : 'take-notes', label : 'Take Notes' }]);
@@ -76,6 +79,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngOnInit(){
+    this.vars$.pipe(untilDestroyed(this)).subscribe( vars => {
+      if( !vars['contact'] && vars['lead'] ){
+        // Get the contact id via API
+        // this.contactService.getWithQuery({leadId : vars['lead']}).subscribe( contactData => {
+        //   console.log('contactData',contactData);
+        // });
+      }
+    });
     if (this.data) {
       this.initForm();
     }
@@ -86,6 +97,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       
       item.values.subscribe( value => {
         this.store.dispatch(flowActions.AddVariablesAction({ payload: value }));
+        this.formValues[item.module] = value;
       });
 
       item.isValid.subscribe( valid => {
@@ -176,8 +188,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     }
 
     if(Object.keys(form).length) {
-      console.log('inside');
+      
       this.form = this.fb.group(form);
+      valid = this.form.valid;
 
       this.form.valueChanges.subscribe((value: any) => {
         this.flowService.addVariables(value);
@@ -198,11 +211,32 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
 
-  public async save(){
+  public async onSave(){
     switch(this.data.template) {
 
       case 'relationship-building': {
-        console.log('saves here');
+        if( this.formValues ){
+          const leadId = await this.flowService.getVariable('lead');
+          if( leadId ){
+
+            const updateData = {
+              id: leadId,
+              changes: this.formValues['lead']
+            };
+            
+            this.leadService.update(<UpdateStr<any>>updateData, false).pipe(take(1)).subscribe((res) => {
+              console.log('updated res',res);
+            });
+
+          }          
+        }
+      }
+      break;
+
+      case 'recap': {
+        if( this.formValues ){
+                  
+        }
       }
       break;
 

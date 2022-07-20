@@ -34,7 +34,11 @@ const modules = new Map([
     {id: 'name', label: 'Name'},
   ]],
   [ModuleTypes.ADDRESS, [
-    {id: 'name', label: 'Name'}
+    {id: 'line1', label: 'Line1'},
+    {id: 'city', label: 'City'},
+    {id: 'stateCode', label: 'State'},
+    {id: 'countryCode', label: 'Country'},
+    {id: 'zipCode', label: 'Zip Code'},
   ]],
   [ModuleTypes.EVENT, [
     {id: 'createdAt', label: 'Created'},

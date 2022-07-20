@@ -46,7 +46,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public sortColumn: string = 'createdAt'; // Sort by createdAt as default
   public sortableColumns: DropdownItem[];
   public sortOrgColumn: string = '';
-  public sortDirection: SortDirections = SortDirections.ASC; // DESC = 1, ASC = 0
+  public sortDirection: SortDirections = SortDirections.DESC; // DESC = 1, ASC = 0
   public sortDirections: any = SortDirections;
 
   public perPageOptions$: Observable<DropdownItem[]> = of([{id: 25, label: '25' }, {id: 50, label: '50'}, {id: 100, label: '100'}]);
