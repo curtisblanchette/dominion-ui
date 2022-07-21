@@ -145,7 +145,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
                 }
               },
               submit: {
-                label: `Yes, i'm sure.`,
+                label: `Yes, I'm sure.`,
                 type: 'submit',
                 fn: this.flowService.restart.bind(this.flowService)
               }
