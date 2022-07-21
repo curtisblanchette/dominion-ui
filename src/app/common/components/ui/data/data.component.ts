@@ -110,7 +110,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     this.store.select(fromApp.selectSettingGroup('appointment')).pipe(untilDestroyed(this)).subscribe((settings: INestedSetting) => {
       this.appointmentSettings = settings;
-    });    
+    });
 
     this.ModuleTypes = ModuleTypes;
   }
@@ -183,8 +183,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
 
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
-    this._dynamicCollectionService.clearCache();
-
   }
 
   public async dateValidation(): Promise<void>{
@@ -245,26 +243,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   private async buildForm(fields:  string[]) {
 
-    const currentStepId = await firstValueFrom( this.store.select(fromFlow.selectCurrentStepId).pipe(take(1)) );
-    let existingData:any;
-    if( currentStepId ){
-      existingData = await firstValueFrom( this.store.select(fromFlow.selectStepHistory).pipe(take(1)) ).then( steps => steps.find( step => step.id == currentStepId )?.variables );
-      if( existingData && existingData[this.module] && existingData.payload ){
-        this.id = existingData[this.module];
-      }
-    }
-
     let form: { [key: string]: FormControl } = {};
 
     for (const field of fields) {
       const control = models[this.module][field];
 
       if (!['virtual', 'timestamp'].includes(control.type)) {
-        let defaultValue = control.defaultValue;
-        if( existingData && existingData.payload && existingData.payload[field] ){
-          defaultValue = existingData.payload[field];
-        }
-        form[field] = new FormControl(defaultValue, control.validators);
+        form[field] = new FormControl(control.defaultValue, control.validators);
       }
 
     }
@@ -351,7 +336,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
             this._dynamicCollectionService.setFilter({id: res?.id});
-            this.onSuccess.next( { [this.module]: res?.id, payload : res });
+            this.onSuccess.next( { [this.module]: res?.id });
           }) || Promise.resolve(this.cleanForm());
         }
       }

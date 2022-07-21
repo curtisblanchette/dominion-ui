@@ -29,7 +29,7 @@ import { DominionType } from '../../../../common/models';
   templateUrl: './flow-text.component.html',
   styleUrls: ['../_base.scss', './flow-text.component.scss']
 })
-export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
+export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
 
   @Input('data') override data: any;
   public form: FormGroup;
@@ -44,8 +44,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public contactFields: any = ContactModel;
   public formValidation:{ [ key:string ] : boolean } = {};
   public formValues:{ [ key:string ] : any } = {};
-  public leadService: CustomDataService<DominionType>;
-  public contactService: CustomDataService<DominionType>;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -60,9 +58,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.ModuleTypes = ModuleTypes;
-
-    this.leadService = dataServiceFactory.create(ModuleTypes.LEAD) as CustomDataService<DominionType>;
-    this.contactService = dataServiceFactory.create(ModuleTypes.CONTACT) as CustomDataService<DominionType>;
 
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.webLeadTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
@@ -79,14 +74,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngOnInit(){
-    this.vars$.pipe(untilDestroyed(this)).subscribe( vars => {
-      if( !vars['contact'] && vars['lead'] ){
-        // Get the contact id via API
-        // this.contactService.getWithQuery({leadId : vars['lead']}).subscribe( contactData => {
-        //   console.log('contactData',contactData);
-        // });
-      }
-    });
     if (this.data) {
       this.initForm();
     }
@@ -94,14 +81,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   public async ngAfterViewInit() {
     this.dataComponents.map( (item:FiizDataComponent, index:number) => {
-      
+
       item.values.subscribe( value => {
         this.store.dispatch(flowActions.AddVariablesAction({ payload: value }));
         this.formValues[item.module] = value;
       });
 
       item.isValid.subscribe( valid => {
-        this.formValidation[item.module] = valid;        
+        this.formValidation[item.module] = valid;
         if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
           this.store.dispatch(flowActions.SetValidityAction({payload: true}));
         } else {
@@ -109,45 +96,22 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         }
       });
 
-    });    
+    });
   }
 
   public async initForm() {
-    let form: any = {};
-    let valid:boolean = false;
-    let defaultValue:any;
-    const existingData = await this.flowService.getStepDataFromHistory();
-    
+    const form: any = {};
+    let valid: boolean = false;
+
     switch(this.data.template) {
 
       case 'call-type': {
-        if( existingData ){
-          this.callTypes$.forEach( (items:RadioItem[]) => {
-            items.map( (item:RadioItem, index:number) => {
-              if( item.id == existingData['call_type'] ){
-                items[index].checked = true;
-                defaultValue = existingData['call_type'];
-                this.flowService.addVariables({call_type : defaultValue});
-              }
-            })
-          });
-        }
-        form['call_type'] = new FormControl(defaultValue, [Validators.required]);
+        form['call_type'] = new FormControl(undefined, [Validators.required]);
       }
         break;
 
       case 'web-lead': {
-        if( existingData ){
-          this.webLeadTypes$.forEach( (items:RadioItem[]) => {
-            items.map( (item:RadioItem, index:number) => {
-              if( item.id == existingData['web_lead_options'] ){
-                items[index].checked = true;
-                defaultValue = existingData['web_lead_options'];
-              }
-            })
-          });
-        }
-        form['web_lead_options'] = new FormControl(defaultValue, [Validators.required]);
+        form['web_lead_options'] = new FormControl(undefined, [Validators.required]);
       }
         break;
 
@@ -188,7 +152,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     }
 
     if(Object.keys(form).length) {
-      
+
       this.form = this.fb.group(form);
       valid = this.form.valid;
 
@@ -196,18 +160,17 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         this.flowService.addVariables(value);
       });
 
-      this.form.statusChanges.subscribe((value: any) => {        
-        valid = value === 'VALID';
-        this.store.dispatch(flowActions.SetValidityAction({payload: valid}));
+      this.form.statusChanges.subscribe((value: any) => {
+        this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
       });
 
       of('').pipe(
         untilDestroyed(this),
         delay(100)
-      ).subscribe(() => { 
-        this.store.dispatch(flowActions.SetValidityAction({payload: valid})) 
+      ).subscribe(() => {
+        this.store.dispatch(flowActions.SetValidityAction({payload: valid}))
       });
-    }    
+    }
   }
 
 
@@ -215,27 +178,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     switch(this.data.template) {
 
       case 'relationship-building': {
-        if( this.formValues ){
-          const leadId = await this.flowService.getVariable('lead');
-          if( leadId ){
-
-            const updateData = {
-              id: leadId,
-              changes: this.formValues['lead']
-            };
-            
-            this.leadService.update(<UpdateStr<any>>updateData, false).pipe(take(1)).subscribe((res) => {
-              console.log('updated res',res);
-            });
-
-          }          
-        }
+        const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.LEAD);
+        leadForm?.save();
       }
       break;
 
       case 'recap': {
         if( this.formValues ){
-                  
+
         }
       }
       break;

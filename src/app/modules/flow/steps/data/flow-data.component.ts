@@ -1,11 +1,14 @@
-import { AfterViewInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FlowState } from '../../store/flow.reducer';
+import * as fromFlow from '../../store/flow.reducer';
 import * as flowActions from '../../store/flow.actions';
 import { FiizDataComponent, FiizDataComponentOptions } from '../../../../common/components/ui/data/data.component';
 import { OnBack, OnNext, OnSave } from '../../classes';
 import { ModuleTypes } from '../../../../data/entity-metadata';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'flow-data',
   template: `
@@ -15,7 +18,7 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
   `,
   styleUrls: ['../_base.scss']
 })
-export class FlowDataComponent implements OnDestroy, OnSave, OnBack, OnNext {
+export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, OnBack, OnNext {
 
   @Input('module') module: ModuleTypes;
   @Input('data') data: any;
@@ -24,8 +27,18 @@ export class FlowDataComponent implements OnDestroy, OnSave, OnBack, OnNext {
   @ViewChild(FiizDataComponent, { static: true }) cmp: FiizDataComponent;
 
   constructor(
-    private store: Store<FlowState>
+    private store: Store<fromFlow.FlowState>
   ) {
+
+  }
+
+  ngAfterContentInit() {
+    this.store.select(fromFlow.selectVariableByKey(this.module)).pipe(
+      untilDestroyed(this),
+      distinctUntilChanged()
+    ).subscribe(leadId => {
+      this.data.id = leadId;
+    });
   }
 
   updateValidity(isValid: boolean) {

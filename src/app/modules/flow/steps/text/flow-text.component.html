@@ -22,12 +22,12 @@
       <h3 style="text-align: center;">{{data.title}}</h3>
       <p style="text-align: center;">{{data.body}}</p>
 
-      
+
       <p class="dictation">Excellent, so you were telling me your case is regarding...</p>
       <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead'}" [options]="{state: 'edit', fields: ['practiceAreaId']}"></fiiz-data>
       <p class="dictation">Fantastic, and which city are you calling from today?</p>
       <fiiz-data [module]="ModuleTypes.ADDRESS" [data]="{id: undefined}" [options]="{state: 'edit', fields: ['stateCode']}"></fiiz-data>
-      
+
       <p style="text-align: center;">Remember to respond appropriately after they share their story in order to build a relationship based on the information that they share!</p>
 
       <p class="dictation">Do you have a few minutes so that I can ask you some questions to see how we might be able to help you?</p>

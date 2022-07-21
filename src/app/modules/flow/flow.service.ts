@@ -9,7 +9,7 @@ import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
 import { DominionType } from '../../common/models';
-import { DefaultDataServiceFactory } from '@ngrx/data';
+import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
 import { ModuleTypes } from '../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -30,21 +30,34 @@ export interface IHistory {
 export class FlowService {
   public id: string = uuidv4();
   public cmpReference: any;
-  public callService: CustomDataService<DominionType>;
+
   public callId: string | undefined;
   public noteId: string | undefined;
   public user$: Observable<User | null>;
   public flowHost!: FlowHostDirective;
+  public callService: CustomDataService<DominionType>;
+  private leadService: EntityCollectionService<DominionType>;
+  private contactService: EntityCollectionService<DominionType>;
+  private dealService: EntityCollectionService<DominionType>;
+  private eventService: EntityCollectionService<DominionType>;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<fromFlow.FlowState>,
     private dataServiceFactory: DefaultDataServiceFactory,
+    private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     private http: HttpClient,
     public builder: FlowBuilder,
   ) {
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
+
+    // Use the collection services to clear all entity caches after the call ends.
+    this.leadService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD) as EntityCollectionService<DominionType>;
+    this.contactService = this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT) as EntityCollectionService<DominionType>;
+    this.dealService = this.entityCollectionServiceFactory.create(ModuleTypes.DEAL) as EntityCollectionService<DominionType>;
+    this.eventService = this.entityCollectionServiceFactory.create(ModuleTypes.EVENT) as EntityCollectionService<DominionType>;
+
     this.user$ = this.store.select(fromLogin.selectUser);
   }
 
@@ -52,6 +65,10 @@ export class FlowService {
     this.store.dispatch(flowActions.ResetAction());
     this.noteId = undefined;
     this.callId = undefined;
+    this.leadService.clearCache();
+    this.contactService.clearCache();
+    this.dealService.clearCache();
+    this.eventService.clearCache();
     await this.start();
   }
 
@@ -93,7 +110,7 @@ export class FlowService {
     } else {
       this.updateCall( {direction:direction} );
     }
-    
+
   }
 
   public updateCall(payload: any): void {
@@ -257,13 +274,10 @@ export class FlowService {
         });
       }
 
-
     } catch(e) {
       console.error(e);
       throw e;
     }
-
-
   }
 
   public setValidity(value: boolean) {
@@ -273,7 +287,7 @@ export class FlowService {
   public removeVariable(key: string) {
     this.store.dispatch(flowActions.RemoveVariableAction({key}));
   }
-  
+
   public addVariables(data: any) {
     if (data) {
       let allVars = {...this.builder.process.currentStep?.variables, ...data};
@@ -292,15 +306,5 @@ export class FlowService {
 
     return value;
   }
-
-  public async getStepDataFromHistory(){
-    const currentStepId = await firstValueFrom( this.store.select(fromFlow.selectCurrentStepId).pipe(take(1)) );
-    let existingData:any;
-    if( currentStepId ){
-      existingData = await firstValueFrom( this.store.select(fromFlow.selectStepHistory).pipe(take(1)) ).then( steps => steps.reverse().find( step => step.id == currentStepId )?.variables );      
-    }
-    return existingData;
-  }
-
 }
 
