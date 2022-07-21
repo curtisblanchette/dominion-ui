@@ -2,9 +2,9 @@
 <div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title }" [ngClass]="{'disabled': disabled}" >
     <ng-container [ngSwitch]="dropdownType">
 
-        <fiiz-button class="dropdown fiiz-dropdown-button__dropdown">
+        <fiiz-button class="fiiz-dropdown-button__selector full-width">
             {{title}}
-            <i class="fa-solid fa-caret-down"></i>
+            <i class="fa-solid fa-caret-down" style="margin-left: auto;"></i>
         </fiiz-button>
 
     </ng-container>
@@ -25,7 +25,11 @@
             </form>
             <div class="fiiz-dropdown-button__content__wrapper">
 
-              <fiiz-button tabindex="0" *ngFor="let item of items; let i = index; let last = last;" [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}" (click)="setTheValue(item.label, item.id)" style="border-radius: 0;">
+              <fiiz-button tabindex="0"
+                           *ngFor="let item of items; let i = index; let last = last;"
+                           [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}"
+                           (click)="setTheValue(item.label, item.id)"
+                           style="border-radius: 0;">
                   {{ item.label }}
               </fiiz-button>
 

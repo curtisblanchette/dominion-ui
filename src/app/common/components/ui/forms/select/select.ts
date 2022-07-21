@@ -32,7 +32,7 @@ export class FiizSelectComponent extends EntityCollectionComponentBase implement
 
   @Input('id') id!: string;
   @Input('module') override module: ModuleTypes;
-  @Input('options') override options: { remote?: boolean };
+  @Input('options') override options: { remote?: boolean, query?: {[key: string]: any} } = { remote: false, query: {}};
 
   @Input('size') size!: 'small' | 'large';
   @Input('default') default: string | number | boolean | undefined;

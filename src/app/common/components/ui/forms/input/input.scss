@@ -12,6 +12,11 @@
     margin-top: 32px;
   }
 
+  input#search-dropdown {
+    border-radius: $button-border-radius $button-border-radius 0 0;
+    box-shadow: none;
+  }
+
   &.ng-invalid {
     .wrapper {
       position:relative;
