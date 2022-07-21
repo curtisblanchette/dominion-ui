@@ -127,8 +127,7 @@ export class FlowFactory {
             LeadFields.FIRST_NAME,
             LeadFields.LAST_NAME,
             LeadFields.PHONE,
-            LeadFields.EMAIL,
-            LeadFields.STATE
+            LeadFields.EMAIL
           ]
         }
       }
