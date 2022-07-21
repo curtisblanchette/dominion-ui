@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.12.0 (2022-07-21)
+
+
+### Features
+
+* **develop:** use ngrx/data cache as flow entity cache mechanism ([008ff6f](https://github.com/4iiz/dominion-ui/commit/008ff6f22db8b2d8366648b05058a9b26f25977c))
+
 ### 1.11.16 (2022-07-21)
 
 ### 1.11.15 (2022-07-19)
