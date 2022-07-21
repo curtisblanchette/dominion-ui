@@ -1,25 +1,26 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, AfterContentInit } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { UntilDestroy } from '@ngneat/until-destroy';
-import { firstValueFrom, lastValueFrom, map, take } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { firstValueFrom, map, delay, startWith } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
-import { RadioItem } from '../../../../common/components/ui/forms/radio';
+import { Observable, of, take } from 'rxjs';
+import { UpdateStr } from '@ngrx/entity/src/models';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import * as flowActions from '../../store/flow.actions';
 import { FlowService } from '../../flow.service';
 import * as fromFlow from '../../store/flow.reducer';
-
-
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
 import { environment } from '../../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
 import { CustomDataService } from '../../../../data/custom.dataservice';
+import { RadioItem } from '../../../../common/components/ui/forms';
+import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
+import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
+import { DominionType } from '../../../../common/models';
 
 
 @UntilDestroy()
@@ -28,21 +29,25 @@ import { CustomDataService } from '../../../../data/custom.dataservice';
   templateUrl: './flow-text.component.html',
   styleUrls: ['../_base.scss', './flow-text.component.scss']
 })
-export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
+export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, AfterViewInit {
 
   @Input('data') override data: any;
   public form: FormGroup;
   public fields: Array<any> = [];
   public callTypes$: Observable<RadioItem[]>;
-  public webLeadTypes$: Observable<DropdownItem[]>;
+  public webLeadTypes$: Observable<RadioItem[]>;
   public callReasons$: Observable<DropdownItem[]>;
   public answerOptions$: Observable<DropdownItem[]>;
   public callOutcomes$: Observable<DropdownItem[]>;
   public vars$: Observable<any>;
-  public callAPI:any;
-  public noteAPI:any;
   public ModuleTypes: any;
   public contactFields: any = ContactModel;
+  public formValidation:{ [ key:string ] : boolean } = {};
+  public formValues:{ [ key:string ] : any } = {};
+  public leadService: CustomDataService<DominionType>;
+  public contactService: CustomDataService<DominionType>;
+
+  @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
   constructor(
     private store: Store<fromFlow.FlowState>,
@@ -56,7 +61,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.ModuleTypes = ModuleTypes;
 
-    this.callAPI = entityCollectionServiceFactory.create(ModuleTypes.CALL);
+    this.leadService = dataServiceFactory.create(ModuleTypes.LEAD) as CustomDataService<DominionType>;
+    this.contactService = dataServiceFactory.create(ModuleTypes.CONTACT) as CustomDataService<DominionType>;
+
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.webLeadTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
     this.callReasons$ = of([{ id : 'cancel/reschedule', label : 'Cancel/Reschedule' }, { id : 'take-notes', label : 'Take Notes' }]);
@@ -72,23 +79,75 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngOnInit(){
+    this.vars$.pipe(untilDestroyed(this)).subscribe( vars => {
+      if( !vars['contact'] && vars['lead'] ){
+        // Get the contact id via API
+        // this.contactService.getWithQuery({leadId : vars['lead']}).subscribe( contactData => {
+        //   console.log('contactData',contactData);
+        // });
+      }
+    });
     if (this.data) {
       this.initForm();
     }
   }
 
+  public async ngAfterViewInit() {
+    this.dataComponents.map( (item:FiizDataComponent, index:number) => {
+      
+      item.values.subscribe( value => {
+        this.store.dispatch(flowActions.AddVariablesAction({ payload: value }));
+        this.formValues[item.module] = value;
+      });
+
+      item.isValid.subscribe( valid => {
+        this.formValidation[item.module] = valid;        
+        if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
+          this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+        } else {
+          this.store.dispatch(flowActions.SetValidityAction({payload: false}));
+        }
+      });
+
+    });    
+  }
+
   public async initForm() {
     let form: any = {};
-
+    let valid:boolean = false;
+    let defaultValue:any;
+    const existingData = await this.flowService.getStepDataFromHistory();
+    
     switch(this.data.template) {
 
       case 'call-type': {
-        form['call_type'] = new FormControl('', [Validators.required]);
+        if( existingData ){
+          this.callTypes$.forEach( (items:RadioItem[]) => {
+            items.map( (item:RadioItem, index:number) => {
+              if( item.id == existingData['call_type'] ){
+                items[index].checked = true;
+                defaultValue = existingData['call_type'];
+                this.flowService.addVariables({call_type : defaultValue});
+              }
+            })
+          });
+        }
+        form['call_type'] = new FormControl(defaultValue, [Validators.required]);
       }
         break;
 
       case 'web-lead': {
-        form['web_lead_options'] = new FormControl('', [Validators.required]);
+        if( existingData ){
+          this.webLeadTypes$.forEach( (items:RadioItem[]) => {
+            items.map( (item:RadioItem, index:number) => {
+              if( item.id == existingData['web_lead_options'] ){
+                items[index].checked = true;
+                defaultValue = existingData['web_lead_options'];
+              }
+            })
+          });
+        }
+        form['web_lead_options'] = new FormControl(defaultValue, [Validators.required]);
       }
         break;
 
@@ -114,8 +173,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'relationship-building': {
-        form['practiceAreaId'] = new FormControl('', [Validators.required]);
-        form['state'] = new FormControl('', []);
+        valid = false;
       }
         break;
 
@@ -123,27 +181,66 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         this.store.dispatch(flowActions.SetValidityAction({payload: true}));
       }
         break;
-      
-      default :
-        /** If there is no form, the step's validity should be true */
-        this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+
+      default:
+        valid = true;
         break;
     }
 
     if(Object.keys(form).length) {
+      
       this.form = this.fb.group(form);
+      valid = this.form.valid;
 
       this.form.valueChanges.subscribe((value: any) => {
         this.flowService.addVariables(value);
       });
 
-      this.form.statusChanges.subscribe((value: any) => {
-        this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
+      this.form.statusChanges.subscribe((value: any) => {        
+        valid = value === 'VALID';
+        this.store.dispatch(flowActions.SetValidityAction({payload: valid}));
       });
+
+      of('').pipe(
+        untilDestroyed(this),
+        delay(100)
+      ).subscribe(() => { 
+        this.store.dispatch(flowActions.SetValidityAction({payload: valid})) 
+      });
+    }    
+  }
+
+
+  public async onSave(){
+    switch(this.data.template) {
+
+      case 'relationship-building': {
+        if( this.formValues ){
+          const leadId = await this.flowService.getVariable('lead');
+          if( leadId ){
+
+            const updateData = {
+              id: leadId,
+              changes: this.formValues['lead']
+            };
+            
+            this.leadService.update(<UpdateStr<any>>updateData, false).pipe(take(1)).subscribe((res) => {
+              console.log('updated res',res);
+            });
+
+          }          
+        }
+      }
+      break;
+
+      case 'recap': {
+        if( this.formValues ){
+                  
+        }
+      }
+      break;
+
     }
-
-    
-
   }
 
   public get isValid() {

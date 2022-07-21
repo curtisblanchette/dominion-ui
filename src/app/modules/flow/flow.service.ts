@@ -80,15 +80,20 @@ export class FlowService {
     return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: this.builder.process.currentStep?.step as FlowStep }));
   }
 
-  public startCall(direction: string): void {
-    this.callService.add({
-      startTime: new Date().toISOString(),
-      direction: direction
-    }, false).pipe(take(1)).subscribe(async (res) =>{
-      this.callId = res.id
-      this.addVariables({call: this.callId});
-      await this.createNote('');
-    });
+  public async startCall(direction: string): Promise<void> {
+    if( !this.callId ){
+      this.callService.add({
+        startTime: new Date().toISOString(),
+        direction: direction
+      }, false).pipe(take(1)).subscribe(async (res) =>{
+        this.callId = res.id
+        this.addVariables({call: this.callId});
+        await this.createNote('');
+      });
+    } else {
+      this.updateCall( {direction:direction} );
+    }
+    
   }
 
   public updateCall(payload: any): void {
@@ -208,7 +213,6 @@ export class FlowService {
   public isLastStep( type = 'next' ):boolean {
     if( 'next' == type ){
       const next = this.findNextStep();
-      console.log('next',next);
       if( next instanceof FlowStep && next.component === 'FlowTextComponent' ){
         return next.state.data.lastStep;
       }
@@ -269,6 +273,7 @@ export class FlowService {
   public removeVariable(key: string) {
     this.store.dispatch(flowActions.RemoveVariableAction({key}));
   }
+  
   public addVariables(data: any) {
     if (data) {
       let allVars = {...this.builder.process.currentStep?.variables, ...data};
@@ -286,6 +291,15 @@ export class FlowService {
     }
 
     return value;
+  }
+
+  public async getStepDataFromHistory(){
+    const currentStepId = await firstValueFrom( this.store.select(fromFlow.selectCurrentStepId).pipe(take(1)) );
+    let existingData:any;
+    if( currentStepId ){
+      existingData = await firstValueFrom( this.store.select(fromFlow.selectStepHistory).pipe(take(1)) ).then( steps => steps.reverse().find( step => step.id == currentStepId )?.variables );      
+    }
+    return existingData;
   }
 
 }

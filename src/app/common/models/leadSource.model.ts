@@ -15,7 +15,7 @@ export const LeadSourceModel: {[key: string]: IModel} = {
   status: {
     label: 'Status',
     type: 'text',
-    defaultValue: null,
+    defaultValue: 'active',
     validators: [
       Validators.required
     ]

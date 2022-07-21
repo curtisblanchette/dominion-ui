@@ -28,7 +28,7 @@ export const EventModel: {[key: string]: IModel} = {
   },
   [Fields.DESCRIPTION]: {
     label: 'Description',
-    type: 'text',
+    type: 'textarea',
     defaultValue: null,
     validators: [
     ]

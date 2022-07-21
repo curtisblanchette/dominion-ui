@@ -15,7 +15,7 @@ export class TypeOfPipe implements PipeTransform {
 
       }
 
-      if(value && value.hasOwnProperty('line1')) {
+      if(value && value.length && value[0] && value[0].hasOwnProperty('line1')) {
         return 'address';
       }
 

@@ -16,6 +16,11 @@
     color: rgba(198, 203, 237, .62);
   }
 
+  form {
+    margin: 0;
+  }
+
+
 }
 .fiiz-dropdown-button {
   z-index: 1;
@@ -89,14 +94,14 @@
         border-radius: 0 0 $button-border-radius $button-border-radius;
       }
 
-      & input.search {
+      input.search {
         background-color: $slate4;
         color : $text1;
         padding: 10px;
         font-size: 14px;
       }
 
-      & input.search:disabled {
+      input.search:disabled {
         opacity: 1 !important;
       }
 
@@ -107,8 +112,9 @@
     }
 
     fiiz-input{
-      margin-bottom: 0px;
-      & input:disabled {
+      margin-bottom: 0;
+
+      input:disabled {
         opacity: 1 !important;
       }
     }
@@ -143,12 +149,12 @@
 
 .fiiz-dropdown-button-top-right {
   right: 0;
-  bottom: 110%;
+  bottom: 100%;
 }
 
 .fiiz-dropdown-button-top-left {
   left: 0;
-  bottom: 110%;
+  bottom: 100%;
 }
 
 label {

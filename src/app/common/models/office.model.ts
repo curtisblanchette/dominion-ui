@@ -20,6 +20,7 @@ export const OfficeModel: { [key: string]: IModel } = {
     label: 'Address',
     type: 'dropdown-search',
     service: ModuleTypes.ADDRESS,
-    defaultValue: null
+    defaultValue: null,
+    validators : []
   }
 }

@@ -3,3 +3,4 @@
 	<option value="" [hidden]="!showDefault">Select an option.</option>
 	<option *ngFor="let item of items$ | async" [value]="item.id" [selected]="item.id === selected?.id" [disabled]="item.disabled">{{item.label}}</option>
 </select>
+<i class="fa-solid fa-caret-down"></i>

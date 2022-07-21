@@ -3,6 +3,7 @@ import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 import { ModuleTypes } from '../../data/entity-metadata';
 import { FiizValidators } from '../validators';
+import * as dayjs from 'dayjs';
 
 export enum Fields {
   START_TIME = 'startTime',
@@ -23,7 +24,7 @@ export const CallModel: {[key: string]: IModel} = {
   [Fields.START_TIME]: {
     label: 'Start Time',
     type: 'both',
-    defaultValue: new Date(),
+    defaultValue: dayjs().format(),
     validators: [
       Validators.required
     ]
@@ -80,7 +81,7 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.DESCRIPTION]: {
     label: 'Description',
-    type: 'text',
+    type: 'textarea',
     defaultValue: null,
     validators: []
   },
