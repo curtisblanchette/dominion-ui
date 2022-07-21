@@ -182,7 +182,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       this.getData();
     }
 
-    this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
+    this._dynamicCollectionService.setFilter({id: this.id}); // set the entity filter
   }
 
   public async dateValidation(): Promise<void>{
@@ -373,5 +373,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override ngOnDestroy() {
     console.log('data component destroyed');
+    this._dynamicCollectionService.setFilter({});
   }
 }

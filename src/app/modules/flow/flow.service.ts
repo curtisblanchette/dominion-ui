@@ -65,10 +65,20 @@ export class FlowService {
     this.store.dispatch(flowActions.ResetAction());
     this.noteId = undefined;
     this.callId = undefined;
+
     this.leadService.clearCache();
+    this.leadService.setFilter({});
+
     this.contactService.clearCache();
+    this.contactService.setFilter({});
+
     this.dealService.clearCache();
+    this.dealService.setFilter({});
+
     this.eventService.clearCache();
+    this.eventService.setFilter({});
+
+
     await this.start();
   }
 
