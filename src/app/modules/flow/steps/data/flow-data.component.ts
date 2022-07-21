@@ -36,8 +36,8 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
     this.store.select(fromFlow.selectVariableByKey(this.module)).pipe(
       untilDestroyed(this),
       distinctUntilChanged()
-    ).subscribe(leadId => {
-      this.data.id = leadId;
+    ).subscribe(id => {
+      this.data.id = id;
     });
   }
 
