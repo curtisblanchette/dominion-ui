@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, AfterContentInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { firstValueFrom, map, delay, startWith } from 'rxjs';
+import { firstValueFrom, map, delay } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Observable, of, take } from 'rxjs';
-import { UpdateStr } from '@ngrx/entity/src/models';
+import { Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -20,7 +19,6 @@ import { CustomDataService } from '../../../../data/custom.dataservice';
 import { RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
-import { DominionType } from '../../../../common/models';
 
 
 @UntilDestroy()
@@ -33,7 +31,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   @Input('data') override data: any;
   public form: FormGroup;
-  public fields: Array<any> = [];
   public callTypes$: Observable<RadioItem[]>;
   public webLeadTypes$: Observable<RadioItem[]>;
   public callReasons$: Observable<DropdownItem[]>;

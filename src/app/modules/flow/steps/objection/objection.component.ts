@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {  Component, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { Router } from "@angular/router";
 import { FlowService } from "../../flow.service";
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -6,30 +6,30 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../store/app.reducer';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
-import { FiizSelectComponent } from '../../../../common/components/ui/forms';
-import { firstValueFrom, of } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
-import { uriOverrides } from '../../../../data/entity-metadata';
-import { CustomDataService } from '../../../../data/custom.dataservice';
+
+import { ModuleTypes } from '../../../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import * as flowActions from '../../store/flow.actions';
-import { DominionType } from '../../../../common/models';
+import { Fields as CallFields } from '../../../../common/models/call.model';
+import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 
 @Component({
   selector: 'flow-objection',
   templateUrl: './objection.component.html',
   styleUrls: ['../_base.scss', './objection.component.scss']
 })
-export class FlowObjectionComponent extends EntityCollectionComponentBase implements OnDestroy, AfterViewInit {
+export class FlowObjectionComponent extends EntityCollectionComponentBase implements OnDestroy {
 
   @Input('data') public override data: any;
   @Input('module') public override module: any;
   @Input('options') public override options: any;
 
-  @ViewChild(FiizSelectComponent) dropdown: FiizSelectComponent;
+  @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
   public form: FormGroup;
+  public ModuleTypes: any;
+  public fields: any = CallFields;
+
 
   constructor(
     private store: Store<AppState>,
@@ -43,6 +43,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
     const state = (<any>router.getCurrentNavigation()?.extras.state);
+    this.ModuleTypes = ModuleTypes;
 
     if (state && Object.keys(state).length) {
       this.module = state.module;
@@ -50,26 +51,25 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
       this.data = state.data;
     }
 
+
     this.form = this.fb.group({
       'objection' : new FormControl('', Validators.required)
     });
 
   }
 
-  public async ngAfterViewInit() {
-    // TODO determine if it's a call or event objection
-    // the lookup values might be different
-    const data: any = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides['callObjection']}`)) as DropdownItem[];
-    this.dropdown.items$ = of(CustomDataService.toDropdownItems(data));
-  }
-
   public async onSave():Promise<any> {
-    console.log(this.form.value);
-    if (this.form.valid) {
-      // return this._dynamicCollectionService.add(<DominionType>this.form.value).toPromise().then();
-    }    
+    this.dataComponents.map( (cmp:FiizDataComponent, index:number) => {
+      cmp.save();
+    });
   }
 
+  public goToSetAppointment() {
+    const setAppointmentStep = this.flowService.builder.process.steps.find(step => step.nodeText === 'Set Appointment');
+    if(setAppointmentStep?.id) {
+      this.flowService.goTo(setAppointmentStep.id);
+    }
+  }
   public handleChange(objection: any) {
     this.flowService.addVariables({call_objectionId: objection.id});
     this.store.dispatch(flowActions.SetValidityAction({payload: true}));
