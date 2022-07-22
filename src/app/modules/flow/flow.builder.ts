@@ -79,6 +79,11 @@ export class FlowBuilder {
       };
 
       switch(true) {
+
+        case vars.event : {
+          step.state.options.state = 'set';
+        }
+        break;
         // event selected
         case !!vars.event: {
           step.state.options.state = 'cancel';
@@ -202,18 +207,24 @@ export class FlowBuilder {
     // const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
     // const oppLink = FlowFactory.link(createContact, createOpp1);
 
-    // const setAppt_yes = FlowFactory.condition( {
-    //   variable: 'set_appointment',
-    //   exists: true
-    // }, {}, recap);
-    //
-    // const setAppt_no = FlowFactory.condition({
-    //   variable: 'set_appointment',
-    //   exists: false
-    // }, {}, recap);
+    const rescheduleAppt = FlowFactory.condition( {
+      variable: 'eventAction',
+      equals : 'reschedule'
+    }, {}, setAppointment);
+    
+    const cancelAppt = FlowFactory.condition({
+      variable: 'eventAction',
+      equals: 'cancel'
+    }, {}, recap);
 
-    // const apptRouter = FlowFactory.router('Router', undefined, [setAppt_yes, setAppt_no]);
-    const apptLink = FlowFactory.link(setAppointment, recap);
+    const setAppt = FlowFactory.condition({
+      variable: 'eventAction',
+      exists: false
+    }, {}, recap);
+
+    const apptRouter = FlowFactory.router('Router', undefined, [rescheduleAppt, cancelAppt, setAppt]);
+    
+    const apptLink = FlowFactory.link(setAppointment, apptRouter);
 
     const toSetAppointment = FlowFactory.link(editOpp, setAppointment);
 
@@ -280,7 +291,7 @@ export class FlowBuilder {
       // .addLink(setApptLink)
       // .addLink(setApptLink2)
       // .addLink(setApptLink3)
-      // .addRouter(apptRouter)
+      .addRouter(apptRouter)
       .addStep(recap)
       .addLink(apptLink)
       // .addLink(oppLink)

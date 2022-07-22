@@ -63,14 +63,16 @@
 
 
 <!-- Cancel/Reschedule Appointment Template -->
-<ng-template #cancelReschedule>
-  <div class="flex_main_wrapper__header">
-    <div class="flex_main_wrapper__header__title">
-      Cancel/Reschedule Appointment
-    </div>
-    <div class="flex_main_wrapper__form">
-
-    </div>
+<ng-template #cancelReschedule>  
+  <div class="flex_main_wrapper__header__title">
+    Cancel/Reschedule Appointment
   </div>
+  <div>
+    <h4>What you wanna do with the event</h4>
+    <form [formGroup]="eventActionsForm" *ngIf="eventActionsForm">
+      <fiiz-radio [items]="eventActions$" formControlName="event_action" name="event_action"></fiiz-radio>
+    </form>
+  </div>
+  <fiiz-list [module]="ModuleTypes.EVENT" [options]="{searchable : false, editable : false, createNew : false, query : query}" (values)="getSlectedEvent($event)"></fiiz-list>
 </ng-template>
 <!-- End -->

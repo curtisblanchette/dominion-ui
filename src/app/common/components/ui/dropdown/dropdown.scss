@@ -45,6 +45,10 @@
     min-width: 100%;
     z-index: 10;
 
+    & form {
+      margin-bottom: 0px;
+    }
+
     &__wrapper {
       background: $slate3;
       @include elevate(2);
@@ -125,10 +129,9 @@
     }
 
     fiiz-button.selected {
-        button {
-          background-color: #525252;
-        }
-
+      button {
+        background-color: #525252;
+      }
     }
 
   }

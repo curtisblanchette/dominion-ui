@@ -13,7 +13,7 @@ import * as fromFlow from '../../store/flow.reducer';
 import { firstValueFrom, lastValueFrom, Observable, of, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { DropdownItem, FiizSelectComponent } from '../../../../common/components/ui/forms';
+import { DropdownItem, FiizSelectComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { HttpClient } from '@angular/common/http';
 import { FormInvalidError, OnSave } from '../../classes';
 import { DominionType, models } from '../../../../common/models';
@@ -21,6 +21,7 @@ import { INestedSetting } from '../../../../store/app.effects';
 import { ManipulateType } from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
+import { environment } from '../../../../../environments/environment';
 
 @UntilDestroy()
 @Component({
@@ -38,10 +39,13 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public timeSlots: Array<any> = [];
   public selectedBtnId: string;
   public form: FormGroup;
+  public eventActionsForm: FormGroup;
   public showSlots: boolean = true;
   public offices$: Observable<DropdownItem[]>;
   public vars$: Observable<any>;
   public id: string;
+  public query:{[key:string] : any} = {};
+  public eventActions$:Observable<RadioItem[]> = of([{id: 'cancel',label: 'Cancel'}, {id: 'reschedule',label: 'Reschedule'}]);
 
   @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
@@ -75,35 +79,43 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public async onSave() {
 
-    this.form.patchValue({
-      contactId : await this.flowService.getVariable('contact'),
-      startTime : await this.flowService.getVariable('appt_date_time'),
-      endTime : await this.flowService.getVariable('appt_end_date_time'),
-      typeId : '1'
-    });
+    switch (this.options.state) {
 
-    this.form.removeControl('set_appointment');
+      case 'reschedule': {
+        const data = {
+          id : this.id,
+          outcomeId : 1
+        };
+        this.options.state = 'set';
+        return this._dynamicCollectionService.update(data).toPromise().then((val) => {
+          console.log('rescheduled', val);
+        });        
+      }
 
-    let payload = {...this.form.value, ...this.options.payload};
+      case 'cancel': {
+        const data = {
+          id : this.id,
+          outcomeId : 2
+        };
+        return this._dynamicCollectionService.update(data).toPromise().then((val) => {
+          console.log('cancelled', val);
+        });
+      }
 
-    if (this.form.valid) {
-      this.form.disable();
+      case 'set': {
 
-      switch (this.options.state) {
+        this.form.patchValue({
+          contactId : await this.flowService.getVariable('contact'),
+          startTime : await this.flowService.getVariable('appt_date_time'),
+          endTime : await this.flowService.getVariable('appt_end_date_time'),
+          typeId : '1'
+        });
+    
+        let payload = {...this.form.value, ...this.options.payload};
 
-        case 'reschedule': {
-          // delete and create new
-          return this.form.dirty && this._dynamicCollectionService.delete(this.id).toPromise()
-            .then(() => this.cleanForm()) || Promise.resolve(this.cleanForm());
-        }
+        if (this.form.valid) {
+          this.form.disable();
 
-        case 'cancel': {
-          // delete appointment by id
-          return this.form.dirty && this._dynamicCollectionService.delete(this.id).toPromise()
-            .then(() => this.cleanForm()) || Promise.resolve(this.cleanForm());
-        }
-
-        case 'set': {
           return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res: DominionType | undefined) => {
             res = res as IEvent;
 
@@ -111,8 +123,17 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
             const payload = {
               [this.module]: res?.id,
               appt_start_time: res?.startTime,
-              appt_end_time: res?.endTime
+              appt_end_time: res?.endTime,
+              contact : res?.contactId
             }
+            if( res?.contactId ){
+              this.http.get(environment.dominion_api_url + '/contacts/' + res.contactId).toPromise().then((contactData:any) => {
+                if( contactData && contactData.addresses && contactData.addresses.length ){
+                  payload['address'] = contactData.addresses[0]['id'];
+                }
+              });
+            }
+            
             this.store.dispatch(flowActions.AddVariablesAction({payload}));
 
           }) || Promise.resolve(this.cleanForm());
@@ -129,7 +150,25 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   async ngOnInit(): Promise<any> {
-
+    if( this.options.state !== 'set' ){
+      this.eventActions$.subscribe( (actions:RadioItem[]) => {
+        actions.map( (val:RadioItem, index:number ) => {
+          if( val.id == this.options.state ){
+            actions[index].checked = true;
+          }
+        })
+      });
+      this.eventActionsForm = this.fb.group({
+        event_action : new FormControl(this.options.state, [Validators.required])
+      });
+      this.eventActionsForm.valueChanges.subscribe( val => {
+        this.options.state = val.event_action;
+        this.store.dispatch(flowActions.AddVariablesAction({ payload : {eventAction : val.event_action}}));
+      });
+      this.vars$.subscribe( (vars:any) => {
+        this.query['lead'] = vars['lead'];
+      });
+    }
   }
 
   public async ngAfterViewInit() {
@@ -232,6 +271,16 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       });
     }
     this.store.dispatch(flowActions.SetValidityAction({payload: isValid}));
+  }
+
+  public async getSlectedEvent( event:any ){
+    let validity:boolean = false;
+    this.id = '';
+    if( event && event.record && this.eventActionsForm.valid ){
+      validity = true;
+      this.id = event.record.id;
+    }
+    this.store.dispatch(flowActions.SetValidityAction({payload: validity}));
   }
 
 }

@@ -13,6 +13,9 @@ import { uriOverrides } from '../../../../data/entity-metadata';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
+const UsaStates = require('usa-states').UsaStates;
+const states = new UsaStates().states;
+
 export interface IDropDownMenu {
   type: string;
   title?: string;
@@ -129,14 +132,37 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public onKeyUpEvent(event: Event | KeyboardEvent | any) {
-    // this.getData(event.target.value);
     this.navigationByKeys(event);
   }
 
   public async getData(value: string = '') {
     if (this.moduleName) {
-      const params = new HttpParams({fromObject: {q: value, limit: this.perPage, page: this.page}});
-      const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}`, {params})) as any;
+      this.currentIndex = -1;
+      let data:any = {};
+      let filteredStates:Array<{[key:string] : any}> = [];
+
+      if( this.moduleName == 'state' ){
+        states.forEach( (state:any) => {
+          if( value ){
+            if( state.name.toLowerCase().includes(value.toLowerCase()) ){
+              filteredStates.push({
+                id : state.abbreviation,
+                name : state.name
+              });
+            }
+          } else {
+            filteredStates.push({
+              id : state.abbreviation,
+              name : state.name
+            });
+          }
+        });
+        data.rows = filteredStates;
+        data.count = filteredStates.length;
+      } else {
+        const params = new HttpParams({fromObject: {q: value, limit: this.perPage, page: this.page}});
+        data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}`, {params})) as any;
+      }
       if (data && data.rows) {
         this.totalRecords = data.count || 0;
         this.apiData = data.rows;
@@ -153,7 +179,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   async writeValue(value: string) {
     if (value && this.moduleName) {
       this.value = value;
-      const data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`)) as any;
+      let data:any;
+      if( this.moduleName == 'state' ){
+        data = states.filter( (state:any) => state.abbreviation == value )[0];
+      } else {
+        data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`)) as any;
+      }
       if (data) {
         this.title = data.name ? data.name : data.fullName;
       }
@@ -192,9 +223,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public navigationByKeys(event: KeyboardEvent) {
-    if (this.showDropDowns) {
-      // event.preventDefault();
-    } else {
+    if (!this.showDropDowns) {
       return;
     }
 
@@ -204,7 +233,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       } else if (this.currentIndex > 0) {
         this.currentIndex--;
       }
-      this.dropdownList.nativeElement.querySelectorAll('li').item(this.currentIndex).focus();
+      this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
       this.setSelectedItem(this.currentIndex);
     } else if (event.code === 'ArrowDown') {
       if (this.currentIndex < 0) {
@@ -212,10 +241,9 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       } else if (this.currentIndex < this.items.length - 1) {
         this.currentIndex++;
       }
-      this.dropdownList.nativeElement.querySelectorAll('li').item(this.currentIndex).focus();
+      this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
       this.setSelectedItem(this.currentIndex);
     } else if ((event.code === 'Enter' || event.code === 'NumpadEnter') && this.currentIndex >= 0) {
-      this.setSelectedItem(this.currentIndex);
       this.showDropDowns = false;
     } else if (event.code === 'Escape') {
       this.showDropDowns = false;

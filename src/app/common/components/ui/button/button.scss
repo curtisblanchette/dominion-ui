@@ -222,6 +222,16 @@
       &:hover {
         background-color: shade($slate4, 15);
       }
+
+      &:focus {
+        background-color: shade($slate4, 15);
+      }
+
+      &:focus-visible {
+        outline: 0;
+        background-color: shade($slate4, 15);
+      }
+
     }
   }
 }

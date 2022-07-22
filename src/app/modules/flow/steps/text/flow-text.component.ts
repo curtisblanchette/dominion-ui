@@ -41,6 +41,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public contactFields: any = ContactModel;
   public formValidation:{ [ key:string ] : boolean } = {};
   public formValues:{ [ key:string ] : any } = {};
+  public addressState:string = 'create';
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -72,6 +73,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   public async ngOnInit(){
     if (this.data) {
+      if( await this.flowService.getVariable('address') ){
+        this.addressState = 'edit';
+      }
       this.initForm();
     }
   }
@@ -86,10 +90,18 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       item.isValid.subscribe( valid => {
         this.formValidation[item.module] = valid;
-        if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
-          this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+        if( 'relationship-building' == this.data.template ){
+          if( Object.values(this.formValidation).every(Boolean) ){
+            this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+          } else {
+            this.store.dispatch(flowActions.SetValidityAction({payload: false}));
+          }
         } else {
-          this.store.dispatch(flowActions.SetValidityAction({payload: false}));
+          if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
+            this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+          } else {
+            this.store.dispatch(flowActions.SetValidityAction({payload: false}));
+          }
         }
       });
 
@@ -134,12 +146,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'relationship-building': {
-        valid = false;
+        
       }
         break;
 
       case 'recap' : {
-        this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+        
       }
         break;
 
@@ -181,9 +193,15 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       break;
 
       case 'recap': {
-        if( this.formValues ){
+        const contactId = await this.flowService.getVariable('contact');
+        const contactForm = this.dataComponents.find(item => item.module === this.ModuleTypes.CONTACT);
+        const addressForm = this.dataComponents.find(item => item.module === this.ModuleTypes.ADDRESS);
+        
+        addressForm?.form.addControl('associate', new FormControl({contact : contactId},[]));
+        contactForm?.form.markAsDirty();
 
-        }
+        contactForm?.save();
+        addressForm?.save();
       }
       break;
 
