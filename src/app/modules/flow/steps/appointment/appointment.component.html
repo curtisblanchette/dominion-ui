@@ -1,78 +1,86 @@
 <div class="flex_main_wrapper">
-  <ng-container [ngTemplateOutlet]="options.state === 'set' ? setAppointment : cancelReschedule"></ng-container>
+
+  <ng-container [ngSwitch]="options.state">
+    <!-- Set Appointment Template -->
+    <ng-template [ngSwitchCase]="'set'">
+      <div class="flex_main_wrapper__header">
+        <div class="flex_main_wrapper__header__title">
+          Set Appointment
+        </div>
+        <div class="flex_main_wrapper__form">
+          <form [formGroup]="form" *ngIf="form">
+
+            <div *ngIf="showSlots">
+              <fiiz-dropdown #dropdown [module]="ModuleTypes.OFFICE" id="office" type="search" [label]="'Office'" title="Select an Office" formControlName="officeId"></fiiz-dropdown>
+            </div>
+
+            <div *ngIf="showSlots">
+              <fiiz-input
+                id="title"
+                label="Title"
+                type="text"
+                formControlName="title"
+                placeholder="Title">
+              </fiiz-input>
+            </div>
+
+            <div *ngIf="showSlots">
+              <fiiz-textarea formControlName="description" id="description" label="Description" placeholder="Add a description..." [height]="'100px'" ></fiiz-textarea>
+            </div>
+
+          </form>
+        </div>
+        <p class="dictation" *ngIf="showSlots">We have availability at our office as soon as...</p>
+      </div>
+
+      <ng-container *ngIf="showSlots">
+        <div *ngFor="let slot of timeSlots">
+          <div class="flex_main_wrapper__slots" *ngFor="let item of slot | keyvalue">
+            <div class="flex_main_wrapper__slots__day">
+              {{ item.key }}
+            </div>
+            <div class="flex_main_wrapper__slots__time">
+              <button *ngFor="let time of item.value;"
+                      [id]="item.key+', '+time"
+                      [ngClass]="{'active' : selectedBtnId === item.key+', '+time}"
+                      #slotBtn
+                      class="btn_time_slots"
+                      (click)="setEventTime($event)">
+                {{ time }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="info">
+          "May I have a good email address for you and I will send you a confirmation of your appointment, it will also include driving directions to our office."
+        </div>
+      </ng-container>
+    </ng-template>
+    <!-- End -->
+
+
+    <!-- Cancel Appointment Template -->
+    <ng-template [ngSwitchCase]="'cancel'">
+      <div class="flex_main_wrapper__header__title">
+        Cancel Appointment
+      </div>
+      <div>Start Time: </div>
+      <div>End Time: </div>
+    </ng-template>
+    <!-- End -->
+
+    <!-- Reschedule Appointment Template -->
+    <ng-template [ngSwitchCase]="'reschedule'">
+      <div class="flex_main_wrapper__header__title">
+        Reschedule Appointment
+      </div>
+      <div>Start Time: </div>
+      <div>End Time: </div>
+    </ng-template>
+    <!-- End -->
+
+  </ng-container>
 </div>
 
 
-<!-- Set Appointment Template -->
-<ng-template #setAppointment>
-  <div class="flex_main_wrapper__header">
-    <div class="flex_main_wrapper__header__title">
-      Set Appointment
-    </div>
-    <div class="flex_main_wrapper__form">
-      <form [formGroup]="form" *ngIf="form">
-
-        <div *ngIf="showSlots">
-          <fiiz-dropdown #dropdown [module]="ModuleTypes.OFFICE" id="office" type="search" [label]="'Office'" title="Select an Office" formControlName="officeId"></fiiz-dropdown>
-        </div>
-
-        <div *ngIf="showSlots">
-          <fiiz-input
-            id="title"
-            label="Title"
-            type="text"
-            formControlName="title"
-            placeholder="Title">
-          </fiiz-input>
-        </div>
-
-        <div *ngIf="showSlots">
-          <fiiz-textarea formControlName="description" id="description" label="Description" placeholder="Add a description..." [height]="'100px'" ></fiiz-textarea>
-        </div>
-
-      </form>
-    </div>
-    <p class="dictation" *ngIf="showSlots">We have availability at our office as soon as...</p>
-  </div>
-
-  <ng-container *ngIf="showSlots">
-    <div *ngFor="let slot of timeSlots">
-      <div class="flex_main_wrapper__slots" *ngFor="let item of slot | keyvalue">
-        <div class="flex_main_wrapper__slots__day">
-          {{ item.key }}
-        </div>
-        <div class="flex_main_wrapper__slots__time">
-          <button *ngFor="let time of item.value;"
-                  [id]="item.key+', '+time"
-                  [ngClass]="{'active' : selectedBtnId === item.key+', '+time}"
-                  #slotBtn
-                  class="btn_time_slots"
-                  (click)="setEventTime($event)">
-            {{ time }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="info">
-      "May I have a good email address for you and I will send you a confirmation of your appointment, it will also include driving directions to our office."
-    </div>
-  </ng-container>
-</ng-template>
-<!-- End -->
-
-
-<!-- Cancel/Reschedule Appointment Template -->
-<ng-template #cancelReschedule>  
-  <div class="flex_main_wrapper__header__title">
-    Cancel/Reschedule Appointment
-  </div>
-  <div>
-    <h4>What you wanna do with the event</h4>
-    <form [formGroup]="eventActionsForm" *ngIf="eventActionsForm">
-      <fiiz-radio [items]="eventActions$" formControlName="event_action" name="event_action"></fiiz-radio>
-    </form>
-  </div>
-  <fiiz-list [module]="ModuleTypes.EVENT" [options]="{searchable : false, editable : false, createNew : false, query : query}" (values)="getSlectedEvent($event)"></fiiz-list>
-</ng-template>
-<!-- End -->

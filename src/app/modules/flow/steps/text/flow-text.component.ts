@@ -59,7 +59,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.webLeadTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
-    this.callReasons$ = of([{ id : 'cancel/reschedule', label : 'Cancel/Reschedule' }, { id : 'take-notes', label : 'Take Notes' }]);
+    this.callReasons$ = of([{ id : 'cancel-appointment', label : 'Cancel Appointment' }, { id : 'reschedule-appointment', label : 'Reschedule Appointment' }, { id : 'take-notes', label : 'Take Notes' }]);
     this.answerOptions$ = of([
       { id : 'yes', label : 'Yes' },
       { id : 'no', label : 'No' },
@@ -146,12 +146,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'relationship-building': {
-        
+
       }
         break;
 
       case 'recap' : {
-        
+
       }
         break;
 
@@ -196,7 +196,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         const contactId = await this.flowService.getVariable('contact');
         const contactForm = this.dataComponents.find(item => item.module === this.ModuleTypes.CONTACT);
         const addressForm = this.dataComponents.find(item => item.module === this.ModuleTypes.ADDRESS);
-        
+
         addressForm?.form.addControl('associate', new FormControl({contact : contactId},[]));
         contactForm?.form.markAsDirty();
 

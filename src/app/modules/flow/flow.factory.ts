@@ -155,7 +155,7 @@ export class FlowFactory {
     });
   };
 
-  public static createContact(resolveId: ModuleTypes | null = null, resolveData: {[key: string]: ModuleTypes} = {}, beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
+  public static createContact(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'user-pen',
@@ -165,9 +165,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.CONTACT,
         data: {
-          title: 'Create New Contact',
-          resolveId,
-          resolveData
+          title: 'Create New Contact'
         },
         options: {
           controls: false,
