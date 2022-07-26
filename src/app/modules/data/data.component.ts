@@ -77,6 +77,7 @@ export class DataComponent implements OnInit {
         data: {},
         options: {
           searchable: true,
+          loadInitial: true,
           editable: true,
           createNew : true,
           columns: []
