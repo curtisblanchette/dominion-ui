@@ -17,11 +17,11 @@
     border-radius: 0;
 
     &:first-child {
-      border-radius: $button-border-radius 0 0 $button-border-radius;
+      border-radius: var(--button-border-radius) 0 0 var(--button-border-radius);
     }
 
     &:last-child {
-      border-radius: 0 $button-border-radius $button-border-radius 0;
+      border-radius: 0 var(--button-border-radius) var(--button-border-radius) 0;
     }
 
     &:not(:last-child) {

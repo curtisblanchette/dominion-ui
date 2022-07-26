@@ -36,10 +36,16 @@ export class FlowService {
   public user$: Observable<User | null>;
   public flowHost!: FlowHostDirective;
   public callService: CustomDataService<DominionType>;
+
   private leadService: EntityCollectionService<DominionType>;
   private contactService: EntityCollectionService<DominionType>;
   private dealService: EntityCollectionService<DominionType>;
   private eventService: EntityCollectionService<DominionType>;
+  private addressService: EntityCollectionService<DominionType>;
+  private campaignService: EntityCollectionService<DominionType>;
+  private leadSourceService: EntityCollectionService<DominionType>;
+  private officeService: EntityCollectionService<DominionType>;
+  private callsService: EntityCollectionService<DominionType>;
 
   constructor(
     private router: Router,
@@ -57,6 +63,11 @@ export class FlowService {
     this.contactService = this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT) as EntityCollectionService<DominionType>;
     this.dealService = this.entityCollectionServiceFactory.create(ModuleTypes.DEAL) as EntityCollectionService<DominionType>;
     this.eventService = this.entityCollectionServiceFactory.create(ModuleTypes.EVENT) as EntityCollectionService<DominionType>;
+    this.addressService = this.entityCollectionServiceFactory.create(ModuleTypes.ADDRESS) as EntityCollectionService<DominionType>;
+    this.campaignService = this.entityCollectionServiceFactory.create(ModuleTypes.CAMPAIGN) as EntityCollectionService<DominionType>;
+    this.leadSourceService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD_SOURCE) as EntityCollectionService<DominionType>;
+    this.officeService = this.entityCollectionServiceFactory.create(ModuleTypes.OFFICE) as EntityCollectionService<DominionType>;
+    this.callsService = this.entityCollectionServiceFactory.create(ModuleTypes.CALL) as EntityCollectionService<DominionType>;
 
     this.user$ = this.store.select(fromLogin.selectUser);
   }
@@ -78,6 +89,20 @@ export class FlowService {
     this.eventService.clearCache();
     this.eventService.setFilter({});
 
+    this.addressService.clearCache();
+    this.addressService.setFilter({});
+
+    this.campaignService.clearCache();
+    this.campaignService.setFilter({});
+
+    this.leadSourceService.clearCache();
+    this.leadSourceService.setFilter({});
+
+    this.officeService.clearCache();
+    this.officeService.setFilter({});
+
+    this.callsService.clearCache();
+    this.callsService.setFilter({});
 
     await this.start();
   }

@@ -2,10 +2,9 @@
 @import '~src/assets/css/mixins';
 @import '~src/assets/css/functions';
 
-
 :host {
   overflow: hidden;
-  border-radius: $button-border-radius;
+  border-radius: var(--button-border-radius);
   @include elevate(1);
 
   fiiz-loading {
@@ -22,12 +21,12 @@
     justify-content: flex-start;
     gap: 1em;
     border: none;
-    background: $slate4;
-    border-radius: $button-border-radius;
+    background: var(--slate4);
+    border-radius: var(--button-border-radius);
     font-size: 14px;
     font-weight: 500;
-    color: shade($text1, 10%);
-    padding: 0 $button-padding-lr;
+    color: var(--text1-shade10);
+    padding: 0 var(--button-padding-lr);
     height: 44px;
     line-height: 44px;
     cursor: pointer;
@@ -39,16 +38,16 @@
     }
 
     &:hover {
-      background: shade($slate4, 10%);
+      background: var(--slate-shade1);
     }
 
     &:active {
-      background: shade($slate4, 20%);
+      background: var(--slate-shade2);
     }
 
     &:focus {
       /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-      @include focusRing($focusring, $focusring-moz-mac);
+      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
     }
 
 
@@ -73,33 +72,18 @@
 
     //////////////////////// COLORS
     &.primary, &.active {
-      background: shade($blue3, 10%);
+      background: var(--primary);
       color: #051323;
       font-weight: 600;
 
       &:hover {
-        background: $blue3;
+        background: var(--primary-shade1);
       }
 
       &:active {
-        background: shade($blue3, 25%);
+        background: var(--primary-shade3);
       }
     }
-
-    &.secondary {
-      background: $blue4;
-      color: #051323;
-      font-weight: 600;
-
-      &:hover {
-        background: shade($blue4, 15%);
-      }
-
-      &:active {
-        background: shade($blue4, 25%);
-      }
-    }
-
 
     &.transparent {
       background: transparent;
@@ -141,16 +125,16 @@
   // Added by primary.directive.ts
   &.primary {
     button {
-      background: shade($blue3, 10%);
+      background: var(--primary);
       color: #051323;
       font-weight: 600;
 
       &:hover {
-        background: $blue3;
+        background: var(--primary-shade1);
       }
 
       &:active {
-        background: shade($blue3, 25%);
+        background: var(--primary-shade3);
       }
     }
   }
@@ -159,16 +143,16 @@
   &.stroked {
     button {
       background: rgba(0, 0, 0, .15);
-      border: 1px solid shade($blue3, 15);
-      color: shade($blue3, 15);
+      border: 1px solid var(--primary-shade2);
+      color: var(--primary-shade2);
       position: relative;
       transform: translateY(0);
       transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
       line-height: 42px;
 
       &:hover {
-        border: 1px solid $blue3;
-        color: $blue3;
+        border: 1px solid var(--primary);
+        color: var(--primary);
         background: none !important;
       }
 
@@ -183,16 +167,16 @@
   &.warning {
 
     button {
-      background: $red0;
-      color: shade($red0, 60%);
+      background: var(--red0);
+      color: var(--red0-shade60);
       font-weight: 600;
 
       &:hover {
-        background: shade($red0, 15%);
+        background: var(--red0-shade15);
       }
 
       &:active {
-        background: shade($red0, 25%);
+        background: var(--red0-shade25);
       }
     }
   }
@@ -200,13 +184,13 @@
   // composite of warning and stroked
   &.stroked.warning {
     button {
-      border: 1px solid shade($red0, 10%);
-      color: shade($red0, 10%);
+      border: 1px solid var(--red0-shade10);
+      color: var(--red0-shade10);
       background: none !important;
 
       &:hover {
-        border: 1px solid $red0;
-        color: $red0;
+        border: 1px solid #{var(--red0)};
+        color: var(--red0);
         background: rgba(0, 0, 0, .15) !important;
       }
     }
@@ -216,11 +200,20 @@
     button {
       width: 100%;
       @include elevate(1);
-      background-color: $slate4;
-      color: $text1;
+      background-color: var(--slate4);
+      color: var(--text1);
 
       &:hover {
-        background-color: shade($slate4, 15);
+        background-color: var(--slate-tint1);
+      }
+
+      &:focus {
+        background-color: var(--slate-tint1);
+      }
+
+      &:focus-visible {
+        outline: 0;
+        background-color: var(--slate-tint1);
       }
     }
   }

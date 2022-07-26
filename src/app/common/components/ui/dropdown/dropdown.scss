@@ -5,7 +5,7 @@
 :host {
   display: block;
   position: relative;
-  margin-bottom: $input-margin-bottom;
+  margin-bottom: var(--input-margin-bottom);
 
   .no-title {
     width: 50px;
@@ -36,17 +36,21 @@
   &__content {
     position: absolute;
     list-style: none;
-    background-color: $slate4;
+    background-color: var(--slate4);
     padding: 0;
     margin: 0;
     top: 54px;
-    border-radius: $button-border-radius;
+    border-radius: var(--button-border-radius);
     white-space: nowrap;
     min-width: 100%;
     z-index: 10;
 
+    & form {
+      margin-bottom: 0px;
+    }
+
     &__wrapper {
-      background: $slate3;
+      background: var(--slate1);
       @include elevate(2);
     }
 
@@ -88,15 +92,15 @@
       }
 
       &:first-child button {
-        border-radius: $button-border-radius $button-border-radius 0 0;
+        border-radius: var(--button-border-radius) var(--button-border-radius) 0 0;
       }
       &:last-child button {
-        border-radius: 0 0 $button-border-radius $button-border-radius;
+        border-radius: 0 0 var(--button-border-radius) var(--button-border-radius);
       }
 
       input.search {
-        background-color: $slate4;
-        color : $text1;
+        background-color: var(--slate4);
+        color: var(--text1);
         padding: 10px;
         font-size: 14px;
       }
@@ -125,10 +129,9 @@
     }
 
     fiiz-button.selected {
-        button {
-          background-color: #525252;
-        }
-
+      button {
+        background-color: #525252;
+      }
     }
 
   }

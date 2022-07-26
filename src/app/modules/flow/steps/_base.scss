@@ -3,19 +3,18 @@
 :host {
   display: block;
   position: absolute;
-  top: 0;
+  top: 80px;
   left: 0;
   right: 0;
   bottom: 64px;
   max-width: 100%;
   margin: 0 auto;
-  padding: 60px 0 0;
+  padding: 0px 0 0;
 
   overflow-x: hidden;
   overflow-y: scroll;
 
   .title {
-    text-align:center;
     margin: 0;
   }
 
@@ -47,9 +46,6 @@
   }
 
   .dictation {
-    padding: 2em;
-    text-align: center;
-    margin: 0;
     font-size: 16px;
     color: #C6CEED;
 

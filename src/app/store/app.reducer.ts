@@ -45,6 +45,7 @@ export const selectLookups = createSelector(selectApp, (state: AppState) => stat
 export const selectRoles = createSelector(selectApp, (state: AppState) => state.lookups.roles);
 export const selectPracticeAreas = createSelector(selectApp, (state: AppState) => state.lookups.practiceAreas);
 export const selectOffices = createSelector(selectApp, (state: AppState) => state.lookups.offices);
+export const selectCallObjections = createSelector(selectApp, (state: AppState) => state.lookups.callObjections);
 
 export const selectInitialized = createSelector(selectApp, (state: AppState) => state.initialized);
 export const loading = createSelector(selectApp, (state: AppState) => state.loading);

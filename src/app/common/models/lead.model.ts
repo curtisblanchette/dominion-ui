@@ -80,7 +80,8 @@ export const LeadModel: {[key: string]: IModel} = {
   },
   [Fields.STATE]: {
     label: 'State',
-    type: 'text',
+    type: 'dropdown-search',
+    service: 'state',
     defaultValue: null,
     validators: [
       Validators.required

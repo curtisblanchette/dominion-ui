@@ -31,14 +31,14 @@
     position: relative;
     max-width: calc(100% - 2em);
     cursor: pointer;
-    color: $blue5;
+    color: var(--primary-shade7);
     font-size: 16px;
     width: 44px;
   }
 
   input:focus + label::before {
     /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-    @include focusRing($focusring, $focusring-moz-mac);
+    @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
     color: #222;
     outline: none;
   }
@@ -71,8 +71,8 @@
 
   input:checked + label::after {
     left: 1.6em;
-    border-color: $blue3;
-    color: $blue3;
+    border-color: #{var(--primary)};
+    color: #{var(--primary)};
   }
 
   input:indeterminate + label::after {
@@ -84,8 +84,8 @@
   }
 
   input:checked + label::before {
-    background-color: $blue3;
-    border-color: $blue3;
+    background-color: #{var(--primary)};
+    border-color: #{var(--primary)};
   }
 
   input[disabled] + label::before {

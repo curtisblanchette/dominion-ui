@@ -6,11 +6,11 @@
   width: 100%!important;
 
   input {
-    padding-left: calc(52px + (#{$input-padding-lr} / 2 ))!important;
+    padding-left: calc(52px + (#{var(--input-padding-lr)} / 2 ))!important;
   }
 
   &__country-list {
-    background: $slate4;
+    background: var(--slate4);
     border: none;
     border-radius: 8px;
     margin-top: 5px;
@@ -18,7 +18,7 @@
   }
 
   &__divider {
-    border-bottom: 1px solid tint($slate4, 15);
+    border-bottom: 1px solid var(--slate4-shade15);
   }
 
   &__flag-container {

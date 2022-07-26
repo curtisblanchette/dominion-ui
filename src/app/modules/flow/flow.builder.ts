@@ -40,6 +40,8 @@ export class FlowBuilder {
       step.state.options.query['dealId'] = vars.deal;
     });
 
+    const reasonForCall = FlowFactory.reasonForCall();
+
     const createLead = FlowFactory.createLead();
     const editLead = FlowFactory.editLead((vars: any, step: any) => {
       step.state.data.id = vars.lead;
@@ -70,6 +72,8 @@ export class FlowBuilder {
     const powerQuestion = FlowFactory.powerQuestion();
     const toPowerQuestion = FlowFactory.link(relationshipBuilding, powerQuestion);
 
+
+
     const setAppointment = FlowFactory.setAppointment((vars: any, step: any) => {
       // globals
       step.state.options.payload = {
@@ -79,18 +83,27 @@ export class FlowBuilder {
       };
 
       switch(true) {
-        // event selected
-        case !!vars.event: {
+        case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
+        }
+        break;
+        case vars.call_reason === 'reschedule-appointment': {
+          step.state.options.state = 'reschedule';
         }
         break;
         // no event selected
         case !vars.event: {
           step.state.options.state = 'set';
         }
+        break;
+        default: {
+          step.state.options.state = 'set';
+        }
       }
     });
     const recap = FlowFactory.recap();
+
+    const toCancelReschedule = FlowFactory.link(reasonForCall, setAppointment);
 
     // inbound
     const inboundCond = FlowFactory.condition({
@@ -143,7 +156,7 @@ export class FlowBuilder {
     const inboundSetApptLink = FlowFactory.link(relationshipBuilding, setAppointment);
     const inboundSetApptLink1 = FlowFactory.link(editOpp, appointmentList);
 
-    const appointListToSetAppointment = FlowFactory.link(appointmentList, setAppointment);
+    const appointListToSetAppointment = FlowFactory.link(appointmentList, reasonForCall);
 
     // outbound
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
@@ -202,17 +215,23 @@ export class FlowBuilder {
     // const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
     // const oppLink = FlowFactory.link(createContact, createOpp1);
 
-    // const setAppt_yes = FlowFactory.condition( {
-    //   variable: 'set_appointment',
-    //   exists: true
+    // const rescheduleAppt = FlowFactory.condition( {
+    //   variable: 'eventAction',
+    //   equals : 'reschedule'
+    // }, {}, setAppointment);
+    //
+    // const cancelAppt = FlowFactory.condition({
+    //   variable: 'eventAction',
+    //   equals: 'cancel'
     // }, {}, recap);
     //
-    // const setAppt_no = FlowFactory.condition({
-    //   variable: 'set_appointment',
+    // const setAppt = FlowFactory.condition({
+    //   variable: 'eventAction',
     //   exists: false
     // }, {}, recap);
+    //
+    // const apptRouter = FlowFactory.router('Router', undefined, [rescheduleAppt, cancelAppt, setAppt]);
 
-    // const apptRouter = FlowFactory.router('Router', undefined, [setAppt_yes, setAppt_no]);
     const apptLink = FlowFactory.link(setAppointment, recap);
 
     const toSetAppointment = FlowFactory.link(editOpp, setAppointment);
@@ -251,7 +270,8 @@ export class FlowBuilder {
       .addStep(setAppointment)
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
-
+      .addStep(reasonForCall)
+      .addLink(toCancelReschedule)
       .addStep(editOpp)
       .addStep(createOpp)
       .addLink(toOppListRouter)

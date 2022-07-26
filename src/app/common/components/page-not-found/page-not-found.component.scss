@@ -6,7 +6,7 @@
 }
 .agile-info h2 {
     font-size: 12em;
-    color: $text1;
+    color: var(--text1);
     line-height: 1;
     font-weight: 100;
     letter-spacing: 20px;
@@ -14,7 +14,7 @@
 .agile-info h3 {
     font-size: 38px;
     text-transform: uppercase;
-    color: $text1;
+    color: var(--text1);
     line-height: 1.5;
     font-weight: 100;
     letter-spacing: 2px;
@@ -22,7 +22,7 @@
 }
  .agile-info p {
     font-size: 18px;
-	color: $text1;
+	  color: var(--text1);
     text-transform: capitalize;
     letter-spacing: 6px;
     margin-bottom: 46px;

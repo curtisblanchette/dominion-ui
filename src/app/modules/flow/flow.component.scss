@@ -2,7 +2,7 @@
 
 :host {
   width: 100%;
-  height: $full-height-minus-navbar;
+  height: var(--full-height-minus-navbar);
   display: flex;
   padding: {
     left: 0;
@@ -20,13 +20,13 @@ router-outlet {
 
 .flow-layout {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
+  gap: 2vw;
+  padding: 0 20px;
 
-
-  &__sidebar {
-    background: #0A1930;
-    height: 100%;
+  &__left {
+    height: var(--full-height-minus-navbar);
     flex: 1;
     padding: 30px 0;
 
@@ -35,12 +35,11 @@ router-outlet {
     }
   }
 
-  &__main {
+  &__right {
     display: flex;
-    flex-direction: row;
-    height: 100%;
-    gap: 2vw;
-    padding: 0 20px;
+    flex-direction: column;
+    height: var(--full-height-minus-navbar);
+    padding: 30px 0;
   }
 
   &__content {
@@ -48,23 +47,27 @@ router-outlet {
     flex-direction: column;
     flex: 3;
     justify-content: space-around;
-    overflow: hidden;
-  }
+    overflow-x: hidden;
+    overflow-y: scroll;
 
-  &__controls {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    // margin:  0 auto 40px auto;
-    position: absolute;
-    bottom: 0;
-    z-index: 9;
+    &__controls {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      position: absolute;
+      bottom: 10px;
+      z-index: 9;
 
-
-    button {
-      margin: 0;
+      button {
+        margin: 0;
+      }
     }
   }
+
+  &__right {
+
+  }
+
 
   &__floating {
     display: flex;
@@ -76,7 +79,7 @@ router-outlet {
     flex-wrap: nowrap;
     top: 25px;
     left: 0;
-    right: 40px;
+    right: 0;
     z-index: 9;
   }
 
@@ -104,7 +107,7 @@ section ng-component {
 
 .fab-button {
   position: absolute;
-  top: calc(#{$navbar-height} + 3%);
+  top: calc(#{var(--navbar-height)} + 3%);
   right: calc(100vw - 95%);
   z-index: 1;
 }

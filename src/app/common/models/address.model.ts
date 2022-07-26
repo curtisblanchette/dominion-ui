@@ -44,7 +44,8 @@ export const AddressModel: { [key: string]: IModel } = {
   },
   [Fields.STATE_CODE]: {
     label: 'State Code',
-    type: 'text',
+    type: 'dropdown-search',
+    service : 'state',
     defaultValue: '',
     validators: [
       Validators.required

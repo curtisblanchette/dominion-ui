@@ -2,7 +2,7 @@
 
   <ng-container [ngSwitch]="data.template">
     <ng-template [ngSwitchCase]="'call-type'" >
-      <h3>{{data.title}}</h3>
+      <h3 class="title">{{data.title}}</h3>
       <p>{{data.body}}</p>
       <form [formGroup]="form" *ngIf="form">
         <fiiz-radio [items]="callTypes$" formControlName="call_type" name="call_type"></fiiz-radio>
@@ -10,7 +10,7 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'web-lead'">
-      <h3>{{data.title}}</h3>
+      <h3 class="title">{{data.title}}</h3>
       <p>{{data.body}}</p>
 
       <form [formGroup]="form" *ngIf="form">
@@ -19,14 +19,14 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'relationship-building'">
-      <h3 style="text-align: center;">{{data.title}}</h3>
+      <h3 class="title">{{data.title}}</h3>
       <p style="text-align: center;">{{data.body}}</p>
 
 
       <p class="dictation">Excellent, so you were telling me your case is regarding...</p>
-      <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead'}" [options]="{state: 'edit', fields: ['practiceAreaId']}"></fiiz-data>
       <p class="dictation">Fantastic, and which city are you calling from today?</p>
-      <fiiz-data [module]="ModuleTypes.ADDRESS" [data]="{id: undefined}" [options]="{state: 'edit', fields: ['stateCode']}"></fiiz-data>
+      <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead'}" [options]="{state: 'edit', fields: ['practiceAreaId', 'state']}"></fiiz-data>
+      <!-- <fiiz-data [module]="ModuleTypes.ADDRESS" [data]="{id: undefined}" [options]="{state: 'edit', fields: ['stateCode']}"></fiiz-data> -->
 
 <!--      <p style="text-align: center;">Remember to respond appropriately after they share their story in order to build a relationship based on the information that they share!</p>-->
 
@@ -51,7 +51,7 @@
         </div>
         <div style="flex: 1;">
             <fiiz-data #contactForm [module]="ModuleTypes.CONTACT" [data]="{ id: (vars$ | async)?.contact }" [options]="{state: 'edit', fields: ['email', 'phone'] }"></fiiz-data>
-            <fiiz-data #addressForm [module]="ModuleTypes.ADDRESS" [data]="{ id: (vars$ | async)?.contact?.address }" [options]="{state: 'edit', fields: ['line1', 'line2', 'city', 'stateCode', 'zipCode', 'countryCode'] }"></fiiz-data>
+            <fiiz-data #addressForm [module]="ModuleTypes.ADDRESS" [data]="{ id: (vars$ | async)?.address }" [options]="{state: addressState, fields: ['line1', 'line2', 'city', 'stateCode', 'zipCode', 'countryCode'] }"></fiiz-data>
         </div>
       </div>
     </ng-template>
@@ -63,7 +63,7 @@
 
 
     <ng-template [ngSwitchCase]="'reason-for-call'">
-      <h3>{{data.title}}</h3>
+      <h3 class="title">{{data.title}}</h3>
       <p>{{data.body}}</p>
 
       <form [formGroup]="form" *ngIf="form">
@@ -72,7 +72,7 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'follow-up-script'">
-      <h3>{{data.title}}</h3>
+      <h3 class="title">{{data.title}}</h3>
       <p>{{data.body}}</p>
 
       <form [formGroup]="form" *ngIf="form">

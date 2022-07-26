@@ -1,7 +1,7 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { firstValueFrom, Observable, of, take } from 'rxjs';
+import { firstValueFrom, Observable, of, startWith, take, tap } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
@@ -23,6 +23,7 @@ export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   columns: Array<Object>;
+  loadInitial?: boolean;
   createNew?:boolean;
   query?: any;
 }
@@ -73,7 +74,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @ViewChild('main') mainTemplate: TemplateRef<any>;
   @ViewChild('loading') loadingTemplate: TemplateRef<any>;
   @ViewChild('noDataFound') noDataTemplate: TemplateRef<any>;
-  @ViewChild('initial') initial: TemplateRef<any>
+  @ViewChild('initial') initialTemplate: TemplateRef<any>
 
   public actionItems: IDropDownMenuItem[] = [
     {
@@ -112,7 +113,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
     this.perPage$ = this.store.select(fromData.selectPerPage).pipe(untilDestroyed(this), map(value => {
       this.perPage = value; // ngx-pagination doesn't like observable itemsPerPage
-      this.searchInModule();
+      if(this.options.loadInitial) {
+        this.searchInModule();
+      }
+
       return value;
     }));
   }
@@ -122,22 +126,25 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
     this.template$ = this.loadingSubject$.asObservable().pipe(
       untilDestroyed(this),
+      startWith([false, false, [1, 2]]),
       map((res) => {
-        const [loading, loaded, data] = res;
+        const [loading, loaded, data]: any = res;
 
         switch(true) {
           case !loading && loaded && data.length > 0: {
             return this.mainTemplate;
           }
-          case !loading && !loaded: {
+          case loading && !loaded: {
             return this.loadingTemplate;
           }
           case !loading && loaded && (!data.length || data.length === 0): {
             return this.noDataTemplate;
           }
         }
-        return this.noDataTemplate;
-    }));
+        return this.initialTemplate;
+      }),
+
+    );
 
     this.columns = getColumns(this.module);
 
@@ -147,7 +154,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
-
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
@@ -160,8 +166,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.page = 1;
       this.searchInModule();
     });
-
-
+    this.template$ = of(this.initialTemplate);
   }
 
   public onClick($event: any, record: any) {
@@ -202,7 +207,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   get pluralModuleName() {
     if (this.module) {
-      return pluralize(this.module);
+      const pluralLowerCase = pluralize(this.module);
+      return pluralLowerCase[0].toUpperCase() + pluralLowerCase.substring(1, pluralLowerCase.length);
     }
 
     return '';

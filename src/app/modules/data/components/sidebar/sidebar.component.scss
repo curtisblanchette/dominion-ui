@@ -12,14 +12,14 @@
 
     &__parent {
       margin: 0;
-      padding-left: 5px;
       overflow: hidden;
       height: auto;
+      padding: 0;
     }
 
     &__header {
       @include elevate(1);
-      background: $slate3;
+      background: var(--slate);
       font-weight: 400;
       line-height: 1em;
       list-style: none;
@@ -55,11 +55,11 @@
       }
 
       &.active {
-        color: $text1;
+        color: #{var(--text1)};
       }
 
       &:focus {
-        @include focusRing($focusring, $focusring-moz-mac);
+        @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
       }
     }
   }

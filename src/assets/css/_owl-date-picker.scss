@@ -3,20 +3,20 @@
 @import '~src/assets/css/mixins';
 
 @mixin selectedStyle() {
-    background: tint($green0, 25)!important;
-    color: shade($green0, 95)!important;
+    background: var(--green0-tint25)!important;
+    color: var(--green0-shade95)!important;
 
     &:hover {
-        background: tint($green0, 15)!important;
+        background: var(--green0-tint15)!important;
     }
 }
 
 .owl-dt-container {
-    background-color: $darkBlue;
+    background-color: var(--background-color);
 }
 
 .owl-dt-calendar-table .owl-dt-calendar-cell{
-    color: $text1;
+    color: var(--text1);
 }
 
 .owl-dt-calendar-table .owl-dt-calendar-cell-selected {
@@ -27,12 +27,12 @@
     color: rgb(255 255 255 / 35%) !important;
 }
 .owl-dt-timer-hour12{
-    color: $text1;       
+    color: var(--text1);
 }
 .owl-dt-timer-hour12 .owl-dt-timer-hour12-box:focus .owl-dt-control-button-content,
 .owl-dt-timer-hour12 .owl-dt-timer-hour12-box:hover .owl-dt-control-button-content {
     background: rgba(0,0,0,0.1);
 }
 .owl-dt-calendar-table .owl-dt-calendar-header{
-    color: $text1 !important;
+    color: var(--text1)!important;
 }

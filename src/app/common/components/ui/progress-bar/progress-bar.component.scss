@@ -19,7 +19,7 @@
     font-size: 26px;
     line-height: 1em;
     font-weight: 700;
-    color: shade($blue3, 15%);
+    color: var(--primary-shade2);
   }
   &__bar {
     width: 100%;
