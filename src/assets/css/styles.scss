@@ -5,8 +5,9 @@
 @import '~@angular/cdk/overlay-prebuilt.css';
 @import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
 
-@import 'typefaces';
 @import 'variables';
+
+@import 'typefaces';
 @import 'functions';
 @import 'buttons';
 @import 'mixins';
@@ -27,28 +28,21 @@ html, body {
   height: 100%;
 }
 body {
-  background: #0A1930;
+  background: var(--background-color);
 }
 
 a {
   text-decoration: none;
-  color: $text1!important;
+  color: #{var(--text1)}!important;
 
   &:focus {
-    @include focusRing($focusring, $focusring-moz-mac);
+    @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
   }
 
   &:hover, &.active {
-    color: $blue3!important;
+    color: #{var(--primary)}!important;
   }
 }
-
-.container {
-  max-width: $container-width;
-  width: 100%;
-  margin: 0 auto;
-}
-
 
 .page-heading {
   margin-bottom: 30px;

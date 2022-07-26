@@ -4,7 +4,7 @@
 
 .cdk-overlay-pane {
   max-width: 350px;
-  background: $blue6;
+  background: var(--slate-shade2);
   border-radius: 8px;
   box-shadow: 0 35px 65px 0 rgb(0 0 0 / 25%);
 }

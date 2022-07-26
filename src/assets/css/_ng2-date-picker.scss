@@ -7,8 +7,8 @@
   z-index: 2;
   @include elevate(4);
   border: none !important;
-  background: $slate4 !important;
-  border-radius: $input-border-radius !important;
+  background: var(--slate4)!important;
+  border-radius: var(--input-border-radius)!important;
 
   &:hover {
     z-index:3;
@@ -16,13 +16,13 @@
 }
 
 @mixin selectedStyle() {
-  background: tint($green0, 25)!important;
-  color: shade($green0, 95)!important;
+  background: var(--green0-tint25)!important;
+  color: var(--green0-shade95)!important;
   font-weight: 600;
   border-radius: 4px!important;
 
   &:hover {
-    background: tint($green0, 15)!important;
+    background: var(--green0-tint15)!important;
   }
 }
 
@@ -40,7 +40,7 @@ dp-day-calendar {
   }
 
   .dp-calendar-day {
-    color: $text1;
+    color: var(--text1);
     border: none;
     background: none;
 
@@ -66,7 +66,7 @@ dp-day-calendar {
       line-height: 24px !important;
       border-radius: 4px;
       border: none;
-      color: $text1;
+      color: var(--text1);
       background: rgba(0, 0, 0, .35);
       padding: 0;
       width: 30px !important;
@@ -98,7 +98,7 @@ dp-month-calendar {
   }
 
   button.dp-calendar-month {
-    color: $text1;
+    color: var(--text1);
     background: none;
     border: none;
     border-radius: 6px;
@@ -144,7 +144,7 @@ dp-time-select {
     padding: 0;
     margin: 0!important;
     background: rgba(0, 0, 0, .35);
-    color: $text1;
+    color: var(--text1);
     border: none;
     border-radius: 4px;;
 
@@ -160,22 +160,22 @@ dp-time-select {
   font-size: 14px;
   font-family: Roboto, sans-serif;
   font-weight: 500;
-  color: $text1;
+  color: var(--text1);
   line-height: 44px;
   box-sizing: border-box;
   margin: 0;
   border: none;
   @include elevate(1);
-  border-radius: $input-border-radius;
+  border-radius: var(--input-border-radius);
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  background-color: $slate4 !important;
+  background-color: var(--slate4)!important;
   cursor: pointer;
   padding: 0 16px !important;
 
   &:focus {
-    @include focusRing($focusring, $focusring-moz-mac);
+    @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
   }
 }
 
@@ -185,7 +185,7 @@ dp-time-select {
   padding: 0;
   border: none;
   margin: 0;
-  border-radius: $input-border-radius !important;
+  border-radius: var(--input-border-radius)!important;
 }
 
 .dp-popup {
@@ -214,7 +214,7 @@ dp-time-select {
 
 
 .dp-nav-header-btn {
-  color: tint($green0, 25);
+  color: var(--green0-tint25);
 }
 
 

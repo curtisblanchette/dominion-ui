@@ -30,11 +30,11 @@
     }
 
     &:active, &.active {
-      color: $text1;
+      color: var(--text1);
     }
 
     &:focus {
-      @include focusRing($focusring, $focusring-moz-mac);
+      @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
     }
   }
 }

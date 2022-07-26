@@ -75,6 +75,7 @@ export class FlowFactory {
           searchable: true,
           editable: false,
           createNew:true,
+          loadInitial: false,
           perPage: 25,
           columns: [],
           query: {}

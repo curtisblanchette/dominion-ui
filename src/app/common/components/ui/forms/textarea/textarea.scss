@@ -6,7 +6,7 @@
   display: block;
   position: relative;
   margin-top: 30px;
-  margin-bottom: $input-margin-bottom;
+  margin-bottom: var(--input-margin-bottom);
 
 
 
@@ -39,7 +39,7 @@
     font-size: 14px;
     font-family: Roboto, sans-serif;
     font-weight: 400;
-    color: $text1;
+    color: var(--text1);
     line-height: 1.5em;
     padding: 20px;
     width: 100%;
@@ -48,17 +48,17 @@
     margin: 0;
     border: none;
     @include elevate(1);
-    border-radius: $input-border-radius;
+    border-radius: var(--input-border-radius);
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    background-color: $slate4;
+    background-color: var(--slate4);
     z-index: 1;
     cursor: text;
     resize: none;
 
     &:focus {
-     @include focusRing($focusring, $focusring-moz-mac);
+     @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
     }
 
     &:after {
@@ -133,21 +133,21 @@
 
 
 textarea::-webkit-input-placeholder {
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }
 
 textarea:-moz-placeholder { /* Firefox 18- */
-  color: $placeholder-color;
+  color: var(--placeholder-color)\;
 }
 
 textarea::-moz-placeholder {  /* Firefox 19+ */
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }
 
 textarea:-ms-input-placeholder {
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }
 
 textarea::placeholder {
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }

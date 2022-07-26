@@ -4,7 +4,7 @@
 :host {
   display: block;
   position: relative;
-  margin-bottom: $input-margin-bottom;
+  margin-bottom: var(--input-margin-bottom);
   width: 100%;
 
   &.ng-invalid {
@@ -47,7 +47,7 @@
     font-size: 12px;
     font-family: Roboto, sans-serif;
     font-weight: 500;
-    color: $blue5;
+    color: var(--primary-shade7);
     line-height: 35px;
     padding: 0 30px 0 12px;
     width: 100%;
@@ -55,7 +55,7 @@
     margin: 0;
     border: none;
     @include elevate(1);
-    border-radius: $input-border-radius;
+    border-radius: var(--input-border-radius);
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
@@ -65,7 +65,7 @@
 
 
     &:focus {
-      @include focusRing($focusring, $focusring-moz-mac);
+      @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
       color: #222;
       outline: none;
     }

@@ -4,16 +4,16 @@
 :host {
   display: block;
   position: relative;
-  margin-bottom: $input-margin-bottom;
+  margin-bottom: var(--input-margin-bottom);
   //overflow: hidden;
-  border-radius: $input-border-radius;
+  border-radius: var(--input-border-radius);
 
   &.has-label {
     margin-top: 32px;
   }
 
   input#search-dropdown {
-    border-radius: $button-border-radius $button-border-radius 0 0;
+    border-radius: var(--button-border-radius) var(--button-border-radius) 0 0;
     box-shadow: none;
   }
 
@@ -21,7 +21,7 @@
     .wrapper {
       position:relative;
       overflow: hidden;
-      border-radius: $input-border-radius;
+      border-radius: var(--input-border-radius);
 
       &:after {
         display: block;
@@ -30,7 +30,7 @@
         width: 0;
         height: 2px;
         bottom: 0;
-        background: $red0;
+        background: var(--red0);
       }
     }
   }
@@ -76,14 +76,14 @@
   }
 
   input {
-    border-radius: $input-border-radius;
+    border-radius: var(--input-border-radius);
     width: 100%;
     position: relative;
     display: block;
-    color: $text1;
+    color: var(--text1);
     font-weight: 500;
     line-height: 44px;
-    padding:$input-padding-tb $input-padding-lr;
+    padding:var(--input-padding-tb) var(--input-padding-lr);
     box-sizing: border-box;
     margin: 0;
     border: none;
@@ -91,7 +91,7 @@
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    background-color: $slate4;
+    background-color: var(--slate4);
     cursor: text;
 
     &.has-icon {
@@ -102,8 +102,8 @@
       text-align: right;
     }
     &:focus {
-      @include focusRing($focusring, $focusring-moz-mac);
-      color: $text1;
+      @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
+      color: #{var(--text1)};
       outline: none;
     }
 
@@ -162,21 +162,21 @@
 }
 
 input::-webkit-input-placeholder {
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }
 
 input:-moz-placeholder { /* Firefox 18- */
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }
 
 input::-moz-placeholder {  /* Firefox 19+ */
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }
 
 input:-ms-input-placeholder {
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }
 
 input::placeholder {
-  color: $placeholder-color;
+  color: var(--placeholder-color);
 }

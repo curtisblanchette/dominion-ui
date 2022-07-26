@@ -1,35 +1,39 @@
 @import '~src/assets/css/variables';
 :host {
   display: block;
-  background-color: #0A1930;
+  background-color: var(--background-color);
   box-shadow: 0 2px 50px rgb(0 0 0 / 90%);
   z-index: 10;
   position: fixed;
   width: 100%;
 }
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-basis: auto;
   position:relative;
+  max-width: var(--container-width);
+  margin: 0 auto;
 
   .acting-for {
     color: #80CBC2;
     position: absolute;
     font-weight: 300;
-    top: 27px;
-    left: 90px;
+    top: 28px;
+    left: 64px;
   }
 
   &__header {
+    position: relative;
+
     a {
       margin: 0;
       border-style: none;
-      height: $navbar-height;
+      height: var(--navbar-height);
       display: flex;
       align-items: center;
-      padding: 0 15px;
 
       img {
       }
@@ -76,13 +80,13 @@
       & > a {
         text-decoration: none;
         display: inline-block;
-        line-height: $navbar-height;
+        line-height: var(--navbar-height);
         padding: 0 1.7rem;
-        color: $text1;
+        color: var(--text1);
       }
 
       &.active a {
-        color: #79B8FF!important;
+        color: var(--primary-tint2);
       }
     }
   }

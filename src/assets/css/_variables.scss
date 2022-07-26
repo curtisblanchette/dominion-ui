@@ -1,55 +1,127 @@
 @import '../../assets/css/mixins';
 @import '../../assets/css/functions';
 
-// colors
-$grey1: #E9E9E9;
-$grey2: #CAD2E2;
+$text1-shade25: shade(#C6CEED, 25%);
 
-$blue0: #85C8ED;
-$blue1: #44ADDF;
-$blue2: #5BA5F9;
-$blue3: #5BA5F9; // primary
-$blue3-shaded: #008BC8; // TODO use the mixins to shade the blue
-//$blue4: #1D607D;
-$blue4: #0D5777;
-$blue5: #003247;
-$blue6 : #0E1D34;
+$green0-shade25: shade(#1A936F, 25%);
+$green0-shade95: shade(#1A936F, 95%);
 
-$slate0: #96A1B4;
-$slate1: #64738E;
-$slate2: #42526E;
-$slate3: #22324D;
-$slate4: #172B46;
+// css variables  can be manipulated by javascript
+// these should be used in all templates.
+:root {
+  --background-color: #0A1930;
+  --text1: #C6CEED;
+  --grey1: #E9E9E9;
+  --grey2: #CAD2E2;
 
-$red0: #D05353;
-$yellow0: #EABA4D;
-$green0: #1A936F;
-$green1: #80CBC2;
+  // https://maketintsandshades.com/#5BA5F9
+  --primary-tint9: #eff6fe;
+  --primary-tint8: #deedfe;
+  --primary-tint7: #cee4fd;
+  --primary-tint6: #bddbfd;
+  --primary-tint5: #add2fc;
+  --primary-tint4: #9dc9fb;
+  --primary-tint3: #8cc0fb;
+  --primary-tint2: #7cb7fa;
+  --primary-tint1: #6baefa;
+  --primary: #5BA5F9;
+  --primary-shade1: #5295e0;
+  --primary-shade2: #4984c7;
+  --primary-shade3: #4073ae;
+  --primary-shade4: #376395;
+  --primary-shade5: #2e537d;
+  --primary-shade6: #244264;
+  --primary-shade7: #1b314b;
+  --primary-shade8: #122132;
+  --primary-shade9: #091019;
 
-$darkBlue: #0E1D34;
+  // https://maketintsandshades.com/#1A936F
+  --accent-tint9: #e8f4f1;
+  --accent-tint8: #d1e9e2;
+  --accent-tint7: #badfd4;
+  --accent-tint6: #a3d4c5;
+  --accent-tint5: #8dc9b7;
+  --accent-tint4: #76bea9;
+  --accent-tint3: #5fb39a;
+  --accent-tint2: #48a98c;
+  --accent-tint1: #319e7d;
+  --accent: #1A936F;
+  --accent-shade1: #178464;
+  --accent-shade2: #157659;
+  --accent-shade3: #12674e;
+  --accent-shade4: #105843;
+  --accent-shade5: #0d4a38;
+  --accent-shade6: #0a3b2c;
+  --accent-shade7: #082c21;
+  --accent-shade8: #051d16;
+  --accent-shade9: #030f0b;
 
-// input defaults
-$input-border-radius: 8px;
-$input-padding-lr: 1.5em;
-$input-padding-tb: 0;
-$input-margin-bottom: 0; //14px;
+  --slate-tint9: #e8eaed;
+  --slate-tint8: #d1d5da;
+  --slate-tint7: #b9bfc8;
+  --slate-tint6: #a2aab5;
+  --slate-tint5: #8b95a3;
+  --slate-tint4: #748090;
+  --slate-tint3: #5d6b7e;
+  --slate-tint2: #45556b;
+  --slate-tint1: #2e4059;
+  --slate: #172b46;
+  --slate-shade1: #15273f;
+  --slate-shade2: #122238;
+  --slate-shade3: #101e31;
+  --slate-shade4: #0e1a2a;
+  --slate-shade5: #0c1623;
+  --slate-shade6: #09111c;
+  --slate-shade7: #070d15;
+  --slate-shade8: #05090e;
+  --slate-shade9: #020407;
 
-$focusring: inset 0 0 1px 2px $blue3;
-$focusring-moz-mac:  inset 0 0 0 1px -moz-mac-focusring;
+  // https://maketintsandshades.com/#DECBB7
+  --almond-tint9: #fcfaf8;
+  --almond-tint8: #f8f5f1;
+  --almond-tint7: #f5efe9;
+  --almond-tint6: #f2eae2;
+  --almond-tint5: #efe5db;
+  --almond-tint4: #ebe0d4;
+  --almond-tint3: #e8dbcd;
+  --almond-tint2: #e5d5c5;
+  --almond-tint1: #e1d0be;
+  --almond: #DECBB7;
+  --almond-shade1: #c8b7a5;
+  --almond-shade2: #b2a292;
+  --almond-shade3: #9b8e80;
+  --almond-shade4: #857a6e;
+  --almond-shade5: #6f665c;
+  --almond-shade6: #595149;
+  --almond-shade7: #433d37;
+  --almond-shade8: #2c2925;
+  --almond-shade9: #161412;
 
 
 
-// button defaults
-$button-border-radius: 8px;
-$button-padding-lr: 1.5em;
-
-// fonts
-$text1: #C6CEED;
-
-// components
-$container-width: 1440px;
-$navbar-height: 64px;
-$full-height-minus-navbar: calc(100% - #{$navbar-height});
+  --slate4: #172B46;
 
 
-$placeholder-color: shade($text1, 25%);
+  //--slate4-shade10: #{$slate4-shade10};
+  //--slate4-shade15: #{$slate4-shade15};
+  //--slate4-shade20: #{$slate4-shade20};
+  --red0: #D05353;
+  --yellow0: #EABA4D;
+  --green0: #1A936F;
+  --green0-shade25: #{$green0-shade25};
+  --green0-shade95: #{$green0-shade95};
+  --green1: #80CBC2;
+  --input-border-radius: 8px;
+  --input-padding-lr: 1.5em;
+  --input-padding-tb: 0;
+  --input-margin-bottom: 0; //14px;
+  --focusring: inset 0 0 1px 2px #{var(--primary)};
+  --focusring-moz-mac:  inset 0 0 0 1px -moz-mac-focusring;
+  --button-border-radius: 8px;
+  --button-padding-lr: 1.5em;
+  --container-width: 1440px;
+  --container-padding: 40px;
+  --navbar-height: 64px;
+  --full-height-minus-navbar: calc(100% - #{var(--navbar-height)});
+  --placeholder-color: $text1-shade25;
+}

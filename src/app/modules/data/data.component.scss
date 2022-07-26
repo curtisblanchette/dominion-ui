@@ -1,56 +1,66 @@
 @import '~src/assets/css/variables';
 
 :host {
-    width: 100%;
-    height: $full-height-minus-navbar;
-    padding: {
-      left: 0;
-      right: 0;
-    }
+  width: 100%;
+  height: var(--full-height-minus-navbar);
+
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+
+  padding: {
+    left: 0;
+    right: 0;
+  }
 }
 
 .flow-layout {
-    flex: 1;
-    flex-direction: column;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+
+
+  &__sidebar {
+    padding: {
+      top: 40px;
+    }
+    background: #{var(--background-color)};
     height: 100%;
-    margin-top: $navbar-height + 10;
+    flex: 1;
 
-    &__sidebar {
-      background: #0A1930;
-      height: 100%;
-      flex: 1;
-      padding-right: 20px;
-
-      fiiz-tab-nav {
-        margin: 16px 0;
-      }
+    fiiz-tab-nav {
+      margin: 16px 0;
     }
-
-    &__main {
-      display: flex;
-      flex-direction: row;
-      height: 100%;
-    }
-
-    &__content {
-      display: flex;
-      flex-direction: column;
-      flex: 4.5;
-      justify-content: flex-start;
-      overflow: hidden;
-      align-items: stretch;
-      align-content: stretch;
-      position:relative;
-    }
-
-    // &__controls {
-    //   display: flex;
-    //   justify-content: space-between;
-    //   width: 100%;
-    //   margin: 0 auto 20px auto;
-
-    //   button {
-    //     margin: 0;
-    //   }
-    // }
   }
+
+  &__main {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+  }
+
+  &__content {
+    padding: {
+      top: 40px;
+    }
+    display: flex;
+    flex-direction: column;
+    flex: 4.5;
+    justify-content: flex-start;
+    overflow: hidden;
+    align-items: stretch;
+    align-content: stretch;
+    position: relative;
+  }
+
+  // &__controls {
+  //   display: flex;
+  //   justify-content: space-between;
+  //   width: 100%;
+  //   margin: 0 auto 20px auto;
+
+  //   button {
+  //     margin: 0;
+  //   }
+  // }
+}

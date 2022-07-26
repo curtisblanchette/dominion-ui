@@ -86,10 +86,11 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
           id : this.id,
           outcomeId : 1
         };
-        this.options.state = 'set';
         return this._dynamicCollectionService.update(data).toPromise().then((val) => {
           console.log('rescheduled', val);
-        });        
+          // switch the state to set appointment
+          this.options.state = 'set';
+        });
       }
 
       case 'cancel': {
@@ -110,7 +111,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
           endTime : await this.flowService.getVariable('appt_end_date_time'),
           typeId : '1'
         });
-    
+
         let payload = {...this.form.value, ...this.options.payload};
 
         if (this.form.valid) {
@@ -133,7 +134,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
                 }
               });
             }
-            
+
             this.store.dispatch(flowActions.AddVariablesAction({payload}));
 
           }) || Promise.resolve(this.cleanForm());

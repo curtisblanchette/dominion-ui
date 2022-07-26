@@ -3,13 +3,13 @@
 :host {
   padding: {
     top: 64px; // offsets the fixed header height
-    right: 20px;
-    left: 20px;
+    right: var(--container-padding);
+    left: var(--container-padding);
     bottom: 0;
   }
   display: flex;
   flex-direction: column;
-  height: calc(100% - #{$navbar-height});
-  max-width: $container-width;
+  height: calc(100% - #{var(--navbar-height)});
+  max-width: var(--container-width);
   margin: 0 auto;
 }

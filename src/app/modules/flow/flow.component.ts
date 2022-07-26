@@ -3,7 +3,7 @@ import { FlowService } from './flow.service';
 import { FlowHostDirective, FlowObjectionComponent, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
-import * as flowActions from './store/flow.actions';
+import * as fromApp from '../../store/app.reducer';
 import { lastValueFrom, Observable, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
@@ -12,6 +12,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { HttpClient } from '@angular/common/http';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
 
 @UntilDestroy()
 @Component({
@@ -56,6 +57,8 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     }
   ];
 
+  public objections$: Observable<DropdownItem>;
+
   @ViewChild(FlowHostDirective, {static: true}) flowHost!: FlowHostDirective;
   @ViewChild('tinymce') tinymce: any;
 
@@ -66,6 +69,8 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     private dialog: Dialog,
     private http: HttpClient
   ) {
+
+    this.objections$ = this.store.select(fromApp.selectCallObjections)
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
@@ -150,6 +155,30 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
       }
       break;
     }
+  }
+
+  public endCall() {
+    this.dialog.open(FiizDialogComponent, {
+      data: {
+        title: `You're about to end the call`,
+        body: `Are you sure you are ready to end the current call?`,
+        buttons: {
+          cancel: {
+            label: 'Cancel',
+            type: 'cancel',
+            fn: () => {
+              // pass a function to be executed when this button is clicked
+              // you may need to .bind() the external instances prototype to it
+            }
+          },
+          submit: {
+            label: `Yes, I'm sure.`,
+            type: 'submit',
+            fn: this.flowService.restart.bind(this.flowService)
+          }
+        }
+      }
+    });
   }
 
   public goTo(id: string): Promise<any> {

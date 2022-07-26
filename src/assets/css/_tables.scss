@@ -44,7 +44,7 @@
     justify-content: space-between;
 
     &.editing {
-      background: $blue3;
+      background: var(--primary);
       color:white;
       font-weight: 700;
 
@@ -88,7 +88,7 @@
     flex-direction: row;
     justify-content: space-between;
     margin: 20px 0 40px 0;
-    
+
     > div {
       flex: 1;
       font-weight: 700;
