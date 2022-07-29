@@ -6,9 +6,11 @@ import { FiizListComponent, IListOptions } from '../../common/components/ui/list
 import { FiizDataComponent } from '../../common/components/ui/data/data.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { models } from '../../common/models';
+import { NavigationService } from '../../common/navigation.service';
 
 @UntilDestroy()
 @Component({
+  selector: 'app-data',
   templateUrl: './data.component.html',
   styleUrls: ['../../../assets/css/_container.scss', './data.component.scss']
 })
@@ -19,15 +21,23 @@ export class DataComponent implements OnInit {
 
   constructor(
     private store: Store<DataState>,
-    private router: Router
+    private router: Router,
+    private navigation: NavigationService
   ) {
     if (this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
       this.router.navigate(['/data/list']);
     }
     this.listOptions = {
+
       searchable: true,
       editable: true,
       columns: [],
+      query: {},
+      controls: {
+        perPage: true,
+        pagination: true,
+        createNew: true
+      }
     };
   }
 
@@ -53,7 +63,8 @@ export class DataComponent implements OnInit {
             }
           });
         }
-      })
+      });
+
       componentRef.onCreate.pipe(untilDestroyed(this)).subscribe(res => {
         this.router.navigate([`/data/edit/new`, { outlets: {'aux': [res.module]} }], {
           state: {
@@ -68,6 +79,12 @@ export class DataComponent implements OnInit {
         });
       });
     }
+
+    if(componentRef instanceof FiizDataComponent) {
+      componentRef.onSuccess.pipe(untilDestroyed(this)).subscribe(res => {
+        this.navigation.back();
+      });
+    }
   }
 
   public renderComponent(module: string) {
@@ -79,8 +96,12 @@ export class DataComponent implements OnInit {
           searchable: true,
           loadInitial: true,
           editable: true,
-          createNew : true,
-          columns: []
+          columns: [],
+          controls: {
+            perPage: true,
+            pagination: true,
+            createNew : true,
+          }
         },
         page: 1,
       }

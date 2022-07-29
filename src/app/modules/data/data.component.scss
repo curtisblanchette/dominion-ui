@@ -1,17 +1,11 @@
 @import '~src/assets/css/variables';
 
 :host {
-  width: 100%;
   height: var(--full-height-minus-navbar);
 
   display: flex;
   flex-direction: row;
   gap: 2em;
-
-  padding: {
-    left: 0;
-    right: 0;
-  }
 }
 
 .flow-layout {
