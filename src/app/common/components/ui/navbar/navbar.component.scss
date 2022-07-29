@@ -2,10 +2,13 @@
 :host {
   display: block;
   background-color: var(--background-color);
-  box-shadow: 0 2px 50px rgb(0 0 0 / 90%);
   z-index: 10;
   position: fixed;
   width: 100%;
+  box-sizing: border-box;
+  padding-right: var(--container-padding);
+  padding-left: var(--container-padding);
+  @include elevate(2);
 }
 
 .navbar {

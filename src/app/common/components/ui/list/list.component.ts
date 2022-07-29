@@ -23,8 +23,12 @@ export interface IListOptions {
   searchable: boolean;
   editable: boolean;
   columns: Array<Object>;
+  controls: {
+    perPage?: boolean;
+    pagination?: boolean;
+    createNew?:boolean;
+  };
   loadInitial?: boolean;
-  createNew?:boolean;
   query?: any;
 }
 
@@ -56,6 +60,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public perPage: number;
   public perPage$: Observable<number>;
   public page: number = 1;
+  public limit: number = 25;
   public offset: number = 0;
   public selected: Call | Lead | Contact | Deal | Event | User | null;
   public columns: DropdownItem[] = [];
@@ -64,7 +69,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   @Input('data') public override data: any;
   @Input('module') public override module: ModuleTypes;
-  @Input('options') public override options: IListOptions;
+  @Input('options') public override options: IListOptions = { loadInitial: true, editable: true, searchable: true, columns: [], controls: { perPage: true, pagination: true, createNew: true }};
 
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
@@ -113,12 +118,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
     this.perPage$ = this.store.select(fromData.selectPerPage).pipe(untilDestroyed(this), map(value => {
       this.perPage = value; // ngx-pagination doesn't like observable itemsPerPage
-      if(this.options.loadInitial) {
-        this.searchInModule();
-      }
-
+      this.searchInModule();
       return value;
     }));
+
   }
 
   public override async ngAfterContentInit() {
@@ -167,6 +170,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.searchInModule();
     });
     this.template$ = of(this.initialTemplate);
+
+    if(this.options.loadInitial) {
+      this.searchInModule();
+    }
   }
 
   public onClick($event: any, record: any) {

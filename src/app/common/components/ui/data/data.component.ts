@@ -79,6 +79,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
   @Output('onFailure') onFailure: EventEmitter<Error> = new EventEmitter<Error>();
+  @Output('onBack') onBack: EventEmitter<any> = new EventEmitter<any>();
   @Output('isValid') isValid: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('values') values: EventEmitter<any> = new EventEmitter();
 
@@ -327,7 +328,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       // switch (this.options.state) {
         case 'edit': {
           return this.form.dirty && this._dynamicCollectionService.update(<DominionType>payload).toPromise()
-            .then(() => this.cleanForm()) || Promise.resolve(this.cleanForm());
+            .then((res) => {
+              this.cleanForm();
+              this.onSuccess.next( { [this.module]: res?.id });
+            }) || Promise.resolve(this.cleanForm());
         }
         case 'create': {
           // append additional data as payload attachments

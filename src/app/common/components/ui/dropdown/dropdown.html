@@ -3,7 +3,7 @@
     <ng-container [ngSwitch]="dropdownType">
 
         <fiiz-button class="full-width">
-            {{title}}
+            <ng-content></ng-content>
             <i class="fa-solid fa-caret-down" style="margin-left: auto;"></i>
         </fiiz-button>
 

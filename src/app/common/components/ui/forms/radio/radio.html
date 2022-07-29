@@ -1,4 +1,4 @@
-<label class="container" [for]="item.id" *ngFor="let item of items$ | async">{{item.label}}
+<label [for]="item.id" *ngFor="let item of items$ | async">{{item.label}}
   <input type="radio" [id]="item.id" [disabled]="item.disabled" [checked]="item.checked" [name]="name" (change)="changed($event)" [value]="item.id">
   <span class="checkmark"></span>
 </label>

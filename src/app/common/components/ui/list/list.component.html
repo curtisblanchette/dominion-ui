@@ -1,6 +1,6 @@
 <form [formGroup]="searchForm" class="list-actions">
   <div class="list-actions__controls">
-    <fiiz-input #SearchInput icon="fa-search" formControlName="search" type="text"
+    <fiiz-input #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true"
                 placeholder="Search {{pluralModuleName}}..."></fiiz-input>
     <fiiz-dropdown
       type="button"
@@ -8,29 +8,21 @@
       [items]="actionItems"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
-    <fiiz-button *ngIf="options.createNew" stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
+    <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
+      New {{moduleName}}</fiiz-button>
   </div>
 </form>
 
 <div class="flex-table">
-  <div class="flex-table__header">
-    <div class="flex-table__cell">&nbsp;</div>
-    <div class="flex-table__cell sortable {{column.id}}"
-         [ngClass]="sortOrgColumn === column.id && {
-            'sort__asc': sortDirection === sortDirections.ASC,
-            'sort__desc': sortDirection === sortDirections.DESC
-         }"
-         (click)="sortListBy(column.id)"
-         *ngFor="let column of columns">
-      {{column.label}}
-    </div>
-  </div>
+
   <div class="flex-table__body">
     <ng-container [ngTemplateOutlet]="template$ | async"></ng-container>
   </div>
-  <div class="flex-table__footer">
-    <div class="per-page">
-      Per Page: <fiiz-select size="small" [items]="perPageOptions$" (change)="onPerPageChange($event)" [ngModel]="perPage$ | async"></fiiz-select>
+  <div class="flex-table__footer" *ngIf="options.controls.perPage || options.controls.pagination">
+    <div class="per-page" *ngIf="options.controls.perPage">
+      Per Page:
+      <fiiz-select size="small" [items]="perPageOptions$" (change)="onPerPageChange($event)"
+                   [ngModel]="perPage$ | async"></fiiz-select>
     </div>
 
     <pagination-controls
@@ -43,6 +35,7 @@
       screenReaderPageLabel="page"
       screenReaderCurrentLabel="You're on page"
       maxSize="5"
+      *ngIf="options.controls.pagination"
       (pageChange)="handlePageChange($event)">
     </pagination-controls>
   </div>
@@ -53,55 +46,77 @@
 </ng-template>
 
 <ng-template #noDataFound>
-  <div class="message-block" style="padding-top: 5%;">
-    We could not find any {{moduleName}}s <ng-container *ngIf="searchForm.controls.search.value">with the term "{{searchForm.controls.search.value}}"</ng-container>
-  </div>
-  <div class="message-block">
-    <span>Try another search term or create a new {{moduleName}}.</span>
-  </div>
-  <div class="message-block" style="padding-top: 4%;">
-    <fiiz-button *ngIf="options.createNew" stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
+  <div style="height: 100%; display: flex; justify-content: space-around; align-items: center;">
+    <div>
+      <div class="message-block" style="padding-top: 5%;">
+        We could not find any {{moduleName}}s
+        <ng-container *ngIf="searchForm.controls.search.value">with the term "{{searchForm.controls.search.value}}"
+        </ng-container>
+      </div>
+      <div class="message-block">
+        <span>Try another search term or create a new {{moduleName}}.</span>
+      </div>
+      <div class="message-block" style="padding-top: 4%;">
+        <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
+          New {{moduleName}}</fiiz-button>
+      </div>
+    </div>
   </div>
 </ng-template>
 
 <ng-template #initial>
-  <div class="message-block" style="padding-top: 5%;">
-    Search {{ pluralModuleName }}
-  </div>
-  <div class="message-block">
-    <span>You can search by name, phone number or email.</span>
+  <div style="height: 100%; display: flex; justify-content: space-around; align-items: center;">
+    <div>
+      <div class="message-block" style="padding-top: 5%;">
+        Search {{ pluralModuleName }}
+      </div>
+      <div class="message-block">
+        <span>You can search by name, phone number or email.</span>
+      </div>
+    </div>
   </div>
 </ng-template>
 
 <ng-template #main>
-
-      <div class="flex-table__row active"
-           [ngClass]="{'active' : selected?.id === item?.id}"
-           tabindex="0" #row
-           (mousedown)="onClick($event, item)"
-           (focusin)="onFocusIn($event, item)"
-           (focusout)="onFocusOut($event)"
-           *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async } ">
-        <div class="flex-table__cell" style="justify-content:space-around;">
-          <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
-          <span class="customRadio"></span>
-        </div>
-        <div class="flex-table__cell {{column.id}}" *ngFor="let column of columns">
-          <ng-container [ngSwitch]="(item[column.id] | typeOf)">
-            <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date:'medium' }}</ng-container>
-            <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
-            <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
-            <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
-            <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
-            <ng-container *ngSwitchCase="'address'">{{item[column.id][0].fullName}}</ng-container>
-            <ng-container *ngSwitchCase="'array'">
-              <ng-container *ngFor="let item of item[column.id]">
-                {{item.firstName}} {{item.lastName}}
-              </ng-container>
-            </ng-container>
+  <div class="flex-table__header">
+    <div class="flex-table__cell">&nbsp;</div>
+    <div class="flex-table__cell sortable {{column.id}}"
+         [ngClass]="sortOrgColumn === column.id && {
+            'sort__asc': sortDirection === sortDirections.ASC,
+            'sort__desc': sortDirection === sortDirections.DESC
+         }"
+         (click)="sortListBy(column.id)"
+         *ngFor="let column of columns">
+      {{column.label}}
+    </div>
+  </div>
+  <div class="flex-table__row active"
+       [ngClass]="{'active' : selected?.id === item?.id}"
+       tabindex="0" #row
+       (mousedown)="onClick($event, item)"
+       (focusin)="onFocusIn($event, item)"
+       (focusout)="onFocusOut($event)"
+       *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async } ">
+    <div class="flex-table__cell" style="justify-content:space-around;">
+      <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
+      <span class="customRadio"></span>
+    </div>
+    <div class="flex-table__cell {{column.id}}" *ngFor="let column of columns">
+      <ng-container [ngSwitch]="(item[column.id] | typeOf)">
+        <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date:'medium' }}</ng-container>
+        <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
+        <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
+        <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
+        <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
+        <ng-container *ngSwitchCase="'address'">{{item[column.id][0].fullName}}</ng-container>
+        <ng-container *ngSwitchCase="'array'">
+          <ng-container *ngFor="let item of item[column.id]">
+            {{item.firstName}} {{item.lastName}}
           </ng-container>
-        </div>
+        </ng-container>
+      </ng-container>
+    </div>
 
-      </div>
+  </div>
 
 </ng-template>
