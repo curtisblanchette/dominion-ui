@@ -1,4 +1,3 @@
-@import '~src/assets/css/variables';
 @import '~src/assets/css/mixins';
 @import '~src/assets/css/functions';
 
@@ -21,11 +20,11 @@
     justify-content: flex-start;
     gap: 1em;
     border: none;
-    background: var(--slate4);
+    background: var(--slate);
     border-radius: var(--button-border-radius);
     font-size: 14px;
     font-weight: 500;
-    color: var(--text1-shade10);
+    color: var(--text1);
     padding: 0 var(--button-padding-lr);
     height: 44px;
     line-height: 44px;
@@ -142,18 +141,18 @@
   // Added by stroked.directive.ts
   &.stroked {
     button {
-      background: rgba(0, 0, 0, .15);
-      border: 1px solid var(--primary-shade2);
-      color: var(--primary-shade2);
+      background: rgba(0, 0, 0, .05);
+      border: 1px solid var(--slate-tint2);
+      color: var(--text1);
       position: relative;
       transform: translateY(0);
       transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
       line-height: 42px;
 
       &:hover {
-        border: 1px solid var(--primary);
-        color: var(--primary);
-        background: none !important;
+        border: 1px solid var(--slate-tint1);
+        color: var(--slate-tint7);
+        background: rgba(0, 0, 0, .15);
       }
 
       &:focus {
@@ -167,16 +166,18 @@
   &.warning {
 
     button {
-      background: var(--red0);
-      color: var(--red0-shade60);
+      background: var(--red);
+      color: var(--red-shade8);
       font-weight: 600;
 
       &:hover {
-        background: var(--red0-shade15);
+        background: var(--red-shade2);
+        color: var(--red-shade9);
       }
 
       &:active {
-        background: var(--red0-shade25);
+        background: var(--red-shade4);
+        color: var(--red-shade9);
       }
     }
   }
@@ -184,13 +185,13 @@
   // composite of warning and stroked
   &.stroked.warning {
     button {
-      border: 1px solid var(--red0-shade10);
-      color: var(--red0-shade10);
+      border: 1px solid var(--red);
+      color: var(--red-tint1);
       background: none !important;
 
       &:hover {
-        border: 1px solid #{var(--red0)};
-        color: var(--red0);
+        border: 1px solid var(--red);
+        color: var(--red-tint1);
         background: rgba(0, 0, 0, .15) !important;
       }
     }
@@ -200,7 +201,7 @@
     button {
       width: 100%;
       @include elevate(1);
-      background-color: var(--slate4);
+      background-color: var(--slate);
       color: var(--text1);
 
       &:hover {
