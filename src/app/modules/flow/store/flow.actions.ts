@@ -43,7 +43,7 @@ export const AddRouterAction = createAction(
 
 export const UpdateCurrentStepAction = createAction(
   ActionTypes.UPDATE_CURRENT_STEP,
-  props<{ step: FlowStep, variables?: {[key: string]: any}, valid?: boolean }>()
+  props<{fromTimeline: boolean, isBackAction: boolean, step: FlowStep, variables?: {[key: string]: any}, valid?: boolean }>()
 );
 
 export const SetStepHistoryAction = createAction(

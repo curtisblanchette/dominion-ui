@@ -1,5 +1,5 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
-import { FlowCurrentStep, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
+import { FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
 import { cloneDeep, get } from 'lodash';
 import * as flowActions from './flow.actions';
 
@@ -8,12 +8,14 @@ export interface FlowState {
   steps: FlowStep[] | any;
   routers: FlowRouter[] | any;
   links: FlowLink[] | any;
-  currentStep: FlowCurrentStep | any | undefined;
+  currentStep: FlowStep | undefined;
+  currentStepVariables: any;
+  currentStepValid: boolean;
   stepHistory: FlowStepHistoryEntry[];
   breadcrumbs: string[];
 }
 
-const getInitialStateByKey = (key: string): any | (FlowStep|FlowRouter|FlowLink)[] | FlowCurrentStep | undefined => {
+const getInitialStateByKey = (key: string): any | (FlowStep|FlowRouter|FlowLink)[] | undefined => {
   let state = localStorage.getItem('state') || '';
 
   if (state) {
@@ -49,7 +51,9 @@ export const initialState: FlowState = {
   steps: <FlowStep[]>getInitialStateByKey('flow.steps') || [],
   routers: <FlowRouter[]>getInitialStateByKey('flow.routers') || [],
   links: <FlowLink[]>getInitialStateByKey('flow.links') || [],
-  currentStep: <FlowCurrentStep>getInitialStateByKey('currentStep') || { step: undefined, variables: {}, valid: false },
+  currentStep: <FlowStep>getInitialStateByKey('currentStep') || undefined,
+  currentStepVariables: getInitialStateByKey('flow.currentStepVariables') || [],
+  currentStepValid: getInitialStateByKey('flow.currentStepValid') || false,
   stepHistory: getInitialStateByKey('flow.stepHistory') || [],
   breadcrumbs: getInitialStateByKey('flow.breadcrumbs') || []
 };
@@ -69,10 +73,12 @@ export const reducer = createReducer(
     ...state,
     routers: [ ...state.routers, payload ]
   })),
-  on(flowActions.UpdateCurrentStepAction, (state, { step, valid, variables }) => ({
+  on(flowActions.UpdateCurrentStepAction, (state, { step, valid, variables, fromTimeline, isBackAction }) => ({
     ...state,
-    currentStep: {...state.currentStep, step, valid, variables },
-    breadcrumbs: addToBreadcrumbs(state.breadcrumbs, step.id)
+    currentStep: step,
+    currentStepVariables: variables,
+    currentStepValid: valid || false,
+    breadcrumbs: ((!fromTimeline || (fromTimeline && !isBackAction)) || (step.id && !state.breadcrumbs.includes(step.id))) && addToBreadcrumbs(state.breadcrumbs, step.id) || state.breadcrumbs
   })),
 
   on(flowActions.SetStepHistoryAction, (state, { payload }) => ({
@@ -95,15 +101,12 @@ export const reducer = createReducer(
 
   on(flowActions.AddVariablesAction, (state, { payload }) => ({
     ...state,
-    currentStep: {
-      ...state.currentStep,
-      variables: payload
-    }
+    currentStepVariables: payload
   })),
 
   on(flowActions.SetValidityAction, (state, { payload }) => ({
     ...state,
-    currentStep: { ...state.currentStep, valid: payload  }
+    currentStepValid: payload
   })),
 
   on(flowActions.NextStepAction, (state, { stepId }) => ({...state}) ),
@@ -175,17 +178,12 @@ export const selectSteps = createSelector(selectFlow, (flow: FlowState) => flow.
   step = new FlowStep(cloneDeep(step));
   const deserialized = step._deserialize();
   return deserialized;
-
-  // const clone = cloneDeep(step)
-  // return clone._deserialize();
 }));
 
 export const selectRouters = createSelector(selectFlow, (flow: FlowState) => flow.routers.map((router: any) => {
   router = new FlowRouter(cloneDeep(router));
   const deserialized = router._deserialize();
   return deserialized;
-  // const clone = cloneDeep(router);
-  // return clone._deserialize()
 }));
 export const selectLinks = createSelector(selectFlow, (flow: FlowState) => flow.links.map((link: any) => {
   // return link;
@@ -202,6 +200,9 @@ export const selectLinks = createSelector(selectFlow, (flow: FlowState) => flow.
   // return clone._deserialize();
 }));
 
+export const selectBreadcrumbs = createSelector(selectFlow, (flow:FlowState) => {
+  return flow.breadcrumbs;
+});
 
 export const selectCompletedSteps = createSelector(selectFlow, (flow: FlowState) => {
   // we'll use the breadcrumb trail here to gather the steps traversed
@@ -212,10 +213,21 @@ export const selectCompletedSteps = createSelector(selectFlow, (flow: FlowState)
   });
 });
 
-export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) => {
+export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => {
+  if(!flow?.currentStep) {
+    return {} as FlowStep;
+  }
+  if(!(flow?.currentStep instanceof FlowStep)) {
+    // @ts-ignore
+    flow.currentStep = new FlowStep(cloneDeep(flow.currentStep));
+  }
+  return flow.currentStep;
+});
 
-  const completed = flow.breadcrumbs.map(stepId => {
-    const step = flow.steps.find((step: any) => step.id === stepId);
+export const selectFlowTimeline = createSelector(selectBreadcrumbs, selectSteps, selectLinks, selectCurrentStep, (breadcrumbs, steps, links, currentStep) => {
+
+  const completed = breadcrumbs.map(stepId => {
+    const step = steps.find((step: any) => step.id === stepId);
     // return step;
     return new FlowStep(cloneDeep(step));
   });
@@ -223,7 +235,7 @@ export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) =
   const next: FlowStep[] = [];
 
   const getNextLink = (stepId: string | undefined): any => {
-    const nextLink = flow.links.find((link: any) => stepId === link.from.id);
+    const nextLink = links.find((link: any) => stepId === link.from.id);
 
     if(nextLink && nextLink.to instanceof FlowStep ){
       next.push(nextLink.to);
@@ -233,39 +245,29 @@ export const selectFlowTimeline = createSelector(selectFlow, (flow: FlowState) =
     return [...completed, ...next] as FlowStep[];
   }
 
-  return getNextLink(flow?.currentStep?.step?.id);
-
-
+  return getNextLink((<FlowStep>currentStep).id);
 });
 
 export const selectProcessId     = createSelector(selectFlow, (flow: FlowState) => flow.processId);
 
-export const selectCurrentStep   = createSelector(selectFlow, (flow: FlowState) => {
-  if(!flow?.currentStep?.step) {
-    return {};
-  }
-  if(!(flow?.currentStep?.step instanceof FlowStep)) {
-    // @ts-ignore
-    flow.currentStep.step = new FlowStep(cloneDeep(flow.currentStep.step));
-  }
-  return flow.currentStep;
-});
-export const selectCurrentStepId = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.step?.id);
-export const selectIsValid       = createSelector(selectFlow, (flow: FlowState) => flow.currentStep?.valid);
+
+// export const selectCurrentStepId = createSelector(selectFlow, (flow: FlowState) => flow.currentStep.id);
+export const selectIsValid       = createSelector(selectFlow, (flow: FlowState) => flow.currentStepValid);
 
 export const selectStepHistory   = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
 export const selectAllVariables  = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.stepHistory));
-// @ts-ignore
-export const selectVariableByKey = (key: string) => createSelector(selectCurrentStep, selectAllVariables, (currentStep, variables:{[key: string]: string | number | Date }) => {
-  const alllets = {...variables, ...currentStep?.variables};
-  return alllets[key];
+export const selectCurrentStepVariables  = createSelector(selectFlow, (flow: FlowState) => flow.currentStepVariables);
+export const selectCurrentStepValid  = createSelector(selectFlow, (flow: FlowState) => flow.currentStepValid);
+
+
+export const selectVariableByKey = (key: string) => createSelector(selectCurrentStepVariables, selectAllVariables, (currentStepVariables, variables:{[key: string]: string | number | Date }) => {
+  const vars = {...variables, ...currentStepVariables};
+  return vars[key];
 });
 
 export const selectStepById       = (id: string) => createSelector(selectSteps, (entities: FlowStep[]) => entities.filter((item: FlowStep) => item.id === id).map((step: any) => step._deserialize() ));
 export const selectRouterById     = (id: string) => createSelector(selectRouters, (entities: FlowRouter[]) => entities.filter((item: FlowRouter) => item.id === id).map((router: any) => router._deserialize()));
 export const selectLinkById       = (id: string) => createSelector(selectLinks, (entities: FlowLink[]) => entities.find((item: FlowLink) =>  (<FlowStep | FlowRouter>item.to).id === id )?._deserialize());
-
-
 
 
 /**

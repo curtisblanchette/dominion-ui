@@ -4,17 +4,11 @@
     <!-- Set Appointment Template -->
     <ng-template [ngSwitchCase]="'set'">
       <div class="flex_main_wrapper__header">
-        <div class="flex_main_wrapper__header__title">
-          Set Appointment
-        </div>
+        <h3 style="margin: 0 auto;">Set Appointment</h3>
         <div class="flex_main_wrapper__form">
           <form [formGroup]="form" *ngIf="form">
 
-            <div *ngIf="showSlots">
-              <fiiz-dropdown #dropdown [module]="ModuleTypes.OFFICE" id="office" type="search" [label]="'Office'" title="Select an Office" formControlName="officeId"></fiiz-dropdown>
-            </div>
-
-            <div *ngIf="showSlots">
+            <ng-container *ngIf="showSlots">
               <fiiz-input
                 id="title"
                 label="Title"
@@ -22,11 +16,14 @@
                 formControlName="title"
                 placeholder="Title">
               </fiiz-input>
-            </div>
 
-            <div *ngIf="showSlots">
-              <fiiz-textarea formControlName="description" id="description" label="Description" placeholder="Add a description..." [height]="'100px'" ></fiiz-textarea>
-            </div>
+              <fiiz-dropdown #dropdown *ngIf="showSlots" [module]="ModuleTypes.OFFICE" id="office" type="search"
+                             [label]="'Office'" title="Select an Office" formControlName="officeId"></fiiz-dropdown>
+
+              <fiiz-textarea formControlName="description" id="description" label="Description"
+                             placeholder="Add a description..." [height]="'100px'"></fiiz-textarea>
+
+            </ng-container>
 
           </form>
         </div>
@@ -53,7 +50,8 @@
         </div>
 
         <div class="info">
-          "May I have a good email address for you and I will send you a confirmation of your appointment, it will also include driving directions to our office."
+          "May I have a good email address for you and I will send you a confirmation of your appointment, it will also
+          include driving directions to our office."
         </div>
       </ng-container>
     </ng-template>
@@ -65,8 +63,8 @@
       <div class="flex_main_wrapper__header__title">
         Cancel Appointment
       </div>
-      <div>Start Time: </div>
-      <div>End Time: </div>
+      <div>Start Time:</div>
+      <div>End Time:</div>
     </ng-template>
     <!-- End -->
 
@@ -75,8 +73,8 @@
       <div class="flex_main_wrapper__header__title">
         Reschedule Appointment
       </div>
-      <div>Start Time: </div>
-      <div>End Time: </div>
+      <div>Start Time:</div>
+      <div>End Time:</div>
     </ng-template>
     <!-- End -->
 

@@ -35,13 +35,23 @@
 
   &__form{
     width: 100%;
+
     form {
       display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
+      flex-direction: row;
+      flex-wrap: wrap;
       align-content: center;
       align-items: stretch;
       justify-content: center;
+      gap: 0 .5em;
+
+      > * {
+        flex: 1 0 0;
+      }
+
+      fiiz-textarea {
+        flex: 2 0 100%;
+      }
     }
   }
 

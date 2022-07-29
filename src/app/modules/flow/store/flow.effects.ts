@@ -94,7 +94,7 @@ export class FlowEffects {
             await fn(frozenVars, step);
           }
 
-          return flowActions.UpdateCurrentStepAction({ step });
+          return flowActions.UpdateCurrentStepAction({ step, isBackAction: true, fromTimeline: false });
         }
         return EMPTY;
       }
@@ -117,12 +117,12 @@ export class FlowEffects {
         } else {
 
           // triggers can update variables that we'll need while creating history entries
-          if(typeof this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers === 'string') {
+          if(typeof this.flowService.builder?.process?.currentStep?.afterRoutingTriggers === 'string') {
             const sourceMapComment = `\n //# sourceURL=afterRoutingTrigger.js \n`;
-            let code = this.flowService.builder?.process?.currentStep?.step?.afterRoutingTriggers;
+            let code = this.flowService.builder?.process?.currentStep?.afterRoutingTriggers;
             code = code.concat(sourceMapComment);
             const afterFn = eval(code);
-            await afterFn(frozenVars, this.flowService.builder?.process?.currentStep?.step);
+            await afterFn(frozenVars, this.flowService.builder?.process?.currentStep);
           }
 
           if(typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
@@ -133,7 +133,7 @@ export class FlowEffects {
             await beforeFn(frozenVars, step);
           }
 
-          return flowActions.UpdateCurrentStepAction({ step });
+          return flowActions.UpdateCurrentStepAction({ step, isBackAction: false, fromTimeline: false });
         }
         return EMPTY;
       })

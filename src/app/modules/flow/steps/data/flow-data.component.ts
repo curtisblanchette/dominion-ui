@@ -12,11 +12,11 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @Component({
   selector: 'flow-data',
   template: `
-    <h3 class="title">{{data.title}}</h3>
-    <div>{{options.dictation}}</div>
+    <h3 style="">{{data.title}}</h3>
+    <div *ngIf="options.dictation">{{options.dictation}}</div>
     <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="updateValidity($event)" (onSuccess)="onSuccess($event)"></fiiz-data>
   `,
-  styleUrls: ['../_base.scss']
+  styleUrls: ['../_base.scss', './flow-data.component.scss']
 })
 export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, OnBack, OnNext {
 

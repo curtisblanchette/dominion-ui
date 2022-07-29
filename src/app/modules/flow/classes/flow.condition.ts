@@ -93,7 +93,7 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
 
   public getVariable(key: string): any {
     const state: FlowState = JSON.parse(localStorage.getItem('state') || '').flow;
-    const currentVariables = state.currentStep.variables;
+    const currentVariables = state.currentStepVariables;
     const variables = accumulateVariables(state.stepHistory);
     const merged = {variables, ...currentVariables};
     return merged[key];

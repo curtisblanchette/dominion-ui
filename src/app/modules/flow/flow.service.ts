@@ -114,7 +114,7 @@ export class FlowService {
     const step: FlowStep = this.builder.process.steps[0];
 
     if (step && step.id) {
-      return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step }));
+      return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step, isBackAction: false, fromTimeline: false }));
     }
     throw new NoStepFoundError();
   }
@@ -129,7 +129,7 @@ export class FlowService {
       this.noteId = <string>vars['note'];
     }
 
-    return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: this.builder.process.currentStep?.step as FlowStep }));
+    return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: this.builder.process.currentStep as FlowStep, isBackAction: false, fromTimeline: false }));
   }
 
   public async startCall(direction: string): Promise<void> {
@@ -182,14 +182,17 @@ export class FlowService {
   public async goTo(id: string): Promise<void> {
     const step = this.builder.process.steps.find(x => x.id === id);
     if(step) {
-      this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step }));
+      const nextIndex = this.builder.process.breadcrumbs.indexOf(step.id);
+      const currentIndex = this.builder.process.breadcrumbs.indexOf(this.builder.process.currentStep?.id);
+      const isBackAction =  nextIndex < currentIndex;
+      this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step, isBackAction, fromTimeline: true }));
     }
   }
 
   public findNextStep(): FlowNode | FlowStep | FlowRouter | undefined {
     if( this.builder.process && this.builder.process.links ){
       const link = this.builder.process.links.find((link: any) => {
-        return link.from.id === this.builder.process.currentStep?.step?.id
+        return link.from.id === this.builder.process.currentStep?.id
       });
       return <FlowStep|FlowRouter>link?.to;
     }
@@ -247,16 +250,16 @@ export class FlowService {
   }
 
   public createHistoryEntry(): void {
-    if (this.builder.process.currentStep?.step?.id) {
+    if (this.builder.process.currentStep?.id) {
       // releasing the step sets step._destroyedAt
-      if(this.builder.process.currentStep.step.release) {
-        this.builder.process.currentStep.step.release();
+      if(this.builder.process.currentStep.release) {
+        this.builder.process.currentStep.release();
       }
 
       const historyEntry: FlowStepHistoryEntry = {
-        id: this.builder.process.currentStep?.step?.id,
-        variables: this.builder.process.currentStep?.variables,
-        elapsed: this.builder.process.currentStep.step.elapsed
+        id: this.builder.process.currentStep?.id,
+        variables: this.builder.process.currentStepVariables,
+        elapsed: this.builder.process.currentStep.elapsed
       } as FlowStepHistoryEntry;
       this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
     }
@@ -325,7 +328,7 @@ export class FlowService {
 
   public addVariables(data: any) {
     if (data) {
-      let allVars = {...this.builder.process.currentStep?.variables, ...data};
+      let allVars = {...this.builder.process.currentStepVariables, ...data};
       this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
     }
   }

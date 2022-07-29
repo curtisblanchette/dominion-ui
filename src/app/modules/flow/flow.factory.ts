@@ -34,7 +34,7 @@ export class FlowFactory {
       state: {
         data: {
           title: 'Call Type',
-          body: 'Select from one of the call types below.',
+          body: 'Select a call type.',
           template: 'call-type'
         }
       }
@@ -60,7 +60,7 @@ export class FlowFactory {
 
   public static searchNListLeads(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'Search Leads',
+      nodeText: 'Lead Search',
       nodeIcon: 'address-book',
       component: FlowListComponent,
       beforeRoutingTriggers,
@@ -68,17 +68,23 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.LEAD,
         data: {
-          title: 'Search Leads',
+          title: 'Lead Search',
           dictation: 'Thank you for calling the Law Offices of {company}, this is {username}, how may I assist you today?'
         },
         options: {
           searchable: true,
           editable: false,
-          createNew:true,
           loadInitial: false,
           perPage: 25,
           columns: [],
-          query: {}
+          query: {
+            limit: 3
+          },
+          controls: {
+            perPage: false,
+            pagination: false,
+            createNew:true,
+          }
         }
       }
     })
@@ -100,10 +106,15 @@ export class FlowFactory {
         options: {
           searchable: true,
           editable: false,
-          createNew: false,
+          loadInitial: false,
           perPage: 25,
           columns: [],
-          query: {}
+          query: {},
+          controls: {
+            perPage: false,
+            pagination: false,
+            createNew: false
+          }
         }
       }
     })
@@ -232,7 +243,7 @@ export class FlowFactory {
 
   public static editDeal(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'Review Deal Info',
+      nodeText: 'Review Opportunity',
       nodeIcon: 'marker',
       component: FlowDataComponent,
       beforeRoutingTriggers,
@@ -240,7 +251,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.DEAL,
         data: {
-          title: 'Review Deal Info',
+          title: 'Review Opportunity',
         },
         options: {
           controls: false,
@@ -276,7 +287,7 @@ export class FlowFactory {
 
   public static opportunityList(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'Opportunity List',
+      nodeText: 'Select an Opportunity',
       nodeIcon: 'table-list',
       component: FlowListComponent,
       beforeRoutingTriggers,
@@ -284,15 +295,19 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.DEAL,
         data: {
-          title: 'Opportunity List',
+          title: 'Select an Opportunity',
         },
         options: {
           searchable: false,
           editable: false,
-          createNew:true,
+          loadInitial: true,
           perPage: 25,
           columns: [],
-          query: {
+          query: {},
+          controls: {
+            perPage: false,
+            pagination: false,
+            createNew: true
           }
         }
       }
@@ -314,13 +329,18 @@ export class FlowFactory {
         options: {
           searchable: false,
           editable: false,
-          createNew:true,
+          loadInitial: false,
           perPage: 25,
           columns: [],
           query: {
             stageId: '2,4,5',
             outcome: null,
-          }
+          },
+          controls: {
+            perPage: false,
+            pagination: false,
+            createNew:true,
+          },
         }
       }
     });
@@ -375,10 +395,15 @@ export class FlowFactory {
         options: {
           searchable: true,
           editable: false,
-          createNew:true,
-          perPage: 25,
+          loadInitial: false,
+          perPage: 3,
           columns: [],
-          query: {}
+          query: {},
+          controls: {
+            createNew: true,
+            perPage: false,
+            pagination: false
+          }
         }
       }
     };
@@ -387,7 +412,7 @@ export class FlowFactory {
 
   public static appointmentList(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined):FlowStep {
     const data = {
-      nodeText: 'Search Appointments',
+      nodeText: 'Select an Appointment',
       nodeIcon: 'table-list',
       component: FlowListComponent,
       beforeRoutingTriggers,
@@ -395,15 +420,20 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.EVENT,
         data: {
-          title: 'Search Appointments',
+          title: 'Select an Appointment',
         },
         options: {
           searchable: true,
-          createNew: true,
           editable: false,
+          loadInitial: true,
           perPage: 25,
           columns: [],
-          query: {}
+          query: {},
+          controls: {
+            perPage: false,
+            pagination: false,
+            createNew: true,
+          }
         }
       }
     };

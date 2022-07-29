@@ -1,6 +1,5 @@
 export * from './flow.baseModel';
 export * from './flow.condition';
-export * from './flow.currentStep';
 export * from './flow.host';
 export * from './flow.link';
 export * from './flow.node';

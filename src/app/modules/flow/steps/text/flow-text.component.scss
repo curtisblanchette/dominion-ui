@@ -1,4 +1,6 @@
 :host {
+  text-align: center;
+
   .appointment-time {
     display: flex;
     flex-direction: column;
@@ -12,5 +14,19 @@
     div {
       font-size: 18px;
     }
+  }
+
+  p {
+    font-size: 16px;
+  }
+
+  form {
+    margin: 0 auto;
+    width: fit-content;
+    text-align: left;
+  }
+
+  .relationship-building {
+    fiiz-data form { justify-content: space-around; }
   }
 }

@@ -1,9 +1,15 @@
-<section class="flow-timeline">
-  <ng-container *ngFor="let step of steps$ | async">
-    <div class="flow-timeline__item" tabindex="0" *ngIf="step" [id]="step.id"  [ngClass]="{'active': step.id === (currentStepId$ | async) }" (click)="onClick(step.id)">
-      <div class="flow-timeline__item__icon fa fa-{{step.nodeIcon}}"></div>
-      <div class="flow-timeline__item__title">{{step.nodeText }}</div>
-    </div>
-  </ng-container>
+<div class="wrapper">
+  <section class="flow-timeline" #content>
+    <ng-container *ngFor="let step of steps$ | async">
+      <div class="flow-timeline__item" #item tabindex="0" *ngIf="step" [id]="step.id"  [ngClass]="{'active': step.id === (currentStepId$ | async) }" (click)="onClick(step.id)">
+        <div class="flow-timeline__item__icon fa fa-{{step.nodeIcon}}"></div>
+        <div class="flow-timeline__item__title">{{step.nodeText }}</div>
+      </div>
+    </ng-container>
+  </section>
+</div>
+<div class="viewport" #viewport></div>
 
-</section>
+<div #scroller class="scroller">
+  <div *ngFor="let item of [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]" class="scroller__item" style=""></div>
+</div>

@@ -1,21 +1,44 @@
-@import '../../../../../assets/css/variables';
 @import '../../../../../assets/css/mixins';
-
 
 :host {
   flex: 1;
+  //top: -100px;
+  position: relative;
+  display: block;
+  width: 300px;
+  height: 100%;
+  top: 0;
+  //mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1), rgba(0,0,0,0));
+  //-webkit-mask-image: -webkit-gradient(linear, left 80%, left top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+
+  .wrapper {
+    top: 50%;
+    width: 300px;
+    height: fit-content;
+    position: relative;
+    transform: translateY(-50%);
+  }
 }
 
+//.flow-timeline-ghost,
 .flow-timeline {
   flex: 1;
   display: flex;
   flex-direction: column;
+  scroll-snap-type: y mandatory;
+  scroll-snap-stop: always;
+  max-height: 76px;
+  overflow-x: scroll;
+
 
   &__item {
     color: #1D3555;
+    width: 300px;
     display: flex;
     cursor: pointer;
     line-height: 76px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 
     &__icon {
       font-size: 24px;
@@ -37,4 +60,56 @@
       @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
     }
   }
+}
+
+.flow-timeline {
+  z-index: 99999;
+}
+
+.flow-timeline {
+  position: absolute;
+  z-index: -1;
+  overflow: visible;
+  max-height: 100%;
+  scroll-snap-type: initial;
+  scroll-snap-stop: initial;
+
+  &__item {
+
+  }
+}
+
+.scroller {
+  position: absolute;
+  z-index: 99999;
+  left: 0;
+  height: calc(77px * 8);
+  width: 300px;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-snap-stop: always;
+  top: 50%;
+  transform: translateY(-50%);
+
+  @include hideScrollBars();
+
+  &__item {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 76px;
+    width: 100%;
+    //background: rgba(0, 255, 0, .07);
+    //border-bottom: 1px solid grey;
+  }
+}
+
+.viewport {
+  position: absolute;
+  z-index: 88888;
+  background: var(--slate-shade1);
+  opacity: .3;
+  width: 300px;
+  height: 76px;
+  top: 50%;
+  transform: translateY(-100%);
 }
