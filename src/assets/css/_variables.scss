@@ -2,17 +2,12 @@
 @import '../../assets/css/functions';
 
 $text1-shade25: shade(#C6CEED, 25%);
-
 $green0-shade25: shade(#1A936F, 25%);
 $green0-shade95: shade(#1A936F, 95%);
 
-// css variables  can be manipulated by javascript
+// css variables can be manipulated by javascript
 // these should be used in all templates.
 :root {
-  --background-color: #0A1930;
-  --text1: #C6CEED;
-  --grey1: #E9E9E9;
-  --grey2: #CAD2E2;
 
   // https://maketintsandshades.com/#5BA5F9
   --primary-tint9: #eff6fe;
@@ -33,7 +28,7 @@ $green0-shade95: shade(#1A936F, 95%);
   --primary-shade6: #244264;
   --primary-shade7: #1b314b;
   --primary-shade8: #122132;
-  --primary-shade9: #091019;
+  --primary-shade9: #0a1930;
 
   // https://maketintsandshades.com/#1A936F
   --accent-tint9: #e8f4f1;
@@ -76,7 +71,7 @@ $green0-shade95: shade(#1A936F, 95%);
   --slate-shade8: #05090e;
   --slate-shade9: #020407;
 
-  // https://maketintsandshades.com/#DECBB7
+  // https://maketintsandshades.com/#D05353
   --almond-tint9: #fcfaf8;
   --almond-tint8: #f8f5f1;
   --almond-tint7: #f5efe9;
@@ -97,15 +92,31 @@ $green0-shade95: shade(#1A936F, 95%);
   --almond-shade8: #2c2925;
   --almond-shade9: #161412;
 
+  --red-tint9: #faeeee;
+  --red-tint8: #f6dddd;
+  --red-tint7: #f1cbcb;
+  --red-tint6: #ecbaba;
+  --red-tint5: #e8a9a9;
+  --red-tint4: #e39898;
+  --red-tint3: #de8787;
+  --red-tint2: #d97575;
+  --red-tint1: #d56464;
+  --red: #D05353;
+  --red-shade1: #bb4b4b;
+  --red-shade2: #a64242;
+  --red-shade3: #923a3a;
+  --red-shade4: #7d3232;
+  --red-shade5: #682a2a;
+  --red-shade6: #532121;
+  --red-shade7: #3e1919;
+  --red-shade8: #2a1111;
+  --red-shade9: #150808;
 
+  --background-color: #{var(--primary-shade9)};
+  --text1: #C6CEED;
+  --grey1: #E9E9E9;
+  --grey2: #CAD2E2;
 
-  --slate4: #172B46;
-
-
-  //--slate4-shade10: #{$slate4-shade10};
-  //--slate4-shade15: #{$slate4-shade15};
-  //--slate4-shade20: #{$slate4-shade20};
-  --red0: #D05353;
   --yellow0: #EABA4D;
   --green0: #1A936F;
   --green0-shade25: #{$green0-shade25};

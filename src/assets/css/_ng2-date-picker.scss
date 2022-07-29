@@ -7,7 +7,7 @@
   z-index: 2;
   @include elevate(4);
   border: none !important;
-  background: var(--slate4)!important;
+  background: var(--slate)!important;
   border-radius: var(--input-border-radius)!important;
 
   &:hover {
@@ -170,7 +170,7 @@ dp-time-select {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  background-color: var(--slate4)!important;
+  background-color: var(--slate)!important;
   cursor: pointer;
   padding: 0 16px !important;
 

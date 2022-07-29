@@ -13,19 +13,25 @@
     }
   }
 
-  button {
-    border-radius: 0;
+  fiiz-button {
+    border-radius: 0!important;
 
     &:first-child {
-      border-radius: var(--button-border-radius) 0 0 var(--button-border-radius);
+      button {
+        border-radius: #{var(--button-border-radius)} 0 0 #{var(--button-border-radius)}!important;
+      }
     }
 
     &:last-child {
-      border-radius: 0 var(--button-border-radius) var(--button-border-radius) 0;
+      button {
+        border-radius: 0 #{var(--button-border-radius)} #{var(--button-border-radius)} 0!important;
+      }
     }
 
     &:not(:last-child) {
-      border-right: none!important;
+      button {
+        border-right: none!important;
+      }
     }
   }
 }
