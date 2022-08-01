@@ -316,7 +316,7 @@ export class FlowFactory {
 
   public static noOutcomeList(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'No Outcome List',
+      nodeText: 'Pending Outcome List',
       nodeIcon: 'table-list',
       component: FlowListComponent,
       beforeRoutingTriggers,
@@ -324,7 +324,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.EVENT,
         data: {
-          title: 'No Outcome List',
+          title: 'Pending Outcome List',
         },
         options: {
           searchable: false,
