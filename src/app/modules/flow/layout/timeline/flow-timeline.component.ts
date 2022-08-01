@@ -74,7 +74,7 @@ export class FlowTimelineComponent implements AfterViewInit {
 
 
       }),
-      debounceTime(200),
+      debounceTime(50),
       distinctUntilChanged()
     ).subscribe((e: any) => {
       // TODO detect if this was a navigation or actual mouse wheel event
