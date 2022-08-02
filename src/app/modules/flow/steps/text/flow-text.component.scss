@@ -1,6 +1,10 @@
 :host {
   text-align: center;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   .appointment-time {
     display: flex;
     flex-direction: column;
