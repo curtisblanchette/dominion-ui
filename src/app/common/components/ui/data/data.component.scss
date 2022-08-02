@@ -1,4 +1,8 @@
+@import '../../../../../assets/css/mixins';
+
 :host {
+
+  @include hideScrollBars();
 
   form {
     max-width: 100%;

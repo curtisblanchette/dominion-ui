@@ -211,11 +211,15 @@
 }
 
 @mixin hideScrollBars() {
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  /*FireFox*/
+  scrollbar-width: none;
+  /*IE10+*/
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+
   &::-webkit-scrollbar {
-    display: none;
+    display: none!important;
+    width: 0; /* remove scrollbar space */
+    background: transparent; /* optional: just make scrollbar invisible */
   }
 }
 

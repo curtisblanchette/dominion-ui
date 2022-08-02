@@ -1,4 +1,6 @@
+@import "../../../../../assets/css/mixins";
 :host {
   justify-content: start;
+  @include hideScrollBars();
  fiiz-data { }
 }

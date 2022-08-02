@@ -1,5 +1,8 @@
-@import '../../../../../assets/css/variables';
+@import '../../../../../assets/css/mixins';
 
+:host {
+  @include hideScrollBars();
+}
 // TODO why do we have this, replace it or kill it sometime in the future
 .flex_main_wrapper {
   display: flex;

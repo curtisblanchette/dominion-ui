@@ -1,9 +1,9 @@
+@import '../../../../../assets/css/mixins';
+
 :host {
   text-align: center;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  @include hideScrollBars();
 
   .appointment-time {
     display: flex;
