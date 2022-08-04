@@ -10,7 +10,7 @@ import { FlowService } from '../../flow.service';
 import * as fromApp from '../../../../store/app.reducer';
 import * as flowActions from '../../store/flow.actions';
 import * as fromFlow from '../../store/flow.reducer';
-import { firstValueFrom, lastValueFrom, Observable, of, take } from 'rxjs';
+import { Observable, of, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DropdownItem, FiizSelectComponent, RadioItem } from '../../../../common/components/ui/forms';
@@ -46,6 +46,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public id: string;
   public query:{[key:string] : any} = {};
   public eventActions$:Observable<RadioItem[]> = of([{id: 'cancel',label: 'Cancel'}, {id: 'reschedule',label: 'Reschedule'}]);
+  public apptData: Observable<Array<any>>;
 
   @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
@@ -81,29 +82,26 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
     switch (this.options.state) {
 
-      case 'reschedule': {
-        const data = {
-          id : this.id,
-          outcomeId : 1
-        };
-        return this._dynamicCollectionService.update(data).toPromise().then((val) => {
-          console.log('rescheduled', val);
-          // switch the state to set appointment
-          this.options.state = 'set';
-        });
-      }
-
       case 'cancel': {
         const data = {
           id : this.id,
           outcomeId : 2
         };
         return this._dynamicCollectionService.update(data).toPromise().then((val) => {
-          console.log('cancelled', val);
         });
       }
 
-      case 'set': {
+      case 'set':
+      case 'reschedule' : {
+
+        if( this.options.state == 'reschedule' ){
+          const data = {
+            id : this.id,
+            outcomeId : 1
+          };
+          this._dynamicCollectionService.update(data).toPromise().then((val) => {
+          });
+        }
 
         this.form.patchValue({
           contactId : await this.flowService.getVariable('contact'),
@@ -146,45 +144,34 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
+    
+    if( this.options.state != 'cancel' ){
+      this.buildForm(this.options.fields);
+    }
 
-    this.buildForm(this.options.fields);
+    if( this.options.state == 'cancel' ){
+      this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    }
+
   }
 
-  async ngOnInit(): Promise<any> {
-    if( this.options.state !== 'set' ){
-      this.eventActions$.subscribe( (actions:RadioItem[]) => {
-        actions.map( (val:RadioItem, index:number ) => {
-          if( val.id == this.options.state ){
-            actions[index].checked = true;
-          }
-        })
-      });
-      this.eventActionsForm = this.fb.group({
-        event_action : new FormControl(this.options.state, [Validators.required])
-      });
-      this.eventActionsForm.valueChanges.subscribe( val => {
-        this.options.state = val.event_action;
-        this.store.dispatch(flowActions.AddVariablesAction({ payload : {eventAction : val.event_action}}));
-      });
-      this.vars$.subscribe( (vars:any) => {
-        this.query['lead'] = vars['lead'];
-      });
-    }
+  async ngOnInit(): Promise<any> {    
+    
   }
 
   public async ngAfterViewInit() {
-
     // if the step was module to resolve the ID for - do it now
     if(this.data.hasOwnProperty('resolveId')) {
-      this.id = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey(this.data.resolveId)).pipe(take(1)));
+      this.id = this.data.resolveId;
     }
 
     if (this.id) {
       this.getData();
     }
 
-
-    this.initEventSlots();
+    if( this.options.state != 'cancel' ){
+      this.initEventSlots();
+    }
 
   }
 
@@ -243,8 +230,16 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public getData() {
-    this._dynamicCollectionService.getByKey(this.id);
-    this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
+    this.getById(this.id).pipe(take(1)).subscribe( val => {
+      if( val ){
+        let values:Array<any> = [];
+        values.push({label : 'Title', value : val.title});
+        values.push({label : 'Description', value : val.description});
+        values.push({label : 'Start Time', value : val.startTime});
+        values.push({label : 'End Time', value : val.endTime});
+        this.apptData = of(values);
+      }      
+    });
   }
 
   public setEventTime(event: any) {
@@ -272,16 +267,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       });
     }
     this.store.dispatch(flowActions.SetValidityAction({payload: isValid}));
-  }
-
-  public async getSlectedEvent( event:any ){
-    let validity:boolean = false;
-    this.id = '';
-    if( event && event.record && this.eventActionsForm.valid ){
-      validity = true;
-      this.id = event.record.id;
-    }
-    this.store.dispatch(flowActions.SetValidityAction({payload: validity}));
   }
 
 }

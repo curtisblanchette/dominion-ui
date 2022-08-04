@@ -38,6 +38,7 @@ export class FlowBuilder {
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const appointmentList = FlowFactory.appointmentList((vars: any, step: any) => {
       step.state.options.query['dealId'] = vars.deal;
+      step.state.options.query['savedSearch'] = 'opp-events';
     });
 
     const reasonForCall = FlowFactory.reasonForCall();
@@ -85,10 +86,12 @@ export class FlowBuilder {
       switch(true) {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
+          step.state.data.resolveId = vars.event;
         }
         break;
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
+          step.state.data.resolveId = vars.event;
         }
         break;
         // no event selected
@@ -102,6 +105,21 @@ export class FlowBuilder {
       }
     });
     const recap = FlowFactory.recap();
+
+    const existingEvent_no = FlowFactory.condition({
+      variable: 'event',
+      exists: false,
+    }, {}, setAppointment);
+
+    const existingEvent_yes = FlowFactory.condition({
+      variable: 'event',
+      exists: true,
+    }, {
+      id: ModuleTypes.EVENT
+    }, reasonForCall);
+
+    const eventRouter = FlowFactory.router('Event Exists', '', [existingEvent_yes, existingEvent_no]);
+    const toeventRouter = FlowFactory.link(appointmentList, eventRouter);
 
     const toCancelReschedule = FlowFactory.link(reasonForCall, setAppointment);
 
@@ -156,7 +174,7 @@ export class FlowBuilder {
     const inboundSetApptLink = FlowFactory.link(relationshipBuilding, setAppointment);
     const inboundSetApptLink1 = FlowFactory.link(editOpp, appointmentList);
 
-    const appointListToSetAppointment = FlowFactory.link(appointmentList, reasonForCall);
+    // const appointListToSetAppointment = FlowFactory.link(appointmentList, reasonForCall);
 
     // outbound
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
@@ -250,7 +268,7 @@ export class FlowBuilder {
       .addStep(searchNListLeads)
       .addStep(webLeadsType)
       .addStep(appointmentList)
-      .addLink(appointListToSetAppointment);
+      // .addLink(appointListToSetAppointment);
 
     // 'inbound'
     this.process
@@ -271,6 +289,8 @@ export class FlowBuilder {
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
       .addStep(reasonForCall)
+      .addRouter(eventRouter)
+      .addLink(toeventRouter)
       .addLink(toCancelReschedule)
       .addStep(editOpp)
       .addStep(createOpp)
