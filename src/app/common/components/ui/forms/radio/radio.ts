@@ -72,7 +72,7 @@ export class FiizRadioComponent implements ControlValueAccessor, AfterViewInit {
   }
 
   changed($event:any) {
-    this.value =  $event.target.value;
+    this.value = $event.target.value;
     this.onChange(this.value);
     this.onTouched();
   }

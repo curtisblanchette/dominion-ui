@@ -11,7 +11,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Objection',
       nodeIcon: 'address-book',
-      component: FlowObjectionComponent,
+      component: FlowObjectionComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -28,7 +28,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Call Type',
       nodeIcon: 'phone-volume',
-      component: FlowTextComponent,
+      component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -45,7 +45,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Search and List',
       nodeIcon: 'address-book',
-      component: FlowTextComponent,
+      component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -62,7 +62,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Lead Search',
       nodeIcon: 'address-book',
-      component: FlowListComponent,
+      component: FlowListComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -95,7 +95,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Search Contacts',
       nodeIcon: 'address-book',
-      component: FlowListComponent,
+      component: FlowListComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -124,7 +124,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'user-plus',
-      component: FlowDataComponent,
+      component: FlowDataComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -140,7 +140,8 @@ export class FlowFactory {
             LeadFields.LAST_NAME,
             LeadFields.PHONE,
             LeadFields.EMAIL
-          ]
+          ],
+          optimisticSave: false
         }
       }
     });
@@ -150,7 +151,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'user-pen',
-      component: FlowDataComponent,
+      component: FlowDataComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -161,7 +162,8 @@ export class FlowFactory {
         options: {
           controls: false,
           state: 'edit',
-          fields: Object.values(LeadFields)
+          fields: Object.values(LeadFields),
+          optimisticSave: false
         }
       }
     });
@@ -171,7 +173,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'user-pen',
-      component: FlowDataComponent,
+      component: FlowDataComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -188,7 +190,8 @@ export class FlowFactory {
             ContactFields.LAST_NAME,
             ContactFields.PHONE,
             ContactFields.EMAIL
-          ]
+          ],
+          optimisticSave: false
         }
       }
     });
@@ -198,7 +201,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'landmark',
-      component: FlowDataComponent,
+      component: FlowDataComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -211,7 +214,8 @@ export class FlowFactory {
           state: 'create',
           fields: [
             DealFields.NAME
-          ]
+          ],
+          optimisticSave: false
         }
       }
     });
@@ -245,7 +249,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Review Opportunity',
       nodeIcon: 'marker',
-      component: FlowDataComponent,
+      component: FlowDataComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -256,7 +260,8 @@ export class FlowFactory {
         options: {
           controls: false,
           state: 'edit',
-          fields: Object.values(DealFields)
+          fields: Object.values(DealFields),
+          optimisticSave: false
         }
       }
     });
@@ -266,7 +271,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Select Lead Source',
       nodeIcon: 'crosshairs',
-      component: FlowDataComponent,
+      component: FlowDataComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -279,7 +284,8 @@ export class FlowFactory {
           state: 'edit',
           fields: [
             LeadFields.CAMPAIGN_ID
-          ]
+          ],
+          optimisticSave: false
         }
       }
     });
@@ -289,7 +295,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Select an Opportunity',
       nodeIcon: 'table-list',
-      component: FlowListComponent,
+      component: FlowListComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -318,7 +324,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Pending Outcome List',
       nodeIcon: 'table-list',
-      component: FlowListComponent,
+      component: FlowListComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -350,7 +356,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Relationship Building',
       nodeIcon: 'handshake',
-      component: FlowTextComponent,
+      component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -367,7 +373,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Power Question',
       nodeIcon: 'clipboard-question',
-      component: FlowTextComponent,
+      component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -384,7 +390,7 @@ export class FlowFactory {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'table-list',
-      component: FlowListComponent,
+      component: FlowListComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -414,7 +420,7 @@ export class FlowFactory {
     const data = {
       nodeText: 'Select an Appointment',
       nodeIcon: 'table-list',
-      component: FlowListComponent,
+      component: FlowListComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -444,7 +450,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Set Appointment',
       nodeIcon: 'calendar-plus',
-      component: FlowAppointmentComponent,
+      component: FlowAppointmentComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -470,13 +476,16 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Verify',
       nodeIcon: 'calendar-check',
-      component: FlowDataComponent,
+      component: FlowDataComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
         module: ModuleTypes.CONTACT,
         data: {
           title: 'Verify Information',
+        },
+        options: {
+          optimisticSave: false
         }
       }
     });
@@ -486,7 +495,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Reason For Call',
       nodeIcon: 'address-book',
-      component: FlowTextComponent,
+      component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -503,7 +512,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Recap',
       nodeIcon: 'address-book',
-      component: FlowTextComponent,
+      component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -519,7 +528,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'End',
       nodeIcon: 'flag-checkered',
-      component: FlowTextComponent,
+      component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
@@ -537,7 +546,7 @@ export class FlowFactory {
     return new FlowStep(data)
   }
 
-  public static condition(evaluation: IEvaluation, forwardParams: any, to: FlowStep | FlowRouter): FlowCondition {
+  public static condition(evaluation: IEvaluation, forwardParams: any, to: string | undefined): FlowCondition {
     const data = {evaluation, forwardParams, to};
     return new FlowCondition(data);
   }

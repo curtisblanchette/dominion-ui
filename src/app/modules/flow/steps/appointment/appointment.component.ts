@@ -22,6 +22,7 @@ import { ManipulateType } from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
 import { environment } from '../../../../../environments/environment';
+import { map } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -30,9 +31,9 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
 export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, AfterContentInit, OnSave {
+  private flowStepId: string | undefined;
 
   public timeZone: any = 'America/New_York';
-
   public appointmentSettings: INestedSetting;
   public ModuleTypes: any;
 
@@ -72,6 +73,10 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
     this.store.select(fromApp.selectSettingByKey('timezone')).subscribe((res) => {
       this.timeZone = res.value;
+    });
+
+    this.store.select(fromFlow.selectCurrentStepId).subscribe(id => {
+      this.flowStepId = id;
     });
 
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
@@ -135,7 +140,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
               });
             }
 
-            this.store.dispatch(flowActions.AddVariablesAction({payload}));
+            this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: payload}));
 
           }) || Promise.resolve(this.cleanForm());
         }
@@ -164,7 +169,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       });
       this.eventActionsForm.valueChanges.subscribe( val => {
         this.options.state = val.event_action;
-        this.store.dispatch(flowActions.AddVariablesAction({ payload : {eventAction : val.event_action}}));
+        this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: {eventAction : val.event_action}}));
       });
       this.vars$.subscribe( (vars:any) => {
         this.query['lead'] = vars['lead'];
@@ -256,7 +261,8 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.form.markAsPristine();
     this.form.updateValueAndValidity();
     this.form.enable();
-    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    // this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+
   }
 
   public checkValidity() {
@@ -271,17 +277,18 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         office: this.form.value.office
       });
     }
-    this.store.dispatch(flowActions.SetValidityAction({payload: isValid}));
+
+    this.flowService.setValidity(this.flowStepId, isValid);
   }
 
   public async getSlectedEvent( event:any ){
-    let validity:boolean = false;
+    let isValid:boolean = false;
     this.id = '';
     if( event && event.record && this.eventActionsForm.valid ){
-      validity = true;
+      isValid = true;
       this.id = event.record.id;
     }
-    this.store.dispatch(flowActions.SetValidityAction({payload: validity}));
+    this.flowService.setValidity(this.flowStepId, isValid);
   }
 
 }

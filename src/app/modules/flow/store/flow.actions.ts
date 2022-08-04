@@ -1,13 +1,16 @@
 import { createAction, props } from '@ngrx/store';
-import { FlowHostDirective, FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
+import { FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
 
 export const ActionTypes = {
+  SET_FIRST_STEP_ID: '[Flow] Set First Step Id',
   ADD_STEP: '[Flow] Add FlowStep',
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
-  ADD_VARIABLES: '[Flow] Add Variables',
-  REMOVE_VARIABLE: '[Flow] Remove Variable',
-  UPDATE_CURRENT_STEP: '[Flow] Update Current Step',
+
+  UPDATE_STEP_VALIDITY: '[Flow] Update Step Validity',
+  UPDATE_STEP_VARIABLES: '[Flow] Update Step Variables',
+
+  UPDATE_CURRENT_STEP_ID: '[Flow] Update Current Step Id',
   SET_STEP_HISTORY: '[Flow] Set Step History',
   GO_TO_STEP: '[Flow] Go to step',
   RESET: '[Flow] Reset',
@@ -18,12 +21,28 @@ export const ActionTypes = {
   UPDATE_BREADCRUMBS: '[Flow] Update Breadcrumbs',
   SET_PROCESS_ID: '[Flow] Set Process Id',
 
-  CLEAR: '[Flow] Clear Store'
-};
+  CLEAR: '[Flow] Clear Store',
 
+  ADD_MEDIATOR_ACTION: '[Flow] Add Mediator Action'
+};
 export const AddStepAction = createAction(
   ActionTypes.ADD_STEP,
   props<{ payload: FlowStep }>()
+);
+export const SetFirstStepIdAction = createAction(
+  ActionTypes.SET_FIRST_STEP_ID,
+  props<{ id: string }>()
+);
+
+
+export const UpdateStepValidityAction = createAction(
+  ActionTypes.UPDATE_STEP_VALIDITY,
+  props<{ id: string | undefined, valid: boolean; }>()
+);
+
+export const UpdateStepVariablesAction = createAction(
+  ActionTypes.UPDATE_STEP_VARIABLES,
+  props<{ id: string | undefined, variables: any; }>()
 );
 
 export const AddLinkAction = createAction(
@@ -41,9 +60,9 @@ export const AddRouterAction = createAction(
   props<{ payload: FlowRouter }>()
 );
 
-export const UpdateCurrentStepAction = createAction(
-  ActionTypes.UPDATE_CURRENT_STEP,
-  props<{fromTimeline: boolean, isBackAction: boolean, step: FlowStep, variables?: {[key: string]: any}, valid?: boolean }>()
+export const UpdateCurrentStepIdAction = createAction(
+  ActionTypes.UPDATE_CURRENT_STEP_ID,
+  props<{id: string}>()
 );
 
 export const SetStepHistoryAction = createAction(
@@ -60,21 +79,6 @@ export const ResetAction = createAction(
   ActionTypes.RESET
 );
 
-export const AddVariablesAction = createAction(
-  ActionTypes.ADD_VARIABLES,
-  props<{ payload: any }>()
-);
-
-export const RemoveVariableAction = createAction(
-  ActionTypes.REMOVE_VARIABLE,
-  props<{ key: string }>()
-);
-
-export const SetValidityAction = createAction(
-  ActionTypes.SET_VALIDITY,
-  props<{ payload: boolean }>()
-)
-
 export const NextStepAction = createAction(
   ActionTypes.NEXT_STEP,
   props<{ stepId: string }>()
@@ -88,3 +92,9 @@ export const PrevStepAction = createAction(
 export const ClearAction = createAction(
   ActionTypes.CLEAR
 )
+
+export const AddMediatorAction = createAction(
+  ActionTypes.ADD_MEDIATOR_ACTION,
+  props<{ action: string }>()
+)
+

@@ -11,10 +11,12 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   public override nodeIcon: string;
   public component: any; // TODO make this type right
 
-  public beforeRoutingTriggers: any;
-  public afterRoutingTriggers: any;
+  public beforeRoutingTriggers: string;
+  public afterRoutingTriggers: string;
 
   public state: any;
+  public valid?: boolean;
+  public variables?: {[key: string]: any};
 
   private readonly _constructedAt: number = 0;
   private _destroyedAt: number = 0;
@@ -26,10 +28,15 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     this.component = data.component;
     this.state = data.state;
 
-    this.beforeRoutingTriggers = data.beforeRoutingTriggers;
-    this.afterRoutingTriggers = data.afterRoutingTriggers;
+    if(typeof this.beforeRoutingTriggers === 'function'){
+      this.beforeRoutingTriggers = data.beforeRoutingTriggers.toString();
+      this.afterRoutingTriggers = data.afterRoutingTriggers.toString();
+    }
+
 
     this._constructedAt = new Date().getTime();
+    this.valid = data.valid;
+    this.variables = data.variables;
 
   }
 
@@ -51,17 +58,17 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
 
   public _serialize(): FlowStep {
     // we need to keep the step.component class name so that it can be retrieved again
-    if(typeof this.component !== 'string'){
-      this.component = this.component.name;
-    }
-
-    if(typeof this.beforeRoutingTriggers === 'function') {
-      this.beforeRoutingTriggers = this.beforeRoutingTriggers.toString();
-    }
-
-    if(typeof this.afterRoutingTriggers === 'function') {
-      this.afterRoutingTriggers = this.afterRoutingTriggers.toString();
-    }
+    // if(typeof this.component !== 'string') {
+    //   this.component = this.component.name;
+    // }
+    //
+    // if(typeof this.beforeRoutingTriggers === 'function') {
+    //   this.beforeRoutingTriggers = this.beforeRoutingTriggers.toString();
+    // }
+    //
+    // if(typeof this.afterRoutingTriggers === 'function') {
+    //   this.afterRoutingTriggers = this.afterRoutingTriggers.toString();
+    // }
 
     return this;
   }

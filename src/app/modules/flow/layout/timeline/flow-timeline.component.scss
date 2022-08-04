@@ -45,11 +45,16 @@
       width: 84px;
       text-align: center;
       line-height: 76px;
+
+      &:last-child {
+        margin-left: auto;
+      }
     }
 
     &__title {
       font-size: 18px;
       font-weight: 500;
+      @include ellipsis();
     }
 
     &:active, &.active {

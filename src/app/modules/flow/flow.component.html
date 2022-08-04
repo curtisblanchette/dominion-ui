@@ -21,9 +21,7 @@
       <ng-template flowHost></ng-template>
       <footer>
         <!-- <fiiz-button (click)="onBack($event)" stroked *ngIf="(stepHistory$ | async)?.length > 0">Back</fiiz-button> -->
-        <fiiz-button primary *ngIf="!!flowService.findNextStep()" type="submit" [disabled]="!(valid$ | async)"
-                     (click)="onNext($event)">Continue
-        </fiiz-button>
+        <fiiz-button primary type="submit" [disabled]="!(valid$ | async)" (click)="onNext($event)">Continue</fiiz-button>
       </footer>
     </div>
   </section>

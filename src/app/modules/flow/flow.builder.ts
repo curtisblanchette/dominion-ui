@@ -2,6 +2,7 @@ import { FlowProcess } from './classes/flow.process';
 import { Inject, Injectable, Injector } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
+import * as flowActions from './store/flow.actions';
 import { FlowFactory } from './flow.factory';
 import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
@@ -24,7 +25,7 @@ export class FlowBuilder {
     return this.injector.get(FlowService);
   }
 
-  public async build(type?: string) {
+  public build(type?: string) {
     this.process = new FlowProcess(this.store, uuidv4());
     /**
      * Everything that is passed to factory functions must be Serializable!
@@ -32,6 +33,10 @@ export class FlowBuilder {
     const objection = FlowFactory.objection();
     // select call type
     const callType = FlowFactory.callTypeDecision(undefined, (vars: any) => { this.flowService.startCall(vars.call_type); });
+    if(callType?.id) {
+      this.store.dispatch(flowActions.SetFirstStepIdAction({id: callType.id}));
+    }
+
     const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead});  });
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListContacts = FlowFactory.searchNListContacts()
@@ -109,12 +114,12 @@ export class FlowBuilder {
     const inboundCond = FlowFactory.condition({
       variable: 'call_type',
       equals: 'inbound'
-    },{}, searchNListLeads);
+    },{}, searchNListLeads.id);
 
     const outboundCond = FlowFactory.condition({
       variable: 'call_type',
       equals: 'outbound'
-    }, {},  webLeadsType);
+    }, {},  webLeadsType.id);
 
     const callTypeRouter = FlowFactory.router('Call Type', '', [inboundCond, outboundCond]);
     const toCallTypeRouter = FlowFactory.link(callType, callTypeRouter);
@@ -124,12 +129,12 @@ export class FlowBuilder {
       exists: true,
     }, {
       leadId: ModuleTypes.LEAD
-    }, editLead);
+    }, editLead.id);
 
     const existingLead_no = FlowFactory.condition({
       variable: 'lead',
       exists: false,
-    }, {}, createLead);
+    }, {}, createLead.id);
 
     const searchNListLeadsRouter = FlowFactory.router('Lead Exists', '', [existingLead_yes, existingLead_no]);
     const toSearchNListLeadsRouter = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
@@ -137,14 +142,14 @@ export class FlowBuilder {
     const existingDeal_no = FlowFactory.condition({
       variable: 'deal',
       exists: false,
-    }, {}, createOpp);
+    }, {}, createOpp.id);
 
     const existingDeal_yes = FlowFactory.condition({
       variable: 'deal',
       exists: true,
     }, {
       id: ModuleTypes.DEAL
-    }, editOpp);
+    }, editOpp.id);
 
     const oppListRouter = FlowFactory.router('Opportunity Exists', '', [existingDeal_yes, existingDeal_no]);
     const toOppListRouter = FlowFactory.link(oppList, oppListRouter);
@@ -168,12 +173,12 @@ export class FlowBuilder {
     const webLeads_yes = FlowFactory.condition({
       variable: 'web_lead_options',
       equals: 'web_leads'
-    }, {}, oppWithNoOutcomes);
+    }, {}, oppWithNoOutcomes.id);
 
     const webLeads_no = FlowFactory.condition({
       variable: 'web_lead_options',
       equals: 'contacts'
-    }, {}, searchNListContacts);
+    }, {}, searchNListContacts.id);
 
     const webLeadRouter = FlowFactory.router('Outbound Type', '', [webLeads_yes, webLeads_no]);
     const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
@@ -185,12 +190,12 @@ export class FlowBuilder {
     const existingContact_no = FlowFactory.condition({
       variable: ModuleTypes.CONTACT,
       exists: false
-    }, {}, createContact);
+    }, {}, createContact.id);
 
     const existingContact_yes = FlowFactory.condition({
       variable: ModuleTypes.CONTACT,
       exists: true
-    }, {}, contactOppsWithNoOutcomes);
+    }, {}, contactOppsWithNoOutcomes.id);
 
     const contactRouter = FlowFactory.router('Contact Exists', '', [existingContact_yes, existingContact_no]);
     const contactLink = FlowFactory.link(searchNListContacts, contactRouter);
@@ -199,12 +204,12 @@ export class FlowBuilder {
     const existingOpp_no = FlowFactory.condition({
       variable: ModuleTypes.DEAL,
       exists: false
-    }, {}, createOpp);
+    }, {}, createOpp.id);
 
     const existingOpp_yes = FlowFactory.condition({
       variable: ModuleTypes.DEAL,
       exists: true
-    }, {}, setAppointment);
+    }, {}, setAppointment.id);
 
     const oppRouter = FlowFactory.router('Opportunity Exists', undefined, [existingOpp_yes, existingOpp_no]);
 

@@ -5,6 +5,7 @@ import { FlowStep } from '../../classes';
 import { fromEvent, Observable, of, skip, tap } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FlowService } from '../../flow.service';
 
 @UntilDestroy()
 @Component({
@@ -14,7 +15,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class FlowTimelineComponent implements AfterViewInit {
 
-  public steps$: Observable<(FlowStep | undefined)[]>;
+  public steps$: Observable<Promise<FlowStep>>;
   public currentStepId$: Observable<string | undefined>;
 
   @Output('onSelect') onSelect: EventEmitter<any> = new EventEmitter<any>();
@@ -27,19 +28,23 @@ export class FlowTimelineComponent implements AfterViewInit {
 
   constructor(
     private store: Store<fromFlow.FlowState>,
-    public renderer: Renderer2
+    public renderer: Renderer2,
+    public flowService: FlowService
   ) {
 
     // find steps, stop at current
-    this.store.select(fromFlow.selectCurrentStep).pipe(
+    this.store.select(fromFlow.selectCurrentStepId).pipe(
       distinctUntilChanged()
-    ).subscribe((currentStep: FlowStep) => {
+    ).subscribe(currentStepId => {
 
-      setTimeout(() => {
-        this.scrollActiveIntoView();
-      }, 50);
+      if(currentStepId) {
+        setTimeout(() => {
+          this.scrollActiveIntoView();
+        }, 50);
 
-      this.currentStepId$ = of(currentStep.id);
+        this.currentStepId$ = of(currentStepId);
+      }
+
     });
 
 

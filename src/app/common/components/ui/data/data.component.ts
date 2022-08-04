@@ -38,31 +38,31 @@ export interface FiizDataComponentOptions {
 })
 export class FiizDataComponent extends EntityCollectionComponentBase implements AfterContentInit, AfterViewInit, OnDestroy {
 
+  public id: string | null;
   public form: FormGroup;
   public controlData: any;
-
   public submitText: string;
-  public id: string | null;
-  public ModuleTypes:any;
+
+  public ModuleTypes: any;
 
   public configuration:any = {
     // Events, Calls
-    'startTime' : {
-      min : dayjs().format(), // Default as now
-      max : null
+    startTime: {
+      min: dayjs().format(), // Default as now
+      max: null
     },
-    'endTime' : {
-      min : null,
-      max : null
+    endTime: {
+      min: null,
+      max: null
     },
     // Campaigns
-    'startDate' : {
-      min : null,
-      max : null
+    startDate: {
+      min: null,
+      max: null
     },
-    'endDate' : {
-      min : null,
-      max : null
+    endDate: {
+      min: null,
+      max: null
     }
   };
 

@@ -30,7 +30,7 @@ type OmitMethods = '_serialize' | '_deserialize' | 'evaluate' | 'resolveParams' 
 export class FlowCondition extends FlowBaseModel implements FlowSerialization<FlowCondition> {
   public evaluation: IEvaluation;
   public forwardParams: any;
-  public to: (FlowStep | FlowRouter) | Omit<(FlowStep | FlowRouter), OmitMethods>;
+  public to: string | undefined;
 
   constructor(
     data: Omit<FlowCondition, OmitMethods>
@@ -41,17 +41,17 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
     this.to = data.to;
   }
 
-  public async evaluate(): Promise<boolean> {
+  public evaluate(): boolean {
 
     let result = false;
     if (this.evaluation.hasOwnProperty('variable')) {
 
       if (this.evaluation.hasOwnProperty('equals')) {
-        result = await this.getVariable(this.evaluation.variable) === this.evaluation.equals;
+        result = this.getVariable(this.evaluation.variable) === this.evaluation.equals;
       }
 
       if (this.evaluation.hasOwnProperty('exists')) {
-        let variable = await this.getVariable(this.evaluation.variable) || null;
+        let variable = this.getVariable(this.evaluation.variable) || null;
 
         if (this.evaluation.exists) {
           result = !!variable
@@ -79,8 +79,6 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
   }
 
   public _serialize(): FlowCondition {
-    this.to = (<FlowStep | FlowRouter>this.to)._serialize();
-
     return this;
   }
 
@@ -93,9 +91,8 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
 
   public getVariable(key: string): any {
     const state: FlowState = JSON.parse(localStorage.getItem('state') || '').flow;
-    const currentVariables = state.currentStepVariables;
-    const variables = accumulateVariables(state.stepHistory);
-    const merged = {variables, ...currentVariables};
-    return merged[key];
+    const variables = accumulateVariables(state.steps);
+    return variables[key];
   }
+
 }

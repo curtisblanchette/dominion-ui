@@ -183,7 +183,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
 
   public goTo(id: string): Promise<any> {
     const next = this.flowService.builder.process.steps.findIndex(x => x.id === id);
-    const current = this.flowService.builder.process.steps.findIndex(x => x.id === this.flowService?.builder.process.currentStep?.id);
+    const current = this.flowService.builder.process.steps.findIndex(x => x.id === this.flowService?.builder.process.currentStepId);
     next < current ? this.animationIndex-- : this.animationIndex++;
     return this.flowService.goTo(id);
   }

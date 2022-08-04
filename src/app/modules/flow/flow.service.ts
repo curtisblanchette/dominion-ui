@@ -54,7 +54,7 @@ export class FlowService {
     private dataServiceFactory: DefaultDataServiceFactory,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     private http: HttpClient,
-    public builder: FlowBuilder,
+    public builder: FlowBuilder
   ) {
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
 
@@ -108,13 +108,13 @@ export class FlowService {
   }
 
   public async start(resume = false): Promise<any> {
-    if(resume) return this.resume();
+    if (resume) return this.resume();
     // we're starting a new guy
     await this.builder.build();
     const step: FlowStep = this.builder.process.steps[0];
 
     if (step && step.id) {
-      return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step, isBackAction: false, fromTimeline: false }));
+      return this.store.dispatch(flowActions.UpdateCurrentStepIdAction({id: step.id}));
     }
     throw new NoStepFoundError();
   }
@@ -124,26 +124,26 @@ export class FlowService {
     this.builder.process = new FlowProcess(this.store);
     const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
 
-    if(vars['call']) {
+    if (vars['call']) {
       this.callId = <string>vars['call'];
       this.noteId = <string>vars['note'];
     }
 
-    return this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: this.builder.process.currentStep as FlowStep, isBackAction: false, fromTimeline: false }));
+    return this.store.dispatch(flowActions.UpdateCurrentStepIdAction({id: this.builder.process.currentStepId}));
   }
 
   public async startCall(direction: string): Promise<void> {
-    if( !this.callId ){
+    if (!this.callId) {
       this.callService.add({
         startTime: new Date().toISOString(),
         direction: direction
-      }, false).pipe(take(1)).subscribe(async (res) =>{
+      }, false).pipe(take(1)).subscribe(async (res) => {
         this.callId = res.id
         this.addVariables({call: this.callId});
         await this.createNote('');
       });
     } else {
-      this.updateCall( {direction:direction} );
+      this.updateCall({direction: direction});
     }
 
   }
@@ -153,16 +153,16 @@ export class FlowService {
       id: this.callId,
       changes: payload
     }
-    this.callService.update( <UpdateStr<any>>data, false).pipe(take(1)).subscribe((res) => {
+    this.callService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe((res) => {
       const variables: any = {};
-      for(const key of Object.keys(res)) {
-         variables[`call_${key}`] = res[key];
+      for (const key of Object.keys(res)) {
+        variables[`call_${key}`] = res[key];
       }
       this.addVariables(variables);
     });
   }
 
-  public async createNote(content: string): Promise<ICallNote>  {
+  public async createNote(content: string): Promise<ICallNote> {
     const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.callId}/notes`, {
       content
     })) as ICallNote;
@@ -180,49 +180,50 @@ export class FlowService {
   }
 
   public async goTo(id: string): Promise<void> {
-    const step = this.builder.process.steps.find(x => x.id === id);
-    if(step) {
-      const nextIndex = this.builder.process.breadcrumbs.indexOf(step.id);
-      const currentIndex = this.builder.process.breadcrumbs.indexOf(this.builder.process.currentStep?.id);
-      const isBackAction =  nextIndex < currentIndex;
-      this.store.dispatch(flowActions.UpdateCurrentStepAction({ step: step, isBackAction, fromTimeline: true }));
-    }
+    // const step = this.builder.process.steps.find(x => x.id === id);
+    // if(step) {
+    // const nextIndex = this.builder.process.breadcrumbs.indexOf(step.id);
+    // const currentIndex = this.builder.process.breadcrumbs.indexOf(this.builder.process.currentStepId);
+    // const isBackAction =  nextIndex < currentIndex;
+    this.store.dispatch(flowActions.UpdateCurrentStepIdAction({id}));
+    // }
   }
 
   public findNextStep(): FlowNode | FlowStep | FlowRouter | undefined {
-    if( this.builder.process && this.builder.process.links ){
+    if (this.builder.process && this.builder.process.links) {
       const link = this.builder.process.links.find((link: any) => {
-        return link.from.id === this.builder.process.currentStep?.id
+        return link.from.id === this.builder.process.currentStepId
       });
-      return <FlowStep|FlowRouter>link?.to;
+      return <FlowStep | FlowRouter>link?.to;
     }
   }
 
   public async next(): Promise<void> {
     // find a link where the "from" is equal to "currentStep"
     let step = this.findNextStep();
+    let nextId = undefined;
 
-    try{
+    try {
       if (step instanceof FlowRouter) {
         const init: FlowRouter = step;
-        step = await init.evaluate();
+        nextId = await init.evaluate();
       }
 
-      if(typeof this.cmpReference.instance.onSave === 'function') {
+      if (typeof this.cmpReference.instance.onSave === 'function') {
         await this.cmpReference.instance.onSave();
       }
 
-      if(typeof this.cmpReference.instance.onNext === 'function') {
+      if (typeof this.cmpReference.instance.onNext === 'function') {
         this.cmpReference.instance.onNext();
       }
 
       if (step?.id) {
         this.createHistoryEntry();
 
-        return this.store.dispatch(flowActions.NextStepAction({stepId: step.id}));
+        return this.store.dispatch(flowActions.NextStepAction({stepId: nextId || step.id}));
       }
 
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       throw new NoStepFoundError(step?.id);
     }
@@ -232,7 +233,7 @@ export class FlowService {
 
   public async back(): Promise<void> {
 
-    if(typeof this.cmpReference.instance.onBack === 'function') {
+    if (typeof this.cmpReference.instance.onBack === 'function') {
       this.cmpReference.instance.onBack();
     }
 
@@ -250,51 +251,53 @@ export class FlowService {
   }
 
   public createHistoryEntry(): void {
-    if (this.builder.process.currentStep?.id) {
-      // releasing the step sets step._destroyedAt
-      if(this.builder.process.currentStep.release) {
-        this.builder.process.currentStep.release();
-      }
-
-      const historyEntry: FlowStepHistoryEntry = {
-        id: this.builder.process.currentStep?.id,
-        variables: this.builder.process.currentStepVariables,
-        elapsed: this.builder.process.currentStep.elapsed
-      } as FlowStepHistoryEntry;
-      this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
-    }
+    // if (this.builder.process.currentStepId) {
+    //   // releasing the step sets step._destroyedAt
+    //   if(this.builder.process.currentStep.release) {
+    //     this.store.dispatch(flowActions.UpdateCurrentStepAction())
+    //     this.builder.process.currentStep.release();
+    //   }
+    //
+    //   const historyEntry: FlowStepHistoryEntry = {
+    //     id: this.builder.process.currentStepId,
+    //     // variables: this.builder.process.currentStepVariables,
+    //     elapsed: this.builder.process.currentStep.elapsed
+    //   } as FlowStepHistoryEntry;
+    //   this.store.dispatch(flowActions.SetStepHistoryAction({payload: historyEntry}));
+    // }
   }
 
-  public isLastStep( type = 'next' ):boolean {
-    if( 'next' == type ){
+  public isLastStep(type = 'next'): boolean {
+    if ('next' == type) {
       const next = this.findNextStep();
-      if( next instanceof FlowStep && next.component === 'FlowTextComponent' ){
+      if (next instanceof FlowStep && next.component === 'FlowTextComponent') {
         return next.state.data.lastStep;
       }
     }
     return false;
   }
 
-  public async renderComponent(step: FlowStep): Promise<void> {
+  public async renderComponent(stepId: string): Promise<void> {
     const viewContainerRef = this.flowHost.viewContainerRef;
     viewContainerRef.clear();
 
     try {
 
+      const step = this.builder.process.steps.find(step => step.id === stepId) as FlowStep;
       const component = (<any>FlowStepClassMap)[step.component];
       this.cmpReference = viewContainerRef.createComponent(component);
       this.cmpReference.instance.module = step.state.module;
       this.cmpReference.instance.data = step.state.data;
       this.cmpReference.instance.options = step.state.options;
 
-      if(this.cmpReference.instance instanceof FlowListComponent) {
+      if (this.cmpReference.instance instanceof FlowListComponent) {
         /**
          * Subscribe to:
          * @param {values} EventEmitter
          * @param {onCreate} EventEmitter
          */
         this.cmpReference.instance.values.subscribe((value: any) => {
-          this.setValidity(!!value.record);
+          this.setValidity(step.id, !!value.record);
         });
 
 
@@ -312,25 +315,21 @@ export class FlowService {
         });
       }
 
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       throw e;
     }
   }
 
-  public setValidity(value: boolean) {
-    this.store.dispatch(flowActions.SetValidityAction({payload: value}));
+  public setValidity(stepId: string | undefined, valid: boolean) {
+    this.store.dispatch(flowActions.UpdateStepValidityAction({id: stepId, valid}))
   }
 
-  public removeVariable(key: string) {
-    this.store.dispatch(flowActions.RemoveVariableAction({key}));
-  }
-
-  public addVariables(data: any) {
-    if (data) {
-      let allVars = {...this.builder.process.currentStepVariables, ...data};
-      this.store.dispatch(flowActions.AddVariablesAction({payload: allVars}));
-    }
+  public addVariables(data: any): void {
+    this.store.dispatch(flowActions.UpdateStepVariablesAction({
+      id: this.builder.process.currentStepId,
+      variables: data
+    }));
   }
 
   public async getVariable(key?: string) {

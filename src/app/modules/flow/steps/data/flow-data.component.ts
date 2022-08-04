@@ -7,6 +7,7 @@ import { OnBack, OnNext, OnSave } from '../../classes';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FlowService } from '../../flow.service';
 
 @UntilDestroy()
 @Component({
@@ -19,6 +20,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   styleUrls: ['../_base.scss', './flow-data.component.scss']
 })
 export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, OnBack, OnNext {
+  private flowStepId: string | undefined;
 
   @Input('module') module: ModuleTypes;
   @Input('data') data: any;
@@ -27,9 +29,12 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
   @ViewChild(FiizDataComponent, { static: true }) cmp: FiizDataComponent;
 
   constructor(
-    private store: Store<fromFlow.FlowState>
+    private store: Store<fromFlow.FlowState>,
+    private flowService: FlowService
   ) {
-
+      this.store.select(fromFlow.selectCurrentStepId).subscribe(currentStepId => {
+        this.flowStepId =  currentStepId;
+      });
   }
 
   ngAfterContentInit() {
@@ -42,16 +47,19 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
   }
 
   updateValidity(isValid: boolean) {
-    this.store.dispatch(flowActions.SetValidityAction({payload: isValid}))
+    // this.store.dispatch(flowActions.SetValidityAction({payload: isValid}));
+    this.flowService.setValidity(this.flowStepId, isValid );
   }
 
   onSave(): Promise<any> {
+
+    this.store.dispatch(flowActions.AddMediatorAction({ action: `${this.options.state}-${this.module}` }));
     return this.cmp.save();
   }
 
   onSuccess(record: {[key:string]: string }) {
     // variables to be saved after a step should come back here.
-    this.store.dispatch(flowActions.AddVariablesAction({payload: record }));
+    this.flowService.addVariables(record)
   }
 
   onBack() {
