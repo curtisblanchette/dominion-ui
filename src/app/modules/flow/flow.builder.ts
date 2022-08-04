@@ -66,11 +66,11 @@ export class FlowBuilder {
       step.state.data.id = vars.deal;
       step.state.data.leadId = vars.lead;
     }, (flowService: FlowService, vars:any, step: any) => {
-      this.flowService.updateCall({dealId: vars.deal});
+      flowService.updateCall({dealId: vars.deal});
     });
 
     const relationshipBuilding = FlowFactory.relationshipBuilding(undefined, (flowService: FlowService, vars: any, step: any) => {
-      this.flowService.addVariables({appointment_action: 'set'});
+      flowService.addVariables({appointment_action: 'set'});
     });
     const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);
 
