@@ -199,14 +199,16 @@ export class FlowService {
   }
 
   public async next(): Promise<void> {
-    // find a link where the "from" is equal to "currentStep"
+    // traverse the flow path for the next step
     let step = this.findNextStep();
-    let nextId = undefined;
+    let router: FlowRouter;
+    let routerResponse;
 
     try {
+      // test if next FlowNode is FlowRouter instance
       if (step instanceof FlowRouter) {
-        const init: FlowRouter = step;
-        nextId = await init.evaluate();
+        router = step as FlowRouter;
+        routerResponse = await router.evaluate();
       }
 
       if (typeof this.cmpReference.instance.onSave === 'function') {
@@ -220,7 +222,7 @@ export class FlowService {
       if (step?.id) {
         this.createHistoryEntry();
 
-        return this.store.dispatch(flowActions.NextStepAction({stepId: nextId || step.id}));
+        return this.store.dispatch(flowActions.NextStepAction({stepId: routerResponse || step.id}));
       }
 
     } catch (e) {
@@ -330,6 +332,10 @@ export class FlowService {
       id: this.builder.process.currentStepId,
       variables: data
     }));
+  }
+
+  public updateStepOptions(stepId: string | undefined, options: any) {
+    this.store.dispatch(flowActions.UpdateStepOptionsAction({id: stepId, options}))
   }
 
   public async getVariable(key?: string) {

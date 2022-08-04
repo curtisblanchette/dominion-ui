@@ -76,6 +76,13 @@ export const reducer = createReducer(
     ...state,
     routers: [...state.routers, payload]
   })),
+  immerOn(flowActions.UpdateStepOptionsAction, (state, {id, options}) => {
+    if (id) {
+      const index = state.steps.indexOf(state.steps.find((step: any) => step.id === id));
+      state.steps[index].state.options = {...state.steps[index].state.options, ...options};
+    }
+    return state;
+  }),
   immerOn(flowActions.UpdateStepValidityAction, (state, {id, valid}) => {
     if (id) {
       const index = state.steps.indexOf(state.steps.find((step: any) => step.id === id));

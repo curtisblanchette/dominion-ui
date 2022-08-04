@@ -32,44 +32,44 @@ export class FlowBuilder {
      */
     const objection = FlowFactory.objection();
     // select call type
-    const callType = FlowFactory.callTypeDecision(undefined, (vars: any) => { this.flowService.startCall(vars.call_type); });
+    const callType = FlowFactory.callTypeDecision(undefined, (flowService: FlowService, vars: any) => { flowService.startCall(vars.call_type); });
     if(callType?.id) {
       this.store.dispatch(flowActions.SetFirstStepIdAction({id: callType.id}));
     }
 
-    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (vars: any) => { this.flowService.updateCall({leadId: vars.lead});  });
+    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (flowService: FlowService, vars: any) => { flowService.updateCall({leadId: vars.lead});  });
     const webLeadsType = FlowFactory.webLeadsType();
     const searchNListContacts = FlowFactory.searchNListContacts()
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
-    const appointmentList = FlowFactory.appointmentList((vars: any, step: any) => {
-      step.state.options.query['dealId'] = vars.deal;
+    const appointmentList = FlowFactory.appointmentList((flowService: FlowService, vars: any, step: any) => {
+      flowService.updateStepOptions(step.id, { query: { dealId: vars.deal }});
     });
 
     const reasonForCall = FlowFactory.reasonForCall();
 
     const createLead = FlowFactory.createLead();
-    const editLead = FlowFactory.editLead((vars: any, step: any) => {
+    const editLead = FlowFactory.editLead((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
     });
-    const setLeadSource = FlowFactory.setLeadSource((vars: any, step: any) => {
+    const setLeadSource = FlowFactory.setLeadSource((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
     });
-    const oppList = FlowFactory.opportunityList((vars: any, step: any) => {
-      step.state.options.query['leadId'] = vars.lead
+    const oppList = FlowFactory.opportunityList((flowService: FlowService, vars: any, step: any) => {
+      flowService.updateStepOptions(step.id, { query: { leadId: vars.lead }});
     });
     const toOppList = FlowFactory.link(editLead, oppList);
-    const createOpp = FlowFactory.createDeal( (vars: any, step: any) => {
+    const createOpp = FlowFactory.createDeal( (flowService: FlowService, vars: any, step: any) => {
       step.state.data['payload'] = { leadId: vars.lead };
     });
     // const createOpp1 = FlowFactory.createDeal1();
-    const editOpp = FlowFactory.editDeal((vars: any, step: any) => {
+    const editOpp = FlowFactory.editDeal((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.deal;
       step.state.data.leadId = vars.lead;
-    }, (vars:any, step: any) => {
+    }, (flowService: FlowService, vars:any, step: any) => {
       this.flowService.updateCall({dealId: vars.deal});
     });
 
-    const relationshipBuilding = FlowFactory.relationshipBuilding(undefined, (vars: any, step: any) => {
+    const relationshipBuilding = FlowFactory.relationshipBuilding(undefined, (flowService: FlowService, vars: any, step: any) => {
       this.flowService.addVariables({appointment_action: 'set'});
     });
     const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);
@@ -79,7 +79,7 @@ export class FlowBuilder {
 
 
 
-    const setAppointment = FlowFactory.setAppointment((vars: any, step: any) => {
+    const setAppointment = FlowFactory.setAppointment((flowService: FlowService, vars: any, step: any) => {
       // globals
       step.state.options.payload = {
         contactId: vars.contact,
@@ -166,8 +166,8 @@ export class FlowBuilder {
     // outbound
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
 
-    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( (vars: any, step: any) => {
-      step.state.options.query.contactId = vars.contact;
+    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( (flowService: FlowService, vars: any, step: any) => {
+      flowService.updateStepOptions(step.id, { query: { contactId: vars.contact }});
     });
 
     const webLeads_yes = FlowFactory.condition({

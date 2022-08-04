@@ -28,11 +28,16 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     this.component = data.component;
     this.state = data.state;
 
-    if(typeof this.beforeRoutingTriggers === 'function'){
-      this.beforeRoutingTriggers = data.beforeRoutingTriggers.toString();
-      this.afterRoutingTriggers = data.afterRoutingTriggers.toString();
+    if(typeof data.beforeRoutingTriggers === 'function') {
+      this.beforeRoutingTriggers = String(data.beforeRoutingTriggers);
+    } else {
+      this.beforeRoutingTriggers = data.beforeRoutingTriggers;
     }
-
+    if(typeof data.afterRoutingTriggers === 'function') {
+      this.afterRoutingTriggers = String(data.afterRoutingTriggers);
+    } else {
+      this.afterRoutingTriggers = data.afterRoutingTriggers;
+    }
 
     this._constructedAt = new Date().getTime();
     this.valid = data.valid;

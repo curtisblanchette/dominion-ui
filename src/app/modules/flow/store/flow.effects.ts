@@ -130,7 +130,7 @@ export class FlowEffects {
             let code = currentStep?.afterRoutingTriggers;
             code = code.concat(sourceMapComment);
             const afterFn = eval(code);
-            await afterFn(frozenVars, currentStep);
+            await afterFn(this.flowService, frozenVars, currentStep);
           }
 
           if(typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
@@ -138,7 +138,7 @@ export class FlowEffects {
             let code = (<FlowStep>step).beforeRoutingTriggers
             code = code.concat(sourceMapComment);
             const beforeFn = eval(code);
-            await beforeFn(frozenVars, step);
+            await beforeFn(this.flowService, frozenVars, step);
           }
 
           // if(step?.id){
