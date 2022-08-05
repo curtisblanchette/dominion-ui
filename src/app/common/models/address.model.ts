@@ -16,16 +16,13 @@ export const AddressModel: { [key: string]: IModel } = {
     label: 'Line 1',
     type: 'text',
     defaultValue: '',
-    validators: [
-      Validators.required
-    ]
+    validators: []
   },
   [Fields.LINE2]: {
     label: 'Line 2',
     type: 'text',
     defaultValue: '',
-    validators: [
-    ]
+    validators: []
   },
   [Fields.UNIT]: {
     label: 'Unit',
@@ -39,7 +36,6 @@ export const AddressModel: { [key: string]: IModel } = {
     type: 'text',
     defaultValue: '',
     validators: [
-      Validators.required
     ]
   },
   [Fields.STATE_CODE]: {
@@ -48,7 +44,6 @@ export const AddressModel: { [key: string]: IModel } = {
     service : 'state',
     defaultValue: '',
     validators: [
-      Validators.required
     ]
   },
   [Fields.COUNTRY_CODE]: {
@@ -56,7 +51,6 @@ export const AddressModel: { [key: string]: IModel } = {
     type: 'text',
     defaultValue: '',
     validators: [
-      Validators.required
     ]
   },
   [Fields.ZIP_CODE]: {
@@ -64,7 +58,6 @@ export const AddressModel: { [key: string]: IModel } = {
     type: 'text',
     defaultValue: '',
     validators: [
-      Validators.required
     ]
   }
 }

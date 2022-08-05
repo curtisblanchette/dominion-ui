@@ -283,7 +283,8 @@ export class FlowFactory {
           controls: false,
           state: 'edit',
           fields: [
-            LeadFields.CAMPAIGN_ID
+            LeadFields.CAMPAIGN_ID,
+            LeadFields.LEAD_SOURCE_ID
           ],
           optimisticSave: false
         }

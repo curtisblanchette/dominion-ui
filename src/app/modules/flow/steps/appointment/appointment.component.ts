@@ -111,7 +111,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       case 'set': {
 
         this.form.patchValue({
-          contactId : await this.flowService.getVariable('contact'),
           startTime : await this.flowService.getVariable('appt_date_time'),
           endTime : await this.flowService.getVariable('appt_end_date_time'),
           typeId : '1'
