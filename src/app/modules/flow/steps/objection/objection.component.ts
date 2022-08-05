@@ -6,13 +6,14 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../store/app.reducer';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
-import * as flowActions from '../../store/flow.actions';
+import * as fromFlow from '../../store/flow.reducer';
 import { Fields as CallFields } from '../../../../common/models/call.model';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'flow-objection',
   templateUrl: './objection.component.html',
@@ -26,6 +27,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
+  private flowStepId: string;
   public form: FormGroup;
   public ModuleTypes: any;
   public fields: any = CallFields;
@@ -51,6 +53,11 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
       this.data = state.data;
     }
 
+    this.store.select(fromFlow.selectCurrentStepId).pipe(untilDestroyed(this)).subscribe(currentStepId => {
+      if(currentStepId) {
+        this.flowStepId = currentStepId;
+      }
+    });
 
     this.form = this.fb.group({
       'objection' : new FormControl('', Validators.required)
@@ -72,7 +79,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   }
   public handleChange(objection: any) {
     this.flowService.addVariables({call_objectionId: objection.id});
-    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    this.flowService.setValidity(this.flowStepId, true);
   }
 
   public override ngOnDestroy() {

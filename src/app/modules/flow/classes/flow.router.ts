@@ -1,8 +1,6 @@
-import { FlowStep, FlowNode, FlowCondition, FlowListParams } from './index';
+import { FlowNode, FlowCondition } from './index';
 import { cloneDeep } from 'lodash';
-import { FlowDataComponent, FlowListComponent, FlowStepClassMap } from '../steps';
 import { FlowSerialization } from './flow.serialization';
-
 
 type OmitMethods = 'evaluate' | '_serialize' | '_deserialize';
 
@@ -21,44 +19,30 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
    *
    * @returns {FlowNode | undefined}
    */
-  public async evaluate(): Promise<FlowNode | undefined> {
-    let step: FlowStep | FlowNode | undefined = undefined;
+  public evaluate(): string | undefined {
+    let stepId: string | undefined = undefined;
 
     if (this.conditions) {
       for (const cond of this.conditions) {
-        const value = await cond.evaluate();
+        const value = cond.evaluate();
         if (value) {
 
           if (cond?.to) {
-            step = <FlowStep>cond?.to as FlowStep;
-
-            /**********************************************************
-             ----------------- INJECTION POINT ------------------------
-             **********************************************************/
-            const instance = (<any>FlowStepClassMap)[(<FlowStep>step).component];
-            // if(instance instanceof FlowDataComponent) {
-            //   (<FlowStep>step).state.data.id = value.getParams()[`${(<FlowStep>step).state.module}Id`];
-            // }
-
-            // FlowListComponent
-            if (instance instanceof FlowListComponent) {
-              (<FlowStep>step).state.options['query'] = cond.resolveParams().getParams();
-            }
-
+            stepId = cond?.to;
 
           } else {
-            console.warn('There is error evaluating the next step');
+            console.warn('There was an error evaluating the next step.');
           }
           break;
         }
       }
-      console.warn(`No conditions for ${this.nodeText} evaluated to 'true'`);
+      console.warn(`No conditions for ${this.nodeText} evaluated to 'true'.`);
     }
-    return step;
+    return stepId;
   }
 
   public _serialize(): FlowRouter {
-    this.conditions = this.conditions.map(condition => condition._serialize());
+    // this.conditions = this.conditions.map(condition => condition._serialize());
     return this;
   }
 

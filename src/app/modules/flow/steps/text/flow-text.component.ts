@@ -28,6 +28,7 @@ import { DropdownItem } from '../../../../common/components/interfaces/dropdowni
   styleUrls: ['../_base.scss', './flow-text.component.scss']
 })
 export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
+  private flowStepId: string | undefined;
 
   @Input('data') override data: any;
   public form: FormGroup;
@@ -42,6 +43,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public formValidation:{ [ key:string ] : boolean } = {};
   public formValues:{ [ key:string ] : any } = {};
   public addressState:string = 'create';
+  public variables: any;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -69,6 +71,17 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       { id : 'not-working', label : 'Not Working (Disconnected)' },
     ]);
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
+
+    this.store.select(fromFlow.selectCurrentStepId).subscribe(currentStepId => {
+      if(currentStepId) {
+        this.flowStepId = currentStepId;
+      }
+    });
+    this.store.select(fromFlow.selectAllVariables).subscribe(variables => {
+      this.variables = variables;
+    });
+
+
   }
 
   public async ngOnInit(){
@@ -84,7 +97,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.dataComponents.map( (item:FiizDataComponent, index:number) => {
 
       item.values.subscribe( value => {
-        this.store.dispatch(flowActions.AddVariablesAction({ payload: value }));
+        this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: value}));
+
         this.formValues[item.module] = value;
       });
 
@@ -92,15 +106,15 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         this.formValidation[item.module] = valid;
         if( 'relationship-building' == this.data.template ){
           if( Object.values(this.formValidation).every(Boolean) ){
-            this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+            this.flowService.setValidity(this.flowStepId, true);
           } else {
-            this.store.dispatch(flowActions.SetValidityAction({payload: false}));
+            this.flowService.setValidity(this.flowStepId, false);
           }
         } else {
           if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
-            this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+            this.flowService.setValidity(this.flowStepId, true);
           } else {
-            this.store.dispatch(flowActions.SetValidityAction({payload: false}));
+            this.flowService.setValidity(this.flowStepId, false);
           }
         }
       });
@@ -115,22 +129,22 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     switch(this.data.template) {
 
       case 'call-type': {
-        form['call_type'] = new FormControl(undefined, [Validators.required]);
+        form['call_type'] = new FormControl(this.variables['call_type'] || null, [Validators.required]);
       }
         break;
 
       case 'web-lead': {
-        form['web_lead_options'] = new FormControl(undefined, [Validators.required]);
+        form['web_lead_options'] = new FormControl(this.variables['call_type'] || null, [Validators.required]);
       }
         break;
 
       case 'power-question': {
-        this.store.dispatch(flowActions.AddVariablesAction({ payload: { appointment_action: 'set'} }));
+        this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: { appointment_action: 'set'}}));
       }
         break;
 
       case 'reason-for-call': {
-        form['call_reason'] = new FormControl('', [Validators.required]);
+        form['call_reason'] = new FormControl(this.variables['call_reason'] || null, [Validators.required]);
       }
         break;
 
@@ -139,8 +153,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
           return of(CustomDataService.toDropdownItems(res));
         }))) as any;
 
-        form['answered'] = new FormControl('', [Validators.required]);
-        form['call_outcome'] = new FormControl(1, [Validators.required]);
+        form['answered'] = new FormControl(this.variables['answered'] || null, [Validators.required]);
+        form['call_outcome'] = new FormControl(this.variables['call_outcome'] || null, [Validators.required]);
 
       }
         break;
@@ -170,14 +184,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       });
 
       this.form.statusChanges.subscribe((value: any) => {
-        this.store.dispatch(flowActions.SetValidityAction({payload: value === 'VALID'}));
+        this.flowService.setValidity(this.flowStepId, value === 'VALID');
       });
 
       of('').pipe(
         untilDestroyed(this),
         delay(100)
       ).subscribe(() => {
-        this.store.dispatch(flowActions.SetValidityAction({payload: valid}))
+        this.flowService.setValidity(this.flowStepId, valid);
       });
     }
   }
@@ -209,7 +223,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public get isValid() {
-    return this.form.valid;
+    return true;
+    // return this.form.valid;
   }
 
   public endCall() {

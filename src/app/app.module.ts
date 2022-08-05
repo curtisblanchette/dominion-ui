@@ -55,8 +55,8 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
       runtimeChecks: {
         // strictStateSerializability: true,
         // strictActionSerializability: true,
-        strictStateImmutability: false,
-        strictActionImmutability: false,
+        // strictStateImmutability: false,
+        // strictActionImmutability: false,
       }
     }),
     EffectsModule.forRoot([

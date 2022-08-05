@@ -187,6 +187,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       }
       if (data) {
         this.title = data.name ? data.name : data.fullName;
+        this.apiData = data;
       }
     }
   }

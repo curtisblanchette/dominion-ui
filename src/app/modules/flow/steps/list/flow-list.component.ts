@@ -1,10 +1,9 @@
 import { AfterContentInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FlowService } from '../../flow.service';
-import { DominionType } from '../../../../common/models';
-import { FlowState } from '../../store/flow.reducer';
 import { Store } from '@ngrx/store';
 import { FiizListComponent } from '../../../../common/components/ui/list/list.component';
 import { ModuleTypes } from '../../../../data/entity-metadata';
+import * as fromFlow from '../../store/flow.reducer';
 
 @Component({
   selector: 'flow-list',
@@ -12,6 +11,9 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
   styleUrls: ['../_base.scss','./flow-list.component.scss']
 })
 export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
+
+
+  private flowStepId: string | undefined;
 
   @Input('data') data: any;
   @Input('module') module: any;
@@ -23,10 +25,14 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
   @ViewChild(FiizListComponent, { static: true }) cmp: FiizListComponent;
 
   constructor(
-    public store: Store<FlowState>,
+    public store: Store<fromFlow.FlowState>,
     public flowService: FlowService
   ) {
-
+    this.store.select(fromFlow.selectCurrentStepId).subscribe(currentStepId => {
+      if(currentStepId) {
+        this.flowStepId = currentStepId;
+      }
+    });
   }
 
   public async ngAfterContentInit() {
@@ -64,7 +70,6 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
     }
 
     this.flowService.addVariables(variables);
-
 
     return this.values.next(value);
   }

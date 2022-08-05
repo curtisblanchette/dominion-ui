@@ -7,6 +7,7 @@ import { FlowStepHistoryEntry } from './flow.stepHistory';
 import * as flowActions from '../store/flow.actions';
 import { Inject } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { accumulateVariables } from '../store/flow.reducer';
 
 export class FlowProcess {
 // export class FlowProcess extends FlowBaseModel {
@@ -15,32 +16,25 @@ export class FlowProcess {
   public steps: FlowStep[] = [];
   public routers: FlowRouter[] = [];
   public links: FlowLink[] = [];
-  public currentStep: FlowStep | undefined;
-  public currentStepVariables: any;
-  public currentStepValid: boolean;
+  public currentStepId: string;
+  public firstStepId: string | undefined;
   public stepHistory: FlowStepHistoryEntry[];
   public variables: { [key: string]: any };
-  public breadcrumbs: any;
 
   public steps$: Subscription;
   public routers$: Subscription;
   public links$: Subscription;
-  public currentStep$: Subscription;
-  public currentStepVariables$: Subscription;
-  public currentStepValid$: Subscription;
+  public currentStepId$: Subscription;
+  public firstStepId$: Subscription;
   public stepHistory$: Subscription;
   public variables$: Subscription;
-  public breadcrumbs$: Subscription;
 
   constructor(
     @Inject(Store) private store: Store<fromFlow.FlowState>,
     id?: string,
   ) {
 
-    // super(id);
-
     if(id) {
-      // this.id = id;
       this.store.dispatch(flowActions.SetProcessIdAction({processId: id}));
     }
 
@@ -49,6 +43,7 @@ export class FlowProcess {
     });
     this.steps$ = this.store.select(fromFlow.selectSteps).subscribe(steps => {
       this.steps = steps;
+      this.variables = accumulateVariables(this.steps);
     });
     this.routers$ = this.store.select(fromFlow.selectRouters).subscribe(routers => {
       this.routers = routers;
@@ -56,28 +51,20 @@ export class FlowProcess {
     this.links$ = this.store.select(fromFlow.selectLinks).subscribe(links => {
       this.links = links;
     });
-    this.currentStep$ = this.store.select(fromFlow.selectCurrentStep).subscribe(currentStep => {
-      this.currentStep = currentStep;
+    this.currentStepId$ = this.store.select(fromFlow.selectCurrentStepId).subscribe(currentStepId => {
+      if(currentStepId) {
+        this.currentStepId = currentStepId;
+      }
     });
 
-    this.currentStepVariables$ = this.store.select(fromFlow.selectCurrentStepVariables).subscribe(currentStepVariables => {
-      this.currentStepVariables = currentStepVariables;
+    this.firstStepId$ = this.store.select(fromFlow.selectFirstStepId).subscribe(id => {
+      this.firstStepId = id;
     });
 
-    this.currentStepValid$ = this.store.select(fromFlow.selectCurrentStepValid).subscribe(currentStepValid => {
-      this.currentStepValid = currentStepValid;
-    });
+    // this.stepHistory$ = this.store.select(fromFlow.selectStepHistory).subscribe(stepHistory => {
+    //   this.stepHistory = stepHistory;
+    // });
 
-    this.stepHistory$ = this.store.select(fromFlow.selectStepHistory).subscribe(stepHistory => {
-      this.stepHistory = stepHistory;
-    });
-    this.variables$ = this.store.select(fromFlow.selectAllVariables).subscribe(variables => {
-      this.variables = variables;
-    });
-
-    this.breadcrumbs$ = this.store.select(fromFlow.selectBreadcrumbs).subscribe(breadcrumbs => {
-      this.breadcrumbs = breadcrumbs;
-    });
   }
 
   public addStep(step: FlowStep): FlowProcess {

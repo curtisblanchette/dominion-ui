@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, EntityCollectionDataService, HttpUrlGenerator, QueryParams } from '@ngrx/data';
+import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, HttpUrlGenerator, QueryParams } from '@ngrx/data';
 import { DominionType } from '../common/models';
 import { HttpClient } from '@angular/common/http';
 import { map, mergeMap, Observable, of, tap } from 'rxjs';

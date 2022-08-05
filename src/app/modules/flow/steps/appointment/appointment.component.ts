@@ -30,9 +30,9 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
 export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, AfterContentInit, OnSave {
+  private flowStepId: string | undefined;
 
   public timeZone: any = 'America/New_York';
-
   public appointmentSettings: INestedSetting;
   public ModuleTypes: any;
 
@@ -73,6 +73,10 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
     this.store.select(fromApp.selectSettingByKey('timezone')).subscribe((res) => {
       this.timeZone = res.value;
+    });
+
+    this.store.select(fromFlow.selectCurrentStepId).subscribe(id => {
+      this.flowStepId = id;
     });
 
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
@@ -133,7 +137,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
               });
             }
 
-            this.store.dispatch(flowActions.AddVariablesAction({payload}));
+            this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: payload}));
 
           }) || Promise.resolve(this.cleanForm());
         }
@@ -144,7 +148,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
-    
+
     if( this.options.state != 'cancel' ){
       this.buildForm(this.options.fields);
     }
@@ -155,15 +159,15 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   }
 
-  async ngOnInit(): Promise<any> {    
-    
+  async ngOnInit(): Promise<any> {
+
   }
 
   public async ngAfterViewInit() {
-    // if the step was module to resolve the ID for - do it now
-    if(this.data.hasOwnProperty('resolveId')) {
-      this.id = this.data.resolveId;
-    }
+    // // if the step was module to resolve the ID for - do it now
+    // if(this.data.hasOwnProperty('resolveId')) {
+    //   this.id = this.data.resolveId;
+    // }
 
     if (this.id) {
       this.getData();
@@ -230,6 +234,8 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public getData() {
+    // this._dynamicCollectionService.getByKey(this.id);
+    // this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
     this.getById(this.id).pipe(take(1)).subscribe( val => {
       if( val ){
         let values:Array<any> = [];
@@ -238,7 +244,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         values.push({label : 'Start Time', value : val.startTime});
         values.push({label : 'End Time', value : val.endTime});
         this.apptData = of(values);
-      }      
+      }
     });
   }
 
@@ -266,7 +272,8 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         office: this.form.value.office
       });
     }
-    this.store.dispatch(flowActions.SetValidityAction({payload: isValid}));
+
+    this.flowService.setValidity(this.flowStepId, isValid);
   }
 
 }

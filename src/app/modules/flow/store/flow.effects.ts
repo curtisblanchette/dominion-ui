@@ -25,8 +25,8 @@ export class FlowEffects {
 
   onUpdateCurrentStep$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(flowActions.UpdateCurrentStepAction),
-      switchMap(async (action: { step: FlowStep }) => this.flowService.renderComponent(action.step))
+      ofType(flowActions.UpdateCurrentStepIdAction),
+      switchMap(async (action: { id: string }) => this.flowService.renderComponent(action.id))
     ), { dispatch: false }
   );
 
@@ -94,7 +94,10 @@ export class FlowEffects {
             await fn(frozenVars, step);
           }
 
-          return flowActions.UpdateCurrentStepAction({ step, isBackAction: true, fromTimeline: false });
+          if(step?.id) {
+            return flowActions.UpdateCurrentStepIdAction({ id: step.id });
+          }
+
         }
         return EMPTY;
       }
@@ -104,9 +107,13 @@ export class FlowEffects {
   onNextStep$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(flowActions.NextStepAction),
-      withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
+      withLatestFrom(
+        this.store.select(fromFlow.selectAllVariables),
+        this.store.select(fromFlow.selectSteps),
+        this.store.select(fromFlow.selectCurrentStepId)
+      ),
       mergeMap(async (action: any) => {
-        let [payload, variables]: [any, any] = action;
+        let [payload, variables, steps, currentStepId]: [any, any, FlowStep[], string] = action;
         let frozenVars = Object.freeze({...variables});
 
         let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
@@ -116,13 +123,14 @@ export class FlowEffects {
           console.log(router);
         } else {
 
+          const currentStep = steps.find(step => step.id === currentStepId);
           // triggers can update variables that we'll need while creating history entries
-          if(typeof this.flowService.builder?.process?.currentStep?.afterRoutingTriggers === 'string') {
+          if(typeof currentStep?.afterRoutingTriggers === 'string') {
             const sourceMapComment = `\n //# sourceURL=afterRoutingTrigger.js \n`;
-            let code = this.flowService.builder?.process?.currentStep?.afterRoutingTriggers;
+            let code = currentStep?.afterRoutingTriggers;
             code = code.concat(sourceMapComment);
             const afterFn = eval(code);
-            await afterFn(frozenVars, this.flowService.builder?.process?.currentStep);
+            await afterFn(this.flowService, frozenVars, currentStep);
           }
 
           if(typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
@@ -130,10 +138,14 @@ export class FlowEffects {
             let code = (<FlowStep>step).beforeRoutingTriggers
             code = code.concat(sourceMapComment);
             const beforeFn = eval(code);
-            await beforeFn(frozenVars, step);
+            await beforeFn(this.flowService, frozenVars, step);
           }
 
-          return flowActions.UpdateCurrentStepAction({ step, isBackAction: false, fromTimeline: false });
+          // if(step?.id){
+          //@ts-ignore
+            return flowActions.UpdateCurrentStepIdAction({ id: step.id });
+          // }
+
         }
         return EMPTY;
       })
