@@ -65,7 +65,7 @@
 
 
     &:focus {
-      @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
+      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
       color: #222;
       outline: none;
     }

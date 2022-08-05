@@ -102,7 +102,7 @@
       text-align: right;
     }
     &:focus {
-      @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
+      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
       color: #{var(--text1)};
       outline: none;
     }
