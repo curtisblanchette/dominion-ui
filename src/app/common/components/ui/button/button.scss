@@ -4,6 +4,7 @@
 :host {
   overflow: hidden;
   border-radius: var(--button-border-radius);
+  height: 46px;
   @include elevate(1);
 
   fiiz-loading {
