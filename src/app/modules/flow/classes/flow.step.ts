@@ -40,8 +40,8 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     }
 
     this._constructedAt = new Date().getTime();
-    this.valid = data.valid;
-    this.variables = data.variables;
+    this.valid = data.valid || false;
+    this.variables = data.variables || {};
 
   }
 

@@ -33,7 +33,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   @Input('data') override data: any;
   public form: FormGroup;
   public callTypes$: Observable<RadioItem[]>;
-  public webLeadTypes$: Observable<RadioItem[]>;
+  public outboundTypes$: Observable<RadioItem[]>;
   public callReasons$: Observable<DropdownItem[]>;
   public answerOptions$: Observable<DropdownItem[]>;
   public callOutcomes$: Observable<DropdownItem[]>;
@@ -60,7 +60,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.ModuleTypes = ModuleTypes;
 
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
-    this.webLeadTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
+    this.outboundTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
     this.callReasons$ = of([{ id : 'cancel-appointment', label : 'Cancel Appointment' }, { id : 'reschedule-appointment', label : 'Reschedule Appointment' }, { id : 'take-notes', label : 'Take Notes' }]);
     this.answerOptions$ = of([
       { id : 'yes', label : 'Yes' },
@@ -97,8 +97,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.dataComponents.map( (item:FiizDataComponent, index:number) => {
 
       item.values.subscribe( value => {
-        this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: value}));
-
+        this.flowService.updateStep(this.flowStepId, { variables: value });
         this.formValues[item.module] = value;
       });
 
@@ -133,13 +132,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       }
         break;
 
-      case 'web-lead': {
-        form['web_lead_options'] = new FormControl(this.variables['call_type'] || null, [Validators.required]);
+      case 'outbound-type': {
+        form['outbound_type'] = new FormControl(this.variables['outbound_type'] || null, [Validators.required]);
       }
         break;
 
       case 'power-question': {
-        this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: { appointment_action: 'set'}}));
+        this.flowService.updateStep(this.flowStepId, {variables: { appointment_action: 'set' }});
+        // this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: { appointment_action: 'set'}}));
       }
         break;
 
@@ -180,7 +180,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       valid = this.form.valid;
 
       this.form.valueChanges.subscribe((value: any) => {
-        this.flowService.addVariables(value);
+        this.flowService.updateStep(this.flowStepId, { variables: value });
       });
 
       this.form.statusChanges.subscribe((value: any) => {

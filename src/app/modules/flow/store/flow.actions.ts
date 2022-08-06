@@ -7,6 +7,7 @@ export const ActionTypes = {
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
 
+  UPDATE_STEP: '[Flow] Update Step',
   UPDATE_STEP_OPTIONS: '[Flow] Update Step Options',
   UPDATE_STEP_VALIDITY: '[Flow] Update Step Validity',
   UPDATE_STEP_VARIABLES: '[Flow] Update Step Variables',
@@ -34,6 +35,11 @@ export const SetFirstStepIdAction = createAction(
   ActionTypes.SET_FIRST_STEP_ID,
   props<{ id: string }>()
 );
+export const UpdateStepAction = createAction(
+  ActionTypes.UPDATE_STEP,
+  props<{ id: string | undefined, changes: Partial<FlowStep>, strategy: 'merge'|'overwrite' }>()
+);
+
 
 export const UpdateStepOptionsAction = createAction(
   ActionTypes.UPDATE_STEP_OPTIONS,

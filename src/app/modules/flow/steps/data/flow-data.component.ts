@@ -15,7 +15,7 @@ import { FlowService } from '../../flow.service';
   template: `
     <h3 style="">{{data.title}}</h3>
     <div *ngIf="options.dictation">{{options.dictation}}</div>
-    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="updateValidity($event)" (onSuccess)="onSuccess($event)"></fiiz-data>
+    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="setValidity($event)" (onSuccess)="onSuccess($event)"></fiiz-data>
   `,
   styleUrls: ['../_base.scss', './flow-data.component.scss']
 })
@@ -46,20 +46,19 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
     });
   }
 
-  updateValidity(isValid: boolean) {
-    // this.store.dispatch(flowActions.SetValidityAction({payload: isValid}));
+  setValidity(isValid: boolean) {
     this.flowService.setValidity(this.flowStepId, isValid );
   }
 
   onSave(): Promise<any> {
-
     this.store.dispatch(flowActions.AddMediatorAction({ action: `${this.options.state}-${this.module}` }));
     return this.cmp.save();
   }
 
   onSuccess(record: {[key:string]: string }) {
     // variables to be saved after a step should come back here.
-    this.flowService.addVariables(record)
+    this.flowService.updateStep(this.flowStepId, { variables: record, valid: true });
+    // this.flowService.addVariables(record)
   }
 
   onBack() {

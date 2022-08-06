@@ -25,10 +25,11 @@ export interface IEvaluation {
   };
 }
 
-type OmitMethods = '_serialize' | '_deserialize' | 'evaluate' | 'resolveParams' | 'getVariable';
+type OmitMethods = '_serialize' | '_deserialize' | 'evaluate' | 'resolveParams' | 'getVariable' | 'variableExists';
 
 export class FlowCondition extends FlowBaseModel implements FlowSerialization<FlowCondition> {
-  public evaluation: IEvaluation;
+  public name: string;
+  public evaluation: IEvaluation | string;
   public forwardParams: any;
   public to: string | undefined;
 
@@ -36,32 +37,44 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
     data: Omit<FlowCondition, OmitMethods>
   ) {
     super(data.id);
+    this.name = data.name;
     this.evaluation = data.evaluation;
     this.forwardParams = data.forwardParams;
     this.to = data.to;
+
+
+    if(typeof data.evaluation === 'function') {
+      this.evaluation = String(data.evaluation);
+    } else {
+      this.evaluation = data.evaluation;
+    }
+
   }
 
-  public evaluate(): boolean {
+  public evaluate(variables: any): boolean {
 
     let result = false;
-    if (this.evaluation.hasOwnProperty('variable')) {
+    if(typeof this.evaluation === 'object') {
+      if (this.evaluation.hasOwnProperty('variable')) {
 
-      if (this.evaluation.hasOwnProperty('equals')) {
-        result = this.getVariable(this.evaluation.variable) === this.evaluation.equals;
-      }
-
-      if (this.evaluation.hasOwnProperty('exists')) {
-        let variable = this.getVariable(this.evaluation.variable) || null;
-
-        if (this.evaluation.exists) {
-          result = !!variable
-        } else {
-          result = !variable
+        if (this.evaluation.hasOwnProperty('equals')) {
+          return variables[this.evaluation.variable] === this.evaluation.equals;
         }
 
-      }
+        if (this.evaluation.hasOwnProperty('exists')) {
+          return variables[this.evaluation.variable];
+        }
 
-      return result;
+        return result;
+      }
+    }
+
+    if(typeof this.evaluation === 'string') {
+      // function that needs to be eval'd.
+      const sourceMapComment = `\n //# sourceURL=${this.name}Condition.js \n`;
+      this.evaluation = this.evaluation.concat(sourceMapComment);
+      let code = eval(this.evaluation);
+      return code(variables);
     }
 
     return <any>this.evaluation;
@@ -93,6 +106,12 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
     const state: FlowState = JSON.parse(localStorage.getItem('state') || '').flow;
     const variables = accumulateVariables(state.steps);
     return variables[key];
+  }
+
+  public variableExists(key: string): boolean {
+    const state: FlowState = JSON.parse(localStorage.getItem('state') || '').flow;
+    const variables = accumulateVariables(state.steps);
+    return variables.hasOwnProperty(key);
   }
 
 }

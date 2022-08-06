@@ -114,7 +114,6 @@ export class FlowEffects {
       ),
       mergeMap(async (action: any) => {
         let [payload, variables, steps, currentStepId]: [any, any, FlowStep[], string] = action;
-        let frozenVars = Object.freeze({...variables});
 
         let step = this.flowService.builder.process.steps.find(step => step.id === payload.stepId);
 
@@ -130,7 +129,10 @@ export class FlowEffects {
             let code = currentStep?.afterRoutingTriggers;
             code = code.concat(sourceMapComment);
             const afterFn = eval(code);
-            await afterFn(this.flowService, frozenVars, currentStep);
+            const updates = await afterFn(this.flowService, variables, currentStep);
+            if(updates) {
+              this.flowService.updateStep(step.id, updates);
+            }
           }
 
           if(typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
@@ -138,7 +140,11 @@ export class FlowEffects {
             let code = (<FlowStep>step).beforeRoutingTriggers
             code = code.concat(sourceMapComment);
             const beforeFn = eval(code);
-            await beforeFn(this.flowService, frozenVars, step);
+            const updates = await beforeFn(this.flowService, variables, step);
+            if(updates) {
+              this.flowService.updateStep(step.id, updates);
+            }
+
           }
 
           // if(step?.id){

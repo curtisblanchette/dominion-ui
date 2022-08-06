@@ -41,18 +41,18 @@ export class FlowFactory {
     });
   }
 
-  public static webLeadsType(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
+  public static outboundType(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'Search and List',
+      nodeText: 'Outbound Type',
       nodeIcon: 'address-book',
       component: FlowTextComponent.name,
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
         data: {
-          title: 'Search and List',
+          title: 'Outbound Type',
           body: 'Lookup an Contact or Opportunity from one of the following lists',
-          template: 'web-lead'
+          template: 'outbound-type'
         }
       }
     });
@@ -547,8 +547,8 @@ export class FlowFactory {
     return new FlowStep(data)
   }
 
-  public static condition(evaluation: IEvaluation, forwardParams: any, to: string | undefined): FlowCondition {
-    const data = {evaluation, forwardParams, to};
+  public static condition(name: string = '', evaluation: any = undefined, forwardParams: any, to: string | undefined): FlowCondition {
+    const data = {name, evaluation, forwardParams, to};
     return new FlowCondition(data);
   }
 

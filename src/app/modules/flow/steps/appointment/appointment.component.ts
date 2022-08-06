@@ -137,7 +137,8 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
               });
             }
 
-            this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: payload}));
+            this.flowService.updateStep(this.flowStepId, {variables: payload});
+            // this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: payload}));
 
           }) || Promise.resolve(this.cleanForm());
         }
@@ -154,7 +155,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     }
 
     if( this.options.state == 'cancel' ){
-      this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+      this.flowService.setValidity(this.flowStepId, true);
     }
 
   }
@@ -257,7 +258,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.form.markAsPristine();
     this.form.updateValueAndValidity();
     this.form.enable();
-    this.store.dispatch(flowActions.SetValidityAction({payload: true}));
+    this.flowService.setValidity(this.flowStepId, true);
   }
 
   public checkValidity() {
