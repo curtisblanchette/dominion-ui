@@ -208,7 +208,7 @@ export class FlowService {
       // test if next FlowNode is FlowRouter instance
       if (step instanceof FlowRouter) {
         router = step as FlowRouter;
-        routerResponse = await router.evaluate();
+        routerResponse = await router.evaluate(this.builder.process.variables);
       }
 
       if (typeof this.cmpReference.instance.onSave === 'function') {
@@ -324,18 +324,30 @@ export class FlowService {
   }
 
   public setValidity(stepId: string | undefined, valid: boolean) {
-    this.store.dispatch(flowActions.UpdateStepValidityAction({id: stepId, valid}))
-  }
-
-  public addVariables(data: any): void {
-    this.store.dispatch(flowActions.UpdateStepVariablesAction({
-      id: this.builder.process.currentStepId,
-      variables: data
+    this.store.dispatch(flowActions.UpdateStepAction({
+      id: stepId,
+      changes: { valid: valid },
+      strategy: 'overwrite'
     }));
   }
 
+  public addVariables(data: any): void {
+    this.store.dispatch(flowActions.UpdateStepAction({
+      id: this.builder.process.currentStepId,
+      changes: { variables: data },
+      strategy: 'merge'
+    }));
+  }
+
+  public updateStep(stepId: string| undefined, changes: Partial<FlowStep>, strategy: 'merge' | 'overwrite' = 'merge') {
+    this.store.dispatch(flowActions.UpdateStepAction({id: stepId, changes, strategy}))
+  }
+
+  public deleteVariables(stepId: string | undefined, keys: string[]) {
+
+  }
   public updateStepOptions(stepId: string | undefined, options: any) {
-    this.store.dispatch(flowActions.UpdateStepOptionsAction({id: stepId, options}))
+    // this.store.dispatch(flowActions.UpdateStepOptionsAction({id: stepId, options}))
   }
 
   public async getVariable(key?: string) {

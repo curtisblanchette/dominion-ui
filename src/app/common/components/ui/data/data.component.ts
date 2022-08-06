@@ -69,7 +69,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public appointmentSettings: INestedSetting;
 
   @Input('module') public override module: ModuleTypes;
-  @Input('data') public override data: any;
+  @Input('data') public override data: any = { id: undefined, payload: { } };
   @Input('options') public override options: FiizDataComponentOptions = { controls: true, state: 'create', dictation: '', fields: [] };
 
   @ViewChild('submit') submit: ElementRef;

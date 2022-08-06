@@ -19,12 +19,12 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
    *
    * @returns {FlowNode | undefined}
    */
-  public evaluate(): string | undefined {
+  public evaluate(variables: any): string | undefined {
     let stepId: string | undefined = undefined;
 
     if (this.conditions) {
       for (const cond of this.conditions) {
-        const value = cond.evaluate();
+        const value = cond.evaluate(variables);
         if (value) {
 
           if (cond?.to) {
@@ -36,7 +36,10 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
           break;
         }
       }
-      console.warn(`No conditions for ${this.nodeText} evaluated to 'true'.`);
+    }
+
+    if(!stepId) {
+      console.warn(`No conditions for '${this.nodeText}' evaluated to 'true'.`);
     }
     return stepId;
   }

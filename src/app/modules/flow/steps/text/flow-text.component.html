@@ -9,12 +9,12 @@
       </form>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'web-lead'">
+    <ng-template [ngSwitchCase]="'outbound-type'">
       <h3 class="title">{{data.title}}</h3>
       <p>{{data.body}}</p>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="webLeadTypes$" formControlName="web_lead_options" name="web_lead_options"></fiiz-radio>
+        <fiiz-radio [items]="outboundTypes$" formControlName="outbound_type" name="outbound_type"></fiiz-radio>
       </form>
     </ng-template>
 

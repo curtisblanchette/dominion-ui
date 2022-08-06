@@ -7,7 +7,7 @@ import { FlowFactory } from './flow.factory';
 import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({providedIn: 'root'})
 export class FlowBuilder {
@@ -32,17 +32,27 @@ export class FlowBuilder {
      */
     const objection = FlowFactory.objection();
     // select call type
-    const callType = FlowFactory.callTypeDecision(undefined, (flowService: FlowService, vars: any) => { flowService.startCall(vars.call_type); });
-    if(callType?.id) {
+    const callType = FlowFactory.callTypeDecision(undefined, (flowService: FlowService, vars: any) => {
+      flowService.startCall(vars.call_type);
+    });
+    if (callType?.id) {
       this.store.dispatch(flowActions.SetFirstStepIdAction({id: callType.id}));
     }
 
-    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (flowService: FlowService, vars: any) => { flowService.updateCall({leadId: vars.lead});  });
-    const webLeadsType = FlowFactory.webLeadsType();
+    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (flowService: FlowService, vars: any) => {
+      flowService.updateCall({leadId: vars.lead});
+    });
+    const outboundType = FlowFactory.outboundType();
     const searchNListContacts = FlowFactory.searchNListContacts()
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const appointmentList = FlowFactory.appointmentList((flowService: FlowService, vars: any, step: any) => {
-      flowService.updateStepOptions(step.id, { query: { dealId: vars.deal }});
+      // flowService.updateStepOptions(step.id, {query: {dealId: vars.deal, savedSearch: 'opp-events'}});
+      step.state.options['query'] ={
+        dealId: vars.deal,
+        // savedSearch: 'opp-events'
+      };
+
+      return step;
     });
 
     const reasonForCall = FlowFactory.reasonForCall();
@@ -50,27 +60,40 @@ export class FlowBuilder {
     const createLead = FlowFactory.createLead();
     const editLead = FlowFactory.editLead((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
+      return step;
     });
     const setLeadSource = FlowFactory.setLeadSource((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
+      return step;
     });
     const oppList = FlowFactory.opportunityList((flowService: FlowService, vars: any, step: any) => {
-      flowService.updateStepOptions(step.id, { query: { leadId: vars.lead }});
+      step.state.options['query'] = {
+        leadId: vars.lead
+      };
+      return step;
     });
     const toOppList = FlowFactory.link(editLead, oppList);
-    const createOpp = FlowFactory.createDeal( (flowService: FlowService, vars: any, step: any) => {
-      step.state.data['payload'] = { leadId: vars.lead };
+    const createOpp = FlowFactory.createDeal((flowService: FlowService, vars: any, step: any) => {
+      step.state.data['payload'] = {
+        leadId: vars.lead
+      };
+      return step;
     });
-    // const createOpp1 = FlowFactory.createDeal1();
+
     const editOpp = FlowFactory.editDeal((flowService: FlowService, vars: any, step: any) => {
-      step.state.data.id = vars.deal;
-      step.state.data.leadId = vars.lead;
-    }, (flowService: FlowService, vars:any, step: any) => {
+      step.state.data = {
+        id: vars.deal,
+        leadId: vars.lead
+      };
+
+      return step;
+    }, (flowService: FlowService, vars: any, step: any) => {
       flowService.updateCall({dealId: vars.deal});
     });
 
     const relationshipBuilding = FlowFactory.relationshipBuilding(undefined, (flowService: FlowService, vars: any, step: any) => {
-      flowService.addVariables({appointment_action: 'set'});
+      step.variables['appointment_action'] = 'set';
+      return step;
     });
     const toRelationshipBuilding1 = FlowFactory.link(setLeadSource, relationshipBuilding);
 
@@ -78,80 +101,90 @@ export class FlowBuilder {
     const toPowerQuestion = FlowFactory.link(relationshipBuilding, powerQuestion);
 
 
-
     const setAppointment = FlowFactory.setAppointment((flowService: FlowService, vars: any, step: any) => {
       // globals
-      step.state.options.payload = {
+      step.state.options['payload'] = {
         contactId: vars.contact,
         dealId: vars.deal,
         leadId: vars.lead
       };
 
-      switch(true) {
+      switch (true) {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
+          step.state.data.resolveId = vars.event;
         }
-        break;
+          break;
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
+          step.state.data.resolveId = vars.event;
         }
-        break;
+          break;
         // no event selected
         case !vars.event: {
           step.state.options.state = 'set';
         }
-        break;
+          break;
         default: {
           step.state.options.state = 'set';
         }
       }
+
+      return step;
     });
     const recap = FlowFactory.recap();
+
+    const existingEvent_no = FlowFactory.condition('new_event', (vars: any) => {
+      return vars['new_event'];
+    }, {}, setAppointment.id);
+
+    const existingEvent_yes = FlowFactory.condition('new_event', (vars: any) => {
+      return !vars['new_event'];
+    }, {
+      id: ModuleTypes.EVENT
+    }, reasonForCall.id);
+
+    const eventRouter = FlowFactory.router('Event Exists', '', [existingEvent_yes, existingEvent_no]);
+    const toeventRouter = FlowFactory.link(appointmentList, eventRouter);
 
     const toCancelReschedule = FlowFactory.link(reasonForCall, setAppointment);
 
     // inbound
-    const inboundCond = FlowFactory.condition({
-      variable: 'call_type',
-      equals: 'inbound'
-    },{}, searchNListLeads.id);
+    const inboundCond = FlowFactory.condition('Inbound', (vars: any) => {
+      return vars['call_type'] === 'inbound';
+    }, {}, searchNListLeads.id);
 
-    const outboundCond = FlowFactory.condition({
-      variable: 'call_type',
-      equals: 'outbound'
-    }, {},  webLeadsType.id);
+    const outboundCond = FlowFactory.condition('Outbound', (vars: any) => {
+      return vars['call_type'] === 'outbound';
+    }, {}, outboundType.id);
 
     const callTypeRouter = FlowFactory.router('Call Type', '', [inboundCond, outboundCond]);
     const toCallTypeRouter = FlowFactory.link(callType, callTypeRouter);
 
-    const existingLead_yes = FlowFactory.condition({
-      variable: ModuleTypes.LEAD,
-      exists: true,
+    const existingLead_yes = FlowFactory.condition('Lead Selected', (vars: any) => {
+      return !vars['new_lead'];
     }, {
       leadId: ModuleTypes.LEAD
     }, editLead.id);
 
-    const existingLead_no = FlowFactory.condition({
-      variable: 'lead',
-      exists: false,
+    const existingLead_no = FlowFactory.condition('Create Lead', (vars: any) => {
+      return vars['new_lead'];
     }, {}, createLead.id);
 
-    const searchNListLeadsRouter = FlowFactory.router('Lead Exists', '', [existingLead_yes, existingLead_no]);
+    const searchNListLeadsRouter = FlowFactory.router('Lead Selected', '', [existingLead_yes, existingLead_no]);
     const toSearchNListLeadsRouter = FlowFactory.link(searchNListLeads, searchNListLeadsRouter);
 
-    const existingDeal_no = FlowFactory.condition({
-      variable: 'deal',
-      exists: false,
+    const existingDeal_no = FlowFactory.condition('Create Deal', (vars: any) => {
+      return vars['new_deal'];
     }, {}, createOpp.id);
 
-    const existingDeal_yes = FlowFactory.condition({
-      variable: 'deal',
-      exists: true,
+    const existingDeal_yes = FlowFactory.condition('Edit Deal', (vars: any) => {
+      return !vars['new_deal'];
     }, {
       id: ModuleTypes.DEAL
     }, editOpp.id);
 
-    const oppListRouter = FlowFactory.router('Opportunity Exists', '', [existingDeal_yes, existingDeal_no]);
+    const oppListRouter = FlowFactory.router('Opportunity Selected', '', [existingDeal_yes, existingDeal_no]);
     const toOppListRouter = FlowFactory.link(oppList, oppListRouter);
 
     const setLeadSourceLink = FlowFactory.link(createLead, setLeadSource);
@@ -161,81 +194,57 @@ export class FlowBuilder {
     const inboundSetApptLink = FlowFactory.link(relationshipBuilding, setAppointment);
     const inboundSetApptLink1 = FlowFactory.link(editOpp, appointmentList);
 
-    const appointListToSetAppointment = FlowFactory.link(appointmentList, reasonForCall);
+    // const appointListToSetAppointment = FlowFactory.link(appointmentList, reasonForCall);
 
     // outbound
     const oppWithNoOutcomes = FlowFactory.noOutcomeList();
 
-    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList( (flowService: FlowService, vars: any, step: any) => {
-      flowService.updateStepOptions(step.id, { query: { contactId: vars.contact }});
+    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList((flowService: FlowService, vars: any, step: any) => {
+      step.state.options['query'] = {
+        contactId: vars.contact
+      };
+
+      return step;
     });
 
-    const webLeads_yes = FlowFactory.condition({
-      variable: 'web_lead_options',
-      equals: 'web_leads'
+    const outboundType_webLeads = FlowFactory.condition('Web Leads',(vars: any) => {
+      return vars['outbound_type'] === 'web_leads';
     }, {}, oppWithNoOutcomes.id);
 
-    const webLeads_no = FlowFactory.condition({
-      variable: 'web_lead_options',
-      equals: 'contacts'
+    const outboundType_contacts = FlowFactory.condition('Search Contacts', (vars: any) => {
+      return vars['outbound_type'] === 'contacts';
     }, {}, searchNListContacts.id);
 
-    const webLeadRouter = FlowFactory.router('Outbound Type', '', [webLeads_yes, webLeads_no]);
-    const webLeadLink = FlowFactory.link(webLeadsType, webLeadRouter);
+    const webLeadRouter = FlowFactory.router('Outbound Type', '', [outboundType_webLeads, outboundType_contacts]);
+    const webLeadLink = FlowFactory.link(outboundType, webLeadRouter);
 
     const createContact = FlowFactory.createContact();
 
     // You''ll never actually get here because we dont' want people randomly creating contacts in flow this way.
     // the step has `createNew: false`
-    const existingContact_no = FlowFactory.condition({
-      variable: ModuleTypes.CONTACT,
-      exists: false
+    const existingContact_no = FlowFactory.condition('New Contact',(vars: any) => {
+      return vars['new_contact'];
     }, {}, createContact.id);
 
-    const existingContact_yes = FlowFactory.condition({
-      variable: ModuleTypes.CONTACT,
-      exists: true
+    const existingContact_yes = FlowFactory.condition('Existing Contact', (vars: any) => {
+      return !vars['new_contact'];
     }, {}, contactOppsWithNoOutcomes.id);
 
     const contactRouter = FlowFactory.router('Contact Exists', '', [existingContact_yes, existingContact_no]);
     const contactLink = FlowFactory.link(searchNListContacts, contactRouter);
 
     // Outbound Web Lead Conditions and Routers
-    const existingOpp_no = FlowFactory.condition({
-      variable: ModuleTypes.DEAL,
-      exists: false
+    const existingOpp_no = FlowFactory.condition('Create Opportunity', (vars: any) => {
+      return vars['new_deal'];
     }, {}, createOpp.id);
 
-    const existingOpp_yes = FlowFactory.condition({
-      variable: ModuleTypes.DEAL,
-      exists: true
+    const existingOpp_yes = FlowFactory.condition('Set Appointment', (vars: any) => {
+      return !vars['new_deal'];
     }, {}, setAppointment.id);
 
     const oppRouter = FlowFactory.router('Opportunity Exists', undefined, [existingOpp_yes, existingOpp_no]);
 
     const oppLink2 = FlowFactory.link(oppWithNoOutcomes, oppRouter);
-
-    // const setApptLink = FlowFactory.link(oppWithNoOutcomes, setAppointment);
-    // const setApptLink2 = FlowFactory.link(contactOppsWithNoOutcomes, setAppointment);
-    // const setApptLink3 = FlowFactory.link(createOpp1, setAppointment);
-    // const oppLink = FlowFactory.link(createContact, createOpp1);
-
-    // const rescheduleAppt = FlowFactory.condition( {
-    //   variable: 'eventAction',
-    //   equals : 'reschedule'
-    // }, {}, setAppointment);
-    //
-    // const cancelAppt = FlowFactory.condition({
-    //   variable: 'eventAction',
-    //   equals: 'cancel'
-    // }, {}, recap);
-    //
-    // const setAppt = FlowFactory.condition({
-    //   variable: 'eventAction',
-    //   exists: false
-    // }, {}, recap);
-    //
-    // const apptRouter = FlowFactory.router('Router', undefined, [rescheduleAppt, cancelAppt, setAppt]);
 
     const apptLink = FlowFactory.link(setAppointment, recap);
 
@@ -253,9 +262,9 @@ export class FlowBuilder {
       .addLink(toCallTypeRouter)
       .addRouter(callTypeRouter)
       .addStep(searchNListLeads)
-      .addStep(webLeadsType)
+      .addStep(outboundType)
       .addStep(appointmentList)
-      .addLink(appointListToSetAppointment);
+    // .addLink(appointListToSetAppointment);
 
     // 'inbound'
     this.process
@@ -265,8 +274,8 @@ export class FlowBuilder {
       .addLink(toOppList)
       .addStep(createLead)
       .addStep(editLead)
-      .addLink(setLeadSourceLink)
       .addStep(setLeadSource)
+      .addLink(setLeadSourceLink)
       .addStep(relationshipBuilding)
       .addLink(toRelationshipBuilding1)
       .addLink(toRelationshipBuilding2)
@@ -276,6 +285,8 @@ export class FlowBuilder {
       .addStep(powerQuestion)
       .addLink(toPowerQuestion)
       .addStep(reasonForCall)
+      .addRouter(eventRouter)
+      .addLink(toeventRouter)
       .addLink(toCancelReschedule)
       .addStep(editOpp)
       .addStep(createOpp)
@@ -308,7 +319,7 @@ export class FlowBuilder {
       // .addRouter(apptRouter)
       .addStep(recap)
       .addLink(apptLink)
-      // .addLink(oppLink)
+    // .addLink(oppLink)
 
     // global
 

@@ -1,6 +1,6 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import { FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, merge } from 'lodash';
 import * as flowActions from './flow.actions';
 import { immerOn } from 'ngrx-immer/store';
 
@@ -76,6 +76,43 @@ export const reducer = createReducer(
     ...state,
     routers: [...state.routers, payload]
   })),
+  on(flowActions.UpdateStepAction, (state, {id, changes, strategy}) => {
+    if (id) {
+      const found = state.steps.find((step: FlowStep) => step.id === id);
+      const index = state.steps.indexOf(found);
+      let clone = cloneDeep(found);
+
+      switch(strategy) {
+        case 'merge': {
+          clone = merge(clone, changes)
+        }
+        break;
+        case 'overwrite': {
+          for(let key of Object.keys(changes)){
+            clone[key] = (<any>changes)[key];
+          }
+        }
+        break;
+      }
+
+      // replace steps
+      let filteredSteps = state.steps.filter((step: any) => step.id !== id);
+      filteredSteps.splice(index, 0, clone);
+      return {...state, steps: filteredSteps};
+    }
+    return state;
+
+  }),
+  // immerOn(flowActions.UpdateStepAction, (state, {id, changes}) => {
+  //   if (id) {
+  //     state.steps.map((step: any) => {
+  //       if(step.id === id) {
+  //         return merge(step, changes);
+  //       }
+  //     });
+  //   }
+  //   return state;
+  // }),
   immerOn(flowActions.UpdateStepOptionsAction, (state, {id, options}) => {
     if (id) {
       const index = state.steps.indexOf(state.steps.find((step: any) => step.id === id));
@@ -257,45 +294,31 @@ export const selectCurrentStepId = createSelector(selectFlow, (flow: FlowState) 
   // }
   // return currentStep as FlowStep;
 });
+export const selectAllVariables = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.steps));
 
-export const selectFlowTimeline = createSelector(selectFirstStepId, selectBreadcrumbs, selectSteps, selectLinks, selectCurrentStepId, (firstStepId, breadcrumbs, steps, links, currentStep) => {
-
-  // these are the steps leading up to this point, we need to be able to traverse the steps backwards
-  // const completed = breadcrumbs.map(stepId => {
-  //   const step = steps.find((step: any) => step.id === stepId);
-  //   // return step;
-  //   return new FlowStep(cloneDeep(step));
-  // });
-
-  // I need all the steps you've passed over
-  // in order until the current step
-  // breadcrumbs track this
-  // but could be modified to use a Set() to avoid duplicates.
-  // what if you used "getNextLink()" and started from the first step,
-  // letting the router conditions figure out the rest. this would be most accurate
-
-  const next: FlowStep[] = [steps.find((step: any) => step.id === firstStepId)];
+export const selectFlowTimeline = createSelector(selectFirstStepId, selectBreadcrumbs, selectSteps, selectLinks, selectCurrentStepId, selectAllVariables, (firstStepId, breadcrumbs, steps, links, currentStep, variables) => {
+  const firstStep = steps.find((step: any) => step.id === firstStepId)
+  const timeline: FlowStep[] = [firstStep];
 
   const getNextLink = (stepId: string | undefined): any => {
     const nextLink = links.find((link: any) => stepId === link.from.id);
 
     // TODO based on the current variables in your flow, this is the path you're on.
     if (nextLink?.to instanceof FlowStep) {
-      next.push(nextLink.to);
+      timeline.push(nextLink.to);
       return getNextLink(nextLink.to.id);
     } else if (nextLink?.to instanceof FlowRouter) {
 
       const init: FlowRouter = nextLink.to;
-      const nextStepId = init.evaluate();
+      const nextStepId = init.evaluate(variables);
       if (nextStepId) {
         let step = steps.find((step: any) => step.id === nextStepId)
-        next.push(step);
+        timeline.push(step);
         return getNextLink(step.id);
       }
 
     }
-    return next as FlowStep[];
-    // return [...completed, ...next] as FlowStep[];
+    return timeline as FlowStep[];
   }
 
   return getNextLink(firstStepId);
@@ -316,7 +339,7 @@ export const selectIsValid = createSelector(selectSteps, selectCurrentStepId, (s
 });
 
 export const selectStepHistory = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
-export const selectAllVariables = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.steps));
+
 // export const selectCurrentStepVariables  = createSelector(selectFlow, (flow: FlowState) => flow.currentStepVariables);
 // export const selectCurrentStepValid  = createSelector(selectFlow, (flow: FlowState) => flow.currentStepValid);
 
