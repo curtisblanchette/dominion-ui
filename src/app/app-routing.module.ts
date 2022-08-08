@@ -12,6 +12,8 @@ const routes: Routes = [
   },
   {
     path: 'login',
+    canActivate: [RoleGuard],
+    data: { roles: ['system', 'admin', 'owner', 'consultant', 'agent'] },
     loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
   },
   {

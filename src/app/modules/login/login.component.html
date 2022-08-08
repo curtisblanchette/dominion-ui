@@ -4,10 +4,12 @@
   <form [formGroup]="loginForm" (ngSubmit)="login()" id="login-form" >
     <img src="assets/img/symbolmark-light-transparent.png" alt="4iiz Logo">
     <fiiz-input
+      #username
       id="username"
       formControlName="username"
       type="text"
       required
+      [autofocus]="true"
       placeholder="Username">
     </fiiz-input>
 

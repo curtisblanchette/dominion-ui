@@ -22,14 +22,21 @@ export class RoleGuard implements CanActivate {
 
   canActivate( route: ActivatedRouteSnapshot, state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let roles = route.data['roles'] as Array<string>;
-
     return this.store.select(fromLogin.selectUser).pipe(
       map((user) => {
         if (user !== null) {
+          if( 'login' == route.url[0].path ){
+            this.router.navigate(['/dashboard']);
+            return false;
+          }
           return roles.some(r=> user.roles.includes(r));
         } else {
-          console.warn( 'Login Required, or user has insufficient privileges.');
-          return false
+          if( 'login' == route.url[0].path || '' == route.url[0].path ){
+            return true;
+          } else {
+            console.warn( 'Login Required, or user has insufficient privileges.');
+            return false;
+          }
         }
     }));
   }
