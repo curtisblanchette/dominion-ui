@@ -166,9 +166,9 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public async ngAfterViewInit() {
     // // if the step was module to resolve the ID for - do it now
-    // if(this.data.hasOwnProperty('resolveId')) {
-    //   this.id = this.data.resolveId;
-    // }
+    if(this.data.hasOwnProperty('resolveId')) {
+      this.id = this.data.resolveId;
+    }
 
     if (this.id) {
       this.getData();

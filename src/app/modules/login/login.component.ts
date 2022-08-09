@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, TemplateRef, ViewChild, Renderer2, ViewChildren, QueryList, HostListener } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -10,6 +10,7 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
 import { checkPasswords } from './login.validators';
 import {  Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { FiizInputComponent } from 'src/app/common/components/ui/forms';
 
 export interface Ilogin{
   username:string,
@@ -31,7 +32,7 @@ export interface Ilogin{
     ])
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   public showForm: string = 'login';
   public loginForm!: FormGroup;
@@ -46,6 +47,19 @@ export class LoginComponent implements OnInit {
   @ViewChild('loginTemplate') loginTemplate: TemplateRef<any>;
   @ViewChild('newUserTemplate') newUserTemplate: TemplateRef<any>;
 
+  usernameInput!: QueryList<FiizInputComponent>;
+  @ViewChildren('username') set inputElRef(elRef: QueryList<FiizInputComponent>) {
+    if (elRef) {
+      this.usernameInput = elRef;      
+    }
+  };
+
+  @HostListener('document:click', ['$event.target'])
+  public onClick(target:Event) {
+    const clicked = this.elementRef.nativeElement.contains(target);
+    console.log('clicked inside',clicked, target);
+  }
+
   constructor(
     private loginService: LoginService,
     private fb: FormBuilder,
@@ -53,10 +67,26 @@ export class LoginComponent implements OnInit {
     private httpBackend: HttpBackend,
     private store: Store<fromLogin.LoginState>,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private renderer: Renderer2,
+    private elementRef: ElementRef
   ) {
     this.isLoading$ = this.store.select(fromLogin.loading);
     this.error$ = this.store.select(fromLogin.error);
+  }
+
+  ngAfterViewInit(): void {
+    if( this.usernameInput ){
+      setTimeout(() => {
+        this.usernameInput.map( (value:FiizInputComponent) => {
+          const elm = value.inputElement.nativeElement;
+          value.autofocus = true;
+          this.renderer.addClass(elm, 'ng-dirty');
+          elm.focus();
+          elm.click();
+        });
+      },2000);
+    }
   }
 
   ngOnInit(): void {
