@@ -58,7 +58,7 @@
     resize: none;
 
     &:focus {
-     @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
+     @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
     }
 
     &:after {

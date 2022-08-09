@@ -30,7 +30,7 @@
         width: 0;
         height: 2px;
         bottom: 0;
-        background: var(--red0);
+        background: var(--red);
       }
     }
   }
@@ -102,7 +102,7 @@
       text-align: right;
     }
     &:focus {
-      @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
+      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
       color: #{var(--text1)};
       outline: none;
     }

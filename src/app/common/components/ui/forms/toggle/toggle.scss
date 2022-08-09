@@ -38,7 +38,7 @@
 
   input:focus + label::before {
     /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-    @include focusRing(#{var(--focusring)}, #{var(--focusring)}-moz-mac);
+    @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
     color: #222;
     outline: none;
   }
