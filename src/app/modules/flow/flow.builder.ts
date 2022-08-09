@@ -55,7 +55,9 @@ export class FlowBuilder {
       return step;
     });
 
-    const reasonForCall = FlowFactory.reasonForCall();
+    const reasonForCall = FlowFactory.reasonForCall(undefined, (flowService: FlowService, vars:any, step:any) => {
+      return step;
+    });
 
     const createLead = FlowFactory.createLead();
     const editLead = FlowFactory.editLead((flowService: FlowService, vars: any, step: any) => {
@@ -135,10 +137,10 @@ export class FlowBuilder {
     const recap = FlowFactory.recap();
 
     const existingEvent_no = FlowFactory.condition('new_event', (vars: any) => {
-      return vars['new_event'];
+      return vars['new_event'] || ( vars.call_reason === 'reschedule-appointment' );
     }, {}, setAppointment.id);
 
-    const existingEvent_yes = FlowFactory.condition('new_event', (vars: any) => {
+    const existingEvent_yes = FlowFactory.condition('existing_event', (vars: any) => {
       return !vars['new_event'];
     }, {
       id: ModuleTypes.EVENT
