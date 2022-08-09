@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.12.17 (2022-08-09)
+
+
+### Bug Fixes
+
+* **II-2759:** ng-invalid and focus styles ([a84d1b6](https://github.com/4iiz/dominion-ui/commit/a84d1b6dd6bda477a76b8bd3058465456230db37))
+
 ### 1.12.16 (2022-08-09)
 
 ### 1.12.15 (2022-08-06)
