@@ -98,8 +98,8 @@ export class FlowBot {
                   await this.services['eventService'].update({id: step.state.data.toCancel, outcomeId: 2}).toPromise();
                   action.status = 'complete';
                   action.message = 'Appointment Cancelled.'
-                  return;
                 }
+                break;
                 case 'reschedule':
                 case 'set': {
                   if(step.state.options.state === 'reschedule') {
@@ -150,7 +150,9 @@ export class FlowBot {
             break;
           }
         }
+
         this.store.dispatch(flowActions.UpdateFlowAction({status: 'complete'}));
+
       } // end status !== 'complete'
 
       // this.actions.push('All information for this call has been captured. Thank you!');
