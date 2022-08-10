@@ -9,3 +9,5 @@ export * from './flow.stepHistory';
 export * from './flow.transition';
 export * from './flow.errors';
 export * from './flow.lifecycleHooks';
+export * from './flow.bot';
+export * from './flow.botAction';

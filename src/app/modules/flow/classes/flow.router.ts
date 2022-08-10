@@ -11,7 +11,7 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
     data: Omit<FlowRouter, OmitMethods>
   ) {
     super(data.nodeText, data.nodeIcon, data.id);
-    this.conditions = data.conditions;
+    this.conditions = data.conditions.map((condition: FlowCondition) => new FlowCondition(condition));
   }
 
   /**
@@ -51,7 +51,7 @@ export class FlowRouter extends FlowNode implements FlowSerialization<FlowRouter
 
   public _deserialize(): FlowRouter {
     const data: FlowRouter = {...cloneDeep(this)};
-    data.conditions = data.conditions.map(condition => new FlowCondition(condition)._deserialize());
+    data.conditions = data.conditions.map(condition => new FlowCondition(condition));
     return new FlowRouter(data);
   }
 

@@ -38,7 +38,7 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
   public async ngAfterContentInit() {
 
     console.log('FlowListComponent AfterContentInit');
-    this.flowService.updateStep(this.flowStepId, {variables: {[`new_${this.module}`]: false}});
+    // this.flowService.updateStep(this.flowStepId, {variables: {[`new_${this.module}`]: false}});
   }
 
   public async ngOnInit() {
@@ -66,10 +66,11 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
       if (value.record.leadId || (value.record.leads && value.record.leads.length)) {
         variables[ModuleTypes.LEAD] = value.record.leadId || value.record.leads[0]?.id;
       }
-      this.flowService.updateStep(this.flowStepId, {variables}, 'merge');
+      variables[`new_${this.module}`] = false;
+      this.flowService.updateStep(this.flowStepId, {variables, valid: true}, 'merge');
     } else {
       // remove variables
-      this.flowService.updateStep(this.flowStepId, {variables: {}}, 'overwrite');
+      this.flowService.updateStep(this.flowStepId, {variables: {}, valid: false}, 'overwrite');
     }
 
     return this.values.next(value);

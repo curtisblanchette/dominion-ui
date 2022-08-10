@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { firstValueFrom, map, delay } from 'rxjs';
@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
-import * as flowActions from '../../store/flow.actions';
 import { FlowService } from '../../flow.service';
 import * as fromFlow from '../../store/flow.reducer';
 import { ModuleTypes } from '../../../../data/entity-metadata';
@@ -19,7 +18,7 @@ import { CustomDataService } from '../../../../data/custom.dataservice';
 import { RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
-
+import { BotAction, FlowBot } from '../../classes';
 
 @UntilDestroy()
 @Component({
@@ -32,6 +31,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   @Input('data') override data: any;
   public form: FormGroup;
+  public allValid$: Observable<boolean>;
   public callTypes$: Observable<RadioItem[]>;
   public outboundTypes$: Observable<RadioItem[]>;
   public callReasons$: Observable<DropdownItem[]>;
@@ -44,7 +44,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public formValues:{ [ key:string ] : any } = {};
   public addressState:string = 'create';
   public variables: any;
+  public status$: Observable<string>;
 
+  @ViewChild('botComment') botComment: ElementRef;
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
   constructor(
@@ -52,6 +54,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     public flowService: FlowService,
     private fb: FormBuilder,
     private http: HttpClient,
+    private flowBot: FlowBot,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
     router: Router
@@ -71,6 +74,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       { id : 'not-working', label : 'Not Working (Disconnected)' },
     ]);
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
+    this.status$ = this.store.select(fromFlow.selectFlowStatus);
 
     this.store.select(fromFlow.selectCurrentStepId).subscribe(currentStepId => {
       if(currentStepId) {
@@ -80,7 +84,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.store.select(fromFlow.selectAllVariables).subscribe(variables => {
       this.variables = variables;
     });
-
+    this.allValid$ = this.store.select(fromFlow.selectFlowTimeline).pipe(
+      map(steps => {
+        const passing = steps.every((value: any) => !!value.valid);
+        return passing;
+      })
+    );
 
   }
 
@@ -89,7 +98,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       if( await this.flowService.getVariable('address') ){
         this.addressState = 'edit';
       }
-      this.initForm();
+      this.initStep();
     }
   }
 
@@ -97,31 +106,31 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.dataComponents.map( (item:FiizDataComponent, index:number) => {
 
       item.values.subscribe( value => {
-        this.flowService.updateStep(this.flowStepId, { variables: value });
+        this.flowService.updateStep(this.flowStepId, { variables: value, valid: item.form.valid });
         this.formValues[item.module] = value;
       });
 
-      item.isValid.subscribe( valid => {
-        this.formValidation[item.module] = valid;
-        if( 'relationship-building' == this.data.template ){
-          if( Object.values(this.formValidation).every(Boolean) ){
-            this.flowService.setValidity(this.flowStepId, true);
-          } else {
-            this.flowService.setValidity(this.flowStepId, false);
-          }
-        } else {
-          if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
-            this.flowService.setValidity(this.flowStepId, true);
-          } else {
-            this.flowService.setValidity(this.flowStepId, false);
-          }
-        }
-      });
+      // item.isValid.subscribe( valid => {
+      //   this.formValidation[item.module] = valid;
+      //   if( 'relationship-building' == this.data.template ){
+      //     if( Object.values(this.formValidation).every(Boolean) ){
+      //       this.flowService.setValidity(this.flowStepId, true);
+      //     } else {
+      //       this.flowService.setValidity(this.flowStepId, false);
+      //     }
+      //   } else {
+      //     if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
+      //       this.flowService.setValidity(this.flowStepId, true);
+      //     } else {
+      //       this.flowService.setValidity(this.flowStepId, false);
+      //     }
+      //   }
+      // });
 
     });
   }
 
-  public async initForm() {
+  public async initStep() {
     const form: any = {};
     let valid: boolean = false;
 
@@ -130,23 +139,22 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       case 'call-type': {
         form['call_type'] = new FormControl(this.variables['call_type'] || null, [Validators.required]);
       }
-        break;
+      break;
 
       case 'outbound-type': {
         form['outbound_type'] = new FormControl(this.variables['outbound_type'] || null, [Validators.required]);
       }
-        break;
+      break;
 
       case 'power-question': {
-        this.flowService.updateStep(this.flowStepId, {variables: { appointment_action: 'set' }});
-        // this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: { appointment_action: 'set'}}));
+        this.flowService.updateStep(this.flowStepId, {valid: true, variables: { appointment_action: 'set' }});
       }
-        break;
+      break;
 
       case 'reason-for-call': {
         form['call_reason'] = new FormControl(this.variables['call_reason'] || null, [Validators.required]);
       }
-        break;
+      break;
 
       case 'follow-up-script': {
         this.callOutcomes$ = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(map((res: any) => {
@@ -155,43 +163,50 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
         form['answered'] = new FormControl(this.variables['answered'] || null, [Validators.required]);
         form['call_outcome'] = new FormControl(this.variables['call_outcome'] || null, [Validators.required]);
-
       }
-        break;
+      break;
 
       case 'relationship-building': {
 
       }
-        break;
+      break;
 
       case 'recap' : {
 
       }
-        break;
+      break;
+
+      case 'end': {
+        this.flowBot.run(this.flowService);
+
+      }
+      break;
 
       default:
         valid = true;
-        break;
+      break;
     }
 
     if(Object.keys(form).length) {
 
       this.form = this.fb.group(form);
-      valid = this.form.valid;
+      // valid = this.form.valid;
 
-      this.form.valueChanges.subscribe((value: any) => {
-        this.flowService.updateStep(this.flowStepId, { variables: value });
-      });
-
-      this.form.statusChanges.subscribe((value: any) => {
-        this.flowService.setValidity(this.flowStepId, value === 'VALID');
-      });
+      // this.form.valueChanges.subscribe((value: any) => {
+      //   this.flowService.updateStep(this.flowStepId, { variables: value, valid: this.form.valid });
+      // });
+      //
+      // this.form.statusChanges.subscribe((value: any) => {
+      //   this.flowService.setValidity(this.flowStepId, value === 'VALID');
+      // });
 
       of('').pipe(
         untilDestroyed(this),
         delay(100)
       ).subscribe(() => {
-        this.flowService.setValidity(this.flowStepId, valid);
+        this.form.valueChanges.subscribe((value: any) => {
+          this.flowService.updateStep(this.flowStepId, { variables: value, valid: this.form.valid });
+        });
       });
     }
   }
@@ -202,7 +217,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'relationship-building': {
         const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.LEAD);
-        leadForm?.save();
+        leadForm?.save(true);
       }
       break;
 
@@ -214,12 +229,20 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         addressForm?.form.addControl('associate', new FormControl({contact : contactId},[]));
         contactForm?.form.markAsDirty();
 
-        contactForm?.save();
-        addressForm?.save();
+        contactForm?.save(true);
+        addressForm?.save(true);
       }
       break;
 
     }
+  }
+
+  public runBot() {
+    this.flowBot.run(this.flowService);
+  }
+
+  get botActions(): BotAction[] {
+    return this.flowBot.actions;
   }
 
   public get isValid() {

@@ -5,12 +5,13 @@ import { FlowRouter } from './flow.router';
 import { FlowLink } from './flow.link';
 import { FlowStepHistoryEntry } from './flow.stepHistory';
 import * as flowActions from '../store/flow.actions';
-import { Inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { accumulateVariables } from '../store/flow.reducer';
+import { FlowBot } from './flow.bot';
+import { Injectable } from '@angular/core';
 
+@Injectable({providedIn: 'root'})
 export class FlowProcess {
-// export class FlowProcess extends FlowBaseModel {
 
   public id: string | undefined;
   public steps: FlowStep[] = [];
@@ -26,20 +27,17 @@ export class FlowProcess {
   public links$: Subscription;
   public currentStepId$: Subscription;
   public firstStepId$: Subscription;
-  public stepHistory$: Subscription;
   public variables$: Subscription;
 
   constructor(
-    @Inject(Store) private store: Store<fromFlow.FlowState>,
-    id?: string,
+    private store: Store<fromFlow.FlowState>,
+    public bot: FlowBot,
   ) {
 
-    if(id) {
-      this.store.dispatch(flowActions.SetProcessIdAction({processId: id}));
-    }
-
     this.store.select(fromFlow.selectProcessId).subscribe(id => {
-      this.id = id;
+      if(id) {
+        this.id = id;
+      }
     });
     this.steps$ = this.store.select(fromFlow.selectSteps).subscribe(steps => {
       this.steps = steps;
@@ -60,6 +58,8 @@ export class FlowProcess {
     this.firstStepId$ = this.store.select(fromFlow.selectFirstStepId).subscribe(id => {
       this.firstStepId = id;
     });
+
+    // this.bot = new FlowBot(this.store, this.flowService, this.entityCollectionServiceFactory);
 
     // this.stepHistory$ = this.store.select(fromFlow.selectStepHistory).subscribe(stepHistory => {
     //   this.stepHistory = stepHistory;

@@ -8,7 +8,8 @@
   <div class="actions">
     <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['default']">{{data.buttons['default'].label}}</fiiz-button>
     <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['cancel']">{{data.buttons['cancel'].label}}</fiiz-button>
-    <fiiz-button primary (click)="onSubmit()" *ngIf="data.buttons['submit']">{{data.buttons['submit'].label}}</fiiz-button>
+    <fiiz-button primary (click)="onSubmit()" *ngIf="data.buttons['submit'] && data.buttons['submit'].class !== 'warning'">{{data.buttons['submit'].label}}</fiiz-button>
+    <fiiz-button primary warning (click)="onSubmit()" *ngIf="data.buttons['submit'] && data.buttons['submit'].class === 'warning'">{{data.buttons['submit'].label}}</fiiz-button>
   </div>
 </div>
 

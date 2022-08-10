@@ -20,19 +20,11 @@
     <div style="position: absolute; top: 15%; left: 0; right: 0; bottom: 25%;">
       <ng-template flowHost></ng-template>
       <footer>
-        <!-- <fiiz-button (click)="onBack($event)" stroked *ngIf="(stepHistory$ | async)?.length > 0">Back</fiiz-button> -->
-        <fiiz-button primary type="submit" [disabled]="!(valid$ | async)" (click)="onNext($event)">Continue</fiiz-button>
+        <fiiz-button (click)="onBack($event)" stroked *ngIf="(status$ | async) !== 'complete'">Back</fiiz-button>
+        <fiiz-button primary type="submit" [disabled]="!(valid$ | async)" *ngIf="!(isLastStep$ | async)" (click)="onNext($event)">Continue</fiiz-button>
       </footer>
     </div>
   </section>
-
-
-  <!--  <section class="flow-layout__right">-->
-  <!--&lt;!&ndash;    <fiiz-dropdown type="button" (onClick)="handleFabAction($event)" [items]="menuItems" position="bottom-right"></fiiz-dropdown>&ndash;&gt;-->
-  <!--    <ng-container *ngTemplateOutlet="flowNotes"></ng-container>-->
-  <!--    <fiiz-select [items]="objections$" label="Objection"></fiiz-select>-->
-  <!--    <fiiz-button warning class="full-width" style="align-self: flex-end;" stroked (click)="endCall()">End Call</fiiz-button>-->
-  <!--  </section>-->
 
 </div>
 

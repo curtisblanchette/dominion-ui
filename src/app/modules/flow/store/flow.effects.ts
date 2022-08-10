@@ -9,8 +9,10 @@ import { FlowService } from '../flow.service';
 import { FlowStep } from '../index';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { cloneDeep } from 'lodash';
+import { FlowState } from './flow.reducer';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class FlowEffects {
 
   constructor(
@@ -23,10 +25,21 @@ export class FlowEffects {
 
   }
 
-  onUpdateCurrentStep$ = createEffect((): any =>
+  onUpdateFlow = createEffect((): any =>
     this.actions$.pipe(
-      ofType(flowActions.UpdateCurrentStepIdAction),
-      switchMap(async (action: { id: string }) => this.flowService.renderComponent(action.id))
+      ofType(flowActions.UpdateFlowAction),
+      switchMap(async (action: Partial<FlowState>) => {
+
+        // new process started
+        if(action.processId) {
+          return this.http.post(`${environment.dominion_api_url}/flow/summaries`, { id: action.processId });
+        }
+
+        if(action.currentStepId) {
+          return this.flowService.renderComponent(action.currentStepId)
+        }
+
+      })
     ), { dispatch: false }
   );
 
@@ -39,15 +52,6 @@ export class FlowEffects {
       })
     ), { dispatch: false }
   );
-
-  onNewProcess$ = createEffect((): any =>
-    this.actions$.pipe(
-      ofType(flowActions.SetProcessIdAction),
-      mergeMap( (action: any) => (
-        this.http.post(`${environment.dominion_api_url}/flow/summaries`, { id: action.processId })
-      ))
-    ), { dispatch: false }
-  )
 
   flowSummary$ = createEffect((): any =>
     this.actions$.pipe(
@@ -95,7 +99,7 @@ export class FlowEffects {
           }
 
           if(step?.id) {
-            return flowActions.UpdateCurrentStepIdAction({ id: step.id });
+            return flowActions.UpdateFlowAction({currentStepId: step.id });
           }
 
         }
@@ -129,7 +133,7 @@ export class FlowEffects {
             let code = currentStep?.afterRoutingTriggers;
             code = code.concat(sourceMapComment);
             const afterFn = eval(code);
-            const updates = await afterFn(this.flowService, variables, currentStep);
+            const updates = await afterFn(this.flowService, variables, {...cloneDeep(currentStep)});
             if(updates) {
               this.flowService.updateStep(step.id, updates);
             }
@@ -140,7 +144,7 @@ export class FlowEffects {
             let code = (<FlowStep>step).beforeRoutingTriggers
             code = code.concat(sourceMapComment);
             const beforeFn = eval(code);
-            const updates = await beforeFn(this.flowService, variables, step);
+            const updates = await beforeFn(this.flowService, variables, {...cloneDeep(step)});
             if(updates) {
               this.flowService.updateStep(step.id, updates);
             }
@@ -149,7 +153,7 @@ export class FlowEffects {
 
           // if(step?.id){
           //@ts-ignore
-            return flowActions.UpdateCurrentStepIdAction({ id: step.id });
+            return flowActions.UpdateFlowAction({currentStepId: step.id });
           // }
 
         }

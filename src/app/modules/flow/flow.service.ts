@@ -1,5 +1,5 @@
-import { FlowRouter, FlowStep, FlowHostDirective, FlowStepHistoryEntry, NoStepFoundError, FlowListComponent, FlowNode, FlowStepClassMap, FlowTextComponent } from './index';
-import { Injectable } from '@angular/core';
+import { FlowRouter, FlowStep, FlowHostDirective, NoStepFoundError, FlowListComponent, FlowStepClassMap, FlowTextComponent } from './index';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
@@ -18,7 +18,6 @@ import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
-import { FlowProcess } from './classes/flow.process';
 
 export interface IHistory {
   prevStepId: string;
@@ -47,18 +46,24 @@ export class FlowService {
   private officeService: EntityCollectionService<DominionType>;
   private callsService: EntityCollectionService<DominionType>;
 
+  private renderer: Renderer2;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<fromFlow.FlowState>,
+    private rendererFactory: RendererFactory2,
     private dataServiceFactory: DefaultDataServiceFactory,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     private http: HttpClient,
     public builder: FlowBuilder
   ) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
 
     // Use the collection services to clear all entity caches after the call ends.
+    // TODO we're going to do this in the bot.
     this.leadService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD) as EntityCollectionService<DominionType>;
     this.contactService = this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT) as EntityCollectionService<DominionType>;
     this.dealService = this.entityCollectionServiceFactory.create(ModuleTypes.DEAL) as EntityCollectionService<DominionType>;
@@ -109,19 +114,21 @@ export class FlowService {
 
   public async start(resume = false): Promise<any> {
     if (resume) return this.resume();
-    // we're starting a new guy
+
+    // we're starting a new process
+    this.store.dispatch(flowActions.UpdateFlowAction({ processId: uuidv4(), status: 'pending' }));
     await this.builder.build();
     const step: FlowStep = this.builder.process.steps[0];
 
     if (step && step.id) {
-      return this.store.dispatch(flowActions.UpdateCurrentStepIdAction({id: step.id}));
+      return this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: step.id}));
     }
     throw new NoStepFoundError();
   }
 
   public async resume(): Promise<any> {
     // resuming from store
-    this.builder.process = new FlowProcess(this.store);
+    // this.builder.process = new FlowProcess(this.store, this.renderer,  this.entityCollectionServiceFactory);
     const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
 
     if (vars['call']) {
@@ -129,7 +136,7 @@ export class FlowService {
       this.noteId = <string>vars['note'];
     }
 
-    return this.store.dispatch(flowActions.UpdateCurrentStepIdAction({id: this.builder.process.currentStepId}));
+    return this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: this.builder.process.currentStepId}));
   }
 
   public async startCall(direction: string): Promise<void> {
@@ -185,16 +192,27 @@ export class FlowService {
     // const nextIndex = this.builder.process.breadcrumbs.indexOf(step.id);
     // const currentIndex = this.builder.process.breadcrumbs.indexOf(this.builder.process.currentStepId);
     // const isBackAction =  nextIndex < currentIndex;
-    this.store.dispatch(flowActions.UpdateCurrentStepIdAction({id}));
+    this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: id}));
     // }
   }
 
-  public findNextStep(): FlowNode | FlowStep | FlowRouter | undefined {
+  public findNextStep(): FlowStep | FlowRouter | undefined {
     if (this.builder.process && this.builder.process.links) {
       const link = this.builder.process.links.find((link: any) => {
-        return link.from.id === this.builder.process.currentStepId
+        return link.from === this.builder.process.currentStepId
       });
-      return <FlowStep | FlowRouter>link?.to;
+
+      const step = this.builder.process.steps.find(step => step.id === link?.to);
+
+      if(step) {
+        return step;
+      }
+
+      const router = this.builder.process.routers.find(router => router.id === link?.to);
+      if(router) {
+        return router;
+      }
+      // return <FlowStep | FlowRouter>link?.to;
     }
   }
 
@@ -239,9 +257,9 @@ export class FlowService {
       this.cmpReference.instance.onBack();
     }
 
-    const completedSteps = [...(await firstValueFrom(this.store.select(fromFlow.selectCompletedSteps)))];
-    completedSteps.pop() // remove the current step
-    const prevStep = completedSteps.pop(); // grab the last item from the array
+    const timeline = [...(await firstValueFrom(this.store.select(fromFlow.selectFlowTimeline)))];
+    const currentStepIndex = timeline.indexOf(timeline.find(step => step.id === this.cmpReference.instance.flowStepId));
+    const prevStep = timeline[currentStepIndex - 1];
 
     if (prevStep?.id) {
       this.createHistoryEntry();
@@ -298,10 +316,10 @@ export class FlowService {
          * @param {values} EventEmitter
          * @param {onCreate} EventEmitter
          */
-        this.cmpReference.instance.values.subscribe((value: any) => {
-          this.setValidity(step.id, !!value.record);
-        });
 
+        this.cmpReference.instance.values.subscribe((value: any) => {
+
+        });
 
         this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
           const _injector = this.flowHost.viewContainerRef.parentInjector;
@@ -323,14 +341,6 @@ export class FlowService {
     }
   }
 
-  public setValidity(stepId: string | undefined, valid: boolean) {
-    this.store.dispatch(flowActions.UpdateStepAction({
-      id: stepId,
-      changes: { valid: valid },
-      strategy: 'overwrite'
-    }));
-  }
-
   public addVariables(data: any): void {
     this.store.dispatch(flowActions.UpdateStepAction({
       id: this.builder.process.currentStepId,
@@ -341,13 +351,6 @@ export class FlowService {
 
   public updateStep(stepId: string| undefined, changes: Partial<FlowStep>, strategy: 'merge' | 'overwrite' = 'merge') {
     this.store.dispatch(flowActions.UpdateStepAction({id: stepId, changes, strategy}))
-  }
-
-  public deleteVariables(stepId: string | undefined, keys: string[]) {
-
-  }
-  public updateStepOptions(stepId: string | undefined, options: any) {
-    // this.store.dispatch(flowActions.UpdateStepOptionsAction({id: stepId, options}))
   }
 
   public async getVariable(key?: string) {

@@ -18,20 +18,6 @@ export const hydrationMetaReducer = (
       }
     }
 
-    if(action.type === flowActions.AddStepAction.type) {
-      // console.log(action);
-      // action.payload = action.payload._serialize();
-    }
-
-    if(action.type === flowActions.AddRouterAction.type) {
-      // const serialized = action.payload._serialize();
-      // action.payload = serialized;
-    }
-
-    if(action.type === flowActions.UpdateCurrentStepIdAction.type) {
-      // action.step.serialize();
-    }
-
     const nextState = reducer(state, action);
 
 

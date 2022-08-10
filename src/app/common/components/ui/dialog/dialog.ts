@@ -16,9 +16,11 @@ export class FiizDialogComponent {
         [key: string]: {
           label: string,
           type: 'submit' | 'cancel' | 'custom' | 'default'
+          class?: string;
           fn?: Function
         }
-      }
+      };
+
     },
     public dialog: DialogRef
   ) {
@@ -29,6 +31,7 @@ export class FiizDialogComponent {
         default: {
           label: 'Ok',
           type: 'default',
+          class: 'warning',
           fn: () => {}
         }
       }

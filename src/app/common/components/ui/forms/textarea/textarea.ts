@@ -21,9 +21,10 @@ export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewIni
   @ViewChild('textarea', { read: ElementRef }) textarea:ElementRef;
 
   @Input('height') height = '35px';
+  value: string;
 
-  onChange:any;
-  onTouched:any;
+  onChange: (value: any) => void = () => {};
+  onTouched: Function = () => {};
 
   constructor(private renderer: Renderer2) {}
 
@@ -36,7 +37,7 @@ export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewIni
       const div = this.textarea.nativeElement;
       this.renderer.setProperty(div, 'textContent', value);
     }
-
+    this.value = value;
   }
 
   registerOnChange(fn: any): void {
@@ -54,8 +55,9 @@ export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewIni
   }
 
   change($event:any) {
-    this.onChange($event.target.value);
-    this.onTouched($event.target.value);
+    this.value = $event.target.value;
+    this.onChange(this.value)
+    this.onTouched(this.value);
   }
 
 }

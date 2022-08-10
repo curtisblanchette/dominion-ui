@@ -1,12 +1,13 @@
-@import '../../../../../assets/css/variables';
+@import '../../../../../assets/css/mixins';
 
+:host {
+  @include hideScrollBars();
+}
 .flex_main_wrapper {
 
   &__slots {
 
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
+    display: grid;
     align-content: center;
     justify-content: center;
     align-items: flex-start;
@@ -18,7 +19,7 @@
       color: var(--green1);
     }
 
-    &__time {
+    &__times {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;

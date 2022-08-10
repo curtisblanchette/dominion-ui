@@ -8,5 +8,5 @@ export declare interface FlowSerialization<T> {
    * Deserializes JSON representation to JS Object
    * @returns T
    */
-  _deserialize(): T;
+  // _deserialize(): T;
 }

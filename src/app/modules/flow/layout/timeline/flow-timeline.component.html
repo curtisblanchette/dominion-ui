@@ -1,10 +1,10 @@
 <div class="wrapper">
   <section class="flow-timeline" #content>
-    <ng-container *ngFor="let step of (steps$ | async)">
-      <div class="flow-timeline__item" #item tabindex="0" *ngIf="step" [id]="step.id"  [ngClass]="{'active': step.id === (currentStepId$ | async) }" (click)="onClick(step.id)">
+    <ng-container *ngFor="let step of (steps$ | async); let last = last">
+      <div class="flow-timeline__item" #item tabindex="0" *ngIf="step" [id]="step.id"  [ngClass]="{'active': step.id === (currentStepId$ | async) }" (click)="!last && onClick(step.id)">
         <div class="flow-timeline__item__icon fa fa-{{step.nodeIcon}}"></div>
         <div class="flow-timeline__item__title">{{step.nodeText }}</div>
-        <div class="flow-timeline__item__icon fa fa-check" *ngIf="step.valid"></div>
+        <div class="flow-timeline__item__icon fa fa-check" *ngIf="step.valid && !last"></div>
       </div>
     </ng-container>
   </section>

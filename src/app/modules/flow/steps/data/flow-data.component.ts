@@ -1,13 +1,13 @@
 import { AfterContentInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from '../../store/flow.reducer';
-import * as flowActions from '../../store/flow.actions';
 import { FiizDataComponent, FiizDataComponentOptions } from '../../../../common/components/ui/data/data.component';
 import { OnBack, OnNext, OnSave } from '../../classes';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { FlowService } from '../../flow.service';
+import { DominionType } from '../../../../common/models';
 
 @UntilDestroy()
 @Component({
@@ -15,7 +15,7 @@ import { FlowService } from '../../flow.service';
   template: `
     <h3 style="">{{data.title}}</h3>
     <div *ngIf="options.dictation">{{options.dictation}}</div>
-    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (isValid)="setValidity($event)" (onSuccess)="onSuccess($event)"></fiiz-data>
+    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (onSuccess)="onSuccess($event)" (values)="onChange($event)"></fiiz-data>
   `,
   styleUrls: ['../_base.scss', './flow-data.component.scss']
 })
@@ -37,28 +37,45 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
       });
   }
 
+  public onChange(value: any) {
+    if(value) {
+      this.flowService.updateStep(this.flowStepId, { valid: this.cmp.form.valid, state: { data: value }});
+    }
+  }
+
   ngAfterContentInit() {
+    if(this.data[this.module]) {
+      // get data from step
+      console.log('step data', this.data[this.module]);
+      this.cmp.form.setValue(this.data[this.module], {emitEvent: true});
+    }
+
     this.store.select(fromFlow.selectVariableByKey(this.module)).pipe(
       untilDestroyed(this),
       distinctUntilChanged()
     ).subscribe(id => {
-      this.data.id = id;
+      this.flowService.updateStep(this.flowStepId, { state: { data: { id }} }, 'merge');
+      // this.data.id = id;
     });
   }
 
-  setValidity(isValid: boolean) {
-    this.flowService.setValidity(this.flowStepId, isValid );
-  }
-
   onSave(): Promise<any> {
-    this.store.dispatch(flowActions.AddMediatorAction({ action: `${this.options.state}-${this.module}` }));
-    return this.cmp.save();
+    return this.cmp.save(false);
   }
 
-  onSuccess(record: {[key:string]: string }) {
+  onSuccess(record: DominionType) {
     // variables to be saved after a step should come back here.
-    this.flowService.updateStep(this.flowStepId, { variables: record, valid: true });
-    // this.flowService.addVariables(record)
+    this.flowService.updateStep(this.flowStepId, {
+      variables: {
+        [this.module]: record.id
+      },
+      valid: true,
+      state: {
+        data: {
+          [this.module]: record
+        }
+      }
+    }, 'merge');
   }
 
   onBack() {
@@ -72,6 +89,7 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
   }
 
   ngOnDestroy() {
+
     console.log("FlowDataComponent Destroyed")
   }
 

@@ -4,7 +4,7 @@ import * as fromFlow from '../../store/flow.reducer';
 import { FlowStep } from '../../classes';
 import { fromEvent, Observable, of, skip, tap } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../flow.service';
 
 @UntilDestroy()
@@ -15,7 +15,7 @@ import { FlowService } from '../../flow.service';
 })
 export class FlowTimelineComponent implements AfterViewInit {
 
-  public steps$: Observable<Promise<FlowStep>>;
+  public steps$: Observable<FlowStep[]>;
   public currentStepId$: Observable<string | undefined>;
 
   @Output('onSelect') onSelect: EventEmitter<any> = new EventEmitter<any>();
@@ -46,10 +46,7 @@ export class FlowTimelineComponent implements AfterViewInit {
       }
 
     });
-
-
     this.steps$ = this.store.pipe(select(fromFlow.selectFlowTimeline), distinctUntilChanged());
-
   }
 
   public ngAfterViewInit() {

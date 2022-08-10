@@ -58,8 +58,14 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'end'">
-      <p>All information for this call has been captured. Thank you!</p>
-      <fiiz-button primary (click)="endCall()">End Call</fiiz-button>
+      <div style="display: flex; justify-content: space-around; gap: 2em;">
+        <div class="bot-message" *ngFor="let action of botActions" style="display:flex; flex-direction: column; align-items: center; justify-content: space-around;">
+          <i class="fa {{action.status === 'complete' ? 'fa-check' : action.icon }}" style="font-size:32px;"></i>
+          {{action.message}}
+        </div>
+      </div>
+
+      <fiiz-button *ngIf="(status$ | async) === 'complete'" primary (click)="endCall()" [disabled]="!(allValid$ | async)">End Call</fiiz-button>
     </ng-template>
 
 

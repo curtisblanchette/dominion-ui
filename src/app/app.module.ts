@@ -51,13 +51,7 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     StoreModule.forRoot({
       app: reducer
     }, {
-      metaReducers,
-      runtimeChecks: {
-        // strictStateSerializability: true,
-        // strictActionSerializability: true,
-        // strictStateImmutability: false,
-        // strictActionImmutability: false,
-      }
+      metaReducers
     }),
     EffectsModule.forRoot([
       AppEffects

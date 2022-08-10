@@ -95,12 +95,12 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
     return this;
   }
 
-  public _deserialize(): FlowCondition {
-    const data: FlowCondition = {...cloneDeep(this)};
-    // this.evaluation = fn;
-    // data.component = new (<any>FlowStep)[data.component]();
-    return new FlowCondition(data);
-  }
+  // public _deserialize(): FlowCondition {
+  //   // const data: FlowCondition = {...cloneDeep(this)};
+  //   // this.evaluation = fn;
+  //   // data.component = new (<any>FlowStep)[data.component]();
+  //   return new FlowCondition();
+  // }
 
   public getVariable(key: string): any {
     const state: FlowState = JSON.parse(localStorage.getItem('state') || '').flow;

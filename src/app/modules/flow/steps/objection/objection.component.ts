@@ -67,7 +67,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
 
   public async onSave():Promise<any> {
     this.dataComponents.map( (cmp:FiizDataComponent, index:number) => {
-      cmp.save();
+      cmp.save(false);
     });
   }
 
@@ -78,8 +78,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
     }
   }
   public handleChange(objection: any) {
-    this.flowService.addVariables({call_objectionId: objection.id});
-    this.flowService.setValidity(this.flowStepId, true);
+    this.flowService.updateStep(this.flowStepId, {variables: {call_objectionId: objection.id}, valid: true});
   }
 
   public override ngOnDestroy() {

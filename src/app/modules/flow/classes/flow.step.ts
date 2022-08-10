@@ -1,6 +1,6 @@
 import { FlowNode } from "./index";
-import { cloneDeep } from 'lodash';
 import { FlowSerialization } from './flow.serialization';
+import { OnDestroy } from '@angular/core';
 
 type OmitMethods = '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed';
 
@@ -18,8 +18,8 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   public valid?: boolean;
   public variables?: {[key: string]: any};
 
-  private readonly _constructedAt: number = 0;
-  private _destroyedAt: number = 0;
+  public _constructedAt?: number;
+  public _destroyedAt?: number;
 
   constructor(
     data: Omit<FlowStep, OmitMethods>
@@ -27,6 +27,7 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     super(data.nodeText, data.nodeIcon, data.id);
     this.component = data.component;
     this.state = data.state;
+    this._constructedAt = 0;
 
     if(typeof data.beforeRoutingTriggers === 'function') {
       this.beforeRoutingTriggers = String(data.beforeRoutingTriggers);
@@ -39,7 +40,13 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
       this.afterRoutingTriggers = data.afterRoutingTriggers;
     }
 
-    this._constructedAt = new Date().getTime();
+    // only modify constructed at if its unset
+    if(data._constructedAt) {
+      this._constructedAt = new Date().getTime();
+    } else {
+      this._constructedAt = data._constructedAt;
+    }
+
     this.valid = data.valid || false;
     this.variables = data.variables || {};
 
@@ -58,6 +65,9 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   }
 
   get elapsed() {
+    if(!this._destroyedAt || !this._constructedAt) {
+        return 0;
+    }
     return this._destroyedAt - this._constructedAt;
   }
 
@@ -79,9 +89,9 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   }
 
   public _deserialize(): FlowStep {
-    const data: FlowStep = { ...cloneDeep(this) };
+    const data: FlowStep = { ...this };
 
-    // data.component = new (<FlowStepdata.component)();
     return new FlowStep(data);
   }
+
 }

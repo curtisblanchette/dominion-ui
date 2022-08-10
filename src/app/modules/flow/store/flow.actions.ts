@@ -1,16 +1,14 @@
 import { createAction, props } from '@ngrx/store';
 import { FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
+import { FlowState } from './flow.reducer';
 
 export const ActionTypes = {
-  SET_FIRST_STEP_ID: '[Flow] Set First Step Id',
+  UPDATE_FLOW: '[Flow] Set First Step Id',
   ADD_STEP: '[Flow] Add FlowStep',
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',
 
   UPDATE_STEP: '[Flow] Update Step',
-  UPDATE_STEP_OPTIONS: '[Flow] Update Step Options',
-  UPDATE_STEP_VALIDITY: '[Flow] Update Step Validity',
-  UPDATE_STEP_VARIABLES: '[Flow] Update Step Variables',
 
   UPDATE_CURRENT_STEP_ID: '[Flow] Update Current Step Id',
   SET_STEP_HISTORY: '[Flow] Set Step History',
@@ -31,29 +29,13 @@ export const AddStepAction = createAction(
   ActionTypes.ADD_STEP,
   props<{ payload: FlowStep }>()
 );
-export const SetFirstStepIdAction = createAction(
-  ActionTypes.SET_FIRST_STEP_ID,
-  props<{ id: string }>()
+export const UpdateFlowAction = createAction(
+  ActionTypes.UPDATE_FLOW,
+  props<Partial<FlowState>>()
 );
 export const UpdateStepAction = createAction(
   ActionTypes.UPDATE_STEP,
   props<{ id: string | undefined, changes: Partial<FlowStep>, strategy: 'merge'|'overwrite' }>()
-);
-
-
-export const UpdateStepOptionsAction = createAction(
-  ActionTypes.UPDATE_STEP_OPTIONS,
-  props<{ id: string | undefined, options: any; }>()
-);
-
-export const UpdateStepValidityAction = createAction(
-  ActionTypes.UPDATE_STEP_VALIDITY,
-  props<{ id: string | undefined, valid: boolean; }>()
-);
-
-export const UpdateStepVariablesAction = createAction(
-  ActionTypes.UPDATE_STEP_VARIABLES,
-  props<{ id: string | undefined, variables: any; }>()
 );
 
 export const AddLinkAction = createAction(
@@ -61,19 +43,9 @@ export const AddLinkAction = createAction(
   props<{ payload: FlowLink }>()
 );
 
-export const SetProcessIdAction = createAction(
-  ActionTypes.SET_PROCESS_ID,
-  props<{ processId: string }>()
-);
-
 export const AddRouterAction = createAction(
   ActionTypes.ADD_ROUTER,
   props<{ payload: FlowRouter }>()
-);
-
-export const UpdateCurrentStepIdAction = createAction(
-  ActionTypes.UPDATE_CURRENT_STEP_ID,
-  props<{id: string}>()
 );
 
 export const SetStepHistoryAction = createAction(
@@ -102,10 +74,5 @@ export const PrevStepAction = createAction(
 
 export const ClearAction = createAction(
   ActionTypes.CLEAR
-)
-
-export const AddMediatorAction = createAction(
-  ActionTypes.ADD_MEDIATOR_ACTION,
-  props<{ action: string }>()
 )
 

@@ -32,12 +32,12 @@
       </div>
 
       <ng-container *ngIf="showSlots">
-        <div *ngFor="let slot of timeSlots">
-          <div class="flex_main_wrapper__slots" *ngFor="let item of slot | keyvalue">
+        <div *ngFor="let day of days">
+          <div class="flex_main_wrapper__slots" *ngFor="let item of day | keyvalue">
             <div class="flex_main_wrapper__slots__day">
               {{ item.key }}
             </div>
-            <div class="flex_main_wrapper__slots__time">
+            <div class="flex_main_wrapper__slots__times">
               <button *ngFor="let time of item.value;"
                       [id]="item.key+', '+time"
                       [ngClass]="{'active' : selectedBtnId === item.key+', '+time}"

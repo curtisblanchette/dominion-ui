@@ -6,6 +6,7 @@ import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
 
 import * as fromApp from '../../../../store/app.reducer';
+
 import { FiizDatePickerComponent, FiizInputComponent, FiizSelectComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
 import * as dayjs from 'dayjs';
@@ -45,7 +46,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public ModuleTypes: any;
 
-  public configuration:any = {
+  public configuration: any = {
     // Events, Calls
     startTime: {
       min: dayjs().format(), // Default as now
@@ -69,8 +70,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public appointmentSettings: INestedSetting;
 
   @Input('module') public override module: ModuleTypes;
-  @Input('data') public override data: any = { id: undefined, payload: { } };
-  @Input('options') public override options: FiizDataComponentOptions = { controls: true, state: 'create', dictation: '', fields: [] };
+  @Input('data') public override data: any = {id: undefined, payload: {}};
+  @Input('options') public override options: FiizDataComponentOptions = {
+    controls: true,
+    state: 'create',
+    dictation: '',
+    fields: []
+  };
 
   @ViewChild('submit') submit: ElementRef;
   @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
@@ -101,7 +107,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     });
 
     const state = (<any>router.getCurrentNavigation()?.extras.state);
-    if(state && Object.keys(state).length) {
+    if (state && Object.keys(state).length) {
       this.options = state.options;
       this.module = state.module;
       this.data = state.data;
@@ -135,6 +141,12 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     await this.buildForm(this.options.fields);
 
+    // if(this.data[this.module]) {
+    //   // get data from step
+    //   console.log('step data', this.data[this.module]);
+    //   this.form.setValue(this.data[this.module], {emitEvent: true});
+    // }
+
     this.data$.pipe(
       untilDestroyed(this),
       delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
@@ -155,7 +167,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
               delete entity[prop];
             }
 
-
           });
           this.form.addControl('id', new FormControl('', Validators.required));
           this.form.setValue(entity, {emitEvent: true});
@@ -163,8 +174,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           of('').pipe(
             untilDestroyed(this),
             delay(200) // workaround issue: https://github.com/angular/angular/issues/14542
-          ).subscribe(() => { this.isValid.next(this.form.valid); this.values.next(this.form.value); })
-
+          ).subscribe(() => {
+            this.isValid.next(this.form.valid);
+            this.values.next(this.form.value);
+          });
 
           await this.dateValidation();
         }
@@ -180,54 +193,53 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
     if (this.id) {
       this.getData();
+      this._dynamicCollectionService.setFilter({id: this.id}); // set the entity filter
     }
-
-    this._dynamicCollectionService.setFilter({id: this.id}); // set the entity filter
   }
 
-  public async dateValidation(): Promise<void>{
-    if( this.pickers ){
+  public async dateValidation(): Promise<void> {
+    if (this.pickers) {
 
-      let ids:Array<string> = [];
+      let ids: Array<string> = [];
 
-      for(const picker of this.pickers) {
+      for (const picker of this.pickers) {
         ids.push(picker.id);
       }
 
-      if( this.module == ModuleTypes.EVENT && ids.includes('startTime') && ids.includes('endTime') ){
+      if (this.module == ModuleTypes.EVENT && ids.includes('startTime') && ids.includes('endTime')) {
 
-        if( this.options.state == 'edit' ){
-          if( this.form.get('startTime')?.value ){
+        if (this.options.state == 'edit') {
+          if (this.form.get('startTime')?.value) {
             this.configuration.endTime.min = this.form.get('startTime')?.value;
           }
         }
 
-        this.form.get('startTime')?.valueChanges.pipe(untilDestroyed(this)).subscribe( (value:any) => {
+        this.form.get('startTime')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value: any) => {
           const duration = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['value'] || 30;
           const unit = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['unit'] || 'minutes';
           const endTime = dayjs(value).add(duration, unit as ManipulateType).format();
-          if( this.options.state == 'create' ){
-            this.form.patchValue({'endTime' : endTime });
+          if (this.options.state == 'create') {
+            this.form.patchValue({'endTime': endTime});
           }
           this.configuration.endTime.min = value;
           this.configuration.startTime.max = value;
         });
 
-        this.form.get('endTime')?.valueChanges.pipe(untilDestroyed(this)).subscribe( (value:any) => {
+        this.form.get('endTime')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value: any) => {
           this.configuration.startTime.max = value;
         });
 
       }
 
-      if( this.module == ModuleTypes.CALL && ids.includes('startTime') ){
+      if (this.module == ModuleTypes.CALL && ids.includes('startTime')) {
         this.configuration.startTime.min = null;
       }
 
-      if( this.module == ModuleTypes.CAMPAIGN ){
-        this.form.get('startDate')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value:any) => {
+      if (this.module == ModuleTypes.CAMPAIGN) {
+        this.form.get('startDate')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value: any) => {
           this.configuration.endDate.min = dayjs(value).add(1, 'day').format();
         });
-        this.form.get('endDate')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value:any) => {
+        this.form.get('endDate')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value: any) => {
           this.configuration.startDate.max = dayjs(value).subtract(1, 'day').format();
         });
       }
@@ -241,7 +253,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
   }
 
-  private async buildForm(fields:  string[]) {
+  private async buildForm(fields: string[]) {
 
     let form: { [key: string]: FormControl } = {};
 
@@ -297,52 +309,62 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       ]
     };
 
-    if(Object.keys(watchFields).includes(this.module)){
-      for(const watch of watchFields[this.module]){
+    if (Object.keys(watchFields).includes(this.module)) {
+      for (const watch of watchFields[this.module]) {
         const field = watch.when;
-        if(this.form.controls.hasOwnProperty(field)){
+        if (this.form.controls.hasOwnProperty(field)) {
           this.form.controls[field].valueChanges.pipe(untilDestroyed(this)).subscribe(async (res: number) => {
             const dropdown = this.dropdowns.find(cmp => cmp.id === field);
             const options = await dropdown?.items$.pipe(take(1)).toPromise();
             const value = options?.find(opt => opt.label === watch.equals)?.id;
             const result = res === value ? watch.then : watch.else;
             // @ts-ignore
-            this.form.controls[watch.field][result.fn](...result.args)
+            this.form.controls[watch.field][result.fn](...result.args);
           });
         }
       }
     }
   }
 
-  public async save(): Promise<any> {
+  public async save(persist: boolean = true): Promise<any> {
     let payload = this.form.value;
-    let action:string = this.options.state;
-    if( this.id ){
+    let action: string = this.options.state;
+    if (this.id) {
       action = 'edit';
-      payload.id = this.id;
+      // payload.id = this.id;
     }
-    if (this.form.valid) {
+    if (this.form.valid && this.form.dirty) {
       this.form.disable();
+      this.cleanForm();
 
-      switch (action) {
-      // switch (this.options.state) {
-        case 'edit': {
-          return this.form.dirty && this._dynamicCollectionService.update(<DominionType>payload).toPromise()
-            .then((res) => {
-              this.cleanForm();
-              this.onSuccess.next( { [this.module]: res?.id });
-            }) || Promise.resolve(this.cleanForm());
-        }
-        case 'create': {
-          // append additional data as payload attachments
-          payload = { ...payload, ...this.data.payload };
+      if (persist) {
+        switch (action) {
+          // switch (this.options.state) {
+          case 'edit': {
+            return this._dynamicCollectionService.update(<DominionType>payload).toPromise()
+              .then((res) => {
+                this.cleanForm();
+                this.onSuccess.next(payload);
+              });
+          }
+          case 'create': {
+            // append additional data.payload attachments
+            payload = {...payload, ...this.data.payload};
 
-          return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res) => {
-            this._dynamicCollectionService.setFilter({id: res?.id});
-            this.onSuccess.next( { [this.module]: res?.id });
-          }) || Promise.resolve(this.cleanForm());
+            return this._dynamicCollectionService.add(<DominionType>payload).toPromise()
+              .then((res) => {
+                this._dynamicCollectionService.setFilter({id: res?.id});
+                this.onSuccess.next({[this.module]: res?.id});
+              });
+          }
         }
       }
+
+      return this.onSuccess.next(payload);
+
+    } else {
+      return this.onSuccess.next(payload);
+      // form is unchanged, don't process anything for this
     }
     throw new FormInvalidError('Data Component');
   }
@@ -356,7 +378,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   private getControlData() {
-    return this.options.fields.map(field => ({key: field, ...models[this.module][field], module:this.module}));
+    return this.options.fields.map(field => ({key: field, ...models[this.module][field], module: this.module}));
   }
 
   public resetForm() {
@@ -367,8 +389,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this._dynamicCollectionService.clearCache();
   }
 
-  public getDropdownObjects( data:any ){
-    if( data && data.leadSource ){
+  public getDropdownObjects(data: any) {
+    if (data && data.leadSource) {
       const dropdown = this.searchDropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
       dropdown?.setTheValue(data.leadSource.name, data.leadSource.id);
     }

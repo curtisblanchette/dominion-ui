@@ -10,18 +10,19 @@ import { FlowService } from '../../flow.service';
 import * as fromApp from '../../../../store/app.reducer';
 import * as flowActions from '../../store/flow.actions';
 import * as fromFlow from '../../store/flow.reducer';
-import { Observable, of, take } from 'rxjs';
+import { Observable, of, Subscription, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DropdownItem, FiizSelectComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { HttpClient } from '@angular/common/http';
-import { FormInvalidError, OnSave } from '../../classes';
+import { FlowStep, FormInvalidError, OnSave } from '../../classes';
 import { DominionType, models } from '../../../../common/models';
 import { INestedSetting } from '../../../../store/app.effects';
 import { ManipulateType } from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
 import { environment } from '../../../../../environments/environment';
+import { map } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -29,14 +30,14 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './appointment.component.html',
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
-export class FlowAppointmentComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, AfterContentInit, OnSave {
+export class FlowAppointmentComponent extends EntityCollectionComponentBase implements AfterViewInit, AfterContentInit, OnSave {
   private flowStepId: string | undefined;
 
   public timeZone: any = 'America/New_York';
   public appointmentSettings: INestedSetting;
   public ModuleTypes: any;
 
-  public timeSlots: Array<any> = [];
+  public days: Array<any> = [];
   public selectedBtnId: string;
   public form: FormGroup;
   public eventActionsForm: FormGroup;
@@ -44,9 +45,13 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public offices$: Observable<DropdownItem[]>;
   public vars$: Observable<any>;
   public id: string;
-  public query:{[key:string] : any} = {};
-  public eventActions$:Observable<RadioItem[]> = of([{id: 'cancel',label: 'Cancel'}, {id: 'reschedule',label: 'Reschedule'}]);
+  public query: { [key: string]: any } = {};
+  public eventActions$: Observable<RadioItem[]> = of([{id: 'cancel', label: 'Cancel'}, {
+    id: 'reschedule',
+    label: 'Reschedule'
+  }]);
   public apptData: Observable<Array<any>>;
+  public allValid$: Observable<boolean>;
 
   @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
@@ -80,67 +85,79 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     });
 
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
+
   }
 
   public async onSave() {
 
     switch (this.options.state) {
-
       case 'cancel': {
         const data = {
-          id : this.id,
-          outcomeId : 2
+          id: this.id,
+          outcomeId: 2
         };
-        return this._dynamicCollectionService.update(data).toPromise().then((val) => {
-        });
+        this.flowService.updateStep(this.flowStepId, {state: { data: { toCancel: this.id }}}, 'merge');
+        return;
+        // return this._dynamicCollectionService.update(data).toPromise().then((val) => {
+        // });
       }
 
       case 'set':
       case 'reschedule' : {
 
-        if( this.options.state == 'reschedule' ){
+        if (this.options.state == 'reschedule') {
           const data = {
-            id : this.id,
-            outcomeId : 1
+            id: this.id,
+            outcomeId: 1
           };
-          this._dynamicCollectionService.update(data).toPromise().then((val) => {
-          });
+          // update this step identifying the event ID to reschedule
+          this.flowService.updateStep(this.flowStepId, {state: { data: { toReschedule: this.id }}}, 'merge');
         }
 
         this.form.patchValue({
-          contactId : await this.flowService.getVariable('contact'),
-          startTime : await this.flowService.getVariable('appt_date_time'),
-          endTime : await this.flowService.getVariable('appt_end_date_time'),
-          typeId : '1'
+          contactId: this.flowService.getVariable('contact'),
+          // startTime: this.flowService.getVariable('startDateTime'),
+          // endTime: this.flowService.getVariable('endDateTime'),
+          typeId: '1'
         });
 
         let payload = {...this.form.value, ...this.options.payload};
 
-        if (this.form.valid) {
+        this.flowService.updateStep(this.flowStepId, {
+          valid: this.form.valid && !!this.selectedBtnId,
+          variables: {[`new_event`]: true},
+          state: {data: {event: payload}}
+        }, 'merge');
+
+        if (this.form.valid && this.form.dirty) {
           this.form.disable();
+          return this.cleanForm()
+          // this.flowService.updateStep(this.flowStepId, {
+          //   valid: true,
+          //   state: {data: {[this.module]: this.form.value}}
+          // }, 'merge');
 
-          return this.form.dirty && this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res: DominionType | undefined) => {
-            res = res as IEvent;
-
-            this._dynamicCollectionService.setFilter({id: res?.id});
-            const payload = {
-              [this.module]: res?.id,
-              appt_start_time: res?.startTime,
-              appt_end_time: res?.endTime,
-              contact : res?.contactId
-            }
-            if( res?.contactId ){
-              this.http.get(environment.dominion_api_url + '/contacts/' + res.contactId).toPromise().then((contactData:any) => {
-                if( contactData && contactData.addresses && contactData.addresses.length ){
-                  payload['address'] = contactData.addresses[0]['id'];
-                }
-              });
-            }
-
-            this.flowService.updateStep(this.flowStepId, {variables: payload});
-            // this.store.dispatch(flowActions.UpdateStepVariablesAction({id: this.flowStepId, variables: payload}));
-
-          }) || Promise.resolve(this.cleanForm());
+          // return this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res: DominionType | undefined) => {
+          //   res = res as IEvent;
+          //
+          //   this._dynamicCollectionService.setFilter({id: res?.id});
+          //   const payload = {
+          //     [this.module]: res?.id,
+          //     appt_start_time: res?.startTime,
+          //     appt_end_time: res?.endTime,
+          //     contact : res?.contactId
+          //   }
+          //   if( res?.contactId ){
+          //     this.http.get(environment.dominion_api_url + '/contacts/' + res.contactId).toPromise().then((contactData:any) => {
+          //       if( contactData && contactData.addresses && contactData.addresses.length ){
+          //         payload['address'] = contactData.addresses[0]['id'];
+          //       }
+          //     });
+          //   }
+          //
+          //   this.flowService.updateStep(this.flowStepId, {variables: payload, valid: true});
+          //
+          // });
         }
       }
     }
@@ -150,23 +167,23 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
 
-    if( this.options.state != 'cancel' ){
+    if (this.options.state != 'cancel') {
       this.buildForm(this.options.fields);
+
+      if (this.data['event']) {
+        this.form.setValue(this.data['event'], {emitEvent: true});
+      }
     }
 
-    if( this.options.state == 'cancel' ){
-      this.flowService.setValidity(this.flowStepId, true);
+    if (this.options.state == 'cancel') {
+      this.flowService.updateStep(this.flowStepId, {valid: true}, 'merge');
     }
-
-  }
-
-  async ngOnInit(): Promise<any> {
 
   }
 
   public async ngAfterViewInit() {
     // // if the step was module to resolve the ID for - do it now
-    if(this.data.hasOwnProperty('resolveId')) {
+    if (this.data.hasOwnProperty('resolveId')) {
       this.id = this.data.resolveId;
     }
 
@@ -174,13 +191,13 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       this.getData();
     }
 
-    if( this.options.state != 'cancel' ){
+    if (this.options.state != 'cancel') {
       this.initEventSlots();
     }
 
   }
 
-  public initEventSlots(){
+  public initEventSlots() {
 
     const today = dayjs().format('YYYY-MM-DD');
     const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
@@ -203,7 +220,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
             return startTime.diff(slot, 'm') == 0
           });
           if (!find.length) {
-            if( dayjs().isBefore(startTime) ){
+            if (dayjs().isBefore(startTime)) {
               freeSlots.push(startTime.format('hh:mm a'));
             }
           }
@@ -211,7 +228,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         }
 
         let day: string = dayjs(date).format('dddd MMMM D, YYYY');
-        this.timeSlots.push({[day]: freeSlots});
+        this.days.push({[day]: freeSlots});
       });
     }
 
@@ -228,22 +245,31 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.form = this.fb.group(form);
     this.form.addControl('officeId', new FormControl('', [Validators.required]));
 
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((value: any) => {
-      this.flowService.addVariables(value);
-      this.checkValidity();
+    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
+      // const variables = {
+      //   ...values,
+      //   startDate: dayjs(this.selectedBtnId).format('YYYY-MM-DD'),
+      //   startTime: dayjs(this.selectedBtnId).format('HH:mm:ss'),
+      //   startDateTime: dayjs(this.selectedBtnId).format('YYYY-MM-DD HH:mm:ss'),
+      //   endDate: dayjs(this.selectedBtnId).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format('YYYY-MM-DD'),
+      //   endTime: dayjs(this.selectedBtnId).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format('HH:mm:ss'),
+      //   endDateTime: dayjs(this.selectedBtnId).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format('YYYY-MM-DD HH:mm:ss'),
+      //   office: this.form.value.office
+      // };
+      this.flowService.updateStep(this.flowStepId, {valid: this.form.valid && !!this.selectedBtnId});
     });
   }
 
   public getData() {
     // this._dynamicCollectionService.getByKey(this.id);
     // this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
-    this.getById(this.id).pipe(take(1)).subscribe( val => {
-      if( val ){
-        let values:Array<any> = [];
-        values.push({label : 'Title', value : val.title});
-        values.push({label : 'Description', value : val.description});
-        values.push({label : 'Start Time', value : val.startTime});
-        values.push({label : 'End Time', value : val.endTime});
+    this.getById(this.id).pipe(take(1)).subscribe(val => {
+      if (val) {
+        let values: Array<any> = [];
+        values.push({label: 'Title', value: val.title});
+        values.push({label: 'Description', value: val.description});
+        values.push({label: 'Start Time', value: val.startTime});
+        values.push({label: 'End Time', value: val.endTime});
         this.apptData = of(values);
       }
     });
@@ -251,30 +277,16 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public setEventTime(event: any) {
     this.selectedBtnId = event.target.id;
-    this.checkValidity();
+    const startTime = dayjs(event.target.id).format();
+    const endTime = dayjs(event.target.id).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format();
+    this.form.patchValue({startTime, endTime});
+    this.flowService.updateStep(this.flowStepId, {valid: true}, 'merge');
   }
 
   private async cleanForm() {
     this.form.markAsPristine();
     this.form.updateValueAndValidity();
     this.form.enable();
-    this.flowService.setValidity(this.flowStepId, true);
-  }
-
-  public checkValidity() {
-    let isValid: boolean = false;
-    if ( this.form.get('title')?.value && this.form.get('officeId')?.value && this.selectedBtnId ) {
-      isValid = true;
-      this.flowService.addVariables({
-        appt_date: dayjs(this.selectedBtnId).format('YYYY-MM-DD'),
-        appt_time: dayjs(this.selectedBtnId).format('HH:mm:ss'),
-        appt_date_time: dayjs(this.selectedBtnId).format('YYYY-MM-DD HH:mm:ss'),
-        appt_end_date_time: dayjs(this.selectedBtnId).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format('YYYY-MM-DD HH:mm:ss'),
-        office: this.form.value.office
-      });
-    }
-
-    this.flowService.setValidity(this.flowStepId, isValid);
   }
 
 }

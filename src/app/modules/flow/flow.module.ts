@@ -13,6 +13,9 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { FlowRouting } from './flow.routing';
 import { FlowBuilder } from './flow.builder';
 import { DictationPipe } from '../../common/pipes/dictation.pipe';
+import { FlowProcess } from './classes/flow.process';
+import { FlowBot } from './classes/flow.bot';
+import { FlowService } from './flow.service';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,9 @@ import { DictationPipe } from '../../common/pipes/dictation.pipe';
     NgxPaginationModule
   ],
   providers: [
-    FlowBuilder
+    FlowBuilder,
+    FlowProcess,
+    FlowBot
   ],
   exports: [
     DictationPipe

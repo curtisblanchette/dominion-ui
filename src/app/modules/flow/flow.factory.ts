@@ -1,4 +1,4 @@
-import { FlowStep, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent, IEvaluation } from './index';
+import { FlowStep, FlowListComponent, FlowTextComponent, FlowDataComponent, FlowCondition, FlowRouter, FlowLink, FlowAppointmentComponent, FlowObjectionComponent } from './index';
 import { Fields as LeadFields } from '../../common/models/lead.model';
 import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
@@ -538,7 +538,8 @@ export class FlowFactory {
           template: 'end',
           lastStep : true
         }
-      }
+      },
+      valid: true
     });
   }
 
@@ -552,7 +553,7 @@ export class FlowFactory {
     return new FlowCondition(data);
   }
 
-  public static link(from: FlowStep, to: FlowStep | FlowRouter) {
+  public static link(from: string = '', to: string = '') {
     const data = {from, to};
     return new FlowLink(data);
   }

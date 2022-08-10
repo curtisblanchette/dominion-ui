@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
-import { FlowHostDirective, FlowObjectionComponent, FlowStepHistoryEntry, FlowTransitions, NoStepFoundError } from './index';
+import { FlowHostDirective, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';
-import { HttpClient } from '@angular/common/http';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
@@ -24,10 +23,11 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
 
   animationIndex = 0;
   tabIndex = 1;
-  stepHistory$: Observable<FlowStepHistoryEntry[]>;
   valid$: Observable<boolean | undefined>;
   notes$: Observable<string | null | undefined>;
   notesData:any;
+  isLastStep$: Observable<boolean>;
+  status$: Observable<string>;
 
   public tinymceOptions = {
     branding: false,
@@ -66,13 +66,12 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     private store: Store<fromFlow.FlowState>,
     public flowService: FlowService,
     private router: Router,
-    private dialog: Dialog,
-    private http: HttpClient
+    private dialog: Dialog
   ) {
-
+    this.status$ = this.store.select(fromFlow.selectFlowStatus);
     this.objections$ = this.store.select(fromApp.selectCallObjections)
     this.valid$ = this.store.select(fromFlow.selectIsValid);
-    this.stepHistory$ = this.store.select(fromFlow.selectStepHistory);
+    this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
   }
 
@@ -118,50 +117,11 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
       });
   }
 
-  public handleFabAction(action: string) {
-    switch(action) {
-      case 'objection': {
-        // find the objection step somehow
-        const objection = this.flowService.builder.process.steps.find(step => step.component === "FlowObjectionComponent");
-
-        if(objection && objection.id) {
-          return this.goTo(objection.id);
-        }
-      }
-      break;
-      case 'end-call': {
-
-        this.dialog.open(FiizDialogComponent, {
-          data: {
-            title: `You're about to end the call`,
-            body: `Are you sure you are ready to end the current call?`,
-            buttons: {
-              cancel: {
-                label: 'Cancel',
-                type: 'cancel',
-                fn: () => {
-                  // pass a function to be executed when this button is clicked
-                  // you may need to .bind() the external instances prototype to it
-                }
-              },
-              submit: {
-                label: `Yes, I'm sure.`,
-                type: 'submit',
-                fn: this.flowService.restart.bind(this.flowService)
-              }
-            }
-          }
-        });
-      }
-      break;
-    }
-  }
-
   public endCall() {
     this.dialog.open(FiizDialogComponent, {
       data: {
-        title: `You're about to end the call`,
-        body: `Are you sure you are ready to end the current call?`,
+        title: `Hold on!`,
+        body: `All information will be lost. \n \n Are you sure you are ready to end the current call? `,
         buttons: {
           cancel: {
             label: 'Cancel',
@@ -174,6 +134,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
           submit: {
             label: `Yes, I'm sure.`,
             type: 'submit',
+            class: 'warning',
             fn: this.flowService.restart.bind(this.flowService)
           }
         }
