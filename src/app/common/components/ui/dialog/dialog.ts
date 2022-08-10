@@ -1,5 +1,8 @@
-import { Component,  Inject } from '@angular/core';
+import { Component,  Inject, ViewChild } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { EditorComponent } from '@tinymce/tinymce-angular';
+
+import { FlowService } from '../../../../modules/flow/flow.service';
 
 @Component({
   selector: 'fiiz-dialog',
@@ -8,10 +11,28 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 })
 export class FiizDialogComponent {
 
+  public tinymceOptions:Object = {
+    branding: false,
+    menubar: false,
+    toolbar: 'bold italic strikethrough underline align',
+    statusbar: false,
+    content_style: `
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.5em;
+        color: #C6CEED;
+      }`
+  };
+
+  @ViewChild('editor') editor:EditorComponent;
+
   constructor(
     @Inject(DIALOG_DATA) public data: {
       title: string;
-      body: string;
+      body?: string;
+      type?: string;
       buttons: {
         [key: string]: {
           label: string,
@@ -20,11 +41,11 @@ export class FiizDialogComponent {
         }
       }
     },
-    public dialog: DialogRef
+    public dialog: DialogRef,
+    public flowService: FlowService
   ) {
     this.data = Object.assign({
       title: 'Warning',
-      body: 'Something might happen!',
       buttons: {
         default: {
           label: 'Ok',
@@ -49,6 +70,9 @@ export class FiizDialogComponent {
 
   onSubmit() {
     if(typeof this.data?.buttons['submit']?.fn === 'function') {
+      if( this.data.type == 'editor' ){
+        this.flowService.updateNote(this.editor.editor.getContent());
+      }
       this.data.buttons['submit'].fn();
     }
 
