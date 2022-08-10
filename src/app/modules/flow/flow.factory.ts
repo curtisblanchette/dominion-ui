@@ -336,7 +336,7 @@ export class FlowFactory {
         options: {
           searchable: false,
           editable: false,
-          loadInitial: false,
+          loadInitial: true,
           perPage: 25,
           columns: [],
           query: {
