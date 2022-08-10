@@ -56,6 +56,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/outcome-form/outcome-form.module').then(m => m.OutcomeFormModule)
   },
   {
+    path: 'reports',
+    canActivate: [RoleGuard],
+    data: { roles: ['system', 'admin', 'owner', 'consultant'] },
+    loadChildren: () => import('./modules/reports/report.module').then(m => m.ReportsModule)
+  },
+  {
     path: '**',
     pathMatch : 'full',
     component : PageNotFoundComponent
