@@ -156,4 +156,26 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     this.flowService.updateNote(html);
   }
 
+  public openNotesDialog(){
+    this.dialog.open(FiizDialogComponent, {
+      data: {
+        title: `Notes`,
+        type : 'editor',
+        buttons: {
+          cancel: {
+            label: 'Cancel',
+            type: 'cancel',
+          },
+          submit: {
+            label: `Save`,
+            type: 'submit',
+            fn: () => {
+              // this.flowService.updateNote('test')
+            }
+          }
+        }
+      }
+    });
+  }
+
 }

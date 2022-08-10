@@ -34,6 +34,7 @@ import { DpDatePickerModule } from 'ng2-date-picker';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { FiizDialogComponent } from './dialog/dialog';
 import { Dialog, DIALOG_SCROLL_STRATEGY_PROVIDER } from '@angular/cdk/dialog';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { Dialog, DIALOG_SCROLL_STRATEGY_PROVIDER } from '@angular/cdk/dialog';
     SharedModule,
     DpDatePickerModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlNativeDateTimeModule,
+    EditorModule
     // DirectivesModule
   ],
   exports: [
