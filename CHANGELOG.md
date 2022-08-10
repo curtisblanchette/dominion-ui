@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.13.0 (2022-08-10)
+
+
+### Features
+
+* **develop:** flow step caching and bot execution functionality ([8d0afb6](https://github.com/4iiz/dominion-ui/commit/8d0afb6c39ebb1e4304052982c4e6830458c2702))
+
 ### 1.12.17 (2022-08-09)
 
 
