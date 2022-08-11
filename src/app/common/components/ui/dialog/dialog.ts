@@ -123,8 +123,13 @@ export class FiizDialogComponent implements AfterViewInit {
     const submitBtn: IDialogButton = this.data.buttons['submit'];
 
     if (submitBtn.fn) {
-      return submitBtn.fn(this.tinymce.editor.getContent());
+      if(this.tinymce.editor) {
+        return submitBtn.fn(this.tinymce.editor.getContent());
+      } else {
+        return submitBtn.fn().then(() => this.dialog.close(1));
+      }
+
     }
-    this.dialog.close(1);
+
   }
 }
