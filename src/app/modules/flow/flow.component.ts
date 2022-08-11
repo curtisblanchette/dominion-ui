@@ -4,14 +4,15 @@ import { FlowHostDirective, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
-import { lastValueFrom, Observable, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { UntilDestroy } from '@ngneat/until-destroy';
+
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
+import { ICallNote } from '@4iiz/corev2';
 
 @UntilDestroy()
 @Component({
@@ -25,7 +26,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   tabIndex = 1;
   valid$: Observable<boolean | undefined>;
   notes$: Observable<string | null | undefined>;
-  notesData:any;
+  notesData: any;
   isLastStep$: Observable<boolean>;
   status$: Observable<string>;
 
@@ -81,18 +82,6 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectProcessId).pipe(take(1)));
     await this.flowService.start(!!processExists);
 
-    if(this.tinymce){
-      this.tinymce.onKeyUp.pipe(
-        untilDestroyed(this),
-        map((action: any) => {
-          return action.event.currentTarget.innerHTML;
-        }),
-        debounceTime(1000),
-        distinctUntilChanged()
-      ).subscribe((html: string) => {
-        this.saveNotes(html);
-      });
-    }
   }
 
   public onNext($event: Event) {
@@ -125,11 +114,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
         buttons: {
           cancel: {
             label: 'Cancel',
-            type: 'cancel',
-            fn: () => {
-              // pass a function to be executed when this button is clicked
-              // you may need to .bind() the external instances prototype to it
-            }
+            type: 'cancel'
           },
           submit: {
             label: `Yes, I'm sure.`,
@@ -152,30 +137,27 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   public ngOnDestroy() {
   }
 
-  public saveNotes( html:any ) {
-    this.flowService.updateNote(html);
+  public saveNotes(html: any): Observable<ICallNote> {
+    return this.flowService.updateNote(html);
   }
 
-  public openNotesDialog(){
+  public openNotesDialog() {
     this.dialog.open(FiizDialogComponent, {
       data: {
         title: `Notes`,
-        type : 'editor',
+        type: 'editor',
         buttons: {
           cancel: {
             label: 'Cancel',
-            type: 'cancel',
+            type: 'cancel'
           },
           submit: {
             label: `Save`,
             type: 'submit',
-            fn: () => {
-              // this.flowService.updateNote('test')
-            }
+            fn: (html: string) => { return firstValueFrom(this.flowService.updateNote(html)) }
           }
         }
       }
     });
   }
-
 }

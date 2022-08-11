@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FlowComponent } from "./flow.component";
-import { FlowHostDirective, FlowDataComponent, FlowListComponent, FlowTextComponent, FlowNotesComponent, FlowTimelineComponent, FlowAppointmentComponent, FlowObjectionComponent } from './index';
+import { FlowHostDirective, FlowDataComponent, FlowListComponent, FlowTextComponent, FlowTimelineComponent, FlowAppointmentComponent, FlowObjectionComponent } from './index';
 import { CommonModule } from "@angular/common";
 import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
 import { StoreModule } from '@ngrx/store';
@@ -13,14 +13,11 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { FlowRouting } from './flow.routing';
 import { FlowBuilder } from './flow.builder';
 import { DictationPipe } from '../../common/pipes/dictation.pipe';
-import { FlowProcess } from './classes/flow.process';
-import { FlowBot } from './classes/flow.bot';
-import { FlowService } from './flow.service';
+import { FlowProcess, FlowBot } from './classes';
 
 @NgModule({
   declarations: [
     FlowComponent,
-    FlowNotesComponent,
     FlowTimelineComponent,
     FlowObjectionComponent,
     FlowTextComponent,

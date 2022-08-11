@@ -3,9 +3,10 @@
 </div>
 <div class="content">
   <div class="body" [innerHTML]="data.body | safe: 'html'" *ngIf="data.body"></div>
-  <div *ngIf="data.type == 'editor'" class="body" style="width: 600px;">
+  <div *ngIf="data.type == 'editor'" class="body" style="width: 600px; position:relative;">
+    <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
     <editor
-      #editor
+      #tinymce
       apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
       outputFormat="html"
       [init]="tinymceOptions"

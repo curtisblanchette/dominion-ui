@@ -178,12 +178,9 @@ export class FlowService {
     return note;
   }
 
-  public async updateNote(content: string): Promise<ICallNote> {
-    const note = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, {
-      content
-    })) as ICallNote;
+  public updateNote(content: string): Observable<ICallNote> {
 
-    return note;
+   return this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, {content}) as Observable<ICallNote>;
   }
 
   public async goTo(id: string): Promise<void> {
