@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { firstValueFrom, forkJoin, map, mergeMap, tap } from 'rxjs';
+import { firstValueFrom, forkJoin, map, mergeMap, of, tap } from 'rxjs';
 import * as appActions from './app.actions';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -8,6 +8,9 @@ import { ISettingResponse } from '@4iiz/corev2';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { AppState } from './app.reducer';
+import * as ct from 'countries-and-timezones';
+import { UsaStates } from 'usa-states';
+import { LookupTypes } from '../data/entity-metadata';
 
 export interface INestedSetting {
   [key: string]: { id:number, value: any; unit: string; }
@@ -94,37 +97,43 @@ export class AppEffects {
     this.actions$.pipe(
       ofType(appActions.GetLookupsAction),
       tap(() => {
+        // Fork Join the results of all dominion lookups
         return forkJoin({
-          practiceAreas: this.http.get(environment.dominion_api_url + '/practice-areas'),
-          roles: this.http.get(environment.dominion_api_url + '/roles'),
+          [LookupTypes.PRACTICE_AREA]: this.http.get(environment.dominion_api_url + '/practice-areas'),
+          [LookupTypes.ROLE]: this.http.get(environment.dominion_api_url + '/roles'),
           // Call Lookups
-          callOutcomes: this.http.get(environment.dominion_api_url + '/call-outcomes'),
-          callObjections: this.http.get(environment.dominion_api_url + '/call-objections'),
-          callStatuses: this.http.get(environment.dominion_api_url + '/call-statuses'),
-          callTypes: this.http.get(environment.dominion_api_url + '/call-types'),
+          [LookupTypes.CALL_OUTCOME]: this.http.get(environment.dominion_api_url + '/call-outcomes'),
+          [LookupTypes.CALL_OBJECTION]: this.http.get(environment.dominion_api_url + '/call-objections'),
+          [LookupTypes.CALL_STATUS]: this.http.get(environment.dominion_api_url + '/call-statuses'),
+          [LookupTypes.CALL_TYPE]: this.http.get(environment.dominion_api_url + '/call-types'),
           // Event lookups
-          eventOutcomes: this.http.get(environment.dominion_api_url + '/event-outcomes'),
-          eventTypes: this.http.get(environment.dominion_api_url + '/event-types'),
-          eventObjections: this.http.get(environment.dominion_api_url + '/event-objections'),
+          [LookupTypes.EVENT_OUTCOME]: this.http.get(environment.dominion_api_url + '/event-outcomes'),
+          [LookupTypes.EVENT_TYPE]: this.http.get(environment.dominion_api_url + '/event-types'),
+          [LookupTypes.EVENT_OBJECTION]: this.http.get(environment.dominion_api_url + '/event-objections'),
+
+          [LookupTypes.LEAD_STATUS]: this.http.get(environment.dominion_api_url + '/lead-statuses'),
 
           offices: this.http.get(environment.dominion_api_url + '/offices'),
         }).subscribe((res: any) => {
 
-          // transform it into a DropdownItem[]
-          const roles = res.roles.map((r: any) => ({id: r.id, label: r.name }));
-          const practiceAreas = res.practiceAreas.map((r: any) => ({id: r.id, label: r.name }));
-          const callOutcomes = res.callOutcomes.map((r: any) => ({id: r.id, label: r.name }));
-          const callObjections = res.callObjections.map((r: any) => ({id: r.id, label: r.name }));
-          const callStatuses = res.callStatuses.map((r: any) => ({id: r.id, label: r.name }));
-          const callTypes = res.callTypes.map((r: any) => ({id: r.id, label: r.name }));
-          const eventOutcomes = res.eventOutcomes.map((r: any) => ({id: r.id, label: r.name }));
-          const eventObjections = res.eventObjections.map((r: any) => ({id: r.id, label: r.name }));
-          const eventTypes = res.eventTypes.map((r: any) => ({id: r.id, label: r.name }));
-          const offices = res.offices.rows.map((r: any) => ({id: r.id, label: r.name }));
+          // Map the lookups to DropdownItem's
+          for(const key of Object.keys(res)) {
+            if(res[key].hasOwnProperty('rows')) {
+              res[key] = res[key].rows.map((r: any) => ({id: r.id, label: r.name }));
+            } else {
+              res[key] = res[key].map((r: any) => ({id: r.id, label: r.name }));
+            }
+          }
 
 
-          const data = { roles, practiceAreas, callOutcomes, callObjections, callStatuses, callTypes, eventOutcomes, eventTypes, eventObjections, offices };
-          this.store.dispatch(appActions.SetLookupsAction({ payload: data }) );
+          // Add any additional state lookup lists
+          const states = new UsaStates().states;
+
+          res['state'] = states.map((state: any) => ({id: state.abbreviation, label: state.name}));
+          res['timezone'] = Object.values(ct.getAllTimezones()).map(tz => ({id: tz.name, label: tz.name}));
+
+
+          this.store.dispatch(appActions.SetLookupsAction({ payload: res }) );
           this.store.dispatch(appActions.AppInitializedAction());
         });
       }),

@@ -1,5 +1,5 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
-import { FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
+import { FlowLink, FlowRouter, FlowStep } from '../index';
 import { cloneDeep, get, merge } from 'lodash';
 import * as flowActions from './flow.actions';
 
@@ -11,7 +11,6 @@ export interface FlowState {
   currentStepId: string | undefined;
   firstStepId: string | undefined;
   lastStepId: string | undefined;
-  stepHistory: FlowStepHistoryEntry[];
   status: 'pending' | 'complete';
 }
 
@@ -53,7 +52,6 @@ export const initialState: FlowState = {
   currentStepId: getInitialStateByKey('flow.currentStepId') || undefined,
   firstStepId: undefined,
   lastStepId: undefined,
-  stepHistory: getInitialStateByKey('flow.stepHistory') || [],
   status: getInitialStateByKey('flow.status') || undefined
 };
 
@@ -112,11 +110,6 @@ export const reducer = createReducer(
     return state;
 
   }),
-  //
-  // on(flowActions.SetStepHistoryAction, (state, {payload}) => ({
-  //   ...state,
-  //   stepHistory: [...state.stepHistory, payload]
-  // })),
 
   on(flowActions.GoToStepByIdAction, (state, {id}) => ({...state})),
 

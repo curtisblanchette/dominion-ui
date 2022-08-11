@@ -53,29 +53,29 @@ export class FlowEffects {
     ), { dispatch: false }
   );
 
-  flowSummary$ = createEffect((): any =>
-    this.actions$.pipe(
-      ofType(flowActions.SetStepHistoryAction),
-      withLatestFrom(this.store.select(fromFlow.selectProcessId)),
-      switchMap( async(action: any) => {
-        let [history, processId] = action;
-        history = history.payload;
-
-        const flowStepData = {
-          summaryId: processId,
-          elapsed: history.elapsed,
-          variables: JSON.stringify(history.variables)
-        };
-
-        return firstValueFrom(this.http.post(`${environment.dominion_api_url}/flow/summaries/${processId}/steps`, flowStepData))
-          .catch((err: HttpErrorResponse) => {
-            console.error('Error in saving Flow Step summary', err);
-            return err;
-          });
-
-      })
-    ), { dispatch: false }
-  );
+  // flowSummary$ = createEffect((): any =>
+  //   this.actions$.pipe(
+  //     ofType(flowActions.SetStepHistoryAction),
+  //     withLatestFrom(this.store.select(fromFlow.selectProcessId)),
+  //     switchMap( async(action: any) => {
+  //       let [history, processId] = action;
+  //       history = history.payload;
+  //
+  //       const flowStepData = {
+  //         summaryId: processId,
+  //         elapsed: history.elapsed,
+  //         variables: JSON.stringify(history.variables)
+  //       };
+  //
+  //       return firstValueFrom(this.http.post(`${environment.dominion_api_url}/flow/summaries/${processId}/steps`, flowStepData))
+  //         .catch((err: HttpErrorResponse) => {
+  //           console.error('Error in saving Flow Step summary', err);
+  //           return err;
+  //         });
+  //
+  //     })
+  //   ), { dispatch: false }
+  // );
 
   onPrevStep$ = createEffect((): any =>
     this.actions$.pipe(

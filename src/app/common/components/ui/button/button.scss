@@ -6,10 +6,20 @@
   border-radius: var(--button-border-radius);
   height: 46px;
   @include elevate(1);
+  background: var(--slate);
+  box-sizing: border-box;
 
   fiiz-loading {
     width: 44px;
     height: 44px;
+  }
+
+  .dropdown {
+    background: var(--slate);
+    border-radius: var(--button-border-radius);
+    &:hover {
+      background: var(--slate)!important;
+    }
   }
 
   // default styling
@@ -21,8 +31,7 @@
     justify-content: flex-start;
     gap: 1em;
     border: none;
-    background: var(--slate);
-    border-radius: var(--button-border-radius);
+    background: none;
     font-size: 14px;
     font-weight: 500;
     color: var(--text1);
@@ -35,19 +44,6 @@
 
     &.full-width {
       justify-content:space-around;
-    }
-
-    &:hover {
-      background: var(--slate-shade1);
-    }
-
-    &:active {
-      background: var(--slate-shade2);
-    }
-
-    &:focus {
-      /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
     }
 
 
@@ -218,5 +214,22 @@
         background-color: var(--slate-tint1);
       }
     }
+  }
+
+  &:hover {
+    background: var(--slate-shade1);
+  }
+
+  &:active {
+    background: var(--slate-shade2);
+  }
+
+  &:focus {
+    /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
+    @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
+  }
+
+  &:focus-visible {
+    @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
   }
 }

@@ -5,7 +5,7 @@
     <fiiz-dropdown
       type="button"
       *ngIf="options.editable"
-      [items]="actionItems"
+      [items]="actionItems$"
       position="bottom-right"
       title="Actions"></fiiz-dropdown>
     <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create

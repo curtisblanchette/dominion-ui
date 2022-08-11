@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, ChangeDetectionStrategy, HostBinding } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -17,6 +17,7 @@ export class FiizButtonComponent implements AfterViewInit, AfterViewInit {
   @Input('loading') loading$: Observable<boolean | null> = of(false);
 
   @ViewChild('el') el: ElementRef;
+  @HostBinding('tabindex') tabindex: number = 0;
 
   constructor(
 

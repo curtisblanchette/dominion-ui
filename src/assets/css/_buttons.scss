@@ -1,6 +1,12 @@
 @import '~src/assets/css/variables';
 @import '~src/assets/css/mixins';
 
+button {
+  &:focus {
+    box-shadow: none;
+    outline: none;
+  }
+}
 .button-group {
   display: flex;
 

@@ -19,7 +19,7 @@ export class FlowProcess {
   public links: FlowLink[] = [];
   public currentStepId: string;
   public firstStepId: string | undefined;
-  public stepHistory: FlowStepHistoryEntry[];
+  // public stepHistory: FlowStepHistoryEntry[];
   public variables: { [key: string]: any };
 
   public steps$: Subscription;

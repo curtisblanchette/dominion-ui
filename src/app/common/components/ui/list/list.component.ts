@@ -81,7 +81,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @ViewChild('noDataFound') noDataTemplate: TemplateRef<any>;
   @ViewChild('initial') initialTemplate: TemplateRef<any>
 
-  public actionItems: IDropDownMenuItem[] = [
+  public actionItems$: Observable<IDropDownMenuItem[]> = of([
     {
       label: 'Delete',
       icon: 'fa-solid fa-trash',
@@ -92,7 +92,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       icon: 'fa-brands fa-500px',
       emitterValue : 'so-something'
     }
-  ];
+  ]);
 
   constructor(
     private store: Store<fromApp.AppState>,

@@ -48,10 +48,10 @@ export const AddRouterAction = createAction(
   props<{ payload: FlowRouter }>()
 );
 
-export const SetStepHistoryAction = createAction(
-  ActionTypes.SET_STEP_HISTORY,
-  props<{ payload: FlowStepHistoryEntry }>()
-);
+// export const SetStepHistoryAction = createAction(
+//   ActionTypes.SET_STEP_HISTORY,
+//   props<{ payload: FlowStepHistoryEntry }>()
+// );
 
 export const GoToStepByIdAction = createAction(
   ActionTypes.GO_TO_STEP,

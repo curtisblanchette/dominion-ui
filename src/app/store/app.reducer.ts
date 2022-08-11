@@ -2,6 +2,7 @@ import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/
 import * as appActions from './app.actions';
 import { INestedSetting } from './app.effects';
 import { getInitialStateByKey } from './util';
+import { DropdownItem } from '../common/components/ui/forms';
 
 export interface AppState {
   settings: any;
@@ -42,10 +43,14 @@ export const selectSettingGroup = (group: string) => createSelector(selectSettin
 export const selectSettingByKey = (name: string) => createSelector(selectSettings, (settings: {[key: string]: INestedSetting}) => findByKey(settings, name));
 
 export const selectLookups = createSelector(selectApp, (state: AppState) => state.lookups);
-export const selectRoles = createSelector(selectApp, (state: AppState) => state.lookups.roles);
-export const selectPracticeAreas = createSelector(selectApp, (state: AppState) => state.lookups.practiceAreas);
-export const selectOffices = createSelector(selectApp, (state: AppState) => state.lookups.offices);
-export const selectCallObjections = createSelector(selectApp, (state: AppState) => state.lookups.callObjections);
+export const selectLookupByKey = (key: string) => createSelector(selectLookups, (state: {[key: string]: DropdownItem[]}) => state[key]);
+export const selectRoles = createSelector(selectApp, (state: AppState) => state.lookups.role);
+export const selectPracticeAreas = createSelector(selectApp, (state: AppState) => state.lookups.practiceArea);
+export const selectOffices = createSelector(selectApp, (state: AppState) => state.lookups.office);
+export const selectCallObjections = createSelector(selectApp, (state: AppState) => state.lookups.callObjection);
+export const selectTimezones = createSelector(selectApp, (state: AppState) => state.lookups.timezone);
+export const selectUSStates = createSelector(selectApp, (state: AppState) => state.lookups.state);
+export const selectLookupByKeyAndId = (key: string, id: string | number) => createSelector(selectApp, (state: AppState) => state.lookups[key].find((lk: DropdownItem) => lk.id === id));
 
 export const selectInitialized = createSelector(selectApp, (state: AppState) => state.initialized);
 export const loading = createSelector(selectApp, (state: AppState) => state.loading);

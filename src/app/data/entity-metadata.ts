@@ -1,4 +1,5 @@
 import { EntityMetadataMap } from '@ngrx/data';
+import { SetLookupsAction } from '../store/app.actions';
 
 export enum ModuleTypes {
   ADDRESS = 'address',
@@ -9,9 +10,25 @@ export enum ModuleTypes {
   EVENT = 'event',
   CAMPAIGN = 'campaign',
   LEAD_SOURCE = 'leadSource',
-  ROLE = 'role',
-  PRACTICE_AREA = 'practiceArea',
+
   OFFICE = 'office'
+}
+
+export enum LookupTypes {
+  PRACTICE_AREA = 'practiceArea',
+  DEAL_STAGE = 'dealStage',
+  LOST_REASON = 'lostReason',
+  TIMEZONE = 'timezone',
+  STATE = 'state',
+  LEAD_STATUS = 'leadStatus',
+  CALL_TYPE = 'callType',
+  CALL_OUTCOME = 'callOutcome',
+  CALL_OBJECTION = 'callObjection',
+  CALL_STATUS = 'callStatus',
+  EVENT_TYPE = 'eventType',
+  EVENT_OUTCOME = 'eventOutcome',
+  EVENT_OBJECTION = 'eventObjection',
+  ROLE = 'role'
 }
 
 const entityMetadata: EntityMetadataMap = {
@@ -46,18 +63,21 @@ const entityMetadata: EntityMetadataMap = {
   [ModuleTypes.LEAD_SOURCE]: {},
   [ModuleTypes.OFFICE]: {},
 
-  role: { noChangeTracking: true },
-  [ModuleTypes.PRACTICE_AREA]: { noChangeTracking: true },
-  leadStatus: { noChangeTracking: true },
-  callOutcome: { noChangeTracking: true },
-  callObjection: { noChangeTracking: true },
-  callStatus: { noChangeTracking: true },
-  callType: { noChangeTracking: true },
-  dealStage: { noChangeTracking: true },
-  eventOutcome: { noChangeTracking: true },
-  eventObjection: { noChangeTracking: true },
-  eventType:  { noChangeTracking: true },
-  lostReason: { noChangeTracking: true }
+  [LookupTypes.LEAD_STATUS]: { noChangeTracking: true },
+  [LookupTypes.DEAL_STAGE]: { noChangeTracking: true },
+  [LookupTypes.LOST_REASON]: { noChangeTracking: true },
+
+  [LookupTypes.PRACTICE_AREA]: { noChangeTracking: true },
+  [LookupTypes.ROLE]: { noChangeTracking: true },
+  [LookupTypes.CALL_OUTCOME]: { noChangeTracking: true },
+  [LookupTypes.CALL_OBJECTION]: { noChangeTracking: true },
+  [LookupTypes.CALL_STATUS]: { noChangeTracking: true },
+  [LookupTypes.CALL_TYPE]: { noChangeTracking: true },
+
+  [LookupTypes.EVENT_OUTCOME]: { noChangeTracking: true },
+  [LookupTypes.EVENT_OBJECTION]: { noChangeTracking: true },
+  [LookupTypes.EVENT_TYPE]:  { noChangeTracking: true },
+
 };
 
 export const pluralNames = {
@@ -71,18 +91,24 @@ export const pluralNames = {
   [ModuleTypes.LEAD_SOURCE]: 'leadSources',
   [ModuleTypes.OFFICE]: 'offices',
 
-  role: 'roles',
-  [ModuleTypes.PRACTICE_AREA]: 'practiceAreas',
-  leadStatus: 'leadStatuses',
-  callOutcome: 'callOutcomes',
-  callObjection: 'callObjections',
-  callType: 'callTypes',
-  callStatus: 'callStatuses',
-  dealStage: 'dealStages',
-  eventOutcome: 'eventOutcomes',
-  eventObjections: 'eventObjections',
-  eventType: 'eventTypes',
-  lostReason: 'lostReasons',
+
+  [LookupTypes.LEAD_STATUS]: 'leadStatuses',
+  [LookupTypes.DEAL_STAGE]: 'dealStages',
+  [LookupTypes.LOST_REASON]: 'lostReasons',
+  [LookupTypes.PRACTICE_AREA]: 'practiceAreas',
+  [LookupTypes.ROLE]: 'roles',
+  [LookupTypes.CALL_OUTCOME]: 'callOutcomes',
+  [LookupTypes.CALL_OBJECTION]: 'callObjections',
+  [LookupTypes.CALL_TYPE]: 'callTypes',
+  [LookupTypes.CALL_STATUS]: 'callStatuses',
+
+  [LookupTypes.EVENT_OUTCOME]: 'eventOutcomes',
+  [LookupTypes.EVENT_OBJECTION]: 'eventObjections',
+  [LookupTypes.EVENT_TYPE]: 'eventTypes',
+
+  [LookupTypes.TIMEZONE]: 'timezones',
+  [LookupTypes.STATE]: 'state',
+
 }
 
 
@@ -99,15 +125,15 @@ export const uriOverrides: { [key: string]: string } = {
   [ModuleTypes.LEAD]: 'leads',
   [ModuleTypes.DEAL]: 'deals',
   [ModuleTypes.LEAD_SOURCE]: 'lead-sources',
-  [ModuleTypes.PRACTICE_AREA]: 'practice-areas',
-  leadStatus: 'lead-statuses',
-  callStatus: 'call-statuses',
-  callType: 'call-types',
-  callOutcome: 'call-outcomes',
-  callObjection: 'call-objections',
-  dealStage: 'deal-stages',
-  eventOutcome: 'event-outcomes',
-  eventObjection: 'event-objections',
-  eventType: 'event-types',
-  lostReason: 'lost-reasons',
+  [LookupTypes.PRACTICE_AREA]: 'practice-areas',
+  [LookupTypes.LEAD_STATUS]: 'lead-statuses',
+  [LookupTypes.CALL_STATUS]: 'call-statuses',
+  [LookupTypes.CALL_TYPE]: 'call-types',
+  [LookupTypes.CALL_OUTCOME]: 'call-outcomes',
+  [LookupTypes.CALL_OBJECTION]: 'call-objections',
+  [LookupTypes.DEAL_STAGE]: 'deal-stages',
+  [LookupTypes.EVENT_OUTCOME]: 'event-outcomes',
+  [LookupTypes.EVENT_OBJECTION]: 'event-objections',
+  [LookupTypes.EVENT_TYPE]: 'event-types',
+  [LookupTypes.LOST_REASON]: 'lost-reasons',
 }

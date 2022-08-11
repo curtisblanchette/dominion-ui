@@ -11,15 +11,30 @@
 
     <div class="settings-module__form">
       <form [formGroup]="generalForm" (ngSubmit)="updateData('general')">
-        <fiiz-input *ngFor="let setting of generalSettings$ | async | keyvalue"
-          type="text"
-          id="{{setting.key}}"
-          [label]="getSettingDisplayName(setting.key)"
-          formControlName="{{setting.key}}"
-          placeholder="{{getSettingDisplayName(setting.key)}}">
-        </fiiz-input>
+
+        <ng-container *ngFor="let setting of generalSettings$ | async | keyvalue">
+          <fiiz-dropdown type="search"
+                         #searchDropdowns
+                         (getValues)="getDropdownObjects($event)"
+                         [label]="setting.key"
+                         [title]="setting.key"
+                         [items]="timezones$"
+                         *ngIf="setting.key === 'timezone'"
+                         formControlName="timezone"></fiiz-dropdown>
+          <fiiz-input
+            type="text"
+            id="{{setting.key}}"
+            *ngIf="setting.key !== 'timezone'"
+            [label]="getSettingDisplayName(setting.key)"
+            formControlName="{{setting.key}}"
+            placeholder="{{getSettingDisplayName(setting.key)}}">
+          </fiiz-input>
+        </ng-container>
+
         <div class="form-controls">
-          <fiiz-button [loading]="loading$" [disabled]="(loading$|async) || generalForm.invalid" primary class="full-width" type="submit">Update General Settings</fiiz-button>
+          <fiiz-button [loading]="loading$" [disabled]="(loading$|async) || generalForm.invalid" primary
+                       class="full-width" type="submit">Update General Settings
+          </fiiz-button>
         </div>
       </form>
     </div>
@@ -33,27 +48,27 @@
       <form [formGroup]="apptForm" (ngSubmit)="updateData('appt')">
         <div class="settings-module__div" *ngFor="let setting of appointmentSettings$ | async | keyvalue">
           <fiiz-input type="number" style="flex: 2;"
-            [id]="setting.key"
-            [formControlName]="'appt['+setting.value.id+']['+setting.key+'][value]'"
-            [label]="getSettingDisplayName(setting.key)"
-            [placeholder]="getSettingDisplayName(setting.key)">
+                      [id]="setting.key"
+                      [formControlName]="'appointment['+setting.value.id+']['+setting.key+'][value]'"
+                      [label]="getSettingDisplayName(setting.key)"
+                      [placeholder]="getSettingDisplayName(setting.key)">
           </fiiz-input>
           <fiiz-select style="flex: 2;"
-            [items]="units$"
-            class="has-label"
-            [id]="'unit_'+setting.key"
-            [options]="{remote: false}"
-            [formControlName]="'appt['+setting.value.id+']['+setting.key+'][unit]'">
+                       [items]="units$"
+                       class="has-label"
+                       [id]="'unit_'+setting.key"
+                       [options]="{remote: false}"
+                       [formControlName]="'appointment['+setting.value.id+']['+setting.key+'][unit]'">
           </fiiz-select>
         </div>
         <div class="form-controls">
-          <fiiz-button [loading]="loading$" [disabled]="(loading$|async) || apptForm.invalid" primary class="full-width" type="submit">Update Appointment Settings</fiiz-button>
+          <fiiz-button [loading]="loading$" [disabled]="(loading$|async) || apptForm.invalid" primary class="full-width"
+                       type="submit">Update Appointment Settings
+          </fiiz-button>
         </div>
       </form>
     </div>
   </section>
-
-
 
 </div>
 

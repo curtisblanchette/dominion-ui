@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -9,12 +9,12 @@ import { DropDownAnimation } from './dropdown.animations';
 import { DropdownItem } from '../../interfaces/dropdownitem.interface';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { environment } from '../../../../../environments/environment';
-import { uriOverrides } from '../../../../data/entity-metadata';
+import { LookupTypes, ModuleTypes, uriOverrides } from '../../../../data/entity-metadata';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-
-const UsaStates = require('usa-states').UsaStates;
-const states = new UsaStates().states;
+import { Store } from '@ngrx/store';
+import * as fromApp from '../../../../store/app.reducer';
+import { selectLookupByKeyAndId } from '../../../../store/app.reducer';
 
 export interface IDropDownMenu {
   type: string;
@@ -61,7 +61,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public apiData:Array<any>;
 
-  @Input('items') items: IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[];
+  public moduleTypes: any;
+  public lookupTypes: any;
+
+  @Input('items') items$: Observable<IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[]> = of([]);
   @Input('position') position: string = 'top-right';
   @Input('title') title!: string | number | boolean | undefined;
   @Input('id') id!: string;
@@ -69,7 +72,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @Input('disabled') disabled: boolean = false;
 
   @Input('type') dropdownType!: 'anchor' | 'button' | 'search';
-  @Input('module') moduleName: string | undefined;
+  @Input('module') moduleName: ModuleTypes | LookupTypes;
 
   @Output('onClick') onClick: EventEmitter<any> = new EventEmitter();
   @Output('getValues') getValues: EventEmitter<any> = new EventEmitter();
@@ -99,6 +102,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   constructor(
     private fb: FormBuilder,
+    private store: Store<fromApp.AppState>,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
     router: Router,
@@ -110,6 +114,9 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     let form: { [key: string]: FormControl } = {};
     form['search'] = new FormControl('');
     this.searchForm = this.fb.group(form);
+
+    this.moduleTypes = ModuleTypes;
+    this.lookupTypes = LookupTypes;
   }
 
   public ngOnInit() {
@@ -135,43 +142,48 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.navigationByKeys(event);
   }
 
+  private isLookup() {
+    const enumValues = Object.values(this.lookupTypes);
+    return enumValues.includes(this.moduleName);
+  }
+
+  private isEntity() {
+    const enumValues = Object.values(this.moduleTypes);
+    return enumValues.includes(this.moduleName);
+  }
+
   public async getData(value: string = '') {
     if (this.moduleName) {
       this.currentIndex = -1;
       let data:any = {};
-      let filteredStates:Array<{[key:string] : any}> = [];
 
-      if( this.moduleName == 'state' ){
-        states.forEach( (state:any) => {
-          if( value ){
-            if( state.name.toLowerCase().includes(value.toLowerCase()) ){
-              filteredStates.push({
-                id : state.abbreviation,
-                name : state.name
-              });
-            }
-          } else {
-            filteredStates.push({
-              id : state.abbreviation,
-              name : state.name
-            });
-          }
-        });
-        data.rows = filteredStates;
-        data.count = filteredStates.length;
-      } else {
+      // figure out if it's an entity or a lookup
+      if(this.isEntity()) {
         const params = new HttpParams({fromObject: {q: value, limit: this.perPage, page: this.page}});
-        data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}`, {params})) as any;
-      }
-      if (data && data.rows) {
-        this.totalRecords = data.count || 0;
-        this.apiData = data.rows;
-        this.items = data.rows.map((item: any) => {
+        data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}`, {params}).pipe(map((res: any) => !!res.rows ? res.rows : res)));
+        data = data.map((item: any) => {
           return {
             label: item.name ? item.name : item.fullName,
             id: item.id
           } as DropdownItem;
         });
+      }
+
+      if(this.isLookup()) {
+        data = await firstValueFrom(
+          this.store.select(fromApp.selectLookupByKey(this.moduleName))
+            .pipe(
+              map((items: any) => {
+                return items.filter((item: DropdownItem) => item.label.toLowerCase().includes(value.toLowerCase()));
+              })
+            )
+        )
+      }
+
+      if (data) {
+        this.totalRecords = data.count || 0;
+        this.apiData = data;
+        this.items$ = of(data);
       }
     }
   }
@@ -180,13 +192,21 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     if (value && this.moduleName) {
       this.value = value;
       let data:any;
-      if( this.moduleName == 'state' ){
-        data = states.filter( (state:any) => state.abbreviation == value )[0];
-      } else {
-        data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`)) as any;
-      }
-      if (data) {
+
+      // have to get the initial value from api or store
+      // because we haven't loaded any data into the component yet
+
+      if(this.isEntity()){
+        data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`));
         this.title = data.name ? data.name : data.fullName;
+      }
+
+      if(this.isLookup()) {
+        data = await firstValueFrom(this.store.select(fromApp.selectLookupByKeyAndId(this.moduleName, value)));
+        this.title = data.label ? data.label : data.id;
+      }
+
+      if (data) {
         this.apiData = data;
       }
     }
@@ -208,6 +228,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       const find = this.apiData.find( c => c.id === id );
       this.getValues.emit(find);
     }
+    // else {
+    //   const find = [...this.items$].find( (c: any) => c.id === id);
+    //   this.getValues.emit(find);
+    // }
   }
 
   public emitTheValue(value: string) {
@@ -237,13 +261,13 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
       this.setSelectedItem(this.currentIndex);
     } else if (event.code === 'ArrowDown') {
-      if (this.currentIndex < 0) {
-        this.currentIndex = 0;
-      } else if (this.currentIndex < this.items.length - 1) {
-        this.currentIndex++;
-      }
-      this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
-      this.setSelectedItem(this.currentIndex);
+      // if (this.currentIndex < 0) {
+      //   this.currentIndex = 0;
+      // } else if (this.currentIndex < this.items$.length - 1) {
+      //   this.currentIndex++;
+      // }
+      // this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
+      // this.setSelectedItem(this.currentIndex);
     } else if ((event.code === 'Enter' || event.code === 'NumpadEnter') && this.currentIndex >= 0) {
       this.showDropDowns = false;
     } else if (event.code === 'Escape') {
@@ -252,8 +276,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public setSelectedItem(index: number) {
-    const selectedItem = this.items[index] as DropdownItem;
-    this.setTheValue(selectedItem.label, selectedItem.id);
+    // const selectedItem = this.items[index] as DropdownItem;
+    // this.setTheValue(selectedItem.label, selectedItem.id);
   }
 
 }

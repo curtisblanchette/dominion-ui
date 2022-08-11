@@ -2,7 +2,7 @@ import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 import { FiizValidators } from '../validators';
-import { ModuleTypes } from '../../data/entity-metadata';
+import { LookupTypes, ModuleTypes } from '../../data/entity-metadata';
 
 export enum Fields {
   FIRST_NAME = 'firstName',
@@ -62,8 +62,8 @@ export const LeadModel: {[key: string]: IModel} = {
   },
   [Fields.STATUS_ID]: {
     label: 'Status',
-    type: 'dropdown',
-    service: 'leadStatus',
+    type: 'dropdown-search',
+    service: LookupTypes.LEAD_STATUS,
     defaultValue: 'No Set',
     validators: [
       Validators.required
@@ -81,7 +81,7 @@ export const LeadModel: {[key: string]: IModel} = {
   [Fields.STATE]: {
     label: 'State',
     type: 'dropdown-search',
-    service: 'state',
+    service: LookupTypes.STATE,
     defaultValue: null,
     validators: [
       Validators.required
@@ -89,8 +89,8 @@ export const LeadModel: {[key: string]: IModel} = {
   },
   [Fields.PRACTICE_AREA_ID]: {
     label: 'Practice Area',
-    type: 'dropdown',
-    service: 'practiceArea',
+    type: 'dropdown-search',
+    service: LookupTypes.PRACTICE_AREA,
     defaultValue: null,
     validators: [
       Validators.required
