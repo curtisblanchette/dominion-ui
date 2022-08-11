@@ -1,0 +1,123 @@
+@import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
+
+:host {
+  height: var(--full-height-minus-navbar);
+}
+
+.total-pipeline {
+
+    &__filters{
+        display: grid;
+        justify-content: end;
+        gap: 1em;
+        grid-auto-flow: column;
+    }
+
+    &__reports{
+
+        .pipeline-nav {
+            
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: space-between;
+            align-items: center;
+            
+            &__section {
+                background-color: var(--slate);
+                border-radius: var(--input-border-radius);
+                justify-content: space-around;
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+                align-content: center;            
+            }
+
+            &__right_border{
+                    width: 1px;
+                    background-color: var(--slate-tint1);
+                &__triangle{
+                    transform: translateY( calc(100% + 20px) );
+                    @include triangle(right, 4, 18, var(--slate-tint1));
+                }
+            }
+
+            &__item {
+                
+                padding: 20px 0px 20px 0px;   
+
+                &__title {
+                    font-size: 1.4vw;
+                    font-weight: 500;
+                    color: var(--green1);
+                    text-align: center;
+                    line-height: 1em;
+                    margin-bottom: 20px;
+                }
+    
+                &__metric {
+                    font-size: 2.4vw;
+                    font-weight: 500;
+                    text-align: center;
+                    line-height: 1em;
+                    margin-bottom: 10px;
+
+                    &__goal {
+                        font-size: 14px;
+                        color: var(--slate-tint5);
+                        font-weight: 300;
+                    }
+                }
+
+                &__caption {
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 400;
+                    color: var(--slate-tint5);
+                }
+
+            }
+        }
+
+        .pipeline-nav-table {
+            margin-top: 40px;
+            margin-bottom: 100px;
+            &__table {
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    thead {
+                        text-align: right;
+                        tr th {
+                            &:first-child {
+                                width: 180px; 
+                                text-align: left;
+                            }
+                            color : var(--green1);
+                            font-weight: 200;
+                        }
+                    }
+                    tbody { 
+                        text-align: center;
+                        color : var(--slate-tint7);
+                        tr {
+                            border-bottom: 1px solid var(--slate-tint1);
+                            line-height: 35px;
+                            text-align: right;
+                            td {
+                                &:first-child {
+                                    width: 180px; 
+                                    text-align: left;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+}
