@@ -8,6 +8,8 @@
   @include elevate(1);
   background: var(--slate);
   box-sizing: border-box;
+  color: var(--text1);
+  cursor: pointer;
 
   fiiz-loading {
     width: 44px;
@@ -34,164 +36,165 @@
     background: none;
     font-size: 14px;
     font-weight: 500;
-    color: var(--text1);
+    color: inherit;
     padding: 0 var(--button-padding-lr);
     height: 44px;
     line-height: 44px;
-    cursor: pointer;
+    cursor: inherit;
     transition: background .1s ease-in-out, width .25s ease-out;
     text-transform: capitalize;
-
-    &.full-width {
-      justify-content:space-around;
-    }
-
-
-    //////////////////////// SIZES
-    &.large {
-      height: 40px;
-      line-height: 40px;
-    }
-
-    &.small {
-      height: 30px;
-      line-height: 30px;
-    }
-
-    &.x-small {
-      font-size: 12px;
-      height: 24px;
-      line-height: 24px;
-    }
-
-    //////////////////////// END SIZES
-
-    //////////////////////// COLORS
-    &.primary, &.active {
-      background: var(--primary);
-      color: #051323;
-      font-weight: 600;
-
-      &:hover {
-        background: var(--primary-shade1);
-      }
-
-      &:active {
-        background: var(--primary-shade3);
-      }
-    }
-
-    &.transparent {
-      background: transparent;
-      box-shadow: none;
-      font-weight: 400;
-
-      &:hover {
-        background: rgba(0, 0, 0, .05) !important;
-      }
-
-      &:active {
-        background: rgba(0, 0, 0, .15) !important;
-      }
-    }
-
-    &.outline {
-      background: none;
-      border: 1px solid rgba(0, 0, 0, .2);
-    }
-
-    //////////////////////// END COLORS
-
-
-
-    //////////////////////// LAYOUT
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: .5 !important;
-    }
-
-    &.link {
-
-    }
 
     //////////////////////// END LAYOUT
   }
 
+  &.full-width {
+    justify-content:space-around;
+  }
+
+
+  //////////////////////// SIZES
+  &.large {
+    height: 40px;
+    line-height: 40px;
+  }
+
+  &.small {
+    height: 30px;
+    line-height: 30px;
+  }
+
+  &.x-small {
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+  }
+
+  //////////////////////// END SIZES
+
+  //////////////////////// COLORS
+
+
+  //////////////////////// END COLORS
+
+
+
+  //////////////////////// LAYOUT
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: .5 !important;
+
+    background: var(--primary-shade8);
+  }
+
+  &.link {
+
+  }
+
   // Added by primary.directive.ts
   &.primary {
-    button {
-      background: var(--primary);
-      color: #051323;
-      font-weight: 600;
 
-      &:hover {
-        background: var(--primary-shade1);
-      }
+    background: var(--primary);
+    color: #051323;
+    font-weight: 600;
 
-      &:active {
-        background: var(--primary-shade3);
-      }
+    &:hover {
+      background: var(--primary-shade1);
+    }
+
+    &:active {
+      background: var(--primary-shade3);
+    }
+
+  }
+  &.primary, &.active {
+    background: var(--primary);
+    color: #051323;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--primary-shade1);
+    }
+
+    &:active {
+      background: var(--primary-shade3);
     }
   }
 
+  &.transparent {
+    background: transparent;
+    box-shadow: none;
+    font-weight: 400;
+
+    &:hover {
+      background: rgba(0, 0, 0, .05) !important;
+    }
+
+    &:active {
+      background: rgba(0, 0, 0, .15) !important;
+    }
+  }
+
+  &.outline {
+    background: none;
+    border: 1px solid rgba(0, 0, 0, .2);
+  }
   // Added by stroked.directive.ts
   &.stroked {
-    button {
-      background: rgba(0, 0, 0, .05);
-      border: 1px solid var(--slate-tint2);
-      color: var(--text1);
-      position: relative;
-      transform: translateY(0);
-      transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
-      line-height: 42px;
 
-      &:hover {
-        border: 1px solid var(--slate-tint1);
-        color: var(--slate-tint7);
-        background: rgba(0, 0, 0, .15);
-      }
+    background: rgba(0, 0, 0, .05);
+    border: 1px solid var(--slate-tint2);
+    color: var(--text1);
+    position: relative;
+    transform: translateY(0);
+    transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
+    line-height: 42px;
 
-      &:focus {
-        transform: translateY(0);
-        box-shadow: none;
-      }
+    &:hover {
+      border: 1px solid var(--slate-tint1);
+      color: var(--slate-tint7);
+      background: rgba(0, 0, 0, .15);
     }
+
+    &:focus {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
   }
 
   // added by warning.directive.ts
   &.warning {
 
-    button {
-      background: var(--red);
-      color: var(--red-shade8);
-      font-weight: 600;
+    background: var(--red);
+    color: var(--red-shade8);
+    font-weight: 600;
 
-      &:hover {
-        background: var(--red-shade2);
-        color: var(--red-shade9);
-      }
-
-      &:active {
-        background: var(--red-shade4);
-        color: var(--red-shade9);
-      }
+    &:hover {
+      background: var(--red-shade2);
+      color: var(--red-shade9);
     }
+
+    &:active {
+      background: var(--red-shade4);
+      color: var(--red-shade9);
+    }
+
   }
 
   // composite of warning and stroked
   &.stroked.warning {
-    button {
+
+    border: 1px solid var(--red);
+    color: var(--red-tint1);
+    background: none !important;
+
+    &:hover {
       border: 1px solid var(--red);
       color: var(--red-tint1);
-      background: none !important;
-
-      &:hover {
-        border: 1px solid var(--red);
-        color: var(--red-tint1);
-        background: rgba(0, 0, 0, .15) !important;
-      }
+      background: rgba(0, 0, 0, .15) !important;
     }
+
   }
 
   &.dropdown {
