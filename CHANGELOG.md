@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.13.6 (2022-08-11)
+
+
+### Bug Fixes
+
+* **develop:** better dropdown usability and developer friendly (works with lookups now) ([f1b9a51](https://github.com/4iiz/dominion-ui/commit/f1b9a51db8abb2f50a549e28ad87207f46bfd8d6))
+
 ### 1.13.5 (2022-08-11)
 
 ### 1.13.4 (2022-08-11)
