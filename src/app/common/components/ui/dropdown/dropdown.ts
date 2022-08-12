@@ -10,7 +10,7 @@ import { DropdownItem } from '../../interfaces/dropdownitem.interface';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { environment } from '../../../../../environments/environment';
 import { LookupTypes, ModuleTypes, uriOverrides } from '../../../../data/entity-metadata';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../../../store/app.reducer';
@@ -35,6 +35,7 @@ export interface IDropDownMenuItem {
   emitterValue: string;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'fiiz-dropdown',
   templateUrl: './dropdown.html',
@@ -123,7 +124,13 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public async ngAfterViewInit() {
-    this.apiData = await firstValueFrom(this.items$);
+    // TODO remove the need for this.apiData. observable streams can filter the results automatically while keeping the source intact.
+    // keeps the source data updated, filtering mutates this.items$
+    this.items$.pipe(untilDestroyed(this), map(items => {
+      this.apiData = items;
+    })).subscribe();
+
+
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
