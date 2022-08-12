@@ -54,7 +54,7 @@ export class AppEffects {
 
         // organize settings into groups
         const response = new Map();
-        res.rows.map((setting: any) => response.set(setting.group, {...response.get(setting.group) || {}, ...toNestedSetting(setting)}));
+        res.rows?.map((setting: any) => response.set(setting.group, {...response.get(setting.group) || {}, ...toNestedSetting(setting)}));
 
         // Map to Object
         const transformed: { [key: string]: INestedSetting } = Object.fromEntries(response);
@@ -119,9 +119,9 @@ export class AppEffects {
           // Map the lookups to DropdownItem's
           for(const key of Object.keys(res)) {
             if(res[key].hasOwnProperty('rows')) {
-              res[key] = res[key].rows.map((r: any) => ({id: r.id, label: r.name }));
+              res[key] = res[key]?.rows.map((r: any) => ({id: r.id, label: r.name }));
             } else {
-              res[key] = res[key].map((r: any) => ({id: r.id, label: r.name }));
+              res[key] = res[key]?.map((r: any) => ({id: r.id, label: r.name }));
             }
           }
 

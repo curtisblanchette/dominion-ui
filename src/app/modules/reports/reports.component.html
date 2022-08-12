@@ -1,193 +1,187 @@
 <div class="total-pipeline__wrapper">
-    <div class="total-pipeline__filters">
-        <fiiz-date-picker
-            [pickerType]="'calendar'"
-            [id]="'filter_start_date'"
-            [label]="'START DATE'"
-            [placeholder]="'Start Date'"
-        ></fiiz-date-picker>
-        <fiiz-date-picker
-            [pickerType]="'calendar'"
-            [id]="'filter_end_date'"
-            [label]="'END DATE'"
-            [placeholder]="'End Date'"
-        ></fiiz-date-picker>
-    </div>
+  <div class="total-pipeline__filters">
+    <fiiz-date-picker
+      [pickerType]="'calendar'"
+      [id]="'filter_start_date'"
+      [label]="'START DATE'"
+      [placeholder]="'Start Date'"
+    ></fiiz-date-picker>
+    <fiiz-date-picker
+      [pickerType]="'calendar'"
+      [id]="'filter_end_date'"
+      [label]="'END DATE'"
+      [placeholder]="'End Date'"
+    ></fiiz-date-picker>
+  </div>
 
-    <div class="total-pipeline__reports">
+  <div class="total-pipeline__reports">
+    <h4>In Pipeline</h4>
+    <nav class="pipeline-nav">
 
-        <h4>In Pipeline</h4>
-		<nav class="pipeline-nav">
-			
-            <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;">
-                <div class="pipeline-nav__item">
-                    <div class="pipeline-nav__item__title">Qual. Leads</div>
-                    <div class="pipeline-nav__item__metric">123</div>
-                    <div class="pipeline-nav__item__caption">&nbsp;</div>
-                </div>
-                <div class="pipeline-nav__right_border">
-                    <div class="pipeline-nav__right_border__triangle"></div>
-                </div>
-                <div class="pipeline-nav__item">
-                    <div class="pipeline-nav__item__title">Sets</div>
-                    <div class="pipeline-nav__item__metric">64</div>
-                    <div class="pipeline-nav__item__caption">Set Rate 52%</div>
-                </div>
-            </section>
+      <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;">
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Qual. Leads</div>
+          <div class="pipeline-nav__item__metric">123</div>
+          <div class="pipeline-nav__item__caption">&nbsp;</div>
+        </div>
+        <div class="pipeline-nav__right_border">
+          <div class="pipeline-nav__right_border__triangle"></div>
+        </div>
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Sets</div>
+          <div class="pipeline-nav__item__metric">64</div>
+          <div class="pipeline-nav__item__caption">Set Rate 52%</div>
+        </div>
+      </section>
 
-            <section class="pipeline-nav__section" style="flex:0.6">
-                <div class="pipeline-nav__item">                    
-                    <div class="pipeline-nav__item__title">Total Appts.</div>
-                    <div class="pipeline-nav__item__metric">51<span class="pipeline-nav__item__metric__goal">/51</span></div>
-                    <div class="pipeline-nav__item__caption">&nbsp;</div>
-                </div>
-                <div class="pipeline-nav__right_border">
-                    <div class="pipeline-nav__right_border__triangle"></div>
-                </div>
-                <div class="pipeline-nav__item">
-                    <div class="pipeline-nav__item__title">Qual Shows</div>
-                    <div class="pipeline-nav__item__metric">51<span class="pipeline-nav__item__metric__goal">/64</span></div>
-                    <div class="pipeline-nav__item__caption">Set Rate 52%</div>
-                </div>
-                <div class="pipeline-nav__right_border">
-                    <div class="pipeline-nav__right_border__triangle"></div>
-                </div>
-                <div class="pipeline-nav__item">                    
-                    <div class="pipeline-nav__item__title">Hires</div>
-                    <div class="pipeline-nav__item__metric">39</div>
-                    <div class="pipeline-nav__item__caption">Hire Rate 60%</div>
-                </div>
-            </section>
-            
-		</nav>
+      <section class="pipeline-nav__section" style="flex:0.6">
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Total Appts.</div>
+          <div class="pipeline-nav__item__metric">51<span class="pipeline-nav__item__metric__goal">/51</span></div>
+          <div class="pipeline-nav__item__caption">&nbsp;</div>
+        </div>
+        <div class="pipeline-nav__right_border">
+          <div class="pipeline-nav__right_border__triangle"></div>
+        </div>
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Qual Shows</div>
+          <div class="pipeline-nav__item__metric">51<span class="pipeline-nav__item__metric__goal">/64</span></div>
+          <div class="pipeline-nav__item__caption">Set Rate 52%</div>
+        </div>
+        <div class="pipeline-nav__right_border">
+          <div class="pipeline-nav__right_border__triangle"></div>
+        </div>
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Hires</div>
+          <div class="pipeline-nav__item__metric">39</div>
+          <div class="pipeline-nav__item__caption">Hire Rate 60%</div>
+        </div>
+      </section>
 
-        <h4>Out of Pipeline</h4>
-		<nav class="pipeline-nav">
-			
-            <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;">
-                <div class="pipeline-nav__item">
-                    <div class="pipeline-nav__item__title">Answers</div>
-                    <div class="pipeline-nav__item__metric">123</div>
-                    <div class="pipeline-nav__item__caption">&nbsp;</div>
-                </div>
-                <div class="pipeline-nav__right_border">
-                    <div class="pipeline-nav__right_border__triangle"></div>
-                </div>
-                <div class="pipeline-nav__item">
-                    <div class="pipeline-nav__item__title">Sets</div>
-                    <div class="pipeline-nav__item__metric">64</div>
-                    <div class="pipeline-nav__item__caption">Set Rate 52%</div>
-                </div>
-            </section>
+    </nav>
 
-            <section class="pipeline-nav__section" style="flex:0.6">
-                <div class="pipeline-nav__item">                    
-                    <div class="pipeline-nav__item__title">Total Appts.</div>
-                    <div class="pipeline-nav__item__metric">51<span class="pipeline-nav__item__metric__goal">/51</span></div>
-                    <div class="pipeline-nav__item__caption">&nbsp;</div>
-                </div>
-                <div class="pipeline-nav__right_border">
-                    <div class="pipeline-nav__right_border__triangle"></div>
-                </div>
-                <div class="pipeline-nav__item">
-                    <div class="pipeline-nav__item__title">Qual Shows</div>
-                    <div class="pipeline-nav__item__metric">47<span class="pipeline-nav__item__metric__goal">/51</span></div>
-                    <div class="pipeline-nav__item__caption">Set Rate 99%</div>
-                </div>
-                <div class="pipeline-nav__right_border">
-                    <div class="pipeline-nav__right_border__triangle"></div>
-                </div>
-                <div class="pipeline-nav__item">
-                    <div class="pipeline-nav__item__title">Hires</div>
-                    <div class="pipeline-nav__item__metric">39</div>
-                    <div class="pipeline-nav__item__caption">Hire Rate 76%</div>
-                </div>
-            </section>
-		</nav>
+    <h4>Out of Pipeline</h4>
+    <nav class="pipeline-nav">
 
-        <nav class="pipeline-nav-table">
-            <section class="pipeline-nav-table__table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Age</th>
-                            <th>Answers</th>
-                            <th>Sets</th>
-                            <th>Set Rate</th>
-                            <th>Total Appts.</th>
-                            <th>Shows</th>
-                            <th>Qual. Shows</th>
-                            <th>Show Rate</th>
-                            <th>Hires</th>
-                            <th>Hire Rate</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1-45 days</td>
-                            <td>67</td>
-                            <td>67</td>
-                            <td>67%</td>
-                            <td>67</td>
-                            <td>67</td>
-                            <td>67</td>
-                            <td>67%</td>
-                            <td>67</td>
-                            <td>67%</td>
-                        </tr>
-                        <tr>
-                            <td>46-90 days</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76%</td>
-                        </tr>
-                        <tr>
-                            <td>91-180 days</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76%</td>
-                        </tr>
-                        <tr>
-                            <td>181-365 days</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76%</td>
-                        </tr>
-                        <tr>
-                            <td>365+ days</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76</td>
-                            <td>76%</td>
-                            <td>76</td>
-                            <td>76%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-        </nav>
+      <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;">
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Answers</div>
+          <div class="pipeline-nav__item__metric">123</div>
+          <div class="pipeline-nav__item__caption">&nbsp;</div>
+        </div>
+        <div class="pipeline-nav__right_border">
+          <div class="pipeline-nav__right_border__triangle"></div>
+        </div>
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Sets</div>
+          <div class="pipeline-nav__item__metric">64</div>
+          <div class="pipeline-nav__item__caption">Set Rate 52%</div>
+        </div>
+      </section>
 
-    </div>
+      <section class="pipeline-nav__section" style="flex:0.6">
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Total Appts.</div>
+          <div class="pipeline-nav__item__metric">51<span class="pipeline-nav__item__metric__goal">/51</span></div>
+          <div class="pipeline-nav__item__caption">&nbsp;</div>
+        </div>
+        <div class="pipeline-nav__right_border">
+          <div class="pipeline-nav__right_border__triangle"></div>
+        </div>
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Qual Shows</div>
+          <div class="pipeline-nav__item__metric">47<span class="pipeline-nav__item__metric__goal">/51</span></div>
+          <div class="pipeline-nav__item__caption">Set Rate 99%</div>
+        </div>
+        <div class="pipeline-nav__right_border">
+          <div class="pipeline-nav__right_border__triangle"></div>
+        </div>
+        <div class="pipeline-nav__item">
+          <div class="pipeline-nav__item__title">Hires</div>
+          <div class="pipeline-nav__item__metric">39</div>
+          <div class="pipeline-nav__item__caption">Hire Rate 76%</div>
+        </div>
+      </section>
+    </nav>
+
+
+      <section class="pipeline-nav-table__table">
+        <div class="flex-table">
+          <div class="flex-table__header">
+            <div class="flex-table__cell">Age</div>
+            <div class="flex-table__cell">Answers</div>
+            <div class="flex-table__cell">Sets</div>
+            <div class="flex-table__cell">Set Rate</div>
+            <div class="flex-table__cell">Total Appts.</div>
+            <div class="flex-table__cell">Shows</div>
+            <div class="flex-table__cell">Qual. Shows</div>
+            <div class="flex-table__cell">Show Rate</div>
+            <div class="flex-table__cell">Hires</div>
+            <div class="flex-table__cell">Hire Rate</div>
+          </div>
+          <div class="flex-table__row">
+            <div class="flex-table__cell">1-45 days</div>
+            <div class="flex-table__cell">67</div>
+            <div class="flex-table__cell">67</div>
+            <div class="flex-table__cell">67%</div>
+            <div class="flex-table__cell">67</div>
+            <div class="flex-table__cell">67</div>
+            <div class="flex-table__cell">67</div>
+            <div class="flex-table__cell">67%</div>
+            <div class="flex-table__cell">67</div>
+            <div class="flex-table__cell">67%</div>
+          </div>
+          <div class="flex-table__row">
+            <div class="flex-table__cell">46-90 days</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+          </div>
+          <div class="flex-table__row">
+            <div class="flex-table__cell">91-180 days</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+          </div>
+          <div class="flex-table__row">
+            <div class="flex-table__cell">181-365 days</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+          </div>
+          <div class="flex-table__row">
+            <div class="flex-table__cell">365+ days</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+            <div class="flex-table__cell">76</div>
+            <div class="flex-table__cell">76%</div>
+          </div>
+        </div>
+    </section>
+
+  </div>
 
 </div>

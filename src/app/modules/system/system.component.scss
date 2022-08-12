@@ -1,0 +1,45 @@
+:host {
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: min-content 1fr min-content;
+    gap: 2em;
+
+
+    article {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 5;
+
+      header {
+
+      }
+
+      form {
+        flex-grow: inherit;
+        margin-bottom: 15px;
+
+        .form-controls {
+          margin-top: 1em;
+        }
+      }
+
+      .fields {
+        margin-bottom: 10px;
+      }
+
+      div {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        gap: 10px;
+      }
+
+    }
+
+  }
+}

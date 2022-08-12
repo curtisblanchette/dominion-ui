@@ -90,7 +90,7 @@ export class SettingsComponent implements OnInit {
   public getDropdownObjects(data: any) {
     if (data && data.leadSource) {
       const dropdown = this.searchDropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
-      dropdown?.setTheValue(data.leadSource.name, data.leadSource.id);
+      dropdown?.setTheValue(data.leadSource);
     }
   }
 

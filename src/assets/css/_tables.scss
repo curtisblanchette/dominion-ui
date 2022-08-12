@@ -11,7 +11,12 @@
   &__header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    //justify-content: space-between;
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: flex-end;
+    color: #80CBC2;
 
     .flex-table__cell {
       flex: 1;
@@ -61,7 +66,9 @@
     display: flex;
     align-items: center;
     flex: 1;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    justify-content: flex-start;
+    font-weight: 400;
 
     &:first-child {
       flex: 2;

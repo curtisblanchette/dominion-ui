@@ -1,15 +1,47 @@
-<h2>System Administration</h2>
-<fiiz-select [items]="workspaces$" label="Accounts" [showDefault]="true" [ngModel]="actingFor$ | async" (change)="onChange($event)"></fiiz-select>
+
+<div class="page-heading">
+  <h2 class="page-heading__title">System Administration</h2>
+</div>
+
+<div class="grid">
+  <article>
+    <header>
+      <h3>Accounts</h3>
+    </header>
+
+    <form [formGroup]="accountsForm">
+      <fiiz-dropdown
+        type="search"
+        [items]="workspaces$"
+        [formControlName]="'actingFor'"
+        [title]="'Select an account'"
+        [label]="'Accounts'"
+        [ngModel]="actingFor$ | async"></fiiz-dropdown>
+    </form>
+  </article>
+
+  <article>
+    <ng-container [ngTemplateOutlet]="(actingFor$ | async)?.id ? inviteUsers : null"></ng-container>
+  </article>
+
+</div>
 
 
-<ng-container [ngTemplateOutlet]="(actingFor$ | async)?.id ? inviteUsers : null"></ng-container>
 
 <ng-template #inviteUsers>
-  <h3>Invite Users</h3>
+  <header>
+    <h3>Invite Users</h3>
+  </header>
 
-  <form (ngSubmit)="submitUserInvite()"  [formGroup]="userInviteForm" *ngIf="userInviteForm?.controls">
+  <form (ngSubmit)="submitUserInvite()" [formGroup]="userInviteForm" *ngIf="userInviteForm?.controls">
     <fiiz-input label="Email" placeholder="Email Address" [formControlName]="'email'"></fiiz-input>
-    <fiiz-select label="Role" [items]="roles$" [formControlName]="'role'"></fiiz-select>
+    <fiiz-dropdown
+      type="search"
+      [label]="'Role'"
+      [title]="'Select a Role'"
+      [module]="lookupTypes.ROLE"
+      [formControlName]="'role'"></fiiz-dropdown>
+
     <div class="form-controls">
       <fiiz-button type="submit" stroked [loading]="loading$">Send Invitation</fiiz-button>
     </div>

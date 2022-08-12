@@ -95,7 +95,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.showDropDowns = false;
   }
 
-  onChange: (value: string | number | boolean | undefined) => void = () => {};
+  onChange: (value: string | number | boolean | DropdownItem | undefined) => void = () => {};
   onTouched: Function = () => {};
 
   @ViewChild('dropdownList') dropdownList: ElementRef;
@@ -106,8 +106,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
     router: Router,
-    private http: HttpClient,
-    private el: ElementRef
+    private http: HttpClient
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
@@ -206,6 +205,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         this.title = data.label ? data.label : data.id;
       }
 
+
       if (data) {
         this.apiData = data;
       }
@@ -220,13 +220,15 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onTouched = fn;
   }
 
-  public setTheValue(label: string, id: string | number | boolean) {
-    this.onChange(id);
+  public setTheValue(value: DropdownItem) {
+    this.onChange(value);
     this.onTouched();
-    this.title = label;
+    this.title = value.label;
     if( this.apiData ){
-      const find = this.apiData.find( c => c.id === id );
+      const find = this.apiData.find( c => c.id === value.id );
       this.getValues.emit(find);
+    } else {
+      this.getValues.emit(value);
     }
     // else {
     //   const find = [...this.items$].find( (c: any) => c.id === id);

@@ -30,7 +30,7 @@
         <fiiz-button tabindex="0"
                      *ngFor="let item of items$ | async; let i = index; let last = last;"
                      [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}"
-                     (click)="setTheValue(item.label, item.id)"
+                     (click)="setTheValue(item)"
                      style="border-radius: 0;">
           {{ item.label }}
         </fiiz-button>
