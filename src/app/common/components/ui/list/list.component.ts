@@ -232,6 +232,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public onCreateNew() {
     this.selected = null;
     this.values.emit( { module: this.module, record: null });
+    this._dynamicCollectionService.setFilter({});
     this.onCreate.emit( { module: this.module, record: null } );
   }
 

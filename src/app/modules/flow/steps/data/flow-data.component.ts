@@ -66,9 +66,9 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
   onSuccess(record: DominionType) {
     // variables to be saved after a step should come back here.
     this.flowService.updateStep(this.flowStepId, {
-      variables: {
-        [this.module]: record.id
-      },
+      // variables: {
+      //   [this.module]: record.id
+      // },
       valid: true,
       state: {
         data: {

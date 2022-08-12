@@ -29,7 +29,7 @@ export const DealModel: {[key: string]: IModel} = {
   },
   stageId: {
     label: 'Stage',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'dealStage',
     defaultValue: null,
     validators: [
@@ -38,7 +38,7 @@ export const DealModel: {[key: string]: IModel} = {
   },
   lostReasonId: {
     label: 'Lost: Reason',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'lostReason',
     defaultValue: null,
     validators: [
@@ -47,7 +47,7 @@ export const DealModel: {[key: string]: IModel} = {
   },
   practiceAreaId: {
     label: 'Practice Area',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'practiceArea',
     defaultValue: null,
     validators: [

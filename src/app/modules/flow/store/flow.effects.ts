@@ -148,13 +148,9 @@ export class FlowEffects {
             if(updates) {
               this.flowService.updateStep(step.id, updates);
             }
-
           }
 
-          // if(step?.id){
-          //@ts-ignore
-            return flowActions.UpdateFlowAction({currentStepId: step.id });
-          // }
+          return flowActions.UpdateFlowAction({currentStepId: step.id });
 
         }
         return EMPTY;

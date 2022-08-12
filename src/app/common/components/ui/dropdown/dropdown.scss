@@ -113,18 +113,6 @@
       &:last-child button {
         border-radius: 0 0 var(--button-border-radius) var(--button-border-radius);
       }
-
-      input.search {
-        background-color: var(--slate);
-        color: var(--text1);
-        padding: 10px;
-        font-size: 14px;
-      }
-
-      input.search:disabled {
-        opacity: 1 !important;
-      }
-
     }
 
     &__item {

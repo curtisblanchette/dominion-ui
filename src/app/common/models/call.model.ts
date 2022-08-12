@@ -39,7 +39,7 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.OUTCOME_ID]: {
     label: 'Outcome',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'callOutcome',
     defaultValue: null,
     validators: [
@@ -48,7 +48,7 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.TYPE_ID]: {
     label: 'Type',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'callType',
     defaultValue: 'Sales Consultation',
     validators: [
@@ -57,7 +57,7 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.STATUS_ID]: {
     label: 'Status',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'callStatus',
     defaultValue: 'Answered',
     validators: [
@@ -100,7 +100,7 @@ export const CallModel: {[key: string]: IModel} = {
   },
   [Fields.OBJECTION_ID]: {
     label: 'Objection',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'callObjection',
     defaultValue: null,
     validators: []

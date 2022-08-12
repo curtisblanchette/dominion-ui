@@ -60,7 +60,7 @@ export const EventModel: {[key: string]: IModel} = {
   },
   [Fields.TYPE_ID]: {
     label: 'Type',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'eventType',
     defaultValue: null,
     validators: [
@@ -83,14 +83,14 @@ export const EventModel: {[key: string]: IModel} = {
   },
   [Fields.OUTCOME_ID]: {
     label: 'Outcome',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'eventOutcome',
     defaultValue: null,
     validators: []
   },
   [Fields.OBJECTION_ID]: {
     label: 'Objection',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'eventObjection',
     defaultValue: null,
     validators: []

@@ -71,7 +71,7 @@ export const LeadModel: {[key: string]: IModel} = {
   },
   [Fields.LOST_REASON_ID]: {
     label: 'Lost: Reason',
-    type: 'dropdown',
+    type: 'dropdown-search',
     service: 'lostReason',
     defaultValue: null,
     validators: [

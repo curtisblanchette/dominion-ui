@@ -141,50 +141,47 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
     await this.buildForm(this.options.fields);
 
-    // if(this.data[this.module]) {
-    //   // get data from step
-    //   console.log('step data', this.data[this.module]);
-    //   this.form.setValue(this.data[this.module], {emitEvent: true});
-    // }
+    if(this.options.state === 'edit') {
+      this.data$.pipe(
+        untilDestroyed(this),
+        delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
+      ).pipe(untilDestroyed(this)).subscribe(async (record: any) => {
+        if (record[0]) {
+          let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
 
-    this.data$.pipe(
-      untilDestroyed(this),
-      delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
-    ).pipe(untilDestroyed(this)).subscribe(async (record: any) => {
-      if (record[0]) {
-        let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
+          if (entity) {
+            const properties = this.options.fields;
 
-        if (entity) {
-          const properties = this.options.fields;
+            Object.keys(entity).forEach(prop => {
 
-          Object.keys(entity).forEach(prop => {
+              if (dayjs(entity[prop]).isValid() && models[this.module][prop] && ['day', 'daytime'].includes(models[this.module][prop].type)) {
+                entity[prop] = dayjs(entity[prop]).format();
+              }
 
-            if (dayjs(entity[prop]).isValid() && models[this.module][prop] && ['day', 'daytime'].includes(models[this.module][prop].type)) {
-              entity[prop] = dayjs(entity[prop]).format();
-            }
+              if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
+                delete entity[prop];
+              }
 
-            if (!properties.includes(prop) && prop !== 'id' || prop === 'fullName' || ['updatedAt', 'createdAt'].includes(prop)) {
-              delete entity[prop];
-            }
+            });
+            this.form.addControl('id', new FormControl('', Validators.required));
+            this.form.setValue(entity, {emitEvent: true});
 
-          });
-          this.form.addControl('id', new FormControl('', Validators.required));
-          this.form.setValue(entity, {emitEvent: true});
+            of('').pipe(
+              untilDestroyed(this),
+              delay(200) // workaround issue: https://github.com/angular/angular/issues/14542
+            ).subscribe(() => {
+              this.isValid.next(this.form.valid);
+              this.values.next(this.form.value);
+            });
 
-          of('').pipe(
-            untilDestroyed(this),
-            delay(200) // workaround issue: https://github.com/angular/angular/issues/14542
-          ).subscribe(() => {
-            this.isValid.next(this.form.valid);
-            this.values.next(this.form.value);
-          });
-
+            await this.dateValidation();
+          }
+        } else {
           await this.dateValidation();
         }
-      } else {
-        await this.dateValidation();
-      }
-    });
+      });
+    }
+
   }
 
   public async ngAfterViewInit() {

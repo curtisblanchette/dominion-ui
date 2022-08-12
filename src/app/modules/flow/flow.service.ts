@@ -145,8 +145,8 @@ export class FlowService {
         startTime: new Date().toISOString(),
         direction: direction
       }, false).pipe(take(1)).subscribe(async (res) => {
-        this.callId = res.id
-        this.addVariables({call: this.callId});
+        this.callId = res.id;
+        this.updateStep(this.builder.process.currentStepId, {variables: { call: this.callId } });
         await this.createNote('');
       });
     } else {
@@ -161,11 +161,11 @@ export class FlowService {
       changes: payload
     }
     this.callService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe((res) => {
-      const variables: any = {};
-      for (const key of Object.keys(res)) {
-        variables[`call_${key}`] = res[key];
-      }
-      this.addVariables(variables);
+      // const variables: any = {};
+      // for (const key of Object.keys(res)) {
+      //   variables[`call_${key}`] = res[key];
+      // }
+      // this.addVariables(variables);
     });
   }
 
@@ -184,13 +184,7 @@ export class FlowService {
   }
 
   public async goTo(id: string): Promise<void> {
-    // const step = this.builder.process.steps.find(x => x.id === id);
-    // if(step) {
-    // const nextIndex = this.builder.process.breadcrumbs.indexOf(step.id);
-    // const currentIndex = this.builder.process.breadcrumbs.indexOf(this.builder.process.currentStepId);
-    // const isBackAction =  nextIndex < currentIndex;
     this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: id}));
-    // }
   }
 
   public findNextStep(): FlowStep | FlowRouter | undefined {

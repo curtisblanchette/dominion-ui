@@ -226,6 +226,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         this.apiData = data;
       }
     } else {
+      this.value = value;
       // the data source was statically provided (aka. its not a module or lookup)
       const data = [...(await firstValueFrom(this.items$))].find((item: any) => item.id === value) as any;
       this.title = data?.label ? data?.label : this.title;
@@ -241,7 +242,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public setTheValue(value: DropdownItem) {
-    this.onChange(value);
+    this.onChange(value.id);
     this.onTouched();
     this.title = value.label;
     if( this.apiData ){
