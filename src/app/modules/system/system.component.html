@@ -9,14 +9,13 @@
       <h3>Accounts</h3>
     </header>
 
-    <form [formGroup]="accountsForm">
+    <form [formGroup]="accountsForm" *ngIf="accountsForm">
       <fiiz-dropdown
         type="search"
         [items]="workspaces$"
         [formControlName]="'actingFor'"
         [title]="'Select an account'"
-        [label]="'Accounts'"
-        [ngModel]="actingFor$ | async"></fiiz-dropdown>
+        [label]="'Accounts'"></fiiz-dropdown>
     </form>
   </article>
 
@@ -34,14 +33,13 @@
   </header>
 
   <form (ngSubmit)="submitUserInvite()" [formGroup]="userInviteForm" *ngIf="userInviteForm?.controls">
-    <fiiz-input label="Email" placeholder="Email Address" [formControlName]="'email'"></fiiz-input>
+    <fiiz-input type="email" label="Email" placeholder="Email Address" [formControlName]="'email'"></fiiz-input>
     <fiiz-dropdown
       type="search"
-      [label]="'Role'"
-      [title]="'Select a Role'"
+      [formControlName]="'role'"
       [module]="lookupTypes.ROLE"
-      [formControlName]="'role'"></fiiz-dropdown>
-
+      [title]="'Select a Role'"
+      [label]="'Role'"></fiiz-dropdown>
     <div class="form-controls">
       <fiiz-button type="submit" stroked [loading]="loading$">Send Invitation</fiiz-button>
     </div>

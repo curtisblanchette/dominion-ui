@@ -187,7 +187,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     }
   }
 
-  async writeValue(value: string) {
+  async writeValue(value: any) {
     if (value && this.moduleName) {
       this.value = value;
       let data:any;
@@ -202,13 +202,18 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
       if(this.isLookup()) {
         data = await firstValueFrom(this.store.select(fromApp.selectLookupByKeyAndId(this.moduleName, value)));
-        this.title = data.label ? data.label : data.id;
+        if(data?.label) {
+          this.title = data?.label ? data?.label : data?.id;
+        }
       }
-
 
       if (data) {
         this.apiData = data;
       }
+    } else {
+      // the data source was statically provided (aka. its not a module or lookup)
+      const data = [...(await firstValueFrom(this.items$))].find((item: any) => item.id === value) as any;
+      this.title = data?.label ? data?.label : this.title;
     }
   }
 

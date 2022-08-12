@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromSystem from './store/system.reducer';
@@ -16,7 +16,7 @@ import { LookupTypes } from '../../data/entity-metadata';
   templateUrl: './system.component.html',
   styleUrls: ['../../../assets/css/_container.scss', './system.component.scss']
 })
-export class SystemComponent implements OnDestroy {
+export class SystemComponent implements OnDestroy, OnInit {
 
   public workspaces$: Observable<DropdownItem[]>;
   public actingFor$: Observable<DropdownItem | undefined>;
@@ -32,19 +32,13 @@ export class SystemComponent implements OnDestroy {
   constructor(
     private store: Store<fromSystem.SystemState>,
     private fb: FormBuilder
-
   ) {
     this.lookupTypes = LookupTypes;
     this.workspaces$ = this.store.select(fromSystem.selectWorkspaces);
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
     this.roles$ = this.store.select(fromApp.selectRoles);
     this.loading$ = this.store.select(fromSystem.loading);
-    this.accountsForm = this.createAccountsForm();
 
-    this.accountsForm.controls['actingFor'].valueChanges.subscribe((changes: any) => {
-      this.store.dispatch(systemActions.SetActingForAction({ payload: changes }));
-      this.store.dispatch(loginActions.GetUserAction());
-    });
     /** initialized means that the AppState has been successfully populated */
     this.initialized$ = this.store.select(fromApp.selectInitialized).pipe(untilDestroyed(this)).subscribe(val => {
       this._initialized = val;
@@ -56,6 +50,15 @@ export class SystemComponent implements OnDestroy {
 
   }
 
+  public async ngOnInit(): Promise<void> {
+    this.accountsForm = await this.createAccountsForm();
+
+    this.accountsForm.controls['actingFor'].valueChanges.subscribe((changes: any) => {
+      this.store.dispatch(systemActions.SetActingForAction({ payload: changes }));
+      this.store.dispatch(loginActions.GetUserAction());
+    });
+  }
+
   onChange(id: string) {
     if(id) {
 
@@ -64,27 +67,30 @@ export class SystemComponent implements OnDestroy {
 
   createUserInviteForm(): FormGroup {
     const fields = {
-      email: new FormControl('', Validators.required),
-      role: new FormControl(firstValueFrom(this.roles$).then(roles=> roles[0]), Validators.required)
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      role: new FormControl(firstValueFrom(this.roles$).then(roles=> roles[0]), [Validators.required])
     };
     return this.fb.group(fields);
   }
 
-  createAccountsForm(): FormGroup {
+  async createAccountsForm(): Promise<FormGroup> {
+    const value = await firstValueFrom(this.actingFor$);
     const fields = {
-      actingFor: new FormControl('', Validators.required)
+      actingFor: new FormControl(value?.id || null, [Validators.required])
     };
     return this.fb.group(fields);
   }
 
   async submitUserInvite() {
-    const workspace: any = await firstValueFrom(this.store.select(fromSystem.selectActingFor));
-    const payload = {
-      workspaceId: workspace.id,
-      roleId: this.userInviteForm.controls['role'].value,
-      email: this.userInviteForm.controls['email'].value
+    if(this.userInviteForm.valid && this.userInviteForm.dirty) {
+      const workspace: any = await firstValueFrom(this.store.select(fromSystem.selectActingFor));
+      const payload = {
+        workspaceId: workspace.id,
+        roleId: this.userInviteForm.controls['role'].value,
+        email: this.userInviteForm.controls['email'].value
+      }
+      this.store.dispatch(systemActions.SendInvitationAction({payload}));
     }
-    this.store.dispatch(systemActions.SendInvitationAction({payload}));
   }
 
   ngOnDestroy() {
