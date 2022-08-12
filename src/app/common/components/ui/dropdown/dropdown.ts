@@ -19,7 +19,7 @@ import { selectLookupByKeyAndId } from '../../../../store/app.reducer';
 export interface IDropDownMenu {
   type: string;
   title?: string;
-  items: IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[];
+  items: (IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[]);
   position?: string;
 }
 
@@ -64,7 +64,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   public moduleTypes: any;
   public lookupTypes: any;
 
-  @Input('items') items$: Observable<IDropDownMenuItemAnchor[] | IDropDownMenuItem[] | DropdownItem[]> = of([]);
+  @Input('items') items$: Observable<(IDropDownMenuItemAnchor | IDropDownMenuItem | DropdownItem)[]> = of([]);
   @Input('position') position: string = 'top-right';
   @Input('title') title!: string | number | boolean | undefined;
   @Input('id') id!: string;
@@ -123,6 +123,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public async ngAfterViewInit() {
+    this.apiData = await firstValueFrom(this.items$);
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
       untilDestroyed(this),
@@ -181,10 +182,17 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
       if (data) {
         this.totalRecords = data.count || 0;
-        this.apiData = data;
+        this.items$ = of(data);
+      }
+    } else {
+      const data = this.apiData.filter(item => item.label.toLowerCase().includes(value.toLowerCase()));
+      if (data) {
+        this.totalRecords = data.length || 0;
         this.items$ = of(data);
       }
     }
+
+
   }
 
   async writeValue(value: any) {
