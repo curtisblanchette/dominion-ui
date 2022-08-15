@@ -21,7 +21,7 @@ export const reducer = createReducer(
   initialState,
   on(systemActions.GetWorkspacesAction, (state) => ({...state})),
   on(systemActions.SetWorkspacesAction, (state, { payload }) => ({...state, workspaces: payload})),
-  on(systemActions.SetActingForAction, (state, { payload }) => ({...state, actingFor: payload })),
+  on(systemActions.SetActingForAction, (state, { workspaceId }) => ({...state, actingFor: state.workspaces.find(ws => ws.id === workspaceId) || null})),
   on(systemActions.SendInvitationAction, (state) => ({...state, loading: true})),
   on(systemActions.SendInvitationSuccessAction, (state) => ({...state, loading: false})),
   on(systemActions.SendInvitationErrorAction, (state) => ({...state, loading: false})),

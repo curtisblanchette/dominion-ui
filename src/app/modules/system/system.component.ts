@@ -54,7 +54,7 @@ export class SystemComponent implements OnDestroy, OnInit {
     this.accountsForm = await this.createAccountsForm();
 
     this.accountsForm.controls['actingFor'].valueChanges.subscribe((changes: any) => {
-      this.store.dispatch(systemActions.SetActingForAction({ payload: changes }));
+      this.store.dispatch(systemActions.SetActingForAction({ workspaceId: changes }));
       this.store.dispatch(loginActions.GetUserAction());
     });
   }

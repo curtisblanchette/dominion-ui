@@ -22,7 +22,7 @@ export const SetWorkspacesAction = createAction(
 
 export const SetActingForAction = createAction(
   ActionTypes.SET_ACTING_FOR,
-  props<{ payload: DropdownItem }>()
+  props<{ workspaceId: string }>()
 );
 
 export const SendInvitationAction = createAction(
