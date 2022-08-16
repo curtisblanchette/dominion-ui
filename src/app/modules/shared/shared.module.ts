@@ -4,7 +4,6 @@ import { LoadingComponent } from '../../common/components/ui/loading/loading.com
 import { SafePipe } from '../../common/pipes/safe.pipe';
 import { TypeOfPipe } from '../../common/pipes/typeof.pipe';
 import { FormsModule } from '@angular/forms';
-import { TabableDirective } from '../../common/directives/tabable.directive';
 
 @NgModule({
   imports: [
@@ -14,15 +13,13 @@ import { TabableDirective } from '../../common/directives/tabable.directive';
   declarations: [
     LoadingComponent,
     SafePipe,
-    TypeOfPipe,
-    TabableDirective
+    TypeOfPipe
   ],
   exports: [
     CommonModule,
     LoadingComponent,
     SafePipe,
-    TypeOfPipe,
-    TabableDirective
+    TypeOfPipe
   ]
 })
 export class SharedModule {
