@@ -350,7 +350,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
             return this._dynamicCollectionService.add(<DominionType>payload).toPromise()
               .then((res) => {
-                this._dynamicCollectionService.setFilter({id: res?.id});
+                this._dynamicCollectionService.setFilter({});
                 this.onSuccess.next({[this.module]: res?.id});
               });
           }
