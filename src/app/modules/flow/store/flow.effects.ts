@@ -6,7 +6,7 @@ import { EMPTY, firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
-import { FlowStep } from '../index';
+import { FlowBot, FlowStep } from '../index';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { cloneDeep } from 'lodash';
@@ -21,6 +21,7 @@ export class FlowEffects {
     private store: Store<fromFlow.FlowState>,
     private http: HttpClient,
     public flowService: FlowService,
+    private flowBot: FlowBot
   ) {
 
   }
@@ -42,6 +43,14 @@ export class FlowEffects {
       })
     ), { dispatch: false }
   );
+
+  onReset = createEffect((): any =>
+  this.actions$.pipe(
+    ofType(flowActions.ResetAction),
+    tap((action) => {
+      this.flowBot.reset();
+    })
+  ), { dispatch: false });
 
   goToStepById$ = createEffect((): any =>
     this.actions$.pipe(

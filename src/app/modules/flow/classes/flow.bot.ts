@@ -39,6 +39,9 @@ export class FlowBot {
       callsService: this.entityCollectionServiceFactory.create(ModuleTypes.CALL)
     }
   }
+  public reset() {
+    this.actions = [];
+  }
 
   public run(flowService: FlowService) {
     this.store.select(fromFlow.selectFlowBotContext).pipe(take(1)).subscribe(async (result: any) => {

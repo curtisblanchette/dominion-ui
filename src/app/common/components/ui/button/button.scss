@@ -38,7 +38,7 @@
     gap: 1em;
     border: none;
     border-radius: inherit;
-    background: none;
+    background: inherit;
     font-size: 14px;
     font-weight: 500;
     color: inherit;
@@ -48,7 +48,7 @@
     cursor: inherit;
     transition: background .1s ease-in-out, width .25s ease-out;
     text-transform: capitalize;
-
+    margin: 0 auto;
     //////////////////////// END LAYOUT
   }
 
