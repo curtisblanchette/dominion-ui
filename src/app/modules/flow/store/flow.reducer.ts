@@ -52,7 +52,7 @@ export const initialState: FlowState = {
   currentStepId: getInitialStateByKey('flow.currentStepId') || undefined,
   firstStepId: undefined,
   lastStepId: undefined,
-  status: getInitialStateByKey('flow.status') || undefined
+  status: getInitialStateByKey('flow.status') || 'pending'
 };
 
 export const reducer = createReducer(

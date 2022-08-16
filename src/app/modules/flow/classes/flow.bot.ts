@@ -43,120 +43,136 @@ export class FlowBot {
 
   public run(flowService: FlowService) {
 
-    this.store.select(fromFlow.selectFlowBotContext).pipe(take(1)).subscribe(async (result: any) => {
-      const [timeline, status] = result;
-
-      if(status !== 'complete') {
 
 
-        for(let step of timeline) {
-          // clone the cached payload data from the step (it's immutable from store)
-          const payload = {...step.state.data[step.state.module]};
 
-          switch(step.component) {
-            case "FlowDataComponent": {
-              const service = this.services[`${step.state.module}Service`];
-              const isCreate = step.state.options.state === 'create';
-              const operation = isCreate ? 'add' : 'update';
+      this.store.select(fromFlow.selectFlowBotContext).pipe(take(1)).subscribe(async (result: any) => {
+        const [timeline, status] = result;
 
-              const action = new BotAction({
-                name: operation + '-' + step.state.module,
-                icon: 'fa-user',
-                module: step.state.module,
-                status: 'pending'
-              });
+        if(status !== 'complete') {
 
-              this.actions.push(action);
+          try {
+            for(let step of timeline) {
+              // clone the cached payload data from the step (it's immutable from store)
+              const payload = {...step.state.data[step.state.module]};
 
-              let filter: any = await firstValueFrom(service.filter$);
-              if(filter['id']) {
-                payload['id'] = filter['id'];
-              }
+              switch(step.component) {
+                case "FlowDataComponent": {
+                  const service = this.services[`${step.state.module}Service`];
+                  const isCreate = step.state.options.state === 'create';
+                  const operation = isCreate ? 'add' : 'update';
 
-              const response = await service[operation](payload).toPromise();
-              // the id's we get back should be saved to the process.
-              flowService.updateStep(step.id, { state: { data: { id: response?.id } } }, 'merge');
-              // set the entityCollection filter to target this record going forward
-              service.setFilter({id: response?.id});
-              // notify the client
-              action.status = 'complete';
-              action.message = `${this.getModuleName(step.state.module)} ${operation === 'add' ? 'Created' : 'Updated'}.`;
-            }
-            break;
-            case "FlowAppointmentComponent": {
-
-              switch(step.state.options.state) {
-                case 'cancel': {
                   const action = new BotAction({
-                    name: 'cancel-event',
-                    icon: 'fa-calendar',
-                    message: 'Cancel Event',
+                    name: operation + '-' + step.state.module,
+                    icon: 'fa-user',
+                    module: step.state.module,
                     status: 'pending'
                   });
+
                   this.actions.push(action);
-                  // TODO outcomeId should be a retrieved value
-                  await this.services['eventService'].update({id: step.state.data.toCancel, outcomeId: 2}).toPromise();
-                  action.status = 'complete';
-                  action.message = 'Appointment Cancelled.'
-                }
-                break;
-                case 'reschedule':
-                case 'set': {
-                  if(step.state.options.state === 'reschedule') {
-                    const action = new BotAction({
-                      name: 'reschedule-event',
-                      icon: 'fa-calendar',
-                      message: 'Reschedule Event',
-                      status: 'pending'
-                    });
-                    this.actions.push(action);
-                    // TODO outcomeId should be a retrieved value
-                    await this.services['eventService'].update({id: step.state.data.toReschedule, outcomeId: 1}).toPromise();
-                    action.status = 'complete';
-                    action.message = 'Appointment Rescheduled.';
+
+                  let filter: any = await firstValueFrom(service.filter$);
+                  if(filter['id']) {
+                    payload['id'] = filter['id'];
                   }
 
-                  // Set Appointment
-                  // depends on leadId
-                  let leadFilter: any = await firstValueFrom(this.services['leadService'].filter$);
-                  let contactFilter: any = await firstValueFrom(this.services['contactService'].filter$);
-
-                  payload['leadId'] = leadFilter['id'];
-                  payload['contactId'] = contactFilter['id'];
-
-                  const action = new BotAction({
-                    name: 'add-event',
-                    icon: 'fa-calendar',
-                    status: 'pending',
-                    message: 'Creating Appointment'
-                  });
-                  this.actions.push(action);
-
-                  const created = await this.services['eventService'].add(payload).toPromise();
-
-                  flowService.updateStep(step.id, { state: { data: { id: created?.id } } }, 'merge');
-                  this.services['eventService'].setFilter({id: created?.id});
+                  const response = await service[operation](payload).toPromise();
+                  // the id's we get back should be saved to the process.
+                  flowService.updateStep(step.id, { state: { data: { id: response?.id } } }, 'merge');
+                  // set the entityCollection filter to target this record going forward
+                  service.setFilter({id: response?.id});
+                  // notify the client
                   action.status = 'complete';
-                  action.message = 'Appointment Created.';
+                  action.message = `${this.getModuleName(step.state.module)} ${operation === 'add' ? 'Created' : 'Updated'}.`;
+                }
+                break;
+                case "FlowAppointmentComponent": {
+
+                  switch(step.state.options.state) {
+                    case 'cancel': {
+                      const action = new BotAction({
+                        name: 'cancel-event',
+                        icon: 'fa-calendar',
+                        message: 'Cancel Event',
+                        status: 'pending'
+                      });
+                      this.actions.push(action);
+                      // TODO outcomeId should be a retrieved value
+                      await this.services['eventService'].update({id: step.state.data.toCancel, outcomeId: 2}).toPromise();
+                      action.status = 'complete';
+                      action.message = 'Appointment Cancelled.'
+                    }
+                    break;
+                    case 'reschedule':
+                    case 'set': {
+                      if(step.state.options.state === 'reschedule') {
+                        const action = new BotAction({
+                          name: 'reschedule-event',
+                          icon: 'fa-calendar',
+                          message: 'Reschedule Event',
+                          status: 'pending'
+                        });
+                        this.actions.push(action);
+                        // TODO outcomeId should be a retrieved value
+                        await this.services['eventService'].update({id: step.state.data.toReschedule, outcomeId: 1}).toPromise();
+                        action.status = 'complete';
+                        action.message = 'Appointment Rescheduled.';
+                      }
+
+                      // Set Appointment
+                      // depends on leadId
+                      let leadFilter: any = await firstValueFrom(this.services['leadService'].filter$);
+                      let contactFilter: any = await firstValueFrom(this.services['contactService'].filter$);
+
+                      payload['leadId'] = leadFilter['id'];
+                      payload['contactId'] = contactFilter['id'];
+
+                      const action = new BotAction({
+                        name: 'add-event',
+                        icon: 'fa-calendar',
+                        status: 'pending',
+                        message: 'Creating Appointment'
+                      });
+                      this.actions.push(action);
+
+                      const created = await this.services['eventService'].add(payload).toPromise();
+
+                      flowService.updateStep(step.id, { state: { data: { id: created?.id } } }, 'merge');
+                      this.services['eventService'].setFilter({id: created?.id});
+                      action.status = 'complete';
+                      action.message = 'Appointment Created.';
+
+                    }
+                  }
 
                 }
+                break;
+                case "FlowTextComponent": {
+
+                }
+                break;
               }
-
             }
-            break;
-            case "FlowTextComponent": {
 
-            }
-            break;
+            this.store.dispatch(flowActions.UpdateFlowAction({status: 'complete'}));
+            
+          } catch(e) {
+            console.error(e);
           }
-        }
 
-        this.store.dispatch(flowActions.UpdateFlowAction({status: 'complete'}));
 
-      } // end status !== 'complete'
 
-      // this.actions.push('All information for this call has been captured. Thank you!');
-    });
+        } // end status !== 'complete'
+
+        // this.actions.push('All information for this call has been captured. Thank you!');
+      });
+
+      for(const key of Object.keys(this.services)) {
+        this.services[key].clearCache();
+        this.services[key].setFilter({});
+      }
+
+
   }
 
   private getModuleName(module: ModuleTypes) {

@@ -266,7 +266,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     const startTime = dayjs(event.target.id).format();
     const endTime = dayjs(event.target.id).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format();
     this.form.patchValue({startTime, endTime});
-    this.flowService.updateStep(this.flowStepId, {valid: true}, 'merge');
+    this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
   }
 
   private async cleanForm() {

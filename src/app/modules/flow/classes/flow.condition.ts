@@ -55,18 +55,18 @@ export class FlowCondition extends FlowBaseModel implements FlowSerialization<Fl
 
     let result = false;
     if(typeof this.evaluation === 'object') {
-      if (this.evaluation.hasOwnProperty('variable')) {
-
-        if (this.evaluation.hasOwnProperty('equals')) {
-          return variables[this.evaluation.variable] === this.evaluation.equals;
-        }
-
-        if (this.evaluation.hasOwnProperty('exists')) {
-          return variables[this.evaluation.variable];
-        }
-
-        return result;
-      }
+      // if (this.evaluation.hasOwnProperty('variable')) {
+      //
+      //   if (this.evaluation.hasOwnProperty('equals')) {
+      //     return variables[this.evaluation.variable] === this.evaluation.equals;
+      //   }
+      //
+      //   if (this.evaluation.hasOwnProperty('exists')) {
+      //     return variables[this.evaluation.variable];
+      //   }
+      //
+      //   return result;
+      // }
     }
 
     if(typeof this.evaluation === 'string') {
