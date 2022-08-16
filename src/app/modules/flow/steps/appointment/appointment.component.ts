@@ -116,7 +116,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         //   typeId: 1
         // });
 
-        let payload = { ...this.eventData.form.value, ...this.options.payload };
+        let payload = { ...this.eventData.form.value, ...this.options.payload, ...this.form.value };
 
         this.flowService.updateStep(this.flowStepId, {
           valid: this.form.valid && !!this.selectedBtnId,
