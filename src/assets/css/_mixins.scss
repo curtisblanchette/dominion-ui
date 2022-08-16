@@ -191,15 +191,6 @@
   }
 }
 
-@mixin focusRing($override, $override-moz-mac) {
-  /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-  box-shadow: $override;
-  // box-shadow: $override-moz-mac;
-  color: var(--text1);
-  outline: none;
-}
-
-
 @mixin elevate($level) {
   @if ($level == 1) {
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 20%);

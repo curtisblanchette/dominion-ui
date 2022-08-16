@@ -1,4 +1,5 @@
-@import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
+
 :host {
   display: block;
   background-color: var(--background-color);
@@ -11,7 +12,7 @@
   @include elevate(2);
 }
 
-.navbar {
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,7 +32,7 @@
   &__header {
     position: relative;
 
-    a {
+    button {
       margin: 0;
       border-style: none;
       height: var(--navbar-height);
@@ -48,7 +49,7 @@
     margin-left: auto;
   }
 
-  &__nav {
+  nav {
     margin: {
       top: 0;
       left: auto;
@@ -74,24 +75,21 @@
       left: 0;
     }
 
-    & > li {
-
-      &:hover {
-        //border-bottom: 3px solid #79B8FF;
-      }
-
-      & > a {
-        text-decoration: none;
-        display: inline-block;
-        line-height: var(--navbar-height);
-        padding: 0 1.7rem;
-        color: var(--text1);
-      }
-
-      &.active a {
-        color: var(--primary-tint2);
-      }
+    & > button {
+      cursor: pointer;
+      background: none;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+      line-height: var(--navbar-height);
+      padding: 0 1.7rem;
+      color: var(--text1);
     }
+
+    &.active a {
+      color: var(--primary-tint2);
+    }
+
   }
 
 }

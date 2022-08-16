@@ -101,11 +101,6 @@
     &.number {
       text-align: right;
     }
-    &:focus {
-      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-      color: #{var(--text1)};
-      outline: none;
-    }
 
     &::-ms-expand {
       display: none;

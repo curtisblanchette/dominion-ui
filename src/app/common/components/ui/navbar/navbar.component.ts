@@ -20,7 +20,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   public loggedUser!: User | null;
   public actingFor$: Observable<any>;
 
-  public menu: { name: string; path: string; roles: string[] }[] = [
+  public menu: { name: string; path: string; roles: string[], children?: any[] }[] = [
     {
       name: 'Dashboard',
       path: 'dashboard',
@@ -29,7 +29,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     {
       name: 'Reports',
       path: 'reports',
-      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
+      roles: ['system', 'admin', 'owner', 'consultant', 'agent'],
+      children: [
+        {
+          name: 'Total Pipeline',
+          path: 'reports/total-pipeline',
+          roles: ['system', 'admin', 'owner', 'consultant', 'agent'],
+        }
+      ]
     },
     {
       name: 'Data',
@@ -70,7 +77,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
     this.store.select(fromLogin.selectUser).pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
-        this.loggedUser = user as User
+        this.loggedUser = user as User;
         // TODO will likely have to test for more than the first role
         this.menu = this.menu.filter(item => item.roles.includes(user.roles[0]));
       } else {

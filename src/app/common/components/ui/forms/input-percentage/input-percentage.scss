@@ -64,13 +64,6 @@
     cursor: text;
     text-align: right;
 
-
-    &:focus {
-      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-      color: #222;
-      outline: none;
-    }
-
     &::-ms-expand {
       display: none;
     }

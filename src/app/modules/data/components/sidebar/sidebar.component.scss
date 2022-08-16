@@ -58,9 +58,6 @@
         color: #{var(--text1)};
       }
 
-      &:focus {
-        @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-      }
     }
   }
 }

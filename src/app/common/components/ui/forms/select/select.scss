@@ -72,9 +72,6 @@
     background-size: .65em auto;
     cursor: pointer;
 
-    &:focus {
-      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-    }
 
     &::-ms-expand {
       display: none;

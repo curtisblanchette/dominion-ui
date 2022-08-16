@@ -4,7 +4,7 @@
 :host {
   overflow: hidden;
   border-radius: var(--button-border-radius);
-  height: 46px;
+  height: auto;
   @include elevate(1);
   background: var(--slate);
   box-sizing: border-box;
@@ -49,6 +49,7 @@
     transition: background .1s ease-in-out, width .25s ease-out;
     text-transform: capitalize;
     margin: 0 auto;
+    // @include focusRing();
     //////////////////////// END LAYOUT
   }
 
@@ -161,9 +162,8 @@
       background: rgba(0, 0, 0, .15);
     }
 
-    &:focus {
-      transform: translateY(0);
-      box-shadow: none;
+    button {
+      // @include focusRing();
     }
 
   }
@@ -212,15 +212,6 @@
       &:hover {
         background-color: var(--slate-tint1);
       }
-
-      &:focus {
-        background-color: var(--slate-tint1);
-      }
-
-      &:focus-visible {
-        outline: 0;
-        background-color: var(--slate-tint1);
-      }
     }
   }
 
@@ -232,12 +223,4 @@
     background: var(--slate-shade2);
   }
 
-  &:focus {
-    /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-    @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-  }
-
-  &:focus-visible {
-    @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-  }
 }

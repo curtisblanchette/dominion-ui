@@ -1,4 +1,4 @@
-<nav class="navbar" *ngIf="loggedUser">
+<header >
   <div class="navbar__header">
     <a  routerLink="/dashboard">
       <img src="../../../../../assets/img/logo@1x.png" alt="4iiz Logo" />
@@ -6,12 +6,8 @@
     <div class="acting-for" *ngIf="actingFor$ | async">{{(actingFor$ | async).label}}</div>
   </div>
 
-  <div class="navbar__menu">
-    <ul class="navbar__nav">
-      <li routerLinkActive="active" #link *ngFor="let item of menu">
-        <a [routerLink]="item.path">{{item.name}}</a>
-      </li>
+  <nav class="navbar__menu">
+      <button routerLinkActive="active" [routerLink]="item.path" #link *ngFor="let item of menu">{{item.name}}</button>
       <div class="active-underline" #activeUnderline></div>
-    </ul>
-  </div>
-</nav>
+  </nav>
+</header>

@@ -29,9 +29,9 @@
         color: #77BEB7;
       }
 
-      &:focus {
-        @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-      }
+
+      // @include focusRing();
+
 
     }
 

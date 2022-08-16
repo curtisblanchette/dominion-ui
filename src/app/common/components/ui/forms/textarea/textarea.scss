@@ -57,9 +57,6 @@
     cursor: text;
     resize: none;
 
-    &:focus {
-     @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-    }
 
     &:after {
       position:absolute;
