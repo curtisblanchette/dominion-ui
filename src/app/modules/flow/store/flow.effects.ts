@@ -129,7 +129,7 @@ export class FlowEffects {
           const currentStep = steps.find(step => step.id === currentStepId);
           // triggers can update variables that we'll need while creating history entries
           if (typeof currentStep?.afterRoutingTriggers === 'string') {
-            const sourceMapComment = `\n //# sourceURL=afterRoutingTrigger.js \n`;
+            const sourceMapComment = `\n //# sourceURL=${currentStep.nodeText}.after.js \n`;
             let code = currentStep?.afterRoutingTriggers;
             code = code.concat(sourceMapComment);
             const afterFn = eval(code);
@@ -140,7 +140,7 @@ export class FlowEffects {
           }
 
           if (typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
-            const sourceMapComment = `\n //# sourceURL=beforeRoutingTrigger.js \n`;
+            const sourceMapComment = `\n //# sourceURL=${step.nodeText}.before.js \n`;
             let code = (<FlowStep>step).beforeRoutingTriggers
             code = code.concat(sourceMapComment);
             const beforeFn = eval(code);

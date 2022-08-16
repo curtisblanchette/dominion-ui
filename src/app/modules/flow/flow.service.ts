@@ -116,7 +116,7 @@ export class FlowService {
     if (resume) return this.resume();
 
     // we're starting a new process
-    this.store.dispatch(flowActions.UpdateFlowAction({ processId: uuidv4(), status: 'pending' }));
+    this.store.dispatch(flowActions.UpdateFlowAction({ processId: uuidv4(), status: 'default' }));
     await this.builder.build();
     const step: FlowStep = this.builder.process.steps[0];
 

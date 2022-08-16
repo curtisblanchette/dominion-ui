@@ -11,7 +11,7 @@ export interface FlowState {
   currentStepId: string | undefined;
   firstStepId: string | undefined;
   lastStepId: string | undefined;
-  status: 'pending' | 'complete';
+  status: 'default' | 'processing' | 'complete';
 }
 
 const getInitialStateByKey = (key: string): any | (FlowStep | FlowRouter | FlowLink)[] | undefined => {
@@ -52,7 +52,7 @@ export const initialState: FlowState = {
   currentStepId: getInitialStateByKey('flow.currentStepId') || undefined,
   firstStepId: undefined,
   lastStepId: undefined,
-  status: getInitialStateByKey('flow.status') || 'pending'
+  status: getInitialStateByKey('flow.status') || 'default'
 };
 
 export const reducer = createReducer(

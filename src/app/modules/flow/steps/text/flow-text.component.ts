@@ -178,7 +178,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'end': {
         this.flowBot.run(this.flowService);
-
       }
       break;
 
