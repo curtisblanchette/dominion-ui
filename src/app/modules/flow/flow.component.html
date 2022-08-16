@@ -17,7 +17,7 @@
   </section>
 
   <section [@slide]="animationIndex" class="flow-layout__content">
-    <div style="position: absolute; top: 15%; left: 0; right: 0; bottom: 25%;">
+    <div style="position: absolute; top: 20px; left: 0; right: 0; bottom: 20px;">
       <ng-template flowHost></ng-template>
       <footer>
         <fiiz-button (click)="onBack($event)" stroked *ngIf="(status$ | async) !== 'complete'">Back</fiiz-button>

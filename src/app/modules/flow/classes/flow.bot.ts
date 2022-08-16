@@ -8,6 +8,7 @@ import { FlowService } from '../flow.service';
 import { Injectable } from '@angular/core';
 import { BotAction } from './flow.botAction';
 import * as flowActions from '../store/flow.actions';
+import { FlowStep } from './flow.step';
 
 /**
  * The FlowBot is capable of traversing a flow entirely as it was by a physical user.
@@ -46,6 +47,11 @@ export class FlowBot {
   public run(flowService: FlowService) {
     this.store.select(fromFlow.selectFlowBotContext).pipe(take(1)).subscribe(async (result: any) => {
       const [timeline, status] = result;
+
+      if(!timeline.every((step: FlowStep) => step.valid)) {
+        // TODO Should highlight the invalid steps in the sidemenu
+        return;
+      }
 
       this.store.dispatch(flowActions.UpdateFlowAction({ status: 'processing' }));
 
