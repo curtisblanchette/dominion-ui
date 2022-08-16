@@ -26,8 +26,6 @@ router-outlet {
     justify-content: end;
     gap: .5em;
   }
-
-
   &__content {
     display: flex;
     flex-direction: column;

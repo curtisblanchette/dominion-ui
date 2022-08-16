@@ -1,9 +1,8 @@
 @mixin fiizBorder($placement, $size, $color) {
-  background-image:
-          repeating-linear-gradient(-60deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
-          repeating-linear-gradient(30deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
-          repeating-linear-gradient(120deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
-          repeating-linear-gradient(210deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px);
+  background-image: repeating-linear-gradient(-60deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
+  repeating-linear-gradient(30deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
+  repeating-linear-gradient(120deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px),
+  repeating-linear-gradient(210deg, $color, $color 1px, transparent 1px, transparent 3px, $color 3px);
 
   @if $placement == 'left' {
     background-size: $size 100%, 100% 0, 0 100%, 100% 0;
@@ -130,46 +129,49 @@
   overflow: hidden;
 }
 
-@mixin btnTheme($theme, $elmClass){
-  $iconContainer : #95C2F6;
-  $iconColor : #25304E;
-  $title : #131828;
-  $subtitle : #191F30;
+@mixin btnTheme($theme, $elmClass) {
+  $iconContainer: #95C2F6;
+  $iconColor: #25304E;
+  $title: #131828;
+  $subtitle: #191F30;
 
   @if $theme == 'dark' {
-    $iconContainer : #35649A;
-    $iconColor : #CCD8F9;
-    $title : #CCD8F9;
-    $subtitle : #A7B2D2;
+    $iconContainer: #35649A;
+    $iconColor: #CCD8F9;
+    $title: #CCD8F9;
+    $subtitle: #A7B2D2;
   } @else if $theme == 'orange' {
-    $iconContainer : #FFD36E;
-    $iconColor : #413415;
-    $title : #030405;
-    $subtitle : #413415;
+    $iconContainer: #FFD36E;
+    $iconColor: #413415;
+    $title: #030405;
+    $subtitle: #413415;
   } @else if $theme == 'purple' {
-    $iconContainer : #9D6EFF;
-    $iconColor : #422C6E;
-    $title : #DBC8FF;
-    $subtitle : #DBC8FF;
+    $iconContainer: #9D6EFF;
+    $iconColor: #422C6E;
+    $title: #DBC8FF;
+    $subtitle: #DBC8FF;
   } @else if $theme == 'pitch' {
-    $iconContainer : #F1DFCD;
-    $iconColor : #413415;
-    $title : #030405;
-    $subtitle : #413415;
+    $iconContainer: #F1DFCD;
+    $iconColor: #413415;
+    $title: #030405;
+    $subtitle: #413415;
   }
   .#{$elmClass} {
     &__icon {
-        background-color: $iconContainer;
-        & i {
-            color: $iconColor;
-        }
+      background-color: $iconContainer;
+
+      & i {
+        color: $iconColor;
+      }
     }
+
     &__content {
-        &__title {
-            color: $title;
-        }
-        &__sub_title {
-          color: $title;
+      &__title {
+        color: $title;
+      }
+
+      &__sub_title {
+        color: $title;
       }
     }
   }
@@ -199,7 +201,7 @@
 
 
 @mixin elevate($level) {
-  @if($level == 1) {
+  @if ($level == 1) {
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 20%);
   } @else if $level == 2 {
     box-shadow: 0 2px 15px 0 rgb(0 0 0 / 50%);
@@ -217,9 +219,45 @@
   -ms-overflow-style: -ms-autohiding-scrollbar;
 
   &::-webkit-scrollbar {
-    display: none!important;
+    display: none !important;
     width: 0; /* remove scrollbar space */
     background: transparent; /* optional: just make scrollbar invisible */
   }
 }
 
+
+@mixin placeholderStyle() {
+  input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--placeholder-color) !important;
+  }
+
+  &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: var(--placeholder-color) !important;
+  }
+
+  &::-ms-input-placeholder { /* Microsoft Edge */
+    color: var(--placeholder-color) !important;
+  }
+
+  input::placeholder {
+    color: var(--placeholder-color) !important;
+  }
+
+  input::-webkit-input-placeholder {
+    color: var(--placeholder-color) !important;
+  }
+
+  input:-moz-placeholder { /* Firefox 18- */
+    color: var(--placeholder-color) !important;
+  }
+
+  input::-moz-placeholder { /* Firefox 19+ */
+    color: var(--placeholder-color) !important;
+  }
+
+  input:-ms-input-placeholder {
+    color: var(--placeholder-color) !important;
+  }
+
+
+}

@@ -18,6 +18,6 @@
 }
 
 // Convert hex color to RGB color format
-@function hextorgb($hex) {
+@function hexToRGB($hex) {
   @return red($hex), green($hex), blue($hex);
 }

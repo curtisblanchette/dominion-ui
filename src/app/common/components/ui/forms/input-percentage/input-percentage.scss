@@ -1,4 +1,4 @@
-@import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
 
 /* class applies to select element itself, not a wrapper element */
 :host {
@@ -6,6 +6,7 @@
   position: relative;
   margin-bottom: var(--input-margin-bottom);
   width: 100%;
+  @include placeholderStyle();
 
   &.ng-invalid {
     input {
@@ -102,18 +103,4 @@
   }
 
 
-}
-
-
-
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #A7B2D2;
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #A7B2D2;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #A7B2D2;
 }

@@ -1,4 +1,4 @@
-@import '~src/assets/css/variables';
+@import '~src/assets/css/mixins';
 @import '~src/assets/css/functions';
 
 /* class applies to select element itself, not a wrapper element */
@@ -7,6 +7,8 @@
   position: relative;
   margin-bottom: var(--input-margin-bottom);
   width: 100%;
+  @include placeholderStyle();
+
 
   &.ng-invalid {
     input {

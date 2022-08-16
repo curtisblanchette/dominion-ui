@@ -35,6 +35,8 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angul
 import { FiizDialogComponent } from './dialog/dialog';
 import { Dialog, DIALOG_SCROLL_STRATEGY_PROVIDER } from '@angular/cdk/dialog';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { FiizGridComponent } from './grid/grid';
+import { FiizGridColsDirective } from './grid/cols.directive';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,9 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     FiizDropDownComponent,
     FiizListComponent,
     FiizDataComponent,
-    FiizDialogComponent
+    FiizDialogComponent,
+    FiizGridComponent,
+    FiizGridColsDirective
   ],
   providers: [
     Dialog,
@@ -110,7 +114,9 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     FiizDropDownComponent,
     FiizListComponent,
     FiizDataComponent,
-    FiizDialogComponent
+    FiizDialogComponent,
+    FiizGridColsDirective,
+    FiizGridComponent
   ]
 })
 export class FiizUIModule {

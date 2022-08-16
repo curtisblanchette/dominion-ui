@@ -114,6 +114,7 @@ $green0-shade95: shade(#1A936F, 95%);
 
   --background-color: #{var(--primary-shade9)};
   --text1: #C6CEED;
+  --placeholder-color: shade(hexToRGB(#C6CEED), 25%);
   --grey1: #E9E9E9;
   --grey2: #CAD2E2;
 
@@ -134,5 +135,4 @@ $green0-shade95: shade(#1A936F, 95%);
   --container-padding: 40px;
   --navbar-height: 64px;
   --full-height-minus-navbar: calc(100% - #{var(--navbar-height)});
-  --placeholder-color: $text1-shade25;
 }
