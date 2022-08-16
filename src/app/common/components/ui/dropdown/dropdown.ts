@@ -168,6 +168,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       if(this.isEntity()) {
         const params = new HttpParams({fromObject: {q: value, limit: this.perPage, page: this.page}});
         data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}`, {params}).pipe(map((res: any) => !!res.rows ? res.rows : res)));
+        this.apiData = data;
         data = data.map((item: any) => {
           return {
             label: item.name ? item.name : item.fullName,
@@ -245,7 +246,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onChange(value.id);
     this.onTouched();
     this.title = value.label;
-    if( this.apiData ){
+    if( this.apiData && this.apiData.length ){
       const find = this.apiData.find( c => c.id === value.id );
       this.getValues.emit(find);
     } else {
@@ -255,6 +256,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     //   const find = [...this.items$].find( (c: any) => c.id === id);
     //   this.getValues.emit(find);
     // }
+  }
+
+  public setLSValue( id:string, label:string ){    
+    this.onChange(id);
+    this.onTouched();
+    this.title = label;
   }
 
   public emitTheValue(value: string) {

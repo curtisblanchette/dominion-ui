@@ -83,9 +83,7 @@ export const LeadModel: {[key: string]: IModel} = {
     type: 'dropdown-search',
     service: LookupTypes.STATE,
     defaultValue: null,
-    validators: [
-      Validators.required
-    ]
+    validators: []
   },
   [Fields.PRACTICE_AREA_ID]: {
     label: 'Practice Area',

@@ -169,7 +169,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.page = 1;
       this.searchInModule();
     });
-    this.template$ = of(this.initialTemplate);
+    // this.template$ = of(this.initialTemplate);
 
     if(this.options.loadInitial) {
       this.searchInModule();
