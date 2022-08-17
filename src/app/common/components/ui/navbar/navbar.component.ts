@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { User } from '../../../../modules/login/models/user';
 import { ActivationEnd, Router } from '@angular/router';
@@ -9,16 +9,19 @@ import * as fromLogin from '../../../../modules/login/store/login.reducer';
 import { Observable } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+const mobileThreshold = 1024;
+
 @UntilDestroy()
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit, AfterViewInit {
+export class NavbarComponent implements AfterViewInit {
 
   public loggedUser!: User | null;
   public actingFor$: Observable<any>;
+  public _isMobile: boolean;
 
   public menu: { name: string; path: string; roles: string[], children?: any[] }[] = [
     {
@@ -64,7 +67,13 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     }
   ];
+  public menuOpen: boolean;
 
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.isMobile = window.innerWidth < mobileThreshold;
+    this.menuOpen = false;
+  }
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
   @ViewChildren('link') links: QueryList<ElementRef>;
 
@@ -73,7 +82,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     private store: Store<fromApp.AppState>,
     private renderer: Renderer2
   ) {
-
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
     this.store.select(fromLogin.selectUser).pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
@@ -84,6 +92,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.loggedUser = null;
       }
     });
+    this.isMobile = window.innerWidth < mobileThreshold;
+  }
+
+  set isMobile(value: boolean) {
+    this._isMobile = value;
+  }
+
+  get isMobile() {
+    return this._isMobile;
   }
 
   ngAfterViewInit() {
@@ -107,7 +124,4 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  ngOnInit(): void {
-  }
 }

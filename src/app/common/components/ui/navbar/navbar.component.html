@@ -1,13 +1,34 @@
-<header >
+<header>
   <div class="navbar__header">
-    <a  routerLink="/dashboard">
-      <img src="../../../../../assets/img/logo@1x.png" alt="4iiz Logo" />
+    <a routerLink="/dashboard">
+      <img src="../../../../../assets/img/logo@1x.png" alt="4iiz Logo"/>
     </a>
     <div class="acting-for" *ngIf="actingFor$ | async">{{(actingFor$ | async).label}}</div>
   </div>
 
-  <nav class="navbar__menu">
+  <nav>
+    <ng-container *ngIf="!isMobile">
       <button routerLinkActive="active" [routerLink]="item.path" #link *ngFor="let item of menu">{{item.name}}</button>
       <div class="active-underline" #activeUnderline></div>
+    </ng-container>
+
+    <ng-container *ngIf="isMobile">
+      <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="menuOpen = !menuOpen"><i class="fa fa-bars"></i></button>
+
+      <ng-template cdkConnectedOverlay cdkConnectedOverlayPanelClass="mobile-menu" (overlayOutsideClick)="menuOpen = false" [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="menuOpen" class="test">
+        <nav class="mobile-nav-container">
+          <ng-container *ngFor="let item of menu; let first = first">
+            <button *ngIf="first" [autofocus] routerLinkActive="active" [routerLink]="item.path" #link >{{item.name}}</button>
+            <button *ngIf="!first" routerLinkActive="active" [routerLink]="item.path" #link >{{item.name}}</button>
+          </ng-container>
+
+        </nav>
+      </ng-template>
+    </ng-container>
   </nav>
 </header>
+
+
+
+
+

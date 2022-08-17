@@ -81,3 +81,10 @@ a {
 .full-width {
   width: 100%;
 }
+
+
+.cdk-overlay-pane.mobile-menu {
+  border-radius: 0;
+  left: 0!important;
+  right: 0!important;
+}

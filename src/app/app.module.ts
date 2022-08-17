@@ -30,6 +30,8 @@ import { OutcomeFormModule } from './modules/outcome-form/outcome-form.module';
 import { MetaReducer } from "@ngrx/store";
 import { hydrationMetaReducer } from './store/hydration.reducer';
 import { FlowService } from './modules/flow/flow.service';
+import { FiizUIModule } from './common/components/ui/fiiz-ui.module';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 
@@ -64,10 +66,12 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     ToastrModule.forRoot({
       timeOut: 7000,
       positionClass: 'toast-bottom-right',
-      preventDuplicates: true,
+      preventDuplicates: true
     }),
     DataModule,
-    OutcomeFormModule
+    OutcomeFormModule,
+    FiizUIModule,
+    OverlayModule
   ],
   providers: [
     FlowService,

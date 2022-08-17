@@ -35,7 +35,7 @@ header {
     button {
       margin: 0;
       border-style: none;
-      height: var(--navbar-height);
+      height: var(--navbar-height)!important;
       display: flex;
       align-items: center;
 
@@ -81,7 +81,7 @@ header {
       border: none;
       text-decoration: none;
       display: inline-block;
-      line-height: var(--navbar-height);
+      line-height: var(--navbar-height)!important;
       padding: 0 1.7rem;
       color: var(--text1);
     }
@@ -92,4 +92,33 @@ header {
 
   }
 
+}
+
+nav.mobile-nav-container {
+  //height: 0;
+  width: 100%;
+  //overflow:hidden;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  transition: height .25s ease-in-out;
+
+  &.open {
+    //height: fit-content;
+  }
+
+  button {
+    cursor: pointer;
+    line-height: 44px;
+    text-align: left;
+    border: none;
+    background: none;
+    color: var(--text1);
+    font-size: 14px;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+  }
 }
