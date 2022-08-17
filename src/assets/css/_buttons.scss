@@ -36,21 +36,20 @@
   }
 }
 
-// main reset
+
 button {
-  display: flex;
-  justify-content: flex-start;
-  min-width: 0;
-  width: 100%;
-  gap: 1em;
   border: none;
   border-radius: inherit;
   background: var(--slate);
   font-size: 14px;
-  font-weight: 500;
   color: var(--text1);
   padding: 0 var(--button-padding-lr);
+  line-height: 44px;
   cursor: inherit;
   text-transform: capitalize;
   margin: 0 auto;
+
+  :hover {
+    background: var(--slate-tint1);
+  }
 }

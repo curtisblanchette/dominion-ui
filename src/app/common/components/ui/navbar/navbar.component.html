@@ -18,8 +18,8 @@
       <ng-template cdkConnectedOverlay cdkConnectedOverlayPanelClass="mobile-menu" (overlayOutsideClick)="menuOpen = false" [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="menuOpen" class="test">
         <nav class="mobile-nav-container">
           <ng-container *ngFor="let item of menu; let first = first">
-            <button *ngIf="first" [autofocus] routerLinkActive="active" [routerLink]="item.path" #link >{{item.name}}</button>
-            <button *ngIf="!first" routerLinkActive="active" [routerLink]="item.path" #link >{{item.name}}</button>
+            <button *ngIf="first" [autofocus] routerLinkActive="active" (click)="menuOpen = false" [routerLink]="item.path" #link >{{item.name}}</button>
+            <button *ngIf="!first" routerLinkActive="active" (click)="menuOpen = false" [routerLink]="item.path" #link >{{item.name}}</button>
           </ng-container>
 
         </nav>
