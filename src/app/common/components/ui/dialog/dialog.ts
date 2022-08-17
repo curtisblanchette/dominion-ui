@@ -5,9 +5,10 @@ import { EditorComponent } from '@tinymce/tinymce-angular';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, delay, distinctUntilChanged, map } from 'rxjs/operators';
-import { mergeMap, tap } from 'rxjs';
+import { mergeMap, Observable, of, tap } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
 interface IDialogButton {
   label: string,
@@ -63,13 +64,17 @@ export class FiizDialogComponent implements AfterViewInit {
 
   public isSaving: boolean = false;
   public saveError: Error | null = null;
+  public notes$: Observable<Array<any>>;
+  public selectedIndex:number = -1;
+  
 
   @ViewChild('tinymce') tinymce: EditorComponent;
 
   constructor(
     @Inject(DIALOG_DATA) public data: IDialogData,
     public dialog: DialogRef,
-    public flowService: FlowService
+    public flowService: FlowService,
+    public http: HttpClient
   ) {
     this.data = Object.assign({
       title: 'Warning',
@@ -104,6 +109,7 @@ export class FiizDialogComponent implements AfterViewInit {
           this.isSaving = false;
         })
       ).subscribe();
+      this.getHistoricNotes();
     }
   }
 
@@ -132,4 +138,38 @@ export class FiizDialogComponent implements AfterViewInit {
     }
 
   }
+
+  public async getHistoricNotes(){
+    const lead = await this.flowService.getVariable('lead');
+    const deal = await this.flowService.getVariable('deal');
+    const contact = await this.flowService.getVariable('contact');
+    let params:string = '';
+    if( lead ){
+      params += `&leadId=${lead}`;
+    }
+    if( deal ){
+      params += `&dealId=${deal}`;
+    }
+    if( contact ){
+      params += `&contactId=${contact}`;
+    }
+    if( params.length ){
+      this.http.get(environment.dominion_api_url + '/notes?' + params).subscribe( (data:any) => {
+        if( data ){
+          this.notes$ = of(data);
+        }
+      });
+    }
+  }
+
+  public loadNotes( object:any, index:number ){
+    this.selectedIndex = index;
+    if( index == -1 ){
+      // Load data from ngrx
+    } else {
+      this.tinymce.editor.setContent(object.content);
+    }
+
+  }
+
 }
