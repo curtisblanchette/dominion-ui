@@ -390,7 +390,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public getDropdownObjects(data: any) {
     if (data && data.leadSource) {
       const dropdown = this.searchDropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
-      dropdown?.setLSValue(data.leadSource.id, data.leadSource.name);
+      dropdown?.setTheValue({id : data.leadSource.id, label : data.leadSource.name});
     }
   }
 

@@ -246,22 +246,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onChange(value.id);
     this.onTouched();
     this.title = value.label;
-    if( this.apiData && this.apiData.length ){
+    if( this.apiData?.length ){
       const find = this.apiData.find( c => c.id === value.id );
       this.getValues.emit(find);
-    } else {
-      this.getValues.emit(value);
     }
-    // else {
-    //   const find = [...this.items$].find( (c: any) => c.id === id);
-    //   this.getValues.emit(find);
-    // }
-  }
-
-  public setLSValue( id:string, label:string ){    
-    this.onChange(id);
-    this.onTouched();
-    this.title = label;
   }
 
   public emitTheValue(value: string) {
