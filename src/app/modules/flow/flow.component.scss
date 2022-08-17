@@ -33,6 +33,9 @@ router-outlet {
     justify-content: space-around;
     overflow-x: hidden;
     overflow-y: scroll;
+    max-width: 55%;
+    margin: 0 auto;
+    width: 100%;
 
     &::-webkit-scrollbar {
       display: none;

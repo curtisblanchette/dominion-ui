@@ -21,7 +21,20 @@
 @import "dialog";
 @import "form";
 
-*:focus, :link:focus, :visited:focus {
+/**
+  Focus Style Resets
+ */
+*:focus {
+  box-shadow: none;
+  outline: none;
+}
+label:focus,           // captures our custom fiiz-radio's
+button:focus,          // all buttons
+input:focus,           // all inputs
+*[tabindex="0"]:focus, // any element with a positive tabindex
+//:link:focus,           // unvisited links
+//:visited:focus         // visited links
+{
   box-shadow: var(--focusring)!important;
   outline: none;
 }

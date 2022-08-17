@@ -37,6 +37,10 @@
     display: flex;
     cursor: pointer;
     line-height: 76px;
+    background: none;
+    border: none;
+    padding: 0;
+    border-radius: var(--button-border-radius);
     scroll-snap-align: start;
     scroll-snap-stop: always;
 
@@ -82,15 +86,19 @@
 }
 
 .scroller {
+  overflow-y: scroll;
+  pointer-events: none;
   position: absolute;
-  z-index: 99999;
   left: 0;
+  top: 50%;
+  z-index: 999;
+
   height: calc(77px * 8);
   width: 300px;
-  overflow-y: scroll;
+
   scroll-snap-type: y mandatory;
   scroll-snap-stop: always;
-  top: 50%;
+
   transform: translateY(-50%);
 
   @include hideScrollBars();
@@ -107,12 +115,12 @@
 
 .viewport {
   position: absolute;
-  z-index: 88888;
+  top: 50%;
+  z-index: 888;
   background: var(--slate-shade1);
   opacity: .3;
   width: 300px;
   height: 76px;
-  top: 50%;
   transform: translateY(-100%);
 }
 

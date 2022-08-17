@@ -6,9 +6,6 @@
   border-radius: var(--button-border-radius);
   height: auto;
   @include elevate(1);
-  background: var(--slate);
-  box-sizing: border-box;
-  color: var(--text1);
   cursor: pointer;
 
   fiiz-loading {
@@ -38,27 +35,31 @@
     gap: 1em;
     border: none;
     border-radius: inherit;
-    background: inherit;
+    background: var(--slate);
     font-size: 14px;
     font-weight: 500;
-    color: inherit;
+    color: var(--text1);
     padding: 0 var(--button-padding-lr);
     height: 44px;
     line-height: 44px;
     cursor: inherit;
-    transition: background .1s ease-in-out, width .25s ease-out;
     text-transform: capitalize;
     margin: 0 auto;
-    // @include focusRing();
-    //////////////////////// END LAYOUT
+
+    &:hover {
+      background: var(--slate-shade1);
+
+    }
+
+    &:active {
+      background: var(--slate-shade2);
+    }
   }
 
   &.full-width {
     justify-content:space-around;
   }
 
-
-  //////////////////////// SIZES
   &.large {
     height: 40px;
     line-height: 40px;
@@ -75,21 +76,10 @@
     line-height: 24px;
   }
 
-  //////////////////////// END SIZES
-
-  //////////////////////// COLORS
-
-
-  //////////////////////// END COLORS
-
-
-
-  //////////////////////// LAYOUT
 
   &.disabled {
     cursor: not-allowed;
     opacity: .5 !important;
-
     background: var(--primary-shade8);
   }
 
@@ -98,72 +88,50 @@
   }
 
   // Added by primary.directive.ts
-  &.primary {
+  &.primary,
+  &.active {
+    button {
+      background: var(--primary);
+      color: #051323;
+      font-weight: 600;
 
-    background: var(--primary);
-    color: #051323;
-    font-weight: 600;
+      &:hover {
+        background: var(--primary-tint1);
+      }
 
-    &:hover {
-      background: var(--primary-shade1);
-    }
-
-    &:active {
-      background: var(--primary-shade3);
-    }
-
-  }
-  &.primary, &.active {
-    background: var(--primary);
-    color: #051323;
-    font-weight: 600;
-
-    &:hover {
-      background: var(--primary-shade1);
-    }
-
-    &:active {
-      background: var(--primary-shade3);
+      &:active {
+        background: var(--primary-shade3);
+      }
     }
   }
+
 
   &.transparent {
-    background: transparent;
-    box-shadow: none;
-    font-weight: 400;
+    button {
+      background: transparent;
+      box-shadow: none;
+      font-weight: 400;
 
-    &:hover {
-      background: rgba(0, 0, 0, .05) !important;
-    }
+      &:hover {
+        background: rgba(255, 255, 255, .02) !important;
+      }
 
-    &:active {
-      background: rgba(0, 0, 0, .15) !important;
+      &:active {
+        background: rgba(255, 255, 255, .02) !important;
+      }
     }
   }
 
-  &.outline {
-    background: none;
-    border: 1px solid rgba(0, 0, 0, .2);
-  }
   // Added by stroked.directive.ts
   &.stroked {
-
-    background: rgba(0, 0, 0, .05);
-    border: 1px solid var(--slate-tint2);
-    color: var(--text1);
-    position: relative;
-    transform: translateY(0);
-    transition: transform .12s ease-in-out, box-shadow .08s ease-in-out;
-    line-height: 42px;
-
-    &:hover {
-      border: 1px solid var(--slate-tint1);
-      color: var(--slate-tint7);
-      background: rgba(0, 0, 0, .15);
-    }
-
     button {
-      // @include focusRing();
+      background: none;
+      border: 1px solid var(--slate-tint2);
+
+      &:hover {
+        background: rgba(255, 255, 255, .02);
+        border: 1px solid var(--slate-tint3);
+      }
     }
 
   }
@@ -171,20 +139,20 @@
   // added by warning.directive.ts
   &.warning {
 
-    background: var(--red);
-    color: var(--red-shade8);
-    font-weight: 600;
+    button {
+      background: var(--red);
+      color: var(--red-shade8);
+      font-weight: 600;
+      &:hover {
+        background: var(--red-shade2);
+        color: var(--red-shade9);
+      }
 
-    &:hover {
-      background: var(--red-shade2);
-      color: var(--red-shade9);
+      &:active {
+        background: var(--red-shade4);
+        color: var(--red-shade9);
+      }
     }
-
-    &:active {
-      background: var(--red-shade4);
-      color: var(--red-shade9);
-    }
-
   }
 
   // composite of warning and stroked
@@ -215,12 +183,5 @@
     }
   }
 
-  &:hover {
-    background: var(--slate-shade1);
-  }
-
-  &:active {
-    background: var(--slate-shade2);
-  }
 
 }
