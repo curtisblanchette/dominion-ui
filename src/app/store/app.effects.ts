@@ -114,6 +114,7 @@ export class AppEffects {
           [LookupTypes.EVENT_OBJECTION]: this.http.get(environment.dominion_api_url + '/event-objections'),
           // Lead Lookups
           [LookupTypes.LEAD_STATUS]: this.http.get(environment.dominion_api_url + '/lead-statuses'),
+          [LookupTypes.LOST_REASON]: this.http.get(environment.dominion_api_url + '/lost-reasons'),
 
           offices: this.http.get(environment.dominion_api_url + '/offices'),
         }).subscribe((res: any) => {
