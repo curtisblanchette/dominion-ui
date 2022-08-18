@@ -79,8 +79,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   };
 
   @ViewChild('submit') submit: ElementRef;
-  @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
-  @ViewChildren('searchDropdowns') searchDropdowns: QueryList<FiizDropDownComponent>;
+  @ViewChildren('dropdown') dropdowns: QueryList<FiizDropDownComponent>;
   @ViewChildren('picker') pickers: QueryList<FiizDatePickerComponent>;
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
@@ -317,6 +316,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             const result = res === value ? watch.then : watch.else;
             // @ts-ignore
             this.form.controls[watch.field][result.fn](...result.args);
+            this.form.controls['lostReasonId'].disable({ emitEvent: true });
           });
         }
       }
@@ -388,7 +388,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public getDropdownObjects(data: any) {
     if (data && data.leadSource) {
-      const dropdown = this.searchDropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
+      const dropdown = this.dropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
       dropdown?.setTheValue(data.leadSource);
     }
   }

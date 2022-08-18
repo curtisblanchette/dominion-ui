@@ -24,12 +24,14 @@ export interface IDropDownMenu {
 }
 
 export interface IDropDownMenuItemAnchor {
+  id?: string | number;
   label: string;
   icon?: string;
   path: string;
 }
 
 export interface IDropDownMenuItem {
+  id?: string | number;
   label: string;
   icon: string;
   emitterValue: string;
@@ -223,9 +225,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         }
       }
 
-      if (data) {
-        this.apiData = data;
-      }
+      // if (data) {
+      //   this.apiData = data;
+      // }
+      //
     } else {
       this.value = value;
       // the data source was statically provided (aka. its not a module or lookup)

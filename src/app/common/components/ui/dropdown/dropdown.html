@@ -19,6 +19,7 @@
           #searchInput
           formControlName="search"
           autocomplete="off"
+          [disabled]="disabled"
           [autofocus]="true"
           (keyup)="onKeyUpEvent($event)"
           type="text"
@@ -33,6 +34,7 @@
            *ngFor="let item of items$ | async; let i = index; let last = last;"
            [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}"
            (click)="setTheValue(item)"
+           [disabled]="disabled"
            style="border-radius: 0;">
           {{ item.label }}
         </fiiz-button>

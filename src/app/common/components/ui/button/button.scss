@@ -20,8 +20,9 @@
     button {
       justify-content: flex-start;
     }
+
     &:hover {
-      background: var(--slate)!important;
+      background: var(--slate) !important;
     }
   }
 
@@ -52,13 +53,13 @@
 
     &:active {
       background: var(--slate-shade2);
-      outline: none!important;
-      box-shadow: none!important;
+      outline: none !important;
+      box-shadow: none !important;
     }
   }
 
   &.full-width {
-    justify-content:space-around;
+    justify-content: space-around;
   }
 
   &.large {
@@ -78,10 +79,14 @@
   }
 
 
-  &.disabled {
-    cursor: not-allowed;
-    opacity: .5 !important;
-    background: var(--primary-shade8);
+  &.disabled,
+  &:disabled,
+  &[aria-disabled=true] {
+    button {
+      cursor: not-allowed;
+      opacity: .5 !important;
+      background: var(--primary-shade8);
+    }
   }
 
   &.link {
@@ -144,6 +149,7 @@
       background: var(--red);
       color: var(--red-shade8);
       font-weight: 600;
+
       &:hover {
         background: var(--red-tint1);
         color: var(--red-shade9);
@@ -167,7 +173,7 @@
       &:hover {
         border: 1px solid var(--red-tint1);
         color: var(--red-tint2);
-        background: rgba(255,255,255,.02) !important;
+        background: rgba(255, 255, 255, .02) !important;
       }
     }
   }
