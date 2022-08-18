@@ -28,7 +28,7 @@ interface IDialogData {
 })
 export class FiizDialogComponent implements AfterViewInit, OnDestroy {
 
-  
+  public disabled:boolean = false;
   public comp!:ComponentRef<FlowNotesComponent>;
   @ViewChild('flowNotes', { read: ViewContainerRef }) flowNotes!: ViewContainerRef;
 
@@ -53,6 +53,9 @@ export class FiizDialogComponent implements AfterViewInit, OnDestroy {
     if( this.data?.type == 'editor' ){
       this.flowNotes.clear();
       this.comp = this.flowNotes.createComponent(FlowNotesComponent);
+      this.comp.instance.disableSave.subscribe((value:boolean) => {
+        this.disabled = value;
+      })
     }    
   }
 

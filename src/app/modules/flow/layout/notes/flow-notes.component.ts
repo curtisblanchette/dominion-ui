@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -54,17 +54,18 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
   };
 
   @ViewChild('tinymce') tinymce: EditorComponent;
+  @Output() disableSave: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
     private store: Store<fromFlow.FlowState>,
     public flowService: FlowService,
     public http: HttpClient
   ) {
-
+    this.disableSave.emit(false); // Default is false
   }
 
     public async ngOnInit() {
-        await this.getHistoricNotes();
+      await this.getHistoricNotes();
     }
 
     public async ngAfterViewInit() {
@@ -120,14 +121,20 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
     public loadNotesInView( object:any, index:number ){
         this.selectedIndex = index;
         if( index == -1 ){
-            // Load data from ngrx
+            // TODO : load data from store to display ongoing call ntoes
+            this.tinymce.editor.readonly = false;
+            this.tinymce.setDisabledState(false);
+            this.disableSave.emit(false);
         } else {
             this.tinymce.editor.setContent(object.content);
+            this.tinymce.editor.readonly = true;
+            this.tinymce.setDisabledState(true);
+            this.disableSave.emit(true);
         }
     }
 
     public saveNotes(): Promise<any | void> {
-        return firstValueFrom( this.flowService.updateNote(this.tinymce.editor.getContent()) );
+      return firstValueFrom( this.flowService.updateNote(this.tinymce.editor.getContent()) );
     }
 
 
