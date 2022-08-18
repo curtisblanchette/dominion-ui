@@ -17,6 +17,18 @@
   text-align:left;
 }
 
+.loading{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 99999;
+  color: var(--green1);
+}
+
+.shadow {
+  box-shadow: 0px 2px 5px rgb(0 0 0 / 22%);
+}
+
 .notes {
   display: flex;
   flex-direction: row;
@@ -98,7 +110,6 @@
 
   &__editor {
     flex : 4;
-    box-shadow: 0px 2px 5px rgb(0 0 0 / 22%);
-  }
+  }  
   
 }

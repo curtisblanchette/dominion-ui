@@ -37,6 +37,8 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
   public notes$: Observable<Array<any>> = of([]);
   public isSaving: boolean = false;
   public saveError: Error | null = null;
+  public editorLoading:boolean = true;
+  public dataLoading:boolean = true;
 
   public tinymceOptions: Object = {
     branding: false,
@@ -61,32 +63,34 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
     public flowService: FlowService,
     public http: HttpClient
   ) {
-    this.disableSave.emit(false); // Default is false
+    this.disableSave.emit(false); // Default is false    
   }
 
     public async ngOnInit() {
-      await this.getHistoricNotes();
+      await this.getHistoricNotes();      
     }
 
     public async ngAfterViewInit() {
-      this.tinymce.onKeyUp.pipe(
-        untilDestroyed(this),
-        map((action: any) => {
-          return action.event.currentTarget.innerHTML;
-        }),
-        debounceTime(750),
-        distinctUntilChanged(),
-        mergeMap((html) => (this.isSaving = true) && this.saveNotes()),
-        tap((res) => {
-          if(res instanceof HttpErrorResponse){
-            this.saveError = res;
-          }
-        }),
-        delay(200),
-        map(() => {
-          this.isSaving = false;
-        })
-      ).subscribe();
+      if( this.tinymce ){
+        this.tinymce.onKeyUp.pipe(
+          untilDestroyed(this),
+          map((action: any) => {
+            return action.event.currentTarget.innerHTML;
+          }),
+          debounceTime(750),
+          distinctUntilChanged(),
+          mergeMap((html) => (this.isSaving = true) && this.saveNotes()),
+          tap((res) => {
+            if(res instanceof HttpErrorResponse){
+              this.saveError = res;
+            }
+          }),
+          delay(200),
+          map(() => {
+            this.isSaving = false;
+          })
+        ).subscribe();
+      }
     }
 
 
@@ -104,18 +108,16 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
         if( contact ){
             params += `&contactId=${contact}`;
         }
-        // if( params.length ){
-        // this.http.get(environment.dominion_api_url + '/notes?' + params).subscribe( (data:any) => {
-        //     if( data ){
-        //     this.notes$ = of(data);
-        //     }
-        // });
-        // }
-        this.http.get(environment.dominion_api_url + '/notes?leadId=159407e4-5677-400a-acb3-88c8b50be5e8&dealId=2cb2a808-d6fb-462c-9dfd-eb5af8b22a40').subscribe( (data:any) => {
-            if( data ){
+        if( params.length ){
+          this.http.get(environment.dominion_api_url + '/notes?' + params).subscribe( (data:any) => {
+              if( data ){
                 this.notes$ = of(data);
-            }
-        });
+              }
+              this.dataLoading = false;
+          });
+        } else {
+          this.dataLoading = false;
+        }
     }
 
     public loadNotesInView( object:any, index:number ){
@@ -137,5 +139,11 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
       return firstValueFrom( this.flowService.updateNote(this.tinymce.editor.getContent()) );
     }
 
+    public afterEditorInit( event:any ){
+      if( event ){
+        this.editorLoading = false;
+        this.tinymce.editor.dom.addClass(document.getElementById('editor') as HTMLElement, 'shadow');
+      }
+    }
 
 }

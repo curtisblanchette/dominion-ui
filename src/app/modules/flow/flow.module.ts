@@ -14,6 +14,7 @@ import { FlowRouting } from './flow.routing';
 import { FlowBuilder } from './flow.builder';
 import { DictationPipe } from '../../common/pipes/dictation.pipe';
 import { FlowProcess, FlowBot } from './classes';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { FlowProcess, FlowBot } from './classes';
     EditorModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    SharedModule
   ],
   providers: [
     FlowBuilder,
