@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FlowComponent } from "./flow.component";
-import { FlowHostDirective, FlowDataComponent, FlowListComponent, FlowTextComponent, FlowTimelineComponent, FlowAppointmentComponent, FlowObjectionComponent } from './index';
+import { FlowHostDirective, FlowDataComponent, FlowListComponent, FlowTextComponent, FlowTimelineComponent, FlowAppointmentComponent, FlowObjectionComponent, FlowNotesComponent } from './index';
 import { CommonModule } from "@angular/common";
 import { FiizUIModule } from "../../common/components/ui/fiiz-ui.module";
 import { StoreModule } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { FlowRouting } from './flow.routing';
 import { FlowBuilder } from './flow.builder';
 import { DictationPipe } from '../../common/pipes/dictation.pipe';
 import { FlowProcess, FlowBot } from './classes';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { FlowProcess, FlowBot } from './classes';
     FlowAppointmentComponent,
     FlowHostDirective,
     DictationPipe,
+    FlowNotesComponent
   ],
   imports: [
     StoreModule.forFeature('flow', reducer),
@@ -36,7 +38,8 @@ import { FlowProcess, FlowBot } from './classes';
     EditorModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    SharedModule
   ],
   providers: [
     FlowBuilder,
