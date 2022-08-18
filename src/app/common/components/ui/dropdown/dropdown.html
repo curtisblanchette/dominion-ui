@@ -16,6 +16,7 @@
     <ng-template [ngIf]="dropdownType === 'search'">
       <form [formGroup]="searchForm">
         <fiiz-input
+          #searchInput
           formControlName="search"
           autocomplete="off"
           [autofocus]="true"

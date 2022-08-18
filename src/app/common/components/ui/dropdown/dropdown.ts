@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable, of } from 'rxjs';
@@ -100,6 +100,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   onTouched: Function = () => {};
 
   @ViewChild('dropdownList') dropdownList: ElementRef;
+  @ViewChild('searchInput') searchInput: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -270,7 +271,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   }
 
-  public navigationByKeys(event: KeyboardEvent) {
+  public async navigationByKeys(event: KeyboardEvent) {
     if (!this.showDropDowns) {
       return;
     }
@@ -278,19 +279,21 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     if (event.code === 'ArrowUp') {
       if (this.currentIndex < 0) {
         this.currentIndex = 0;
+        // focus on the search
+        this.searchInput.nativeElement.focus();
       } else if (this.currentIndex > 0) {
         this.currentIndex--;
       }
       this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
       this.setSelectedItem(this.currentIndex);
     } else if (event.code === 'ArrowDown') {
-      // if (this.currentIndex < 0) {
-      //   this.currentIndex = 0;
-      // } else if (this.currentIndex < this.items$.length - 1) {
-      //   this.currentIndex++;
-      // }
-      // this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
-      // this.setSelectedItem(this.currentIndex);
+      if (this.currentIndex < 0) {
+        this.currentIndex = 0;
+      } else if (this.currentIndex < (await firstValueFrom(this.items$)).length - 1) {
+        this.currentIndex++;
+      }
+      this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
+      this.setSelectedItem(this.currentIndex);
     } else if ((event.code === 'Enter' || event.code === 'NumpadEnter') && this.currentIndex >= 0) {
       this.showDropDowns = false;
     } else if (event.code === 'Escape') {

@@ -44,12 +44,7 @@ button {
   font-size: 14px;
   color: var(--text1);
   padding: 0 var(--button-padding-lr);
-  line-height: 44px;
   cursor: inherit;
   text-transform: capitalize;
   margin: 0 auto;
-
-  :hover {
-    background: var(--slate-tint1);
-  }
 }

@@ -44,6 +44,7 @@ router-outlet {
 
 
   &__left {
+    overflow: hidden;
     height: var(--full-height-minus-navbar);
     position: absolute;
     display: flex;

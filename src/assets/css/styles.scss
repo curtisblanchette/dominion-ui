@@ -24,10 +24,20 @@
 /**
   Focus Style Resets
  */
-*:focus {
-  box-shadow: none;
-  outline: none;
+button:focus,
+input:focus,
+textarea:focus,
+a:focus,
+button:active,
+input:active,
+textarea:active,
+a:active,
+button:visited:focus,
+button:active:focus, {
+  box-shadow: none!important;
+  outline: none!important;
 }
+
 label:focus,           // captures our custom fiiz-radio's
 button:focus,          // all buttons
 input:focus,           // all inputs
