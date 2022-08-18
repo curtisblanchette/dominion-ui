@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.14.0 (2022-08-18)
+
+
+### Features
+
+* **develop:** disable mobile zooming ([6fc9507](https://github.com/4iiz/dominion-ui/commit/6fc95078aa6e04f479f1ea876be6e0fb6b654ee4))
+
 ### 1.13.26 (2022-08-17)
 
 ### 1.13.25 (2022-08-17)
