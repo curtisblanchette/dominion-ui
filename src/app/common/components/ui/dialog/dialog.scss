@@ -10,19 +10,7 @@ $padding: 40px;
     padding: 0 $padding;
   }
   .header { padding-top: $padding; }
-  .footer { padding-bottom: $padding; }
-
-  .autoSave {
-    position:absolute;
-    opacity: 0;
-    right: 1em;
-    top: 1em;
-    z-index: 99999;
-    color: var(--green1);
-    font-size: 10px;
-    text-align:left;
-  }
-
+  .footer { padding-bottom: $padding; } 
 
   .icon {
     display: block;
@@ -65,94 +53,4 @@ $padding: 40px;
   button:last-child {
     margin-left: 5px;
   }
-}
-
-.notes {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: center;
-
-  &__content {
-
-    flex: 1;
-    overflow-y: auto;
-    
-    &__title {
-      text-align: left;
-      color: var(--green1);
-      line-height: 34px;
-      font-size: 18px;
-      font-weight: 500;
-    }
-
-    &__items {      
-      
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-      align-items: stretch;
-      align-content: flex-start;
-      padding-right: 10px;
-
-      &__item {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        border-bottom: 1px solid RGBA(255, 255, 255, 0.1);
-        line-height: 2px;
-        padding: 10px 0px 10px 0px;
-        gap: 1em;
-        cursor: pointer;
-
-        i {
-          font-size: 12px;
-        }
-
-        & h5 {
-          padding: 0;
-          margin: 0;
-          font-weight: 400;
-        }
-
-        &__info{
-          text-align: left;
-        }
-
-        &__heading {
-          font-size: 12px;
-          color: rgb(204, 216, 249);
-        }
-
-        &__heading:active {
-          color: var(--primary);
-        }
-
-        &__subheading {
-          font-size: 10px;
-          color : rgba(204, 216, 249, 0.26);
-        }
-
-        &__subheading:active {
-          color: rgba(91, 165, 249, 0.27);
-        }
-
-      }
-
-    }
-
-  }
-
-  &__editor {
-    flex : 4;
-    box-shadow: 0px 2px 5px rgb(0 0 0 / 22%);
-  }
-
-}
-
-.active {
-  color: RGB(91, 165, 249);
 }

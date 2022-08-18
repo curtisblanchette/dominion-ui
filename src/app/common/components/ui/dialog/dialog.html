@@ -1,42 +1,16 @@
 <div class="header" *ngIf="data.type != 'editor'">
   <div class="title">{{data.title}}</div>
 </div>
-<div class="content">
-  <div class="body" [innerHTML]="data.body | safe: 'html'" *ngIf="data.body"></div>
+<div class="content">  
+  
+  <div *ngIf="data.type != 'editor'" class="body" [innerHTML]="data.body | safe: 'html'"></div>
+  
   <div *ngIf="data.type == 'editor'" class="body" style="width: 775px; position:relative;">
-    <div class="notes">
-      <section class="notes__content">
-        <div class="notes__content__title">{{data.title}}</div>
-        <div class="notes__content__items">
-          <div class="notes__content__items__item" [ngClass]="{'active' : selectedIndex == -1}" (click)="loadNotes({}, -1)">
-            <i class="fa fa-phone"></i>
-            <div class="notes__content__items__item__info">
-              <h5 class="notes__content__items__item__heading" [ngClass]="{'active' : selectedIndex == -1}">Current Call</h5>
-              <h5 class="notes__content__items__item__subheading" [ngClass]="{'active' : selectedIndex == -1}">Now</h5>
-            </div>
-          </div>
-          <div *ngFor="let note of notes$ | async; let i of index" class="notes__content__items__item" [ngClass]="{'active' : selectedIndex == i}" (click)="loadNotes(note, i)">
-            <i class="fa" [ngClass]="{'fa-phone' : note.noteFor == 'call', 'fa-calendar' : note.noteFor == 'event' }"></i>
-            <div class="notes__content__items__item__info">
-              <h5 *ngIf="note.noteFor == 'call'" class="notes__content__items__item__heading" [ngClass]="{'active' : selectedIndex == i}">{{note.direction | titlecase}} Call</h5>
-              <h5 *ngIf="note.noteFor == 'event'" class="notes__content__items__item__heading" [ngClass]="{'active' : selectedIndex == i}">{{note.type}}</h5>
-              <h5 class="notes__content__items__item__subheading" [ngClass]="{'active' : selectedIndex == i}">{{ note.createdAt | date:'medium'}}</h5>
-            </div>
-          </div>          
-        </div>
-      </section>
-      <section class="notes__editor">
-        <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
-        <editor
-        #tinymce
-        apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
-        outputFormat="html"
-        [init]="tinymceOptions"
-      ></editor>
-      </section>
-    </div>
-    
+    <ng-template #flowNotes>
+      <flow-notes #compRef></flow-notes>
+    </ng-template>
   </div>
+
 </div>
 <div class="footer">
   <div class="actions">
@@ -46,5 +20,3 @@
     <fiiz-button primary warning (click)="onSubmit()" *ngIf="data.buttons['submit'] && data.buttons['submit'].class === 'warning'">{{data.buttons['submit'].label}}</fiiz-button>
   </div>
 </div>
-
-

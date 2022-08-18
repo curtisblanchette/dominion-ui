@@ -1,14 +1,8 @@
-import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, Inject, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { EditorComponent } from '@tinymce/tinymce-angular';
+import { UntilDestroy } from '@ngneat/until-destroy';
 
-import { FlowService } from '../../../../modules/flow/flow.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { debounceTime, delay, distinctUntilChanged, map } from 'rxjs/operators';
-import { mergeMap, Observable, of, tap } from 'rxjs';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
+import { FlowNotesComponent } from '../../../../modules/flow/index';
 
 interface IDialogButton {
   label: string,
@@ -30,51 +24,17 @@ interface IDialogData {
 @Component({
   selector: 'fiiz-dialog',
   templateUrl: './dialog.html',
-  styleUrls: ['./dialog.scss'],
-  animations: [
-    trigger("appear", [
-      state('*', style({opacity: 0})),
-      state('true', style({opacity: 1})),
-      state('false', style({opacity: 0})),
-      transition("* => true", [
-        animate( ".1s ease-in-out")
-      ]),
-      transition("* => false", [
-        animate("2s ease-in-out")
-      ]),
-    ])
-  ]
+  styleUrls: ['./dialog.scss']  
 })
-export class FiizDialogComponent implements AfterViewInit {
+export class FiizDialogComponent implements AfterViewInit, OnDestroy {
 
-  public tinymceOptions: Object = {
-    branding: false,
-    menubar: false,
-    toolbar: 'bold italic strikethrough underline align',
-    statusbar: false,
-    content_style: `
-      body {
-        font-family: Roboto, Arial, sans-serif;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 1.5em;
-        color: #C6CEED;
-      }`
-  };
-
-  public isSaving: boolean = false;
-  public saveError: Error | null = null;
-  public notes$: Observable<Array<any>>;
-  public selectedIndex:number = -1;
   
-
-  @ViewChild('tinymce') tinymce: EditorComponent;
+  public comp!:ComponentRef<FlowNotesComponent>;
+  @ViewChild('flowNotes', { read: ViewContainerRef }) flowNotes!: ViewContainerRef;
 
   constructor(
     @Inject(DIALOG_DATA) public data: IDialogData,
-    public dialog: DialogRef,
-    public flowService: FlowService,
-    public http: HttpClient
+    public dialog: DialogRef
   ) {
     this.data = Object.assign({
       title: 'Warning',
@@ -90,28 +50,13 @@ export class FiizDialogComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    if (this.tinymce) {
-      this.tinymce.onKeyUp.pipe(
-        untilDestroyed(this),
-        map((action: any) => {
-          return action.event.currentTarget.innerHTML;
-        }),
-        debounceTime(750),
-        distinctUntilChanged(),
-        mergeMap((html) => (this.isSaving = true) && this.onSubmit()),
-        tap((res) => {
-          if(res instanceof HttpErrorResponse){
-            this.saveError = res;
-          }
-        }),
-        delay(200),
-        map(() => {
-          this.isSaving = false;
-        })
-      ).subscribe();
-      this.getHistoricNotes();
-    }
+    if( this.data?.type == 'editor' ){
+      this.flowNotes.clear();
+      this.comp = this.flowNotes.createComponent(FlowNotesComponent);
+    }    
   }
+
+  ngOnDestroy(): void {}
 
   onNoClick(): void {
     this.onCancel();
@@ -129,47 +74,12 @@ export class FiizDialogComponent implements AfterViewInit {
     const submitBtn: IDialogButton = this.data.buttons['submit'];
 
     if (submitBtn.fn) {
-      if(this.tinymce?.editor) {
-        return submitBtn.fn(this.tinymce.editor.getContent());
+      if(this.data?.type == 'editor') {
+        return submitBtn.fn(this.comp.instance.tinymce.editor.getContent()).then(() => this.dialog.close(1));
       } else {
         return submitBtn.fn().then(() => this.dialog.close(1));
       }
-
     }
-
-  }
-
-  public async getHistoricNotes(){
-    const lead = await this.flowService.getVariable('lead');
-    const deal = await this.flowService.getVariable('deal');
-    const contact = await this.flowService.getVariable('contact');
-    let params:string = '';
-    if( lead ){
-      params += `&leadId=${lead}`;
-    }
-    if( deal ){
-      params += `&dealId=${deal}`;
-    }
-    if( contact ){
-      params += `&contactId=${contact}`;
-    }
-    if( params.length ){
-      this.http.get(environment.dominion_api_url + '/notes?' + params).subscribe( (data:any) => {
-        if( data ){
-          this.notes$ = of(data);
-        }
-      });
-    }
-  }
-
-  public loadNotes( object:any, index:number ){
-    this.selectedIndex = index;
-    if( index == -1 ){
-      // Load data from ngrx
-    } else {
-      this.tinymce.editor.setContent(object.content);
-    }
-
   }
 
 }
