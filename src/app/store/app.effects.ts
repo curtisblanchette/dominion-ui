@@ -99,18 +99,20 @@ export class AppEffects {
       tap(() => {
         // Fork Join the results of all dominion lookups
         return forkJoin({
+          // General Lookups
           [LookupTypes.PRACTICE_AREA]: this.http.get(environment.dominion_api_url + '/practice-areas'),
           [LookupTypes.ROLE]: this.http.get(environment.dominion_api_url + '/roles'),
           // Call Lookups
           [LookupTypes.CALL_OUTCOME]: this.http.get(environment.dominion_api_url + '/call-outcomes'),
           [LookupTypes.CALL_OBJECTION]: this.http.get(environment.dominion_api_url + '/call-objections'),
           [LookupTypes.CALL_STATUS]: this.http.get(environment.dominion_api_url + '/call-statuses'),
-          [LookupTypes.CALL_TYPE]: this.http.get(environment.dominion_api_url + '/call-types'),
+          // Deal Lookups
+          [LookupTypes.DEAL_STAGE]: this.http.get(environment.dominion_api_url + '/deal-stages'),
           // Event lookups
           [LookupTypes.EVENT_OUTCOME]: this.http.get(environment.dominion_api_url + '/event-outcomes'),
           [LookupTypes.EVENT_TYPE]: this.http.get(environment.dominion_api_url + '/event-types'),
           [LookupTypes.EVENT_OBJECTION]: this.http.get(environment.dominion_api_url + '/event-objections'),
-
+          // Lead Lookups
           [LookupTypes.LEAD_STATUS]: this.http.get(environment.dominion_api_url + '/lead-statuses'),
 
           offices: this.http.get(environment.dominion_api_url + '/offices'),
