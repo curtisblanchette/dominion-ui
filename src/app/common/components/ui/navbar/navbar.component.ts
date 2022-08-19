@@ -52,6 +52,11 @@ export class NavbarComponent implements AfterViewInit {
       roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     },
     {
+      name: 'Pending Outcome',
+      path: 'no-outcome',
+      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
+    },
+    {
       name: 'Settings',
       path: 'settings',
       roles: ['system', 'admin', 'owner']
@@ -60,11 +65,6 @@ export class NavbarComponent implements AfterViewInit {
       name: 'System',
       path: 'system',
       roles: ['system']
-    },
-    {
-      name: 'Pending Outcome',
-      path: 'no-outcome',
-      roles: ['system', 'admin', 'owner', 'consultant', 'agent']
     }
   ];
   public menuOpen: boolean;
