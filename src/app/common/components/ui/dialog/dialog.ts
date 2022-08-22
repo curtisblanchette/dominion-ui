@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -6,6 +6,7 @@ import { debounceTime, delay, distinctUntilChanged, map } from 'rxjs/operators';
 import { mergeMap, tap } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EditorComponent } from '@tinymce/tinymce-angular';
 
 interface IDialogButton {
   label: string,
