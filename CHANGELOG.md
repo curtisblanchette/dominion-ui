@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.15.2 (2022-08-19)
+
+### 1.15.1 (2022-08-18)
+
+## 1.15.0 (2022-08-18)
+
+
+### Features
+
+* **II-2767:** historical note records ([5c34b96](https://github.com/4iiz/dominion-ui/commit/5c34b96d66cfd795a12b0ebfb2bd534462e05fa9))
+
+### 1.14.1 (2022-08-18)
+
+## 1.14.0 (2022-08-18)
+
+
+### Features
+
+* **develop:** disable mobile zooming ([6fc9507](https://github.com/4iiz/dominion-ui/commit/6fc95078aa6e04f479f1ea876be6e0fb6b654ee4))
+
+### 1.13.26 (2022-08-17)
+
+### 1.13.25 (2022-08-17)
+
+### 1.13.24 (2022-08-17)
+
+### 1.13.23 (2022-08-16)
+
+
+### Bug Fixes
+
+* **develop:** oops ([05443aa](https://github.com/4iiz/dominion-ui/commit/05443aadceb3e6a37a8c98ccd534fed2d23dc38d))
+
+### 1.13.22 (2022-08-16)
+
+### 1.13.21 (2022-08-16)
+
+### 1.13.20 (2022-08-16)
+
 ### 1.13.19 (2022-08-16)
 
 ### 1.13.18 (2022-08-16)

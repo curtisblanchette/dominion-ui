@@ -1,0 +1,11 @@
+:host {
+  display: grid;
+  margin-top: 2em;
+}
+
+// ::ng-deep disables encapsulation for this style
+// :host ensure the style doesn't bleed outside of this component
+:host ::ng-deep > * {
+  border-bottom: 1px solid rgba(255, 255, 255, .09) !important;
+  line-height: 56px !important;
+}

@@ -173,10 +173,6 @@ dp-time-select {
   background-color: var(--slate)!important;
   cursor: pointer;
   padding: 0 16px !important;
-
-  &:focus {
-    @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-  }
 }
 
 .dp-picker-input {

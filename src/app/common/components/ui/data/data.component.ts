@@ -1,6 +1,6 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
@@ -79,8 +79,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   };
 
   @ViewChild('submit') submit: ElementRef;
-  @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
-  @ViewChildren('searchDropdowns') searchDropdowns: QueryList<FiizDropDownComponent>;
+  @ViewChildren('dropdown') dropdowns: QueryList<FiizDropDownComponent>;
   @ViewChildren('picker') pickers: QueryList<FiizDatePickerComponent>;
 
   @Output('onSuccess') onSuccess: EventEmitter<any> = new EventEmitter<any>();
@@ -146,9 +145,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         untilDestroyed(this),
         delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
       ).pipe(untilDestroyed(this)).subscribe(async (record: any) => {
-        const find = record.find( (rec: { id: string | null; }) => rec.id === this.id ) || record[0];
-        if (find) {
-          let entity: any = record.length && JSON.parse(JSON.stringify(find)) || null;
+        const found = record.find( (rec: { id: string | null; }) => rec.id === this.id ) || record[0];
+        if (found) {
+          let entity: any = record.length && JSON.parse(JSON.stringify(found)) || null;
 
           if (entity) {
             const properties = this.options.fields;
@@ -274,7 +273,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
      * Watch dropdown fields to trigger dynamic form changes
      * example: `lostReason` is required when status is `lost`
      */
-    const watchFields: any = {
+    const watchFields: {
+        [key: string]: { when: LeadFields | DealFields, equals: string, then: any, else: any, field: string }[]
+    } = {
       [ModuleTypes.LEAD]: [
         {
           when: LeadFields.STATUS_ID,
@@ -351,7 +352,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
             return this._dynamicCollectionService.add(<DominionType>payload).toPromise()
               .then((res) => {
-                this._dynamicCollectionService.setFilter({id: res?.id});
+                this._dynamicCollectionService.setFilter({});
                 this.onSuccess.next({[this.module]: res?.id});
               });
           }
@@ -389,8 +390,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public getDropdownObjects(data: any) {
     if (data && data.leadSource) {
-      const dropdown = this.searchDropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
-      dropdown?.setTheValue({id : data.leadSource.id, label : data.leadSource.name});
+      const dropdown = this.dropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
+      dropdown?.setTheValue(data.leadSource);
     }
   }
 

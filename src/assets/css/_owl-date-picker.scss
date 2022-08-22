@@ -1,38 +1,59 @@
-@import '~src/assets/css/variables';
 @import '~src/assets/css/functions';
 @import '~src/assets/css/mixins';
 
 @mixin selectedStyle() {
-    background: var(--green0-tint25)!important;
-    color: var(--green0-shade95)!important;
+  background: var(--primary) !important;
+  color: var(--slate) !important;
+  font-weight: 600 !important;
 
-    &:hover {
-        background: var(--green0-tint15)!important;
-    }
+  &:hover {
+    background: var(--primary-shade1) !important;
+  }
 }
+
+.owl-dt-calendar-table .owl-dt-calendar-cell-content {
+  border: none;
+  border-radius: var(--button-border-radius);
+
+  &:hover {
+    background: rgba(0,0,0,.25) !important;
+  }
+}
+
 
 .owl-dt-container {
-    background-color: var(--background-color);
+  background: none;
+  border-radius: 8px;
 }
 
-.owl-dt-calendar-table .owl-dt-calendar-cell{
-    color: var(--text1);
+.owl-dt-calendar-table .owl-dt-calendar-cell {
+  color: var(--text1);
 }
 
 .owl-dt-calendar-table .owl-dt-calendar-cell-selected {
-    @include selectedStyle();
+  @include selectedStyle();
 }
 
-.owl-dt-calendar-cell-disabled>.owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-selected){
-    color: rgb(255 255 255 / 35%) !important;
+.owl-dt-calendar-cell-disabled > .owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-selected) {
+  color: rgb(255 255 255 / 35%) !important;
 }
-.owl-dt-timer-hour12{
-    color: var(--text1);
+
+.owl-dt-timer-hour12 {
+  color: var(--text1);
 }
+
 .owl-dt-timer-hour12 .owl-dt-timer-hour12-box:focus .owl-dt-control-button-content,
 .owl-dt-timer-hour12 .owl-dt-timer-hour12-box:hover .owl-dt-control-button-content {
-    background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
-.owl-dt-calendar-table .owl-dt-calendar-header{
-    color: var(--text1)!important;
+
+.owl-dt-calendar-table .owl-dt-calendar-header {
+  color: var(--text1) !important;
+}
+
+
+.owl-dt-calendar-table .owl-dt-calendar-cell-today:not(.owl-dt-calendar-cell-selected) {
+  //background: var(--primary)!important;
+  background: var(--slate) !important;
+  font-weight: 600 !important;
 }

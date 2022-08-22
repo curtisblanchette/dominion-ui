@@ -1,4 +1,5 @@
-<button [tabindex]="-1" #el [class]="class" [type]="type" [disabled]="isDisabled || (loading$ | async)">
+<button #el [class]="class" [type]="type" [disabled]="isDisabled || (loading$ | async)">
+  <i class="fa {{icon}}" *ngIf="icon"></i>
   <ng-container *ngIf="!(loading$ | async)">
     <ng-content></ng-content>
   </ng-container>

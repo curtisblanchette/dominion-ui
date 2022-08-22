@@ -18,7 +18,6 @@ export class FiizButtonComponent implements AfterViewInit, AfterViewInit {
 
 
   @ViewChild('el') el: ElementRef;
-  @HostBinding('tabindex') tabindex: number = 0;
   @HostBinding('class.disabled') get disabled() { return this.isDisabled };
 
   constructor(

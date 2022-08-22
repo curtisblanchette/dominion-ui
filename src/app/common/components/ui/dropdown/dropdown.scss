@@ -1,10 +1,11 @@
-    @import '~src/assets/css/functions';
+@import '~src/assets/css/functions';
 @import '~src/assets/css/mixins';
 
 :host {
   display: block;
   position: relative;
   margin-bottom: var(--input-margin-bottom);
+  border-radius: var(--input-border-radius);
 
   .no-title {
     width: 50px;

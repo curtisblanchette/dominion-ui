@@ -22,15 +22,26 @@ export class FiizDatePickerDirective {
     }
   };
 
-  constructor(private element: ElementRef, private renderer: Renderer2 ) {
+  constructor(
+    private element: ElementRef,
+    private renderer: Renderer2
+  ) {
     this.domElement = element.nativeElement;
+
     setTimeout(() => {
+
+      // this.renderer.setAttribute(this.domElement, 'autocomplete', 'off');
       $(this.domElement).attr('autocomplete', 'off');
 
       if (this.domElement.attributes.format) {
         this.datepickerOptions.format = this.domElement.attributes.format.nodeValue;
       }
 
+      // this.renderer.listen(this.domElement, 'dp.change', () => {
+      //   const inputEvent = new Event('input', {bubbles: true});
+      //   // this.renderer.invokeElementMethod(this.domElement, 'dispatchEvent', [inputEvent]);
+      //   this.domElement.dispatchEvent.apply([inputEvent]);
+      // });
       $(this.domElement).datetimepicker(this.datepickerOptions).on('dp.change', () => {
         const inputEvent = new Event('input', {bubbles: true});
         // this.renderer.invokeElementMethod(this.domElement, 'dispatchEvent', [inputEvent]);
@@ -39,41 +50,41 @@ export class FiizDatePickerDirective {
     });
   }
 }
-
-@Directive({
-  selector: '[fiizMinDate]'
-})
-export class FiizMinDateDirective {
-  private domElement: any;
-
-  @Input() set fiizMinDate(min: any) {
-    setTimeout(() => {
-      if (min) {
-        $(this.domElement).data('DateTimePicker').minDate(min);
-      }
-    });
-  }
-
-  constructor(private element: ElementRef) {
-    this.domElement = element.nativeElement;
-  }
-}
-
-@Directive({
-  selector: '[fiizMaxDate]'
-})
-export class FiizMaxDateDirective {
-  private domElement: any;
-
-  @Input() set fiizMaxDate(max: any) {
-    setTimeout(() => {
-      if (max) {
-        $(this.domElement).data('DateTimePicker').maxDate(max);
-      }
-    });
-  }
-
-  constructor(private element: ElementRef) {
-    this.domElement = element.nativeElement;
-  }
-}
+//
+// @Directive({
+//   selector: '[fiizMinDate]'
+// })
+// export class FiizMinDateDirective {
+//   private domElement: any;
+//
+//   @Input() set fiizMinDate(min: any) {
+//     setTimeout(() => {
+//       if (min) {
+//         $(this.domElement).data('DateTimePicker').minDate(min);
+//       }
+//     });
+//   }
+//
+//   constructor(private element: ElementRef) {
+//     this.domElement = element.nativeElement;
+//   }
+// }
+//
+// @Directive({
+//   selector: '[fiizMaxDate]'
+// })
+// export class FiizMaxDateDirective {
+//   private domElement: any;
+//
+//   @Input() set fiizMaxDate(max: any) {
+//     setTimeout(() => {
+//       if (max) {
+//         $(this.domElement).data('DateTimePicker').maxDate(max);
+//       }
+//     });
+//   }
+//
+//   constructor(private element: ElementRef) {
+//     this.domElement = element.nativeElement;
+//   }
+// }

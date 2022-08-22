@@ -17,3 +17,30 @@
     .form-controls {flex: 1 0 100% }
   }
 }
+
+
+@media all and (min-width: 320px) {
+  :host {
+    form {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media all and (min-width: 768px) {
+  :host {
+    form {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+@media all and (min-width: 1260px) {
+  :host {
+    form {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+}
+
+

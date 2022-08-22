@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     LoadingComponent,
     SafePipe,
-    TypeOfPipe,
+    TypeOfPipe
   ]
 })
 export class SharedModule {

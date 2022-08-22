@@ -1,12 +1,6 @@
 @import '~src/assets/css/variables';
 @import '~src/assets/css/mixins';
 
-button {
-  &:focus {
-    box-shadow: none;
-    outline: none;
-  }
-}
 .button-group {
   display: flex;
 
@@ -42,3 +36,15 @@ button {
   }
 }
 
+
+button {
+  border: none;
+  border-radius: inherit;
+  background: var(--slate);
+  font-size: 14px;
+  color: var(--text1);
+  padding: 0 var(--button-padding-lr);
+  cursor: inherit;
+  text-transform: capitalize;
+  margin: 0 auto;
+}

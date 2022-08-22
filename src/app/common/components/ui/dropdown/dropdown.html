@@ -1,8 +1,9 @@
 <label [for]="id" *ngIf="label">{{label}}</label>
-<div class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title, 'disabled': disabled }">
+<div tabindex="-1" class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title, 'disabled': disabled }">
+
   <ng-container [ngSwitch]="dropdownType">
 
-    <fiiz-button class="full-width dropdown" tabindex="0">
+    <fiiz-button class="full-width dropdown" tabindex="-1">
       {{title}}
       <i class="fa-solid fa-caret-down" style="margin-left: auto;"></i>
     </fiiz-button>
@@ -15,8 +16,10 @@
     <ng-template [ngIf]="dropdownType === 'search'">
       <form [formGroup]="searchForm">
         <fiiz-input
+          #searchInput
           formControlName="search"
           autocomplete="off"
+          [disabled]="disabled"
           [autofocus]="true"
           (keyup)="onKeyUpEvent($event)"
           type="text"
@@ -27,11 +30,12 @@
       </form>
       <div class="fiiz-dropdown-button__content__wrapper">
 
-        <fiiz-button tabindex="0"
-                     *ngFor="let item of items$ | async; let i = index; let last = last;"
-                     [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}"
-                     (click)="setTheValue(item)"
-                     style="border-radius: 0;">
+        <fiiz-button tabindex="-1"
+           *ngFor="let item of items$ | async; let i = index; let last = last;"
+           [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}"
+           (click)="setTheValue(item)"
+           [disabled]="disabled"
+           style="border-radius: 0;">
           {{ item.label }}
         </fiiz-button>
 
@@ -39,11 +43,11 @@
     </ng-template>
 
     <ng-template [ngIf]="dropdownType === 'button'">
-      <div *ngFor="let item of items$ | async; let i = index; let last = last" [ngClass]="{'divider': !last}">
-        <fiiz-button class="dropdown" (click)="emitTheValue(item.emitterValue)">
+
+        <fiiz-button class="dropdown" tabindex="-1" *ngFor="let item of items$ | async; let i = index; let last = last" [ngClass]="{'divider': !last}" (click)="emitTheValue(item.emitterValue)">
           <i [class]="item.icon"></i> {{ item.label }}
         </fiiz-button>
-      </div>
+
     </ng-template>
 
     <ng-template [ngIf]="dropdownType === 'anchor'">

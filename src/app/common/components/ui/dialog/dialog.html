@@ -1,25 +1,22 @@
-<div class="header">
+<div class="header" *ngIf="data.type != 'editor'">
   <div class="title">{{data.title}}</div>
 </div>
-<div class="content">
-  <div class="body" [innerHTML]="data.body | safe: 'html'" *ngIf="data.body"></div>
-  <div *ngIf="data.type == 'editor'" class="body" style="width: 600px; position:relative;">
-    <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
-    <editor
-      #tinymce
-      apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
-      outputFormat="html"
-      [init]="tinymceOptions"
-    ></editor>
+<div class="content">  
+  
+  <div *ngIf="data.type != 'editor'" class="body" [innerHTML]="data.body | safe: 'html'"></div>
+  
+  <div *ngIf="data.type == 'editor'" class="body" style="width: 775px; position:relative;">
+    <ng-template #flowNotes>
+      <flow-notes #compRef></flow-notes>
+    </ng-template>
   </div>
+
 </div>
 <div class="footer">
   <div class="actions">
     <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['default']">{{data.buttons['default'].label}}</fiiz-button>
     <fiiz-button stroked (click)="onCancel()" *ngIf="data.buttons['cancel']">{{data.buttons['cancel'].label}}</fiiz-button>
-    <fiiz-button primary (click)="onSubmit()" *ngIf="data.buttons['submit'] && data.buttons['submit'].class !== 'warning'">{{data.buttons['submit'].label}}</fiiz-button>
+    <fiiz-button primary [disabled]="disabled" (click)="onSubmit()" *ngIf="data.buttons['submit'] && data.buttons['submit'].class !== 'warning'">{{data.buttons['submit'].label}}</fiiz-button>
     <fiiz-button primary warning (click)="onSubmit()" *ngIf="data.buttons['submit'] && data.buttons['submit'].class === 'warning'">{{data.buttons['submit'].label}}</fiiz-button>
   </div>
 </div>
-
-

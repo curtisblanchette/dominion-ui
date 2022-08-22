@@ -33,8 +33,8 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
 
   @ViewChild('inputElement', { read: ElementRef }) inputElement: ElementRef;
 
-  // @HostBinding('attr.disabled')
-  // isDisabled = false;
+  @HostBinding('attr.disabled')
+  isDisabled = false;
 
   value: number | string;
 

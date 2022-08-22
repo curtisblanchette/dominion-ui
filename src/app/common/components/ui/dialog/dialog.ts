@@ -1,8 +1,6 @@
-import { AfterViewInit, Component, Inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { EditorComponent } from '@tinymce/tinymce-angular';
 
-import { FlowService } from '../../../../modules/flow/flow.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, delay, distinctUntilChanged, map } from 'rxjs/operators';
 import { mergeMap, tap } from 'rxjs';
@@ -68,8 +66,7 @@ export class FiizDialogComponent implements AfterViewInit {
 
   constructor(
     @Inject(DIALOG_DATA) public data: IDialogData,
-    public dialog: DialogRef,
-    public flowService: FlowService
+    public dialog: DialogRef
   ) {
     this.data = Object.assign({
       title: 'Warning',
@@ -128,8 +125,6 @@ export class FiizDialogComponent implements AfterViewInit {
       } else {
         return submitBtn.fn().then(() => this.dialog.close(1));
       }
-
     }
-
   }
 }

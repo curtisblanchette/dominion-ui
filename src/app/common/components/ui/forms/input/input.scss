@@ -101,11 +101,6 @@
     &.number {
       text-align: right;
     }
-    &:focus {
-      @include focusRing(#{var(--focusring)}, #{var(--focusring-moz-mac)});
-      color: #{var(--text1)};
-      outline: none;
-    }
 
     &::-ms-expand {
       display: none;
@@ -145,38 +140,8 @@
     }
   }
 
+  @include placeholderStyle();
 
 }
 
 
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #A7B2D2;
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #A7B2D2;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #A7B2D2;
-}
-
-input::-webkit-input-placeholder {
-  color: var(--placeholder-color);
-}
-
-input:-moz-placeholder { /* Firefox 18- */
-  color: var(--placeholder-color);
-}
-
-input::-moz-placeholder {  /* Firefox 19+ */
-  color: var(--placeholder-color);
-}
-
-input:-ms-input-placeholder {
-  color: var(--placeholder-color);
-}
-
-input::placeholder {
-  color: var(--placeholder-color);
-}

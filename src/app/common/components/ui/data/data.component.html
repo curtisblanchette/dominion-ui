@@ -18,9 +18,10 @@
     <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [options]="{remote: true, query : {}}" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
     <fiiz-dropdown
       *ngIf="control.type === 'dropdown-search'"
-      #searchDropdowns
+      #dropdown
       (getValues)="getDropdownObjects($event)"
       type="search"
+      tabindex="-1"
       [formControlName]="control.key"
       [id]="control.key"
       [label]="control.label"

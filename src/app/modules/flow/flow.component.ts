@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
-import { FlowHostDirective, FlowTransitions, NoStepFoundError } from './index';
+import { FlowHostDirective, FlowStep, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
@@ -12,7 +12,6 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UntilDestroy } from '@ngneat/until-destroy';
 
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
-import { ICallNote } from '@4iiz/corev2';
 
 @UntilDestroy()
 @Component({
@@ -29,21 +28,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   notesData: any;
   isLastStep$: Observable<boolean>;
   status$: Observable<string>;
-
-  public tinymceOptions = {
-    branding: false,
-    menubar: false,
-    toolbar: 'bold italic strikethrough underline align',
-    statusbar: false,
-    content_style: `
-      body {
-        font-family: Roboto, Arial, sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        line-height: 1.5em;
-        color: #C6CEED;
-      }`
-  };
+  timeline$: Observable<FlowStep>;
 
   public menuItems: IDropDownMenuItem[] = [
     {
@@ -61,7 +46,6 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   public objections$: Observable<DropdownItem>;
 
   @ViewChild(FlowHostDirective, {static: true}) flowHost!: FlowHostDirective;
-  @ViewChild('tinymce') tinymce: any;
 
   constructor(
     private store: Store<fromFlow.FlowState>,
@@ -74,6 +58,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
+    this.timeline$ = this.store.select(fromFlow.selectFlowTimeline);
   }
 
   public async ngAfterContentInit() {
@@ -127,18 +112,15 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     });
   }
 
-  public goTo(id: string): Promise<any> {
-    const next = this.flowService.builder.process.steps.findIndex(x => x.id === id);
-    const current = this.flowService.builder.process.steps.findIndex(x => x.id === this.flowService?.builder.process.currentStepId);
-    next < current ? this.animationIndex-- : this.animationIndex++;
+  public async goTo(id: string): Promise<any> {
+    const timeline = await firstValueFrom(this.timeline$) as any;
+    const selected = timeline.findIndex((x: FlowStep) => x.id === id);
+    const current = timeline.findIndex((x: FlowStep) => x.id === this.flowService?.builder.process.currentStepId);
+    selected < current ? this.animationIndex-- : this.animationIndex++;
     return this.flowService.goTo(id);
   }
 
   public ngOnDestroy() {
-  }
-
-  public saveNotes(html: any): Observable<ICallNote> {
-    return this.flowService.updateNote(html);
   }
 
   public openNotesDialog() {

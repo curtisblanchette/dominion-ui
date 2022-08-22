@@ -10,19 +10,7 @@ $padding: 40px;
     padding: 0 $padding;
   }
   .header { padding-top: $padding; }
-  .footer { padding-bottom: $padding; }
-
-  .autoSave {
-    position:absolute;
-    opacity: 0;
-    right: 1em;
-    top: 1em;
-    z-index: 99999;
-    color: var(--green1);
-    font-size: 10px;
-    text-align:left;
-  }
-
+  .footer { padding-bottom: $padding; } 
 
   .icon {
     display: block;
