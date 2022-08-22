@@ -45,8 +45,7 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
 
   ngAfterContentInit() {
     if(this.data[this.module]) {
-      // get data from step
-      console.log('step data', this.data[this.module]);
+      // Set the <fiiz-data> component's form value;
       this.cmp.form.setValue(this.data[this.module], {emitEvent: true});
     }
 
@@ -55,7 +54,6 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
       distinctUntilChanged()
     ).subscribe(id => {
       this.flowService.updateStep(this.flowStepId, { state: { data: { id }} }, 'merge');
-      // this.data.id = id;
     });
   }
 

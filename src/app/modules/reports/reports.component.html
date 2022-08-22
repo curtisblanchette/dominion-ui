@@ -21,7 +21,7 @@
       <section class="pipeline-nav__section grid-2" style="flex:0.4; margin-right: 20px;">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Qual. Leads</div>
-          <div class="pipeline-nav__item__metric">123</div>
+          <div class="pipeline-nav__item__metric">{{(data$ | async).in_pipeline.leads}}</div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
         </div>
         <!--        <div class="pipeline-nav__right_border">-->
@@ -29,7 +29,7 @@
         <!--        </div>-->
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Sets</div>
-          <div class="pipeline-nav__item__metric">64</div>
+          <div class="pipeline-nav__item__metric">{{(data$ | async).in_pipeline.sets}}</div>
           <div class="pipeline-nav__item__caption">Set Rate 52%</div>
         </div>
       </section>
@@ -45,15 +45,15 @@
         <!--        </div>-->
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Qual Shows</div>
-          <div class="pipeline-nav__item__metric">51<span class="pipeline-nav__item__metric__goal">/64</span></div>
-          <div class="pipeline-nav__item__caption">Set Rate 52%</div>
+          <div class="pipeline-nav__item__metric">{{(data$ | async).in_pipeline.qualifiedShows}}<span class="pipeline-nav__item__metric__goal">/{{(data$ | async).in_pipeline.shows}}</span></div>
+          <div class="pipeline-nav__item__caption">Show Rate 52%</div>
         </div>
         <!--        <div class="pipeline-nav__right_border">-->
         <!--          <div class="pipeline-nav__right_border__triangle"></div>-->
         <!--        </div>-->
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Hires</div>
-          <div class="pipeline-nav__item__metric">39</div>
+          <div class="pipeline-nav__item__metric">{{(data$ | async).in_pipeline.hires}}</div>
           <div class="pipeline-nav__item__caption">Hire Rate 60%</div>
         </div>
       </section>

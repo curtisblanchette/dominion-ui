@@ -53,26 +53,33 @@ export class FlowTimelineComponent implements AfterViewInit {
 
     this.scrollActiveIntoView();
 
-    fromEvent(this.scroller.nativeElement, 'mousewheel').pipe(
+    fromEvent(this.scroller.nativeElement, 'wheel').pipe(
       untilDestroyed(this),
       skip(1), // skip the initial scroll event emitted by the browser
       tap((event: any) => {
+        const itemHeight = this.viewport.nativeElement.offsetHeight;
+        const totalHeight = this.viewport.nativeElement.offsetHeight * this.items.length;
         // update the scroll position right away
-        const withinUpperBound = event.currentTarget.scrollTop < this.viewport.nativeElement.offsetHeight * this.items.length;
-        const withinLowerBound = event.currentTarget.scrollTop > this.viewport.nativeElement.offsetHeight;
-        const outsideUpperBound = event.currentTarget.scrollTop > this.viewport.nativeElement.offsetHeight * this.items.length
-        const outsideLowerBound = event.currentTarget.scrollTop < this.viewport.nativeElement.offsetHeight;
+        const withinUpperBound = event.currentTarget.scrollTop < totalHeight;
+        const withinLowerBound = event.currentTarget.scrollTop > itemHeight;
+        const outsideUpperBound = event.currentTarget.scrollTop > totalHeight;
+        const outsideLowerBound = event.currentTarget.scrollTop < itemHeight;
+
         if(withinUpperBound && withinLowerBound) {
-          this.renderer.setStyle(this.content.nativeElement, 'top', - this.scroller.nativeElement.scrollTop + 'px');
+          this.renderer.setStyle(this.content.nativeElement, 'top', -this.scroller.nativeElement.scrollTop + 'px');
+        }
+
+        if(outsideLowerBound) {
+          event.currentTarget.scrollTop = itemHeight;
+          this.renderer.setStyle(this.content.nativeElement, 'top', itemHeight);
         }
 
         if(outsideUpperBound) {
           event.currentTarget.scrollTop = this.viewport.nativeElement.offsetHeight * this.items.length;
+          this.renderer.setStyle(this.content.nativeElement, 'top', -this.viewport.nativeElement.offsetHeight * this.items.length);
         }
 
-        if(outsideLowerBound) {
-          event.currentTarget.scrollTop = this.viewport.nativeElement.offsetHeight;
-        }
+
 
 
       }),

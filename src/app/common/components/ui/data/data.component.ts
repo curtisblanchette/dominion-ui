@@ -1,6 +1,6 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType, models } from '../../../models';
 import { Store } from '@ngrx/store';
@@ -272,7 +272,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
      * Watch dropdown fields to trigger dynamic form changes
      * example: `lostReason` is required when status is `lost`
      */
-    const watchFields: any = {
+    const watchFields: {
+        [key: string]: { when: LeadFields | DealFields, equals: string, then: any, else: any, field: string }[]
+    } = {
       [ModuleTypes.LEAD]: [
         {
           when: LeadFields.STATUS_ID,
@@ -315,8 +317,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             const value = options?.find(opt => opt.label === watch.equals)?.id;
             const result = res === value ? watch.then : watch.else;
             // @ts-ignore
-            this.form.controls[watch.field][result.fn](...result.args);
-            this.form.controls['lostReasonId'].disable({ emitEvent: true });
+            const control: any = this.form.controls[watch.field]
+            control[result.fn](...result.args);
           });
         }
       }

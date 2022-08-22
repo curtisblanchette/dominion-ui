@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ReportsService } from './reports.service';
+import { Observable, take } from 'rxjs';
 
 @Component({
   selector: 'app-reports',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReportsComponent implements OnInit {
 
-  constructor() { }
+  public data$: Observable<any>;
+
+  constructor(
+    private reportsService: ReportsService
+  ) {
+    this.data$ = this.reportsService.getTotalPipeline().pipe(take(1));
+  }
 
   ngOnInit(): void {
+
   }
 
 }
