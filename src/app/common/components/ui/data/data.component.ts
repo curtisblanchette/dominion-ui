@@ -145,8 +145,9 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         untilDestroyed(this),
         delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
       ).pipe(untilDestroyed(this)).subscribe(async (record: any) => {
-        if (record[0]) {
-          let entity: any = record.length && JSON.parse(JSON.stringify(record[0])) || null;
+        const found = record.find( (rec: { id: string | null; }) => rec.id === this.id ) || record[0];
+        if (found) {
+          let entity: any = record.length && JSON.parse(JSON.stringify(found)) || null;
 
           if (entity) {
             const properties = this.options.fields;
@@ -317,8 +318,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             const value = options?.find(opt => opt.label === watch.equals)?.id;
             const result = res === value ? watch.then : watch.else;
             // @ts-ignore
-            const control: any = this.form.controls[watch.field]
-            control[result.fn](...result.args);
+            this.form.controls[watch.field][result.fn](...result.args);
           });
         }
       }

@@ -1,8 +1,11 @@
-import { AfterViewInit, Component, ComponentRef, Inject, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { UntilDestroy } from '@ngneat/until-destroy';
 
-import { FlowNotesComponent } from '../../../../modules/flow/index';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { debounceTime, delay, distinctUntilChanged, map } from 'rxjs/operators';
+import { mergeMap, tap } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface IDialogButton {
   label: string,
@@ -24,13 +27,42 @@ interface IDialogData {
 @Component({
   selector: 'fiiz-dialog',
   templateUrl: './dialog.html',
-  styleUrls: ['./dialog.scss']  
+  styleUrls: ['./dialog.scss'],
+  animations: [
+    trigger("appear", [
+      state('*', style({opacity: 0})),
+      state('true', style({opacity: 1})),
+      state('false', style({opacity: 0})),
+      transition("* => true", [
+        animate( ".1s ease-in-out")
+      ]),
+      transition("* => false", [
+        animate("2s ease-in-out")
+      ]),
+    ])
+  ]
 })
-export class FiizDialogComponent implements AfterViewInit, OnDestroy {
+export class FiizDialogComponent implements AfterViewInit {
 
-  public disabled:boolean = false;
-  public comp!:ComponentRef<FlowNotesComponent>;
-  @ViewChild('flowNotes', { read: ViewContainerRef }) flowNotes!: ViewContainerRef;
+  public tinymceOptions: Object = {
+    branding: false,
+    menubar: false,
+    toolbar: 'bold italic strikethrough underline align',
+    statusbar: false,
+    content_style: `
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.5em;
+        color: #C6CEED;
+      }`
+  };
+
+  public isSaving: boolean = false;
+  public saveError: Error | null = null;
+
+  @ViewChild('tinymce') tinymce: EditorComponent;
 
   constructor(
     @Inject(DIALOG_DATA) public data: IDialogData,
@@ -50,16 +82,27 @@ export class FiizDialogComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngAfterViewInit() {
-    if( this.data?.type == 'editor' ){
-      this.flowNotes.clear();
-      this.comp = this.flowNotes.createComponent(FlowNotesComponent);
-      this.comp.instance.disableSave.subscribe((value:boolean) => {
-        this.disabled = value;
-      })
-    }    
+    if (this.tinymce) {
+      this.tinymce.onKeyUp.pipe(
+        untilDestroyed(this),
+        map((action: any) => {
+          return action.event.currentTarget.innerHTML;
+        }),
+        debounceTime(750),
+        distinctUntilChanged(),
+        mergeMap((html) => (this.isSaving = true) && this.onSubmit()),
+        tap((res) => {
+          if(res instanceof HttpErrorResponse){
+            this.saveError = res;
+          }
+        }),
+        delay(200),
+        map(() => {
+          this.isSaving = false;
+        })
+      ).subscribe();
+    }
   }
-
-  ngOnDestroy(): void {}
 
   onNoClick(): void {
     this.onCancel();
@@ -77,12 +120,11 @@ export class FiizDialogComponent implements AfterViewInit, OnDestroy {
     const submitBtn: IDialogButton = this.data.buttons['submit'];
 
     if (submitBtn.fn) {
-      if(this.data?.type == 'editor') {
-        return submitBtn.fn(this.comp.instance.tinymce.editor.getContent()).then(() => this.dialog.close(1));
+      if(this.tinymce?.editor) {
+        return submitBtn.fn(this.tinymce.editor.getContent()).then(() => this.dialog.close(1));
       } else {
         return submitBtn.fn().then(() => this.dialog.close(1));
       }
     }
   }
-
 }

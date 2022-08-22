@@ -117,6 +117,8 @@ export class AppEffects {
           [LookupTypes.LOST_REASON]: this.http.get(environment.dominion_api_url + '/lost-reasons'),
 
           offices: this.http.get(environment.dominion_api_url + '/offices'),
+          [LookupTypes.LOST_REASON] : this.http.get(environment.dominion_api_url + '/lost-reasons'),
+          [LookupTypes.DEAL_STAGE] : this.http.get(environment.dominion_api_url + '/deal-stages')
         }).subscribe((res: any) => {
 
           // Map the lookups to DropdownItem's
