@@ -73,6 +73,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   @Output('values') values: EventEmitter<any> = new EventEmitter();
   @Output('onCreate') onCreate: EventEmitter<any> = new EventEmitter();
+  @Output('onEdit') onEdit: EventEmitter<any> = new EventEmitter();
+  @Output('onDelete') onDelete: EventEmitter<any> = new EventEmitter();
   @Output('btnValue') btnValue: EventEmitter<any> = new EventEmitter();
 
   public template$: Observable<TemplateRef<any> | undefined>;
@@ -85,7 +87,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     {
       label: 'Delete',
       icon: 'fa-solid fa-trash',
-      emitterValue : 'object'
+      emitterValue : 'delete'
     },
     {
       label: 'Something',
@@ -236,6 +238,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.onCreate.emit( { module: this.module, record: null } );
   }
 
+  public onEditRecord() {
+    if( this.selected ){
+      this.onEdit.emit( { module: this.module, record: this.selected } );
+    }
+  }
+
   public searchInModule() {
     if (this.searchForm.valid) {
       this.getData();
@@ -304,6 +312,12 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   private toggleSort() {
     return this.sortDirection = this.sortDirection === SortDirections.DESC ? SortDirections.ASC : SortDirections.DESC;
+  }
+
+  public getActionItemValue( value:any ){
+    if( value == 'delete' && this.selected ){
+      this.onDelete.emit( { module: this.module, record: this.selected } );
+    }
   }
 
 }

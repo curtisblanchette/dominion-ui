@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <fiiz-button *ngIf="(status$ | async) === 'complete'" primary (click)="endCall()" [disabled]="!(allValid$ | async)">End Call</fiiz-button>
+      <fiiz-button *ngIf="(status$ | async) === 'complete'" primary (click)="endCall()" [disabled]="!(allValid$ | async)">Finished</fiiz-button>
     </ng-template>
 
 
