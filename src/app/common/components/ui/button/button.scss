@@ -46,6 +46,7 @@
     cursor: inherit;
     text-transform: capitalize;
     margin: 0 auto;
+    @include ellipsis();
 
     &:hover {
       background: var(--slate-tint1);

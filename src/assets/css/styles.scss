@@ -98,3 +98,9 @@ a {
   left: 0!important;
   right: 0!important;
 }
+
+@media all and (min-width: 868px){
+  .span-3 {
+    grid-column: span 3;
+  }
+}

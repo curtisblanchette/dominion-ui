@@ -11,7 +11,6 @@
     align-content: center;
     justify-content: center;
     align-items: flex-start;
-    padding-bottom: 4%;
 
     &__day {
       font-size: 14px;
@@ -23,10 +22,15 @@
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      align-content: center;
       align-items: center;
       justify-content: flex-start;
-      margin: 16px 0 0 0;
+
+      width: 150px;
+      height: 200px;
+      overflow: auto;
+      align-content: flex-start;
+      margin: 1em auto 0;
+
       & div {
         margin-right: 10px;
       }
@@ -37,21 +41,10 @@
   &__form{
     width: 100%;
 
-    form {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-content: center;
-      align-items: stretch;
-      justify-content: center;
-      gap: 0 .5em;
-
-      > * {
-        flex: 1 0 0;
-      }
+    fiiz-data {
 
       fiiz-textarea {
-        flex: 2 0 100%;
+        grid-column-end: span 3;
       }
     }
   }

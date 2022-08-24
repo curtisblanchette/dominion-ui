@@ -8,6 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/reports.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { ReportsEffects } from './store/reports.effects';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,8 @@ import { ReportsEffects } from './store/reports.effects';
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     ReportsRouting,
     FiizUIModule,
     StoreModule.forFeature('reports', reducer),

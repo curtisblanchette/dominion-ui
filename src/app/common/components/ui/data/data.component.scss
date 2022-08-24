@@ -1,46 +1,13 @@
 @import '../../../../../assets/css/mixins';
 
 :host {
-
+  width: 100%;
   @include hideScrollBars();
 
-  form {
+  fiiz-grid {
+    $self: &;
     max-width: 100%;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
     gap: 1em;
-
-    > * {
-      flex: 1 1 auto;
-    }
-    .form-controls {flex: 1 0 100% }
   }
 }
-
-
-@media all and (min-width: 320px) {
-  :host {
-    form {
-      grid-template-columns: 1fr;
-    }
-  }
-}
-
-@media all and (min-width: 768px) {
-  :host {
-    form {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-}
-
-@media all and (min-width: 1260px) {
-  :host {
-    form {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-  }
-}
-
-

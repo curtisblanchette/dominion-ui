@@ -29,6 +29,10 @@ export interface FiizDataComponentOptions {
   state: 'edit' | 'create';
   dictation?: string;
   fields: Array<string>;
+  grid?: {
+    minColWidth?: string;
+    cols?: number;
+  }
 }
 
 @UntilDestroy()
@@ -366,6 +370,10 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       // form is unchanged, don't process anything for this
     }
     throw new FormInvalidError('Data Component');
+  }
+
+  get columnStyle() {
+    return this.controlData.map(() => '1fr ');
   }
 
   private async cleanForm() {

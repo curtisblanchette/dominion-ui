@@ -216,7 +216,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'relationship-building': {
         const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.LEAD);
-        leadForm?.save(true);
+        leadForm?.save(false);
       }
       break;
 

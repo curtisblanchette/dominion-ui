@@ -27,8 +27,22 @@ export class ReportsEffects {
       withLatestFrom(this.store.select(fromReports.getDateRange)),
       switchMap(async (action: any) => {
         let [payload, dateRange]: [any, any] = action;
-        const res: any = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/reports/total-pipeline?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`).pipe(take(1)));
-        return reportsActions.FetchTotalPipelineSuccess({data: res.data});
+        try {
+          const res: any = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/reports/total-pipeline?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`).pipe(take(1)));
+
+          let grid = [];
+          for(const key of Object.keys(res.data)) {
+            if (!['in', 'out'].includes(key)) {
+              // TODO use a display name map instead of this moist replacement kludge
+              grid.push([key.replace('_',' - ').replace(/_/g, ' '), ...Object.values(res.data[key])]);
+            }
+          }
+          grid = grid.flat();
+
+          return reportsActions.FetchTotalPipelineSuccess({data: { in: res.data.in, out: res.data.out, grid }});
+        } catch(e: any) {
+          return reportsActions.FetchTotalPipelineError(e)
+        }
       }),
     ), { dispatch: true });
 
