@@ -32,7 +32,16 @@
             </div>
           </div>
         </div>
-
+        <div>
+          <fiiz-date-picker
+            id="date_range"
+            pickerType="both"
+            placeholder="Date Time range"
+            selectMode="range"
+            (change)="getCustomSlot($event)"
+            label="Custom Time Slot"
+          ></fiiz-date-picker>
+        </div>
         <div class="info">
           "May I have a good email address for you and I will send you a confirmation of your appointment, it will also
           include driving directions to our office."

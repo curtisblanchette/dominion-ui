@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import * as dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
-import { DatePickerComponent } from 'ng2-date-picker';
-import { IDatePickerConfig } from 'ng2-date-picker/lib/date-picker/date-picker-config.model';
 
 @Component({
   selector: 'fiiz-date-picker',
@@ -24,6 +22,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
   @Input('id') id!: string;
   @Input('pickerType') pickerType: "calendar"|"timer"|"both";
   @Input('placeholder') placeholder: string = "Select Date";
+  @Input('selectMode') selectMode: "single"|"range"|"rangeFrom"|"rangeTo" = 'single';
 
   @Input('min') min!: Dayjs | string | null;
   @Input('max') max!: Dayjs | string | null;
@@ -34,12 +33,11 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
 
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 
-  @Input('config') config: IDatePickerConfig;
 
   value!: string | Dayjs;
   public startEndValidation:boolean = false;
+  public separator:string = '~';
 
-  @ViewChild('picker') picker:DatePickerComponent;
 
   onChange: (value: any) => void = () => {};
   onTouched: Function = () => {};
@@ -53,21 +51,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
    
   }
 
-  ngAfterViewInit(): void {
-    // this.picker.registerOnChange((value:Dayjs | string) => {
-    //   const id = this.picker.inputElement.nativeElement.parentElement?.parentElement?.parentElement?.id;
-    //   if( id === 'startTime' ){
-    //     if( value == undefined ){
-    //       // this.config.min = dayjs().format('YYYY-MM-DD');
-    //       // console.log( dayjs().format('YYYY-MM-DD'), dayjs().format('HH:mm') );
-    //       // this.picker.minDate = dayjs().format('YYYY-MM-DD');
-    //       // this.picker.minTime = dayjs().format('HH:mm');
-    //       console.log(this.picker);
-    //     }
-    //   }
-    //   // console.log('value',value);
-    // });
-    
+  ngAfterViewInit(): void { 
   }
 
   writeValue(value: any) {
@@ -88,14 +72,25 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
     this.isDisabled = disabled;
   }
 
-  changed(value: Dayjs) {
-    if(value && dayjs(value).isValid() ){
+  changed( value:any ) {
+    if( this.selectMode != 'single' ){
+      let format = '';
+      if( this.pickerType == 'calendar' ){
+        format = 'YYYY-MM-DD';
+      } else if ( this.pickerType == 'timer' ){
+        format = 'HH:mm';
+      }
+      const range = {
+        from : dayjs(value[0]).format(format),
+        to : dayjs(value[1]).format(format)
+      };
+      this.change.emit(range);
+    } else if (value && dayjs(value).isValid()){
       this.value = dayjs(value).format();
       this.onChange(this.value);
       this.change.emit(this.value);
       this.onTouched();
     }
-
   }
 
   valueChanged(){

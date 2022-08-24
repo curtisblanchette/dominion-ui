@@ -275,4 +275,9 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.form.enable();
   }
 
+  public getCustomSlot( slot:any ){
+    this.form.patchValue({startDate : slot['from'], endDate : slot['end']});
+    this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
+  }
+
 }
