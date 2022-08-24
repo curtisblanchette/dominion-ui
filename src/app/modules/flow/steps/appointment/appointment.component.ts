@@ -53,6 +53,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }]);
   public apptData: Observable<Array<any>>;
   public allValid$: Observable<boolean>;
+  public minDate:string = dayjs().startOf('day').add(2,'days').format();
 
   @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
@@ -262,11 +263,16 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public setEventTime(event: any) {
-    this.selectedBtnId = event.target.id;
-    const startTime = dayjs(event.target.id).format();
-    const endTime = dayjs(event.target.id).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format();
-    this.form.patchValue({startTime, endTime});
-    this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
+    if( this.selectedBtnId === event.target.id ){
+      this.selectedBtnId = '';
+      this.flowService.updateStep(this.flowStepId, { valid: false }, 'merge');
+    } else {
+      this.selectedBtnId = event.target.id;
+      const startTime = dayjs(event.target.id).format();
+      const endTime = dayjs(event.target.id).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format();
+      this.form.patchValue({startTime, endTime});
+      this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
+    }
   }
 
   private async cleanForm() {

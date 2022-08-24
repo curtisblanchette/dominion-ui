@@ -23,6 +23,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
   @Input('pickerType') pickerType: "calendar"|"timer"|"both";
   @Input('placeholder') placeholder: string = "Select Date";
   @Input('selectMode') selectMode: "single"|"range"|"rangeFrom"|"rangeTo" = 'single';
+  @Input('stepMinute') stepMinute: number = 1;
 
   @Input('min') min!: Dayjs | string | null;
   @Input('max') max!: Dayjs | string | null;
