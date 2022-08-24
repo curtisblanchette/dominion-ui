@@ -1,5 +1,6 @@
 import { Store } from '@ngrx/store';
 import * as fromFlow from '../store/flow.reducer';
+import * as fromApp from '../../../store/app.reducer';
 import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType } from '../../../common/models';
 import { ModuleTypes } from '../../../data/entity-metadata';
@@ -26,6 +27,7 @@ export class FlowBot {
 
   constructor(
     private store: Store<fromFlow.FlowState>,
+    private appStore: Store<fromApp.AppState>,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
     this.services = {
@@ -97,6 +99,11 @@ export class FlowBot {
               }
                 break;
               case 'FlowAppointmentComponent': {
+                const outcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('callOutcome')));
+                const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('callStatus')));
+
+                let callOutcomeId = outcomes.find(o => o.label === 'Cancelled Appointment')?.id;
+                let callStatusId = statuses.find(o => o.label === 'Answered')?.id;
 
                 switch (step.state.options.state) {
                   case 'cancel': {
@@ -133,6 +140,9 @@ export class FlowBot {
                       }).toPromise();
                       action.status = 'complete';
                       action.message = 'Appointment Rescheduled.';
+                      callOutcomeId = outcomes.find(o => o.label === 'Set Appointment')?.id;
+                    } else {
+                      callOutcomeId = outcomes.find(o => o.label === 'Rescheduled Appointment')?.id;
                     }
 
                     // Set Appointment
@@ -161,6 +171,7 @@ export class FlowBot {
                   }
                 }
 
+                flowService.updateCall({statusId:callStatusId, outcomeId:callOutcomeId});
               }
                 break;
               case 'FlowTextComponent': {
