@@ -1,39 +1,40 @@
-<div class="notes">
-    <section class="notes__content">
-      <div class="notes__content__title">Notes</div>
-      <div class="notes__content__items">
-        <div class="notes__content__items__item" [ngClass]="{'active' : selectedIndex == -1}" (click)="loadNotesInView({}, -1)">
-          <i class="fa fa-phone"></i>
-          <div class="notes__content__items__item__info">
-            <h5 class="notes__content__items__item__heading" [ngClass]="{'active' : selectedIndex == -1}">Current Call</h5>
-            <time class="notes__content__items__item__subheading" [dateTime]="" [ngClass]="{'active' : selectedIndex == -1}">Now</time>
-          </div>          
+<div class="flow-notes">
+  <div class="flow-notes__sidebar">
+    <div class="flow-notes__sidebar_title">Notes</div>
+    <div class="flow-notes__sidebar_items">
+      <div class="flow-notes__item" [ngClass]="{'active' : selectedIndex == -1}" (click)="loadNotesInView({}, -1)">
+        <i class="flow-notes__item__icon fa fa-phone"></i>
+        <div class="flow-notes__item__content">
+          <h5 [ngClass]="{'active' : selectedIndex == -1}">Current Call</h5>
+          <time [dateTime]="" [ngClass]="{'active' : selectedIndex == -1}">Now</time>
         </div>
-        <div *ngIf="dataLoading" class="notes__content__items__item" style="border: 0px; padding:30px;">
-          <fiiz-loading type="ring"></fiiz-loading>
-        </div>
-        <ng-container *ngIf="!dataLoading">
-          <div *ngFor="let note of notes$ | async; let i = index" class="notes__content__items__item" [ngClass]="{'active' : selectedIndex == i}" (click)="loadNotesInView(note, i)">
-            <i class="fa" [ngClass]="{'fa-phone' : note.noteFor == 'call', 'fa-calendar' : note.noteFor == 'event' }"></i>
-            <div class="notes__content__items__item__info">
-              <h5 *ngIf="note.noteFor == 'call'" class="notes__content__items__item__heading" [ngClass]="{'active' : selectedIndex == i}">{{note.direction | titlecase}} Call</h5>
-              <h5 *ngIf="note.noteFor == 'event'" class="notes__content__items__item__heading" [ngClass]="{'active' : selectedIndex == i}">{{note.type}}</h5>
-              <time class="notes__content__items__item__subheading" [dateTime]="note.createdAt" [ngClass]="{'active' : selectedIndex == i}">{{ note.createdAt | date:'medium'}}</time>
-            </div>
-          </div>
-        </ng-container>
       </div>
-    </section>
-    <section class="notes__editor">
-      <fiiz-loading *ngIf="editorLoading" type="ring" class="loading"></fiiz-loading>
-      <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
-      <editor
-        #tinymce
-        apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
-        outputFormat="html"
-        id="editor"
-        [init]="tinymceOptions"
-        (onInit)="afterEditorInit($event)"
-      ></editor>
-    </section>
+      <ng-container *ngIf="!dataLoading">
+        <div *ngFor="let note of notes$ | async; let i = index" class="flow-notes__item"
+             [ngClass]="{'active' : selectedIndex == i}" (click)="loadNotesInView(note, i)">
+          <i class="flow-notes__item__icon fa"
+             [ngClass]="{'fa-phone' : note.noteFor == 'call', 'fa-calendar' : note.noteFor == 'event' }"></i>
+          <div class="flow-notes__item__content">
+            <h5 *ngIf="note.noteFor == 'call'"
+                [ngClass]="{'active' : selectedIndex == i}">{{note.direction | titlecase}} Call</h5>
+            <h5 *ngIf="note.noteFor == 'event'" [ngClass]="{'active' : selectedIndex == i}">{{note.type}}</h5>
+            <time [dateTime]="note.createdAt"
+                  [ngClass]="{'active' : selectedIndex == i}">{{ note.createdAt | date:'medium'}}</time>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="flow_notes__content">
+    <fiiz-loading *ngIf="editorLoading"></fiiz-loading>
+    <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
+    <editor
+      #tinymce
+      apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
+      outputFormat="html"
+      id="editor"
+      [init]="tinymceOptions"
+      (onInit)="afterEditorInit($event)"
+    ></editor>
+  </div>
 </div>

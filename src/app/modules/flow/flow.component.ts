@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
-import { FlowHostDirective, FlowStep, FlowTransitions, NoStepFoundError } from './index';
+import { FlowHostDirective, FlowNotesComponent, FlowStep, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
@@ -124,7 +124,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   }
 
   public openNotesDialog() {
-    this.dialog.open(FiizDialogComponent, {
+    this.dialog.open(FlowNotesComponent, {
       data: {
         title: `Notes`,
         type: 'editor',

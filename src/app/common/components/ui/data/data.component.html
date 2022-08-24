@@ -1,5 +1,5 @@
 <!--<h3>{{data.title}}</h3>-->
-<form [formGroup]="form" (ngSubmit)="save()">
+<form [formGroup]="form" (ngSubmit)="save()" [ngStyle]="{'grid-template-columns': controlData.length == 1 ? '1fr' : '1fr 1fr 1fr'}">
 
   <ng-container *ngFor="let control of controlData">
     <fiiz-input #inputList *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>

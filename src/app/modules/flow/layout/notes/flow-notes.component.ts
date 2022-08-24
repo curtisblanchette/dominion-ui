@@ -5,9 +5,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of, tap, mergeMap, delay, firstValueFrom } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { EditorComponent } from '@tinymce/tinymce-angular';
-import { select, Store } from '@ngrx/store';
 
-import * as fromFlow from '../../store/flow.reducer';
 import { FlowService } from '../../flow.service';
 import { environment } from '../../../../../environments/environment';
 
@@ -59,15 +57,14 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
   @Output() disableSave: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
-    private store: Store<fromFlow.FlowState>,
     public flowService: FlowService,
     public http: HttpClient
   ) {
-    this.disableSave.emit(false); // Default is false    
+    this.disableSave.emit(false); // Default is false
   }
 
     public async ngOnInit() {
-      await this.getHistoricNotes();      
+      await this.getHistoricNotes();
     }
 
     public async ngAfterViewInit() {
