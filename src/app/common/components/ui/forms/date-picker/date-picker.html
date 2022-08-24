@@ -8,11 +8,14 @@
     [max]="max"
     [(ngModel)]="value"
     (ngModelChange)="changed($event)" 
+    [selectMode]="selectMode"
+    [rangeSeparator]="separator"
   />
   <owl-date-time 
     #dt1
     [pickerType]="pickerType"
     [pickerMode]="'popup'"
     [hour12Timer]="true"
+    [stepMinute]="stepMinute"
   ></owl-date-time>
 </div>
