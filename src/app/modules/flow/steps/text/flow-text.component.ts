@@ -41,7 +41,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public ModuleTypes: any;
   public contactFields: any = ContactModel;
   public formValidation:{ [ key:string ] : boolean } = {};
-  public formValues:{ [ key:string ] : any } = {};
+  // public formValues:{ [ key:string ] : any } = {};
   public addressState:string = 'create';
   public variables: any;
   public status$: Observable<string>;
@@ -106,31 +106,15 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
+    // this is where we need to update step.state.data for relationship building
+    // and probably all the others too, so I won't target anything specific
+    // module has to be set.
     this.dataComponents.map( (item:FiizDataComponent, index:number) => {
-
       item.values.subscribe( value => {
-        this.flowService.updateStep(this.flowStepId, { variables: value, valid: item.form.valid });
-        this.formValues[item.module] = value;
+        this.flowService.updateStep(this.flowStepId, { state: { data: { [this.module]: value }}, valid: this.dataComponents.map(item => item.form.valid).every(x => x) });
       });
-
-      // item.isValid.subscribe( valid => {
-      //   this.formValidation[item.module] = valid;
-      //   if( 'relationship-building' == this.data.template ){
-      //     if( Object.values(this.formValidation).every(Boolean) ){
-      //       this.flowService.setValidity(this.flowStepId, true);
-      //     } else {
-      //       this.flowService.setValidity(this.flowStepId, false);
-      //     }
-      //   } else {
-      //     if( Object.values(this.formValidation).length == 2 && Object.values(this.formValidation).every(Boolean) ){
-      //       this.flowService.setValidity(this.flowStepId, true);
-      //     } else {
-      //       this.flowService.setValidity(this.flowStepId, false);
-      //     }
-      //   }
-      // });
-
     });
+
   }
 
   public async initStep() {
@@ -170,7 +154,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       break;
 
       case 'relationship-building': {
-
+        // in this case: we won't be adding anything to this component's form
+        // we need to trick FlowBot into handling this like a FlowDataComponent when processing
+        // to do so we can give this step.state a `module` and some `data`
+        // FlowBots logic can stay relatively the same
+        this.module = ModuleTypes.LEAD;
+        this.flowService.updateStep(this.flowStepId, { state: { module: ModuleTypes.LEAD, data: { lead: { practiceAreaId: null, state: null } } } })
       }
       break;
 
@@ -218,11 +207,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     switch(this.data.template) {
 
       case 'relationship-building': {
-        const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.LEAD);
-        leadForm?.save(false);
+        this.dataComponents.map(cmp => cmp.save(false));
         // should I make it append this form data to the lead create form?
         // that might make the most sense, but a new entity update would allow it to continue ambiguously (as intended)
-        //
+
       }
       break;
 
