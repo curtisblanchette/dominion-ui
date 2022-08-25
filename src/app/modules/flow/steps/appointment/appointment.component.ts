@@ -1,28 +1,25 @@
-import { Component, OnInit, Renderer2, ViewChildren, ElementRef, QueryList, AfterViewInit, AfterContentInit, Input, ViewChild } from '@angular/core';
+import { Component, Renderer2, AfterViewInit, AfterContentInit, Input, ViewChild } from '@angular/core';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
 import * as dayjs from 'dayjs';
 import { IEvent } from '@4iiz/corev2';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { FlowService } from '../../flow.service';
 import * as fromApp from '../../../../store/app.reducer';
-import * as flowActions from '../../store/flow.actions';
 import * as fromFlow from '../../store/flow.reducer';
-import { Observable, of, Subscription, take } from 'rxjs';
+import { Observable, of, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { DropdownItem, FiizSelectComponent, RadioItem } from '../../../../common/components/ui/forms';
+import { DropdownItem, FiizDatePickerComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { HttpClient } from '@angular/common/http';
-import { FlowStep, FormInvalidError, OnSave } from '../../classes';
-import { DominionType, models } from '../../../../common/models';
+import { FormInvalidError, OnSave } from '../../classes';
+import { models } from '../../../../common/models';
 import { INestedSetting } from '../../../../store/app.effects';
 import { ManipulateType } from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
-import { environment } from '../../../../../environments/environment';
-import { map } from 'rxjs/operators';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 
 @UntilDestroy()
@@ -58,8 +55,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
   @ViewChild('eventData') eventData: FiizDataComponent;
-  @ViewChildren('slotBtn') slotBtn: QueryList<ElementRef>;
-  // @ViewChildren('dropdown') dropdowns: QueryList<FiizSelectComponent>;
+  @ViewChild('dateRangePicker') dateRangePicker:FiizDatePickerComponent;
 
   constructor(
     private router: Router,
@@ -110,13 +106,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
           this.flowService.updateStep(this.flowStepId, {state: { data: { toReschedule: this.id }}}, 'merge');
         }
 
-        // this.form.patchValue({
-        //   contactId: this.flowService.getVariable('contact'),
-        //   // startTime: this.flowService.getVariable('startDateTime'),
-        //   // endTime: this.flowService.getVariable('endDateTime'),
-        //   typeId: 1
-        // });
-
         let payload = { ...this.eventData.form.value, ...this.options.payload, ...this.form.value };
 
         this.flowService.updateStep(this.flowStepId, {
@@ -127,33 +116,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
         if (this.eventData.form.valid && this.form.valid) {
           this.form.disable();
-          return this.cleanForm();
-          // this.flowService.updateStep(this.flowStepId, {
-          //   valid: true,
-          //   state: {data: {[this.module]: this.form.value}}
-          // }, 'merge');
-
-          // return this._dynamicCollectionService.add(<DominionType>payload).toPromise().then((res: DominionType | undefined) => {
-          //   res = res as IEvent;
-          //
-          //   this._dynamicCollectionService.setFilter({id: res?.id});
-          //   const payload = {
-          //     [this.module]: res?.id,
-          //     appt_start_time: res?.startTime,
-          //     appt_end_time: res?.endTime,
-          //     contact : res?.contactId
-          //   }
-          //   if( res?.contactId ){
-          //     this.http.get(environment.dominion_api_url + '/contacts/' + res.contactId).toPromise().then((contactData:any) => {
-          //       if( contactData && contactData.addresses && contactData.addresses.length ){
-          //         payload['address'] = contactData.addresses[0]['id'];
-          //       }
-          //     });
-          //   }
-          //
-          //   this.flowService.updateStep(this.flowStepId, {variables: payload, valid: true});
-          //
-          // });
+          return this.cleanForm();        
         } else {
           return;
         }
@@ -219,7 +182,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
           });
           if (!find.length) {
             if (dayjs().isBefore(startTime)) {
-              freeSlots.push(startTime.format('hh:mm a'));
+              freeSlots.push(startTime.format('hh:mm A'));
             }
           }
           startTime = startTime.add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType);
@@ -234,7 +197,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public buildForm(fields: string[]) {
     let form: { [key: string]: FormControl } = {};
-
+    
     for (const field of fields) {
       const control = models[this.module][field];
       form[field] = new FormControl(control.defaultValue, control.validators);
@@ -243,13 +206,11 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.form = this.fb.group(form);
 
     this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
-      this.flowService.updateStep(this.flowStepId, {valid: this.form.valid && !!this.selectedBtnId});
+      this.flowService.updateStep(this.flowStepId, {valid: this.form.valid});
     });
   }
 
   public getData() {
-    // this._dynamicCollectionService.getByKey(this.id);
-    // this._dynamicCollectionService.setFilter({id: this.id}); // this modifies filteredEntities$ subset
     this.getById(this.id).pipe(take(1)).subscribe(val => {
       if (val) {
         let values: Array<any> = [];
@@ -263,6 +224,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public setEventTime(event: any) {
+    this.dateRangePicker.value = '';
     if( this.selectedBtnId === event.target.id ){
       this.selectedBtnId = '';
       this.flowService.updateStep(this.flowStepId, { valid: false }, 'merge');
@@ -282,8 +244,11 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public getCustomSlot( slot:any ){
-    this.form.patchValue({startDate : slot['from'], endDate : slot['end']});
-    this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
+    if( slot ){      
+      this.selectedBtnId = '';
+      this.form.patchValue({startTime : slot['from'], endTime : slot['to']});
+      this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
+    }
   }
 
 }
