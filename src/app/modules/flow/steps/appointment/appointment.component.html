@@ -25,7 +25,6 @@
                 <button *ngFor="let time of item.value;"
                         [id]="item.key+', '+time"
                         [ngClass]="{'active' : selectedBtnId === item.key+', '+time}"
-                        #slotBtn
                         class="btn_time_slots"
                         (click)="setEventTime($event)">
                   {{ time }}
@@ -37,6 +36,7 @@
 
         <div>
           <fiiz-date-picker
+            #dateRangePicker
             id="date_range"
             pickerType="both"
             placeholder="Date Time range"
