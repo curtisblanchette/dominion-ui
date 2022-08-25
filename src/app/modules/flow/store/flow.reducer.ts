@@ -3,6 +3,13 @@ import { FlowLink, FlowRouter, FlowStep } from '../index';
 import { cloneDeep, get, merge } from 'lodash';
 import * as flowActions from './flow.actions';
 
+export enum FlowStatus {
+  INITIAL = 'initial',
+  PENDING = 'pending',
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
 export interface FlowState {
   processId: string | undefined;
   steps: FlowStep[] | any;
@@ -11,7 +18,7 @@ export interface FlowState {
   currentStepId: string | undefined;
   firstStepId: string | undefined;
   lastStepId: string | undefined;
-  status: 'default' | 'processing' | 'complete';
+  status: FlowStatus;
   notes: string | undefined;
 }
 

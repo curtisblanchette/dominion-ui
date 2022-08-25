@@ -18,7 +18,7 @@ import { CustomDataService } from '../../../../data/custom.dataservice';
 import { RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
-import { BotAction, FlowBot } from '../../classes';
+import { BotAction, BotActionStatus, FlowBot } from '../../classes';
 
 @UntilDestroy()
 @Component({
@@ -45,6 +45,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public addressState:string = 'create';
   public variables: any;
   public status$: Observable<string>;
+  public FlowStatus: any;
+  public BotActionStatus: any;
 
   @ViewChild('botComment') botComment: ElementRef;
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
@@ -61,7 +63,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.ModuleTypes = ModuleTypes;
-
+    this.FlowStatus = fromFlow.FlowStatus;
+    this.BotActionStatus = BotActionStatus;
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.outboundTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
     this.callReasons$ = of([{ id : 'cancel-appointment', label : 'Cancel Appointment' }, { id : 'reschedule-appointment', label : 'Reschedule Appointment' }, { id : 'take-notes', label : 'Take Notes' }]);
@@ -217,6 +220,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       case 'relationship-building': {
         const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.LEAD);
         leadForm?.save(false);
+        // should I make it append this form data to the lead create form?
+        // that might make the most sense, but a new entity update would allow it to continue ambiguously (as intended)
+        //
       }
       break;
 
@@ -241,7 +247,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   get botActions(): BotAction[] {
-    return this.flowBot.actions;
+    return this.flowBot.botActions;
   }
 
   public get isValid() {

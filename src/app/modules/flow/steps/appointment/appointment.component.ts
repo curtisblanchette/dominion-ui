@@ -116,7 +116,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
         if (this.eventData.form.valid && this.form.valid) {
           this.form.disable();
-          return this.cleanForm();        
+          return this.cleanForm();
         } else {
           return;
         }
@@ -143,7 +143,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public async ngAfterViewInit() {
-    // // if the step was module to resolve the ID for - do it now
+    // if the step has a module to resolve do it now
     if (this.data.hasOwnProperty('resolveId')) {
       this.id = this.data.resolveId;
     }
@@ -197,7 +197,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public buildForm(fields: string[]) {
     let form: { [key: string]: FormControl } = {};
-    
+
     for (const field of fields) {
       const control = models[this.module][field];
       form[field] = new FormControl(control.defaultValue, control.validators);
@@ -244,7 +244,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public getCustomSlot( slot:any ){
-    if( slot ){      
+    if( slot ){
       this.selectedBtnId = '';
       this.form.patchValue({startTime : slot['from'], endTime : slot['to']});
       this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
