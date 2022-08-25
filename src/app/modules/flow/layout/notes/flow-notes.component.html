@@ -1,40 +1,44 @@
-<div class="flow-notes">
-  <div class="flow-notes__sidebar">
-    <div class="flow-notes__sidebar_title">Notes</div>
-    <div class="flow-notes__sidebar_items">
-      <div class="flow-notes__item" [ngClass]="{'active' : selectedIndex == -1}" (click)="loadNotesInView({}, -1)">
-        <i class="flow-notes__item__icon fa fa-phone"></i>
-        <div class="flow-notes__item__content">
-          <h5 [ngClass]="{'active' : selectedIndex == -1}">Current Call</h5>
-          <time [dateTime]="" [ngClass]="{'active' : selectedIndex == -1}">Now</time>
-        </div>
-      </div>
-      <ng-container *ngIf="!dataLoading">
-        <div *ngFor="let note of notes$ | async; let i = index" class="flow-notes__item"
-             [ngClass]="{'active' : selectedIndex == i}" (click)="loadNotesInView(note, i)">
-          <i class="flow-notes__item__icon fa"
-             [ngClass]="{'fa-phone' : note.noteFor == 'call', 'fa-calendar' : note.noteFor == 'event' }"></i>
+<div style="width: 775px; position:relative;">
+  <div class="flow-notes">
+    <div class="flow-notes__sidebar">
+      <div class="flow-notes__sidebar__title">Notes</div>
+      <div class="flow-notes__sidebar__items">
+        <div class="flow-notes__item" [ngClass]="{'active' : selectedIndex == -1}" (click)="loadNotesInView({}, -1)">
+          <i class="flow-notes__item__icon fa fa-phone"></i>
           <div class="flow-notes__item__content">
-            <h5 *ngIf="note.noteFor == 'call'"
-                [ngClass]="{'active' : selectedIndex == i}">{{note.direction | titlecase}} Call</h5>
-            <h5 *ngIf="note.noteFor == 'event'" [ngClass]="{'active' : selectedIndex == i}">{{note.type}}</h5>
-            <time [dateTime]="note.createdAt"
-                  [ngClass]="{'active' : selectedIndex == i}">{{ note.createdAt | date:'medium'}}</time>
+            <h5 [ngClass]="{'active' : selectedIndex == -1}">Current Call</h5>
+            <time [dateTime]="" [ngClass]="{'active' : selectedIndex == -1}">Now</time>
           </div>
         </div>
-      </ng-container>
+        <fiiz-loading *ngIf="dataLoading" type="ring" ></fiiz-loading>
+        <ng-container *ngIf="!dataLoading">
+          <ng-container *ngFor="let note of notes$ | async; let i = index">
+            <div *ngIf="note.callId !== currentCallId" class="flow-notes__item" [ngClass]="{'active' : selectedIndex == i}" (click)="loadNotesInView(note, i)">              
+              <i class="flow-notes__item__icon fa"
+                [ngClass]="{'fa-phone' : note.noteFor == 'call', 'fa-calendar' : note.noteFor == 'event' }"></i>
+              <div class="flow-notes__item__content">
+                <h5 *ngIf="note.noteFor == 'call'"
+                    [ngClass]="{'active' : selectedIndex == i}">{{note.direction | titlecase}} Call</h5>
+                <h5 *ngIf="note.noteFor == 'event'" [ngClass]="{'active' : selectedIndex == i}">{{note.type}}</h5>
+                <time [dateTime]="note.createdAt"
+                      [ngClass]="{'active' : selectedIndex == i}">{{ note.createdAt | date:'medium'}}</time>
+              </div>              
+            </div>
+          </ng-container>          
+        </ng-container>
+      </div>
     </div>
-  </div>
-  <div class="flow_notes__content">
-    <fiiz-loading *ngIf="editorLoading"></fiiz-loading>
-    <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
-    <editor
-      #tinymce
-      apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
-      outputFormat="html"
-      id="editor"
-      [init]="tinymceOptions"
-      (onInit)="afterEditorInit($event)"
-    ></editor>
+    <fiiz-loading *ngIf="editorLoading" class="loading"></fiiz-loading>
+    <div class="flow-notes__content">      
+      <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
+      <editor
+        #tinymce
+        apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
+        outputFormat="html"
+        id="editor"
+        [init]="tinymceOptions"
+        (onInit)="afterEditorInit($event)"
+      ></editor>
+    </div>
   </div>
 </div>

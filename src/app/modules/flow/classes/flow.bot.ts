@@ -180,7 +180,8 @@ export class FlowBot {
                 break;
             }
           }
-
+          // Update the note record
+          flowService.updateNote(await flowService.getNotesFromCache());
           this.store.dispatch(flowActions.UpdateFlowAction({status: 'complete'}));
 
         } catch (e) {
