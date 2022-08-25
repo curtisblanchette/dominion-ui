@@ -37,6 +37,7 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
   public saveError: Error | null = null;
   public editorLoading:boolean = true;
   public dataLoading:boolean = true;
+  public currentCallId:string | undefined;
 
   public tinymceOptions: Object = {
     branding: false,
@@ -65,6 +66,7 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
 
     public async ngOnInit() {
       await this.getHistoricNotes();
+      this.currentCallId = this.flowService.callId;
     }
 
     public async ngAfterViewInit() {
@@ -76,12 +78,7 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
           }),
           debounceTime(750),
           distinctUntilChanged(),
-          mergeMap((html) => (this.isSaving = true) && this.saveNotes()),
-          tap((res) => {
-            if(res instanceof HttpErrorResponse){
-              this.saveError = res;
-            }
-          }),
+          mergeMap(async (html) => (this.isSaving = true) && this.saveNotes()),
           delay(200),
           map(() => {
             this.isSaving = false;
@@ -117,10 +114,10 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
         }
     }
 
-    public loadNotesInView( object:any, index:number ){
+    public async loadNotesInView( object:any, index:number ){
         this.selectedIndex = index;
         if( index == -1 ){
-            // TODO : load data from store to display ongoing call ntoes
+            this.tinymce.editor.setContent( await this.flowService.getNotesFromCache() );
             this.tinymce.editor.readonly = false;
             this.tinymce.setDisabledState(false);
             this.disableSave.emit(false);
@@ -132,13 +129,14 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
         }
     }
 
-    public saveNotes(): Promise<any | void> {
-      return firstValueFrom( this.flowService.updateNote(this.tinymce.editor.getContent()) );
+    public saveNotes(): void {
+      return this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
     }
 
-    public afterEditorInit( event:any ){
+    public async afterEditorInit( event:any ){
       if( event ){
         this.editorLoading = false;
+        this.tinymce.editor.setContent( await this.flowService.getNotesFromCache() );
         this.tinymce.editor.dom.addClass(document.getElementById('editor') as HTMLElement, 'shadow');
       }
     }

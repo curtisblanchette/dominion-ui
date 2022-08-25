@@ -179,8 +179,16 @@ export class FlowService {
   }
 
   public updateNote(content: string): Observable<ICallNote> {
+    return this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, { content }).pipe(take(1)).subscribe() as unknown as Observable<ICallNote>;
+  }
 
-   return this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, {content}) as Observable<ICallNote>;
+  public updateNotesToCache( notes:string ){
+    this.store.dispatch(flowActions.addNotesAction({notes}));
+  }
+
+  public async getNotesFromCache(){
+    const notes = await firstValueFrom(this.store.select(fromFlow.selectNotes));
+    return notes ? notes : '';
   }
 
   public async goTo(id: string): Promise<void> {
