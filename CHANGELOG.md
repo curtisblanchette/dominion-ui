@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.15.16 (2022-08-26)
+
+
+### Bug Fixes
+
+* **Flow:** fix misaligned timeline items when truncated. ([f3f7a7b](https://github.com/4iiz/dominion-ui/commit/f3f7a7b4d147d098b3d5cadc66d6fa7222832697))
+
 ### 1.15.15 (2022-08-26)
 
 ### 1.15.14 (2022-08-26)
