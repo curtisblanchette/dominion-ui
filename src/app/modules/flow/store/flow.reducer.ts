@@ -252,8 +252,6 @@ export const selectIsLastStep = createSelector(selectCurrentStepId, selectLastSt
   return currentStepId === lastStepId;
 });
 
-// export const selectStepHistory = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
-
 export const selectVariableByKey = (key: string) => createSelector(selectAllVariables, (variables: { [key: string]: any }) => {
   return variables[key];
 });

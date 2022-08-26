@@ -71,6 +71,21 @@ export class FlowBot {
                 const isCreate = step.state.options.state === 'create';
                 const operation = isCreate ? 'add' : 'update';
 
+                // some FlowTextComponents need to perform updates on entities
+                // we'll capture the extra entity payloads now
+                const additions = timeline
+                  .filter((step: FlowStep) => step.component === "FlowTextComponent" && step.state.data[step.state.module])
+                  .map((x: FlowStep) => x.state.data[step.state.module])
+                  .reduce((a: any, b: any) => {
+                    return { ...a, ...b };
+                  }, {});
+
+                if(Object.keys(additions).length) {
+                  payload = {...payload, ...additions};
+                }
+
+                console.log(additions);
+
                 const botAction = new BotAction({
                   name: operation + '-' + step.state.module,
                   icon: 'fa-user',
@@ -207,41 +222,6 @@ export class FlowBot {
                 break;
               case 'FlowTextComponent': {
 
-                if(step.state.module) {
-                  // it has to have a module set.
-                  const service = this.services[`${step.state.module}Service`];
-                  const botAction = new BotAction({
-                    name: 'update-' + step.state.module,
-                    icon: step.nodeIcon,
-                    module: step.state.module,
-                    status: BotActionStatus.INITIAL
-                  });
-
-                  this.botActions.push(botAction);
-
-                  let filter: any = await firstValueFrom(service.filter$);
-                  if (filter['id']) {
-                    payload['id'] = filter['id'];
-                  }
-
-                  try {
-                    const response = await service.update(payload).toPromise();
-                    botAction.status = BotActionStatus.SUCCESS;
-
-                    // the id's we get back should be saved to the process.
-                    flowService.updateStep(step.id, {state: {data: {id: response?.id}}}, 'merge');
-
-                    // set the entityCollection filter to target this record going forward
-                    service.setFilter({id: response?.id});
-
-                    // notify the client
-                    botAction.message = `${this.getModuleName(step.state.module)} Updated.`;
-                  } catch(e: any) {
-                    botAction.status = BotActionStatus.FAILURE;
-                    botAction.errorMessage = e.message;
-                  }
-
-                }
 
 
               }
