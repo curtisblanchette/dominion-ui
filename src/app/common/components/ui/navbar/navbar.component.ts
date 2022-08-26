@@ -11,6 +11,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 const mobileThreshold = 1024;
 
+export interface NavbarItem { name: string; path?: string; roles: string[], children?: any[], open?: boolean; }[]
+
 @UntilDestroy()
 @Component({
   selector: 'app-navbar',
@@ -23,7 +25,7 @@ export class NavbarComponent implements AfterViewInit {
   public actingFor$: Observable<any>;
   public _isMobile: boolean;
 
-  public menu: { name: string; path: string; roles: string[], children?: any[] }[] = [
+  public menu: NavbarItem[] = [
     {
       name: 'Dashboard',
       path: 'dashboard',
@@ -31,12 +33,16 @@ export class NavbarComponent implements AfterViewInit {
     },
     {
       name: 'Reports',
-      path: 'reports',
       roles: ['system', 'admin', 'owner', 'consultant', 'agent'],
       children: [
         {
           name: 'Total Pipeline',
           path: 'reports/total-pipeline',
+          roles: ['system', 'admin', 'owner', 'consultant', 'agent'],
+        },
+        {
+          name: 'Team',
+          path: 'reports/team',
           roles: ['system', 'admin', 'owner', 'consultant', 'agent'],
         }
       ]
@@ -59,7 +65,7 @@ export class NavbarComponent implements AfterViewInit {
     {
       name: 'Settings',
       path: 'settings',
-      roles: ['system', 'admin', 'owner']
+      roles: ['system', 'admin', 'owner'],
     },
     {
       name: 'System',
@@ -74,6 +80,7 @@ export class NavbarComponent implements AfterViewInit {
     this.isMobile = window.innerWidth < mobileThreshold;
     this.menuOpen = false;
   }
+
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
   @ViewChildren('link') links: QueryList<ElementRef>;
 
@@ -123,5 +130,7 @@ export class NavbarComponent implements AfterViewInit {
       this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
     }
   }
+
+
 
 }

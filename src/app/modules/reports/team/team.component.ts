@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { firstValueFrom, map, Observable, take } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import * as fromReports from './store/reports.reducer';
-import * as reportsActions from './store/reports.actions';
-import { ViewStatus } from './store/reports.reducer';
+import * as fromReports from '../store/reports.reducer';
+import * as reportsActions from '../store/reports.actions';
+import { ViewStatus } from '../store/reports.reducer';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import * as dayjs from 'dayjs';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-reports',
-  templateUrl: './reports.component.html',
-  styleUrls: ['../../../assets/css/_container.scss','./reports.component.scss']
+  selector: 'team-report',
+  templateUrl: './team.component.html',
+  styleUrls: ['../../../../assets/css/_container.scss','./team.component.scss']
 })
-export class ReportsComponent implements OnInit {
+export class TeamReportComponent implements OnInit {
 
   public today: any = dayjs().format();
   public status$: Observable<ViewStatus>;

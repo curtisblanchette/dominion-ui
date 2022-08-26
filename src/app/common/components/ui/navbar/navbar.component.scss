@@ -12,6 +12,38 @@
   @include elevate(2);
 }
 
+.nav-dropdown-menu {
+  position: absolute;
+  flex-direction: column;
+  width: max-content;
+  background: var(--primary-shade9);
+  box-shadow: 0 15px 15px 5px rgb(0 0 0 / 25%);
+  border-radius: 0 0 var(--button-border-radius) var(--button-border-radius);
+  display: none;
+
+  &.open {
+    display: flex;
+  }
+
+  button {
+    cursor: pointer;
+    text-align: left;
+    line-height: 36px;
+
+    &:hover {
+      background: rgba(0,0,0,.15);
+    }
+
+    &:first-child {
+      border-radius: var(--button-border-radius) var(--button-border-radius) 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0  var(--button-border-radius) var(--button-border-radius);
+    }
+  }
+}
+
 header {
   display: flex;
   justify-content: space-between;
@@ -75,7 +107,8 @@ header {
       left: 0;
     }
 
-    & > button {
+    & > button,
+    & > div button, {
       cursor: pointer;
       background: none;
       border: none;

@@ -8,7 +8,23 @@
 
   <nav>
     <ng-container *ngIf="!isMobile">
-      <button routerLinkActive="active" [routerLink]="item.path" #link *ngFor="let item of menu">{{item.name}}</button>
+
+      <ng-container *ngFor="let item of menu">
+
+        <button routerLinkActive="active" [routerLink]="item.path" #link *ngIf="!item.children">{{item.name}}</button>
+
+        <ng-container *ngIf="item.children?.length > 0">
+          <div #link style="position: relative;" routerLinkActive="active"  >
+            <button [routerLink]="item.path" (click)="item.open = !item.open">{{item.name}}</button>
+            <div class="nav-dropdown-menu" [ngClass]="{ 'open': item.open }">
+              <button class="full-width" [routerLink]="child.path" (click)="item.open = false" *ngFor="let child of item.children">{{child.name}}</button>
+            </div>
+          </div>
+
+        </ng-container>
+
+      </ng-container>
+
       <div class="active-underline" #activeUnderline></div>
     </ng-container>
 
