@@ -184,6 +184,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           await this.dateValidation();
         }
       });
+    } else {
+      await this.dateValidation();
     }
 
   }
@@ -201,13 +203,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public async dateValidation(): Promise<void> {
     if (this.pickers) {
 
-      let ids: Array<string> = [];
-
-      for (const picker of this.pickers) {
-        ids.push(picker.id);
-      }
-
-      if (this.module == ModuleTypes.EVENT && ids.includes('startTime') && ids.includes('endTime')) {
+      if (this.module == ModuleTypes.EVENT) {
 
         if (this.options.state == 'edit') {
           if (this.form.get('startTime')?.value) {
@@ -232,7 +228,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
       }
 
-      if (this.module == ModuleTypes.CALL && ids.includes('startTime')) {
+      if (this.module == ModuleTypes.CALL) {
         this.configuration.startTime.min = null;
       }
 
@@ -399,7 +395,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public getDropdownObjects(data: any) {
     if (data && data.leadSource) {
       const dropdown = this.dropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
-      dropdown?.setTheValue(data.leadSource);
+      dropdown?.setTheValue({id : data.leadSource.id, label :data.leadSource.name});
     }
   }
 

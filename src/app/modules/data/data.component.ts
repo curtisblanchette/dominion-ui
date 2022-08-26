@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataState } from './store/data.reducer';
 import { Store } from '@ngrx/store';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FiizListComponent, IListOptions } from '../../common/components/ui/list/list.component';
 import { FiizDataComponent } from '../../common/components/ui/data/data.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { models } from '../../common/models';
 import { NavigationService } from '../../common/navigation.service';
+import { environment } from '../../../environments/environment';
+import { firstValueFrom } from 'rxjs';
+import { uriOverrides } from '../../data/entity-metadata';
 
 @UntilDestroy()
 @Component({
@@ -22,7 +26,8 @@ export class DataComponent implements OnInit {
   constructor(
     private store: Store<DataState>,
     private router: Router,
-    private navigation: NavigationService
+    private navigation: NavigationService,
+    private http: HttpClient
   ) {
     if (this.router.routerState.snapshot.url.indexOf('(aux:') !== -1) {
       this.router.navigate(['/data/list']);
@@ -49,7 +54,7 @@ export class DataComponent implements OnInit {
     // if it's a list, subscribe to the `values` emitter
     if(componentRef instanceof FiizListComponent) {
       this.contentClass = 'list';
-      componentRef.values.pipe(untilDestroyed(this)).subscribe(res => {
+      componentRef.onEdit.pipe(untilDestroyed(this)).subscribe(res => {
         if( res.record && res.record.id ){
           this.router.navigate([`/data/edit/${res.record.id}`, { outlets: {'aux': [res.module]} }], {
             state: {
@@ -78,6 +83,29 @@ export class DataComponent implements OnInit {
           }
         });
       });
+
+      componentRef.onDelete.pipe(untilDestroyed(this)).subscribe(res => {
+        if( res.record && res.record.id ){
+          const url = `${environment.dominion_api_url}/${uriOverrides[res.module]}/${res.record.id}`;
+          firstValueFrom(this.http.delete(url)).then( (response) => {
+            if( response instanceof HttpErrorResponse ){
+              
+            } else {
+              componentRef.data$.forEach((items) => {
+                const index = items.findIndex( item => item?.id === res.record.id );
+                if( index !== -1 ){
+                  delete items[index];
+                  componentRef.selected = null;
+                  componentRef._dynamicCollectionService.removeOneFromCache(res.record.id);
+                }
+              });
+            }
+          }).catch( (err) => {
+            console.error(err);
+          });
+        }
+      });
+
     }
 
     if(componentRef instanceof FiizDataComponent) {

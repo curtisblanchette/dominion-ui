@@ -7,7 +7,10 @@
       *ngIf="options.editable"
       [items]="actionItems$"
       position="bottom-right"
-      title="Actions"></fiiz-dropdown>
+      title="Actions"
+      (onClick)="getActionItemValue($event)"
+    ></fiiz-dropdown>
+    <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()">Edit</fiiz-button>
     <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
       New {{moduleName}}</fiiz-button>
   </div>
@@ -90,33 +93,34 @@
       {{column.label}}
     </div>
   </div>
-  <div class="flex-table__row active"
+  <div class="flex-table__row"
        [ngClass]="{'active' : selected?.id === item?.id}"
        tabindex="0" #row
        (mousedown)="onClick($event, item)"
        (focusin)="onFocusIn($event, item)"
        (focusout)="onFocusOut($event)"
        *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async } ">
-    <div class="flex-table__cell" style="justify-content:space-around;">
-      <input name="recordId" id="{{item.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
+    <div *ngIf="item?.id" class="flex-table__cell" style="justify-content:space-around;">
+      <input name="recordId" id="{{item?.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">
       <span class="customRadio"></span>
     </div>
-    <div class="flex-table__cell {{column.id}}" *ngFor="let column of columns">
-      <ng-container [ngSwitch]="(item[column.id] | typeOf)">
-        <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date:'MMM d, y, h:mm a' }}</ng-container>
-        <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
-        <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
-        <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
-        <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
-        <ng-container *ngSwitchCase="'address'">{{item[column.id][0].fullName}}</ng-container>
-        <ng-container *ngSwitchCase="'array'">
-          <ng-container *ngFor="let item of item[column.id]">
-            {{item.firstName}} {{item.lastName}}
+    <ng-container *ngIf="item?.id">
+      <div class="flex-table__cell {{column.id}}" *ngFor="let column of columns">
+        <ng-container [ngSwitch]="(item[column.id] | typeOf)">
+          <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date:'MMM d, y, h:mm a' }}</ng-container>
+          <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
+          <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
+          <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
+          <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
+          <ng-container *ngSwitchCase="'address'">{{item[column.id][0].fullName}}</ng-container>
+          <ng-container *ngSwitchCase="'array'">
+            <ng-container *ngFor="let item of item[column.id]">
+              {{item.firstName}} {{item.lastName}}
+            </ng-container>
           </ng-container>
         </ng-container>
-      </ng-container>
-    </div>
-
+      </div>
+    </ng-container>
   </div>
 
 </ng-template>
