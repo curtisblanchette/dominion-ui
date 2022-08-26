@@ -23,7 +23,8 @@ export const ActionTypes = {
 
   CLEAR: '[Flow] Clear Store',
 
-  ADD_MEDIATOR_ACTION: '[Flow] Add Mediator Action'
+  ADD_MEDIATOR_ACTION: '[Flow] Add Mediator Action',
+  ADD_NOTES: '[Flow] Add Notes'
 };
 export const AddStepAction = createAction(
   ActionTypes.ADD_STEP,
@@ -76,3 +77,7 @@ export const ClearAction = createAction(
   ActionTypes.CLEAR
 )
 
+export const addNotesAction = createAction(
+  ActionTypes.ADD_NOTES,
+  props<{ notes:string }>()
+);

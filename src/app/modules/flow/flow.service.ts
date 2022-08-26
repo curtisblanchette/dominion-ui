@@ -1,7 +1,8 @@
-import { FlowRouter, FlowStep, FlowHostDirective, NoStepFoundError, FlowListComponent, FlowStepClassMap, FlowTextComponent } from './index';
+import { FlowHostDirective, FlowListComponent, FlowRouter, FlowStep, FlowStepClassMap, FlowTextComponent, NoStepFoundError } from './index';
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
+import { FlowStatus } from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom, lastValueFrom, Observable, take } from 'rxjs';
@@ -116,7 +117,7 @@ export class FlowService {
     if (resume) return this.resume();
 
     // we're starting a new process
-    this.store.dispatch(flowActions.UpdateFlowAction({ processId: uuidv4(), status: 'default' }));
+    this.store.dispatch(flowActions.UpdateFlowAction({ processId: uuidv4(), status: FlowStatus.INITIAL }));
     await this.builder.build();
     const step: FlowStep = this.builder.process.steps[0];
 
@@ -179,8 +180,16 @@ export class FlowService {
   }
 
   public updateNote(content: string): Observable<ICallNote> {
+    return this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, { content }).pipe(take(1)).subscribe() as unknown as Observable<ICallNote>;
+  }
 
-   return this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, {content}) as Observable<ICallNote>;
+  public updateNotesToCache( notes:string ){
+    this.store.dispatch(flowActions.addNotesAction({notes}));
+  }
+
+  public async getNotesFromCache(){
+    const notes = await firstValueFrom(this.store.select(fromFlow.selectNotes));
+    return notes ? notes : '';
   }
 
   public async goTo(id: string): Promise<void> {

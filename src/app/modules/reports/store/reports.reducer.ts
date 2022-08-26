@@ -1,25 +1,94 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import * as reportsActions from './reports.actions';
 
-export interface ReportsState {
-  timeframe: {
-    startDate: string;
-    endDate: string;
+import * as dayjs from 'dayjs';
+import { FlowLink, FlowRouter, FlowStep } from '../../flow';
+import { get, merge } from 'lodash';
+
+const getInitialStateByKey = (key: string): any | (FlowStep | FlowRouter | FlowLink)[] | undefined => {
+  let state = localStorage.getItem('state') || '';
+  if (state) {
+    // Lodash _.get enables dot.notation objects queries
+    const value = get(state, key);
+    if (value) {
+      return value;
+    }
   }
 }
 
+export interface ReportsState {
+  dateRange: {
+    startDate: string;
+    endDate: string;
+  },
+  totalPipeline: ReportData | undefined,
+  team: ReportData | undefined,
+}
+
+export enum ViewStatus {
+  INITIAL = 'initial',
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
+export interface ReportData {
+  data: any | undefined;
+  status: ViewStatus | undefined,
+  errorMessage: string | undefined,
+  cachedAt: Date | string | undefined
+}
+
 export const initialState: ReportsState = {
-  timeframe: {
-    startDate: '',
-    endDate: ''
-  }
+  dateRange: {
+    startDate: dayjs().subtract(7, 'days').format('YYYY-MM-DD'),
+    endDate: dayjs().format('YYYY-MM-DD')
+  },
+  totalPipeline: getInitialStateByKey('reports.totalPipeline') || { data: undefined, status: ViewStatus.INITIAL, errorMessage: undefined, cachedAt: undefined},
+  team: getInitialStateByKey('reports.team') || { data: undefined, status: ViewStatus.INITIAL, errorMessage: undefined, cachedAt: undefined},
 };
 
 export const reducer = createReducer(
   initialState,
-  on(reportsActions.SetTimeframeAction, (state, {startDate, endDate}) => ({ ...state, timeframe: { startDate, endDate }}))
+  on(reportsActions.SetDateRangeAction, (state, {startDate, endDate}) => {
+    let dateRange: any = {};
+    if(startDate) {
+      dateRange['startDate'] = startDate;
+    }
+
+    if(endDate) {
+      dateRange['endDate'] = endDate;
+    }
+
+    return {...state, dateRange: { ...state.dateRange, ...dateRange} };
+  }),
+  on(reportsActions.FetchTotalPipeline, (state: any) => {
+    return { ...state, totalPipeline: merge({...state.totalPipeline}, { status: ViewStatus.LOADING } )};
+  }),
+  on(reportsActions.FetchTotalPipelineSuccess, (state, {data}) => ({...state, totalPipeline: merge({...data}, { cachedAt: dayjs().format(), status: ViewStatus.SUCCESS } )})),
+  on(reportsActions.FetchTotalPipelineError, (state, {error}) => ({...state, totalPipeline: {...state.totalPipeline, data: undefined, errorMessage: error.message, cachedAt: undefined, status: ViewStatus.FAILURE }})),
+  on(reportsActions.ClearAction, (state) => ({
+    ...state,
+    totalPipeline: {
+      status: ViewStatus.INITIAL,
+      data: undefined,
+      errorMessage: undefined,
+      cachedAt: undefined
+    },
+    team: {
+      status: ViewStatus.INITIAL,
+      data: undefined,
+      errorMessage: undefined,
+      cachedAt: undefined
+    }
+  }))
 );
 
 export const selectReports = createFeatureSelector<ReportsState>('reports');
+
+export const getDateRange = createSelector(selectReports, (reports) => reports.dateRange)
+export const getTotalPipeline = createSelector(selectReports, (reports) => {
+  return reports.totalPipeline;
+});
 
 

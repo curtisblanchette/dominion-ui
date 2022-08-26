@@ -1,36 +1,36 @@
 <!--<h3>{{data.title}}</h3>-->
-<form [formGroup]="form" (ngSubmit)="save()">
-
-  <ng-container *ngFor="let control of controlData">
-    <fiiz-input #inputList *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
-    <fiiz-textarea *ngIf="control.type === 'textarea'" [formControlName]="control.key" [id]="control.key" [label]="control.key" [placeholder]="control.label" [height]="'100px'" ></fiiz-textarea>
-    <fiiz-date-picker
-      *ngIf="['calendar', 'timer', 'both'].includes(control.type)"
-      #picker
-      [pickerType]="control.type"
-      [id]="control.key"
-      [label]="control.label"
-      [formControlName]="control.key"
-      [min]="configuration[control.key].min"
-      [max]="configuration[control.key].max"
-      [placeholder]="control.label"
-    ></fiiz-date-picker>
-    <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [options]="{remote: true, query : {}}" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
-    <fiiz-dropdown
-      *ngIf="control.type === 'dropdown-search'"
-      #dropdown
-      (getValues)="getDropdownObjects($event)"
-      type="search"
-      tabindex="-1"
-      [formControlName]="control.key"
-      [id]="control.key"
-      [label]="control.label"
-      [title]="control.label"
-      [module]="control.service"
-      [disabled]="control.key === 'leadSourceId' && control.module !== ModuleTypes.CAMPAIGN"
-    >{{control.label}}</fiiz-dropdown>
-  </ng-container>
-
+<form [formGroup]="form" (ngSubmit)="save()" >
+  <fiiz-grid [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : false}">
+    <ng-container *ngFor="let control of controlData">
+      <fiiz-input #inputList *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
+      <fiiz-textarea class="span-3" *ngIf="control.type === 'textarea'" [formControlName]="control.key" [id]="control.key" [label]="control.key" [placeholder]="control.label" [height]="'100px'" ></fiiz-textarea>
+      <fiiz-date-picker
+        *ngIf="['calendar', 'timer', 'both'].includes(control.type)"
+        #picker
+        [pickerType]="control.type"
+        [id]="control.key"
+        [label]="control.label"
+        [formControlName]="control.key"
+        [min]="configuration[control.key].min"
+        [max]="configuration[control.key].max"
+        [placeholder]="control.label"
+      ></fiiz-date-picker>
+      <fiiz-select *ngIf="control.type === 'dropdown'" #dropdown [module]="control.service" [options]="{remote: true, query : {}}" [id]="control.key" [label]="control.label" [formControlName]="control.key"></fiiz-select>
+      <fiiz-dropdown
+        *ngIf="control.type === 'dropdown-search'"
+        #dropdown
+        (getValues)="getDropdownObjects($event)"
+        type="search"
+        tabindex="-1"
+        [formControlName]="control.key"
+        [id]="control.key"
+        [label]="control.label"
+        [title]="control.label"
+        [module]="control.service"
+        [disabled]="control.key === 'leadSourceId' && control.module !== ModuleTypes.CAMPAIGN"
+      >{{control.label}}</fiiz-dropdown>
+    </ng-container>
+  </fiiz-grid>
 
   <div class="form-controls" *ngIf="options.controls">
     <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>

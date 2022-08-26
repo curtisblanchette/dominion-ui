@@ -144,7 +144,7 @@ export class FlowEffects {
             const afterFn = eval(code);
             const updates = await afterFn(this.flowService, variables, {...cloneDeep(currentStep)});
             if(updates) {
-              this.flowService.updateStep(step.id, updates);
+              this.flowService.updateStep(currentStep.id, updates);
             }
           }
 

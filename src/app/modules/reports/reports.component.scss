@@ -1,13 +1,17 @@
 @import '~src/assets/css/variables';
 @import '~src/assets/css/mixins';
 
+.report-filters {
+  display: flex;
+  gap: 1em;
+}
 :host {
   height: var(--full-height-minus-navbar);
 
   fiiz-grid > * {
     text-align: right;
   }
-  fiiz-grid > *:nth-child(10n+1) {
+  fiiz-grid > *:nth-child(11n+1) {
     text-align: left;
   }
 }
@@ -106,4 +110,9 @@
 
 .grid-3 {
   grid-template-columns: 1fr 1fr 1fr;
+}
+
+.table-heading {
+  color: var(--green1);
+  line-height: 36px;
 }

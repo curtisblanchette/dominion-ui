@@ -7,6 +7,7 @@ import { firstValueFrom, map, mergeMap, tap, throwError, withLatestFrom } from '
 import * as appActions from '../../../store/app.actions';
 import * as loginActions from './login.actions';
 import * as flowActions from '../../../modules/flow/store/flow.actions';
+import * as reportsActions from '../../../modules/reports/store/reports.actions';
 import * as systemActions from '../../system/store/system.actions';
 import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
@@ -90,6 +91,7 @@ export class LoginEffects {
           this.store.dispatch(flowActions.ClearAction());
           this.store.dispatch(appActions.ClearAction());
           this.store.dispatch(systemActions.ClearAction());
+          this.store.dispatch(reportsActions.ClearAction());
         })
       ),
     { dispatch: false }

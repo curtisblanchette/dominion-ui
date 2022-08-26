@@ -57,3 +57,15 @@
   background: var(--slate) !important;
   font-weight: 600 !important;
 }
+
+.owl-dt-container-info {
+  padding: 0px !important;
+}
+
+.owl-dt-container-info .owl-dt-container-range {
+  padding: 0 0.5em;
+}
+
+.owl-dt-container-info .owl-dt-container-info-active {
+  background: var(--slate);
+}

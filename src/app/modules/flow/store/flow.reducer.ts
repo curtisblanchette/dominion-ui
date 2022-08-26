@@ -3,6 +3,13 @@ import { FlowLink, FlowRouter, FlowStep } from '../index';
 import { cloneDeep, get, merge } from 'lodash';
 import * as flowActions from './flow.actions';
 
+export enum FlowStatus {
+  INITIAL = 'initial',
+  PENDING = 'pending',
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
 export interface FlowState {
   processId: string | undefined;
   steps: FlowStep[] | any;
@@ -11,7 +18,8 @@ export interface FlowState {
   currentStepId: string | undefined;
   firstStepId: string | undefined;
   lastStepId: string | undefined;
-  status: 'default' | 'processing' | 'complete';
+  status: FlowStatus;
+  notes: string | undefined;
 }
 
 const getInitialStateByKey = (key: string): any | (FlowStep | FlowRouter | FlowLink)[] | undefined => {
@@ -52,7 +60,8 @@ export const initialState: FlowState = {
   currentStepId: getInitialStateByKey('flow.currentStepId') || undefined,
   firstStepId: undefined,
   lastStepId: undefined,
-  status: getInitialStateByKey('flow.status') || 'default'
+  status: getInitialStateByKey('flow.status') || 'default',
+  notes: undefined
 };
 
 export const reducer = createReducer(
@@ -120,6 +129,7 @@ export const reducer = createReducer(
     links: [],
     processId: undefined,
     currentStepId: undefined,
+    notes: undefined
   })),
 
   on(flowActions.NextStepAction, (state, {stepId}) => ({...state})),
@@ -135,6 +145,11 @@ export const reducer = createReducer(
     routers: [],
     links: [],
     currentStepId: undefined
+  })),
+
+  on(flowActions.addNotesAction, (state, {notes}) => ({
+    ...state,
+    notes: notes
   }))
 );
 
@@ -173,7 +188,7 @@ export const selectFirstStepId   = createSelector(selectFlow, (flow: FlowState) 
 export const selectLastStepId    = createSelector(selectFlow, (flow: FlowState) => flow.lastStepId);
 export const selectCurrentStepId = createSelector(selectFlow, (flow: FlowState) => flow.currentStepId);
 export const selectAllVariables  = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.steps));
-
+export const selectNotes         = createSelector(selectFlow, (flow: FlowState) => flow.notes);
 
 
 export const selectSteps   = createSelector(selectFlow, (flow: FlowState) => flow.steps.map((step: any) => new FlowStep(step)));
@@ -236,8 +251,6 @@ export const selectIsValid = createSelector(selectSteps, selectCurrentStepId, (s
 export const selectIsLastStep = createSelector(selectCurrentStepId, selectLastStepId, (currentStepId, lastStepId) => {
   return currentStepId === lastStepId;
 });
-
-// export const selectStepHistory = createSelector(selectFlow, (flow: FlowState) => flow.stepHistory);
 
 export const selectVariableByKey = (key: string) => createSelector(selectAllVariables, (variables: { [key: string]: any }) => {
   return variables[key];

@@ -115,8 +115,8 @@ import { FiizGridColsDirective } from './grid/cols.directive';
     FiizListComponent,
     FiizDataComponent,
     FiizDialogComponent,
-    FiizGridColsDirective,
-    FiizGridComponent
+    FiizGridComponent,
+    FiizGridColsDirective
   ]
 })
 export class FiizUIModule {
