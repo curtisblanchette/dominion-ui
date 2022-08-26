@@ -32,21 +32,24 @@
               </div>
             </div>
           </div>
+          <div style="align-self: center;">Or</div>
+          <div>
+            <div class="flex_main_wrapper__slots__day" style="text-align: center;">Custom Time</div>
+            <fiiz-date-picker
+              #dateRangePicker
+              id="date_range"
+              pickerType="both"
+              placeholder="Date Time range"
+              selectMode="range"
+              (change)="getCustomSlot($event)"
+              label="Custom Time Slot"
+              [min]="minDate"
+              [stepMinute]="appointmentSettings['duration'].value || 30"
+            ></fiiz-date-picker>
+          </div>
         </div>
 
-        <div>
-          <fiiz-date-picker
-            #dateRangePicker
-            id="date_range"
-            pickerType="both"
-            placeholder="Date Time range"
-            selectMode="range"
-            (change)="getCustomSlot($event)"
-            label="Custom Time Slot"
-            [min]="minDate"
-            [stepMinute]="appointmentSettings['duration'].value || 30"
-          ></fiiz-date-picker>
-        </div>
+
 <!--        <div class="info">-->
 <!--          "May I have a good email address for you and I will send you a confirmation of your appointment, it will also-->
 <!--          include driving directions to our office."-->
