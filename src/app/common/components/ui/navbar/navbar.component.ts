@@ -80,6 +80,15 @@ export class NavbarComponent implements AfterViewInit {
     this.isMobile = window.innerWidth < mobileThreshold;
     this.menuOpen = false;
   }
+  @HostListener('click', ['$event'])
+  clickInside($event: any) {
+    $event.stopPropagation();
+  }
+
+  @HostListener('document:click')
+  clickOutside() {
+    this.menu.map(x =>  x.open = false);
+  }
 
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
   @ViewChildren('link') links: QueryList<ElementRef>;
