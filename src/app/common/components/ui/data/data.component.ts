@@ -23,6 +23,7 @@ import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
 import { INestedSetting } from '../../../../store/app.effects';
 import { FiizDropDownComponent } from '../dropdown';
+import { FlowService } from '../../../../modules/flow/flow.service';
 
 export interface FiizDataComponentOptions {
   controls?: boolean;
@@ -102,7 +103,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     private http: HttpClient,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
-    router: Router
+    router: Router,
+    private flowService:FlowService
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     route.paramMap.pipe(untilDestroyed(this)).subscribe(params => {
@@ -253,12 +255,17 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   private async buildForm(fields: string[]) {
 
     let form: { [key: string]: FormControl } = {};
+    const existingPayload = this.flowService.getCurrentStepData(this.module);
 
     for (const field of fields) {
       const control = models[this.module][field];
+      let value = control.defaultValue;
+      if( existingPayload && !this.id ){
+        value = existingPayload[field];
+      }
 
       if (!['virtual', 'timestamp'].includes(control.type)) {
-        form[field] = new FormControl(control.defaultValue, control.validators);
+        form[field] = new FormControl(value, control.validators);
       }
 
     }

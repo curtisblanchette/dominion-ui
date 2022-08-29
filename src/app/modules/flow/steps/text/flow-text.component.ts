@@ -47,6 +47,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public status$: Observable<string>;
   public FlowStatus: any;
   public BotActionStatus: any;
+  public eventPayload$:Observable<any>;
 
   @ViewChild('botComment') botComment: ElementRef;
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
@@ -164,7 +165,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       break;
 
       case 'recap' : {
-
+        const apptStep = this.flowService.builder.process.steps.find( step => step.component === 'FlowAppointmentComponent' );
+        this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);
+        const newLead = await this.flowService.getVariable('new_lead');
+        if( newLead ){
+          
+        }
       }
       break;
 

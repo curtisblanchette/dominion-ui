@@ -364,5 +364,11 @@ export class FlowService {
 
     return value;
   }
+
+  public getCurrentStepData( moduleType:ModuleTypes ){
+    const currentStepId = this.builder.process.currentStepId;
+    const currentStep = this.builder.process.steps.find( step => step?.id === currentStepId );
+    return currentStep?.state.data[moduleType];
+  }
 }
 

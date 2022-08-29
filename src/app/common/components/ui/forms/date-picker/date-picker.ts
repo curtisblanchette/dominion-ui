@@ -35,7 +35,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 
 
-  value!: string | Dayjs;
+  value!: string | Dayjs | Dayjs[];
   public startEndValidation:boolean = false;
   public separator:string = '~';
 
