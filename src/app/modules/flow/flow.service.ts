@@ -341,9 +341,9 @@ export class FlowService {
     }
   }
 
-  public addVariables(data: any): void {
+  public addVariables(data: any, id?:string ): void {
     this.store.dispatch(flowActions.UpdateStepAction({
-      id: this.builder.process.currentStepId,
+      id: id || this.builder.process.currentStepId,
       changes: { variables: data },
       strategy: 'merge'
     }));

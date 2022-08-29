@@ -5,7 +5,6 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../store/app.reducer';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import * as fromFlow from '../../store/flow.reducer';
@@ -28,14 +27,12 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
   private flowStepId: string;
-  public form: FormGroup;
   public ModuleTypes: any;
   public fields: any = CallFields;
 
 
   constructor(
     private store: Store<AppState>,
-    private fb: FormBuilder,
     private router: Router,
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
@@ -59,10 +56,6 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
       }
     });
 
-    this.form = this.fb.group({
-      'objection' : new FormControl('', Validators.required)
-    });
-
   }
 
   public async onSave():Promise<any> {
@@ -72,11 +65,20 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   }
 
   public goToSetAppointment() {
-    const setAppointmentStep = this.flowService.builder.process.steps.find(step => step.nodeText === 'Set Appointment');
+    const setAppointmentStep = this.flowService.builder.process.steps.find(step => step.component === 'FlowAppointmentComponent');
     if(setAppointmentStep?.id) {
       this.flowService.goTo(setAppointmentStep.id);
     }
   }
+
+  public async endCall(){
+    const id = await this.flowService.getVariable('objectionId');
+    this.flowService.updateCall({
+      objectionId : id
+    });
+    return this.flowService.restart();
+  }
+
   public handleChange(objection: any) {
     this.flowService.updateStep(this.flowStepId, {variables: {call_objectionId: objection.id}, valid: true});
   }
@@ -84,4 +86,5 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   public override ngOnDestroy() {
     super.ngOnDestroy();
   }
+
 }

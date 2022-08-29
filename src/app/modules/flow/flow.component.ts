@@ -142,4 +142,11 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
       }
     });
   }
+
+  public goToObjections( value:any ){
+    const id = this.flowService.builder.process.steps.find( step => step.component === 'FlowObjectionComponent' )?.id as string;
+    this.flowService.addVariables({objectionId : value.id}, id);
+    this.flowService.goTo(id);
+  }
+
 }
