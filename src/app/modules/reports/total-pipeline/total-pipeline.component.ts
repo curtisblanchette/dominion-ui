@@ -32,14 +32,14 @@ export class TotalPipelineComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.status$ = this.store.select(fromReports.getTotalPipeline).pipe(map((res:any) => res.status));
-    this.in$ = this.store.select(fromReports.getTotalPipeline).pipe(map((res: any) => {
+    this.status$ = this.store.select(fromReports.selectTotalPipeline).pipe(map((res:any) => res.status));
+    this.in$ = this.store.select(fromReports.selectTotalPipeline).pipe(map((res: any) => {
       return res.in;
     }));
-    this.out$ = this.store.select(fromReports.getTotalPipeline).pipe(map((res: any) => {
+    this.out$ = this.store.select(fromReports.selectTotalPipeline).pipe(map((res: any) => {
       return res.out;
     }));
-    this.grid$ = this.store.select(fromReports.getTotalPipeline).pipe(map((res: any) => {
+    this.grid$ = this.store.select(fromReports.selectTotalPipeline).pipe(map((res: any) => {
       return res.grid;
     }));
     this.getData();
@@ -47,7 +47,7 @@ export class TotalPipelineComponent implements OnInit {
 
   private async buildForm() {
     let form: { [key: string]: FormControl } = {};
-    const dateRange = await firstValueFrom(this.store.select(fromReports.getDateRange));
+    const dateRange = await firstValueFrom(this.store.select(fromReports.selectDateRange));
     form['startDate'] = new FormControl(dateRange.startDate, Validators.required);
     form['endDate'] = new FormControl(dateRange.endDate, Validators.required);
 

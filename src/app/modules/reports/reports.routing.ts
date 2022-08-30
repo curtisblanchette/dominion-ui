@@ -5,13 +5,21 @@ import { TotalPipelineComponent } from './total-pipeline/total-pipeline.componen
 import { TeamReportComponent } from './team/team.component';
 
 const routes: Routes = [
-	{
+  {
     path: '',
     children: [
-      { path: 'total-pipeline', component: TotalPipelineComponent, pathMatch: 'full'},
-      { path: 'team', component: TeamReportComponent, pathMatch: 'full' }
+      {
+        path: 'total-pipeline',
+        component: TotalPipelineComponent,
+        pathMatch: 'full'
+      },
+      {
+        path: 'team',
+        component: TeamReportComponent,
+        pathMatch: 'full'
+      }
     ]
-  },
+  }
 
 ];
 

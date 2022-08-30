@@ -16,7 +16,7 @@
   }
 }
 
-.total-pipeline {
+.team {
 
   &__filters {
     display: grid;
@@ -64,12 +64,13 @@
         padding: 20px 0;
 
         &__title {
-          font-size: 1.4vw;
-          font-weight: 500;
           color: var(--green1);
           text-align: center;
           line-height: 1em;
           margin-bottom: 20px;
+          font-size: 12px;
+          font-weight: 500;
+          @include ellipsis();
         }
 
         &__metric {
@@ -116,3 +117,59 @@
   color: var(--green1);
   line-height: 36px;
 }
+
+.team-stats {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+
+  fiiz-card {
+    text-align: center;
+    margin-right: 20px;
+    min-width: 111px;
+    min-height: 114px;
+    margin-bottom: 20px;
+    overflow: visible!important;
+    flex: 1;
+
+    &.has-supporting-metric {
+      padding: 20px 30px !important;
+    }
+
+    // tooltip position reset
+    &:before {
+      bottom: initial;
+      transform: translate(-50%, 94px)!important;
+    }
+    &:after {
+      top: 120px;
+      left: 50%;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    .card-title {
+
+    }
+
+    .card-value {
+      font-size: 40px;
+      font-weight: 500;
+      color: var(--slate);
+      line-height: 53px;
+      position: relative;
+
+      .supporting-metric {
+        color: var(--green1);
+        font-size: 12px;
+        position: absolute;
+        bottom: -7px;
+      }
+    }
+  }
+}
+

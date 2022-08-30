@@ -20,9 +20,9 @@ export interface ReportsState {
   dateRange: {
     startDate: string;
     endDate: string;
-  },
-  totalPipeline: ReportData | undefined,
-  team: ReportData | undefined,
+  };
+  totalPipeline: ReportData | undefined;
+  team: ReportData | undefined;
 }
 
 export enum ViewStatus {
@@ -33,10 +33,10 @@ export enum ViewStatus {
 }
 
 export interface ReportData {
-  data: any | undefined;
-  status: ViewStatus | undefined,
-  errorMessage: string | undefined,
-  cachedAt: Date | string | undefined
+  data: any;
+  status: ViewStatus | undefined;
+  errorMessage?: string | undefined;
+  cachedAt: Date | string | undefined;
 }
 
 export const initialState: ReportsState = {
@@ -65,8 +65,19 @@ export const reducer = createReducer(
   on(reportsActions.FetchTotalPipeline, (state: any) => {
     return { ...state, totalPipeline: merge({...state.totalPipeline}, { status: ViewStatus.LOADING } )};
   }),
-  on(reportsActions.FetchTotalPipelineSuccess, (state, {data}) => ({...state, totalPipeline: merge({...data}, { cachedAt: dayjs().format(), status: ViewStatus.SUCCESS } )})),
+  on(reportsActions.FetchTotalPipelineSuccess, (state, {data}) => {
+    return { ...state, totalPipeline: merge({...data}, { cachedAt: dayjs().format(), status: ViewStatus.SUCCESS } )};
+  }),
   on(reportsActions.FetchTotalPipelineError, (state, {error}) => ({...state, totalPipeline: {...state.totalPipeline, data: undefined, errorMessage: error.message, cachedAt: undefined, status: ViewStatus.FAILURE }})),
+
+  on(reportsActions.FetchTeam, (state: any) => {
+    return { ...state, team: merge({...state.team}, { status: ViewStatus.LOADING } )};
+  }),
+  on(reportsActions.FetchTeamSuccess, (state, {data}) => {
+    return {...state, team: {data: data, cachedAt: dayjs().format(), status: ViewStatus.SUCCESS  } };
+  }),
+  on(reportsActions.FetchTeamError, (state, {error}) => ({...state, team: {...state.team, data: undefined, errorMessage: error.message, cachedAt: undefined, status: ViewStatus.FAILURE }})),
+
   on(reportsActions.ClearAction, (state) => ({
     ...state,
     totalPipeline: {
@@ -86,9 +97,8 @@ export const reducer = createReducer(
 
 export const selectReports = createFeatureSelector<ReportsState>('reports');
 
-export const getDateRange = createSelector(selectReports, (reports) => reports.dateRange)
-export const getTotalPipeline = createSelector(selectReports, (reports) => {
-  return reports.totalPipeline;
-});
+export const selectDateRange = createSelector(selectReports, (reports) => reports.dateRange)
+export const selectTotalPipeline = createSelector(selectReports, (reports) => reports.totalPipeline);
+export const selectTeam = createSelector(selectReports, (reports) => reports.team);
 
 
