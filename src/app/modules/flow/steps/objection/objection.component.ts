@@ -1,4 +1,4 @@
-import {  Component, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import {  Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, Renderer2 } from '@angular/core';
 import { Router } from "@angular/router";
 import { FlowService } from "../../flow.service";
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -18,7 +18,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   templateUrl: './objection.component.html',
   styleUrls: ['../_base.scss', './objection.component.scss']
 })
-export class FlowObjectionComponent extends EntityCollectionComponentBase implements OnDestroy {
+export class FlowObjectionComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
 
   @Input('data') public override data: any;
   @Input('module') public override module: any;
@@ -29,7 +29,18 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   private flowStepId: string;
   public ModuleTypes: any;
   public fields: any = CallFields;
-
+  public selectedId:number;
+  public resolution:{ [key:number] : string } = {
+    1 : 'Objection 1',
+    2 : 'Objection 2',
+    3 : 'Objection 3',
+    4 : 'Objection 4',
+    5 : 'Objection 5',
+    6 : 'Objection 6',
+    7 : 'Objection 7',
+    8 : 'Objection 8',
+    9 : 'Objection 9',
+  }
 
   constructor(
     private store: Store<AppState>,
@@ -37,7 +48,8 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
     entityCollectionServiceFactory: EntityCollectionServiceFactory,
     dataServiceFactory: DefaultDataServiceFactory,
     public flowService: FlowService,
-    public http: HttpClient
+    public http: HttpClient,
+    public renderer:Renderer2
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
 
@@ -56,6 +68,10 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
       }
     });
 
+  }
+
+  async ngOnInit() {
+    
   }
 
   public async onSave():Promise<any> {

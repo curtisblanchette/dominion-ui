@@ -1,10 +1,9 @@
 <div *ngIf="data">
   <h3 class="title">{{data.title}}</h3>
   <p>{{data.body}}</p>
-  <p class="dictation">I can hear you're going through a tough time right now. Having the right advice from a trusted professional would make all the difference, wouldn't you agree? (Wait for answer)</p>
-  <p class="dictation">We are waiving our consultation fee for you and there is no obligation for you to hire. Our only goal is to help as many people as possible, which means specifically providing you with the information you need. Now, let's get you scheduled for your free consultation appointment.</p>
-  <fiiz-button primary (click)="goToSetAppointment()">Set Appointment</fiiz-button>
-  <p class="dictation">Okay, I completely understand. I would like to say thank you for contacting us in this difficult time. We'll be sure to stay in contact with you to make sure you don't have any other questions or concerns, but please contact us in the meantime for any reason.</p>
-  <fiiz-button stroked (click)="endCall()">Object and End Call</fiiz-button>
-  <!-- <fiiz-data [module]="ModuleTypes.CALL" [data]="{id: flowService.callId}" [options]="{ state: 'edit', fields: ['objectionId'] }" formControlName="objection" label="Objection" [items]="" #dropdown (change)="handleChange($event)"></fiiz-data> -->
+  <p class="dictation" [innerText]="resolution[selectedId]"></p>
+  <div class="controls">
+    <fiiz-button primary (click)="goToSetAppointment()">Set Appointment</fiiz-button>
+    <fiiz-button stroked (click)="endCall()">Object and End Call</fiiz-button>
+  </div>
 </div>
