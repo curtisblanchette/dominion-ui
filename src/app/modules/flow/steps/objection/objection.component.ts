@@ -71,7 +71,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   }
 
   async ngOnInit() {
-    
+    this.selectedId = await this.flowService.getVariable('objectionId');
   }
 
   public async onSave():Promise<any> {
@@ -89,6 +89,8 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
 
   public async endCall(){
     const id = await this.flowService.getVariable('objectionId');
+    const stepId = this.flowService.builder.process.steps.find( step => step.component === 'FlowObjectionComponent' )?.id as string;
+    this.flowService.addVariables({objectAndEndCall : true},stepId);
     this.flowService.updateCall({
       objectionId : id
     });

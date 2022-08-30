@@ -6,7 +6,7 @@ import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
 import { firstValueFrom, lastValueFrom, Observable, take } from 'rxjs';
 import { Router } from '@angular/router';
-import { IDropDownMenuItem } from '../../common/components/ui/dropdown';
+import { FiizDropDownComponent, IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -46,6 +46,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   public objections$: Observable<DropdownItem>;
 
   @ViewChild(FlowHostDirective, {static: true}) flowHost!: FlowHostDirective;
+  @ViewChild('objectionDropdown') objectionDropdown:FiizDropDownComponent;
 
   constructor(
     private store: Store<fromFlow.FlowState>,
@@ -66,6 +67,12 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     this.flowService.flowHost = this.flowHost;
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectProcessId).pipe(take(1)));
     await this.flowService.start(!!processExists);
+
+    this.store.select(fromFlow.selectVariableByKey('objectAndEndCall')).subscribe( obj => {
+      if( obj ){
+        this.objectionDropdown.title = 'Objections';
+      }
+    });
 
   }
 
