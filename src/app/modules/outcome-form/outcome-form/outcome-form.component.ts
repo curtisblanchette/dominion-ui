@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ModuleTypes } from '../../../data/entity-metadata';
 import { Fields } from '../../../common/models/event.model';
 import { Fields as ContactFields } from '../../../common/models/contact.model';
@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { NavigationService } from '../../../common/navigation.service';
 import { FiizDataComponent } from '../../../common/components/ui/data/data.component';
 import { environment } from '../../../../environments/environment';
+import { FiizTextAreaComponent } from '../../../common/components/ui/forms';
 
 @UntilDestroy()
 @Component({
@@ -60,6 +61,7 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
   };
 
   @ViewChildren(FiizDataComponent) childrenComponent: QueryList<FiizDataComponent>;
+  @ViewChild(FiizTextAreaComponent) textArea:FiizTextAreaComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -122,6 +124,7 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
 
   public async updateEvent(){
     if( this.formIsValid ){
+      const eventId = this.formValues[ModuleTypes.EVENT]['id'];
 
       const eventData = {
         changes : this.formValues[ModuleTypes.EVENT],
@@ -138,6 +141,10 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
 
       this.eventService.update( eventData ).pipe(take(1)).subscribe();
       this.contactService.update( contactData ).pipe(take(1)).subscribe();
+
+      if( this.textArea.value ){
+        this.http.post(`${environment.dominion_api_url}/events/${eventId}/notes`,{content : this.textArea.value}).pipe(take(1)).subscribe( (res:any) => {});
+      }
 
     } else {
       console.warn('Form in Invalid');
