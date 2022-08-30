@@ -56,15 +56,15 @@ export class FlowBuilder {
     });
 
     const createLead = FlowFactory.createLead();
-    const editLead = FlowFactory.editLead((flowService: FlowService, vars: any, step: any) => {
+    const editLead = FlowFactory.editLead(undefined, (flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
       return step;
     });
-    const setLeadSource = FlowFactory.setLeadSource((flowService: FlowService, vars: any, step: any) => {
+    const setLeadSource = FlowFactory.setLeadSource(undefined, (flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
       return step;
     });
-    const oppList = FlowFactory.opportunityList((flowService: FlowService, vars: any, step: any) => {
+    const oppList = FlowFactory.opportunityList(undefined, (flowService: FlowService, vars: any, step: any) => {
       step.state.options['query'] = {
         leadId: vars.lead
       };
@@ -99,7 +99,7 @@ export class FlowBuilder {
     const toPowerQuestion = FlowFactory.link(relationshipBuilding.id, powerQuestion.id);
 
 
-    const setAppointment = FlowFactory.setAppointment((flowService: FlowService, vars: any, step: any) => {
+    const setAppointment = FlowFactory.setAppointment(undefined, (flowService: FlowService, vars: any, step: any) => {
       // globals
       step.state.options['payload'] = {
         contactId: vars.contact,

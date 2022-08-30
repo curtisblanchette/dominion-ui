@@ -116,6 +116,15 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       });
     });
 
+    if( this.data.template === 'recap' ){
+      const newLead = await this.flowService.getVariable('new_lead');
+      if( newLead ){
+        const leadInfo:any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
+        const leadForm = this.dataComponents.find(item => item.module === ModuleTypes.LEAD);
+        leadForm?.form.patchValue({email : leadInfo['email'], phone : leadInfo['phone']});
+      }
+    }
+
   }
 
   public async initStep() {
@@ -166,11 +175,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'recap' : {
         const apptStep = this.flowService.builder.process.steps.find( step => step.component === 'FlowAppointmentComponent' );
-        this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);
-        const newLead = await this.flowService.getVariable('new_lead');
-        if( newLead ){
-          
-        }
+        this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);        
       }
       break;
 
@@ -221,15 +226,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       break;
 
       case 'recap': {
-        const contactId = await this.flowService.getVariable('contact');
-        const contactForm = this.dataComponents.find(item => item.module === this.ModuleTypes.CONTACT);
-        const addressForm = this.dataComponents.find(item => item.module === this.ModuleTypes.ADDRESS);
-
-        addressForm?.form.addControl('associate', new FormControl({contact : contactId},[]));
-        contactForm?.form.markAsDirty();
-
-        contactForm?.save(true);
-        addressForm?.save(true);
+        const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.Lead);
+        leadForm?.form.markAsDirty();
+        leadForm?.save(true);
       }
       break;
 

@@ -370,5 +370,16 @@ export class FlowService {
     const currentStep = this.builder.process.steps.find( step => step?.id === currentStepId );
     return currentStep?.state.data[moduleType];
   }
+
+  public aggregateDataForModule( module:ModuleTypes ){
+    let data = {};
+    this.builder.process.steps.map((step:FlowStep) => {
+      if( step.state?.module === module && step.state?.data[module] ){
+        data = { ...data, ...step?.state?.data[module] };
+      }
+    });
+    return data;
+  }
+
 }
 

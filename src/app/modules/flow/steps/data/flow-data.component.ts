@@ -77,8 +77,8 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
   }
 
   onBack() {
-    this.data.id = null;
-    this.cmp.resetForm();
+    // this.data.id = null;
+    // this.cmp.resetForm();
     console.log('FlowDataComponent OnBack called!');
   }
 

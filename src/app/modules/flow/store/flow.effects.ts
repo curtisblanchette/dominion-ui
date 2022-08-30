@@ -99,12 +99,11 @@ export class FlowEffects {
 
         if(!step) {
           const router = this.flowService.builder.process.routers.find(router => router.id === payload.stepId);
-          console.log(router);
         } else {
 
           if(typeof (<FlowStep>step).beforeRoutingTriggers === 'string') {
             const fn = eval((<FlowStep>step).beforeRoutingTriggers);
-            await fn(frozenVars, step);
+            await fn(this.flowService, frozenVars, step);
           }
 
           if(step?.id) {
