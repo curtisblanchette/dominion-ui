@@ -37,6 +37,7 @@ import { Dialog, DIALOG_SCROLL_STRATEGY_PROVIDER } from '@angular/cdk/dialog';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { FiizGridComponent } from './grid/grid';
 import { FiizGridColsDirective } from './grid/cols.directive';
+import { FiizCountUpDirective } from '../../directives/countUp.directive';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { FiizGridColsDirective } from './grid/cols.directive';
     FiizTabNavComponent,
     FiizToggleComponent,
     FiizDatePickerDirective,
+    FiizCountUpDirective,
     // FiizMinDateDirective,
     // FiizMaxDateDirective,
     FiizStrokedDirective,
@@ -101,6 +103,7 @@ import { FiizGridColsDirective } from './grid/cols.directive';
     FiizTabNavComponent,
     FiizToggleComponent,
     FiizDatePickerDirective,
+    FiizCountUpDirective,
     // FiizMinDateDirective,
     // FiizMaxDateDirective,
     FiizStrokedDirective,

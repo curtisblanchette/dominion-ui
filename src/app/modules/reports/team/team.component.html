@@ -34,7 +34,7 @@
       <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;" *ngFor="let stat of teamStats[activePath]; let i = index">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">{{stat.label}}</div>
-          <div class="pipeline-nav__item__metric">{{stat.value}}<span class="supporting-metric" *ngIf="stat.label === 'Answers/Calls' && activePath === 'outbound'">/{{(data$ | async)[activePath].calls}}</span></div>
+          <div class="pipeline-nav__item__metric"><span [countUp]="stat.value"></span><span class="supporting-metric" *ngIf="stat.label === 'Answers/Calls' && activePath === 'outbound'">/{{(data$ | async)[activePath].calls}}</span></div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
         </div>
       </section>
@@ -44,9 +44,9 @@
     <fiiz-grid [cols]="columns[activePath]?.length + 1" class="table">
       <div  class="table-heading" style="color: #64738E;font-size: 12px;cursor: pointer; text-align: center;" (click)="sortField('name')">Name <i class="fa {{currentSort[1] === 'name' ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
       <div  class="table-heading" *ngFor="let column of columns[activePath]" style="color: #64738E;font-size: 12px;cursor: pointer; text-align: center;" (click)="sortField(column)">{{getLabel(column, 'table')}} <i class="fa {{currentSort[1] === column ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
-      <ng-container *ngFor="let person of people">
-        <div>{{person.name}}</div>
-        <div *ngFor="let column of columns[activePath]" style="text-align:center;">{{person[column]}}{{column.indexOf('Rate') === -1 ? '' : '%' }}</div>
+      <ng-container *ngFor="let person of people[activePath]">
+        <div data-column="name">{{person.name}}</div>
+        <div [attr.data-column]="column" *ngFor="let column of columns[activePath]" style="text-align:center;">{{person[column]}}{{column.indexOf('Rate') === -1 ? '' : '%' }}</div>
       </ng-container>
     </fiiz-grid>
 

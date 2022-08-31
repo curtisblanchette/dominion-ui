@@ -85,13 +85,13 @@ export class TeamReportComponent implements OnInit {
       {
         iconClass: 'fa-sort-up',
         sortFn: (field: any) => {
-          this.people.sort(this.dynamicSort(field));
+          this.people[this.activePath].sort(this.dynamicSort(field));
         }
       },
       {
         iconClass: 'fa-sort-down',
         sortFn: (field: any) => {
-          this.people.sort(this.dynamicSort(field)).reverse();
+          this.people[this.activePath].sort(this.dynamicSort(field)).reverse();
         }
       }
     ];
@@ -137,13 +137,11 @@ export class TeamReportComponent implements OnInit {
               order: this.cards[this.activePath].indexOf(stat)
             });
           } else if (stat === 'people') {
-            this.people = data[this.activePath][stat];
+            this.people[key] = [...data[this.activePath][stat]];
           }
         }
         this.teamStats[key] = (<IStatCard[]>this.teamStats[key]).sort((a, b) => a.order - b.order);
       }
-
-
 
       return data;
 
@@ -188,10 +186,10 @@ export class TeamReportComponent implements OnInit {
   private dynamicSort(property: string) {
     let sortOrder = 1;
 
-    if (property[0] === '-') {
-      sortOrder = -1;
-      property = property.substr(1);
-    }
+    // if (property[0] === '-') {
+    //   sortOrder = -1;
+    //   property = property.substr(1);
+    // }
 
     return function (a: any, b: any) {
 
