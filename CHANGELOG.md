@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.15.21 (2022-08-31)
+
+
+### Bug Fixes
+
+* **II-2784:** connect Outbound flow ([75f01f6](https://github.com/4iiz/dominion-ui/commit/75f01f6a2869f05b46cfc6efe8a9c715efc9b7fd))
+
 ### 1.15.20 (2022-08-30)
 
 ### 1.15.19 (2022-08-26)
