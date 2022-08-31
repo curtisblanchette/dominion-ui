@@ -329,7 +329,7 @@ export class FlowFactory {
       beforeRoutingTriggers,
       afterRoutingTriggers,
       state: {
-        module: ModuleTypes.EVENT,
+        module: ModuleTypes.DEAL,
         data: {
           title: 'Pending Outcome List',
         },
@@ -341,12 +341,12 @@ export class FlowFactory {
           columns: [],
           query: {
             stageId: '2,4,5',
-            outcome: null,
+            // outcome: null,
           },
           controls: {
             perPage: false,
             pagination: false,
-            createNew:true,
+            createNew:false,
           },
         }
       }
@@ -439,7 +439,7 @@ export class FlowFactory {
           controls: {
             perPage: false,
             pagination: false,
-            createNew: true,
+            createNew: false,
           }
         }
       }
