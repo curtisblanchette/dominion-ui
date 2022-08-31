@@ -26,28 +26,35 @@ export class FlowBuilder {
   }
 
 
-  public build(type?: string) {
+  public async build(type?: string) {    
+
     // this.process = new FlowProcess(this.store, this.flowService, this.entityCollectionServiceFactory, uuidv4());
     /**
      * Everything that is passed to factory functions must be Serializable!
      */
+
+    // GLOBAL
     const objection = FlowFactory.objection();
-    // select call type
+    const recap = FlowFactory.recap();
+    const end = FlowFactory.end();
+
     const callType = FlowFactory.callTypeDecision(undefined, (flowService: FlowService, vars: any) => {
       flowService.startCall(vars.call_type);
     });
+
     const searchNListLeads = FlowFactory.searchNListLeads(undefined, (flowService: FlowService, vars: any) => {
       flowService.updateCall({leadId: vars.lead});
     });
+
     const outboundType = FlowFactory.outboundType();
-    const searchNListContacts = FlowFactory.searchNListContacts()
+    const searchNListContacts = FlowFactory.searchNListContacts();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
+    const createLead = FlowFactory.createLead();
+    
     const appointmentList = FlowFactory.appointmentList((flowService: FlowService, vars: any, step: any) => {
       step.state.options['query'] ={
-        dealId: vars.deal,
-        // savedSearch: 'opp-events'
+        dealId: vars.deal
       };
-
       return step;
     });
 
@@ -55,7 +62,10 @@ export class FlowBuilder {
       return step;
     });
 
-    const createLead = FlowFactory.createLead();
+    const InboundReasonForCall = FlowFactory.reasonForCall(undefined, (flowService: FlowService, vars:any, step:any) => {
+      return step;
+    });
+    
     const editLead = FlowFactory.editLead((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
       return step;
@@ -70,7 +80,8 @@ export class FlowBuilder {
       };
       return step;
     });
-    const toOppList = FlowFactory.link(editLead.id, oppList.id);
+    const toOppList = FlowFactory.link(editLead.id, oppList.id);    
+
     const createOpp = FlowFactory.createDeal((flowService: FlowService, vars: any, step: any) => {
       step.state.data['payload'] = {
         leadId: vars.lead
@@ -130,24 +141,8 @@ export class FlowBuilder {
 
       return step;
     });
-    const recap = FlowFactory.recap();
 
-    const existingEvent_no = FlowFactory.condition('new_event', (vars: any) => {
-      return vars['new_event'] || ( vars.call_reason === 'reschedule-appointment' );
-    }, {}, setAppointment.id);
-
-    const existingEvent_yes = FlowFactory.condition('existing_event', (vars: any) => {
-      return !vars['new_event'];
-    }, {
-      id: ModuleTypes.EVENT
-    }, reasonForCall.id);
-
-    const eventRouter = FlowFactory.router('Event Exists', '', [existingEvent_yes, existingEvent_no]);
-    const toeventRouter = FlowFactory.link(appointmentList.id, eventRouter.id);
-
-    const toCancelReschedule = FlowFactory.link(reasonForCall.id, setAppointment.id);
-
-    // inbound
+    // INBOUND - CALL TYPE
     const callType_inbound = FlowFactory.condition('Inbound', (vars: any) => {
       return vars['call_type'] === 'inbound';
     }, {}, searchNListLeads.id);
@@ -159,6 +154,7 @@ export class FlowBuilder {
     const callTypeRouter = FlowFactory.router('Call Type', '', [callType_inbound, callType_outbound]);
     const toCallTypeRouter = FlowFactory.link(callType.id, callTypeRouter.id);
 
+    // INBOUND - NEW/EXISTING LEAD
     const existingLead_yes = FlowFactory.condition('Lead Selected', (vars: any) => {
       return !vars['new_lead'];
     }, {
@@ -172,77 +168,109 @@ export class FlowBuilder {
     const searchNListLeadsRouter = FlowFactory.router('Lead Selected', '', [existingLead_yes, existingLead_no]);
     const toSearchNListLeadsRouter = FlowFactory.link(searchNListLeads.id, searchNListLeadsRouter.id);
 
+    // INBOUND - NEW/EXISTING DEAL
+    const inboundExistingDeal_yes = FlowFactory.condition('deal Selected', (vars: any) => {
+      return !vars['new_deal'];
+    }, {
+      leadId: ModuleTypes.DEAL
+    }, editOpp.id);
 
-    const setLeadSourceLink = FlowFactory.link(createLead.id, setLeadSource.id);
-
-    const toRelationshipBuilding2 = FlowFactory.link(createOpp.id, relationshipBuilding.id);
-
-    const inboundSetApptLink = FlowFactory.link(relationshipBuilding.id, setAppointment.id);
-    const inboundSetApptLink1 = FlowFactory.link(editOpp.id, appointmentList.id);
-
-    // const appointListToSetAppointment = FlowFactory.link(appointmentList, reasonForCall);
-
-    // outbound
-    const oppWithNoOutcomes = FlowFactory.noOutcomeList();
-
-    const contactOppsWithNoOutcomes = FlowFactory.noOutcomeList((flowService: FlowService, vars: any, step: any) => {
-      step.state.options['query'] = {
-        contactId: vars.contact
-      };
-
-      return step;
-    });
-
-    const outboundType_webLeads = FlowFactory.condition('Web Leads',(vars: any) => {
-      return vars['outbound_type'] === 'web_leads';
-    }, {}, oppWithNoOutcomes.id);
-
-    const outboundType_contacts = FlowFactory.condition('Search Contacts', (vars: any) => {
-      return vars['outbound_type'] === 'contacts';
-    }, {}, searchNListContacts.id);
-
-    const webLeadRouter = FlowFactory.router('Outbound Type', '', [outboundType_webLeads, outboundType_contacts]);
-    const webLeadLink = FlowFactory.link(outboundType.id, webLeadRouter.id);
-
-    const createContact = FlowFactory.createContact();
-
-    // You''ll never actually get here because we dont' want people randomly creating contacts in flow this way.
-    // the step has `createNew: false`
-    const existingContact_no = FlowFactory.condition('New Contact',(vars: any) => {
-      return vars['new_contact'];
-    }, {}, createContact.id);
-
-    const existingContact_yes = FlowFactory.condition('Existing Contact', (vars: any) => {
-      return !vars['new_contact'];
-    }, {}, contactOppsWithNoOutcomes.id);
-
-    const contactRouter = FlowFactory.router('Contact Exists', '', [existingContact_yes, existingContact_no]);
-    const contactLink = FlowFactory.link(searchNListContacts.id, contactRouter.id);
-
-    // Outbound Web Lead Conditions and Routers
-    const existingOpp_no = FlowFactory.condition('Create Opportunity', (vars: any) => {
+    const inboundExistingLead_no = FlowFactory.condition('Create Deal', (vars: any) => {
       return vars['new_deal'];
     }, {}, createOpp.id);
 
-    const existingOpp_yes = FlowFactory.condition('Set Appointment', (vars: any) => {
-      return !vars['new_deal'];
-    }, {}, editOpp.id);
+    const inboundDealRouter = FlowFactory.router('Deal Decision', '', [inboundExistingDeal_yes, inboundExistingLead_no]);
+    const inboundDealLink = FlowFactory.link(oppList.id, inboundDealRouter.id);
 
-    const oppRouter = FlowFactory.router('Opportunity Exists', undefined, [existingOpp_yes, existingOpp_no]);
-    const toOppListRouter = FlowFactory.link(oppList.id, oppRouter.id);
+    // INBOUND - NEW LEAD SELECT CAMPAIGN
+    const setLeadSourceLink = FlowFactory.link(createLead.id, setLeadSource.id);
 
-    const oppLink = FlowFactory.link(oppList.id, oppRouter.id);
-    const oppLink2 = FlowFactory.link(oppWithNoOutcomes.id, oppRouter.id);
+    // INBOUND - NEW LEAD RELATIONSHIP BUILDING
+    const toRelationshipBuilding2 = FlowFactory.link(createOpp.id, relationshipBuilding.id);
+    // const inboundSetApptLink = FlowFactory.link(relationshipBuilding.id, setAppointment.id);
+    const inboundSetApptLink = FlowFactory.link(powerQuestion.id, setAppointment.id);
 
-    const apptLink = FlowFactory.link(setAppointment.id, recap.id);
+    // INBOUND - REASON FOR CALL    
+    const inboundSetApptLink1 = FlowFactory.link(editOpp.id, InboundReasonForCall.id);
 
-    const toSetAppointment = FlowFactory.link(editOpp.id, setAppointment.id);
+    const cancelEvent = FlowFactory.condition('Cancel/Reschedule Inbound Event',(vars: any) => {
+      return vars['call_type'] === 'inbound' && ( vars['call_reason'] === 'cancel-appointment' || vars['call_reason'] === 'reschedule-appointment' );
+    }, {}, appointmentList.id);
 
-    const end = FlowFactory.end();
+    const inboundTakeNotes = FlowFactory.condition('Inbound Take Notes', (vars: any) => {
+      return vars['call_type'] === 'inbound' && vars['call_reason'] === 'take-notes';
+    }, {}, appointmentList.id);
+
+    const reasonForCallRouter = FlowFactory.router('Call Reason', '', [cancelEvent, inboundTakeNotes]);
+    const toreasonForCallRouter = FlowFactory.link(InboundReasonForCall.id, reasonForCallRouter.id);
+
+    // INBOUND - RECAP/END
+    
+    const inboundEndCondition = FlowFactory.condition('Inbound End',(vars: any) => {
+      return vars['call_type'] === 'inbound' && vars['call_reason'] === 'cancel-appointment' ;
+    }, {}, end.id);
+
+    const inboundRecapCondition = FlowFactory.condition('Inbound Recap',(vars: any) => {
+      return vars['call_type'] === 'inbound' && vars['call_reason'] !== 'cancel-appointment' ;
+    }, {}, recap.id);
+
+    // const inboundEventRouter = FlowFactory.router('Inbound Event', '', [inboundEndCondition, inboundRecapCondition]);
+    // const inboundEventRouterLink = FlowFactory.link(setAppointment.id, inboundEventRouter.id);
+
     const toInboundEnd = FlowFactory.link(recap.id, end.id);
+    const toObjectionEnd = FlowFactory.link(objection.id, end.id);    
 
-    const toObjectionEnd = FlowFactory.link(objection.id, end.id);
+    // OUTBOUND - CONTACT OR WEB LIST
+    const outboundOppWithNoOutcomes = FlowFactory.noOutcomeList();
+    const outboundContactOppsWithNoOutcomes = FlowFactory.noOutcomeList((flowService: FlowService, vars: any, step: any) => {
+      step.state.options['query'] = {
+        contactId: vars.contact
+      };
+      return step;
+    });
 
+    const outboundWebLeads = FlowFactory.condition('Web Leads',(vars: any) => {
+      return vars['outbound_type'] === 'web_leads';
+    }, {}, outboundOppWithNoOutcomes.id);
+
+    const outboundContacts = FlowFactory.condition('Search Contacts', (vars: any) => {
+      return vars['outbound_type'] === 'contacts';
+    }, {}, searchNListContacts.id);
+
+    const outboundWebLeadRouter = FlowFactory.router('Outbound Type', '', [outboundWebLeads, outboundContacts]);
+    const outboundWebLeadLink = FlowFactory.link(outboundType.id, outboundWebLeadRouter.id);
+    const outboundContactOppsLink = FlowFactory.link(searchNListContacts.id,outboundContactOppsWithNoOutcomes.id);
+
+    // OUTBOUND - REASON FOR CALL
+    const outboundContactsOpps_ReasonForCallLink = FlowFactory.link(outboundContactOppsWithNoOutcomes.id, reasonForCall.id);
+    const outboundOpps_ReasonForCallLink = FlowFactory.link(outboundOppWithNoOutcomes.id, reasonForCall.id);
+
+    const outboundCancelRescheduleEvent = FlowFactory.condition('Reschedule/Cancel Event',(vars: any) => {
+      return ['reschedule-appointment','cancel-appointment'].includes(vars['call_reason']) && vars['call_type'] === 'outbound' ;
+    }, {}, appointmentList.id);
+
+    const outboundTakeNotes = FlowFactory.condition('Take Notes',(vars: any) => {
+      return vars['call_reason'] === 'take-notes' && vars['call_type'] === 'outbound';
+    }, {}, appointmentList.id);
+
+    const outboundCancelRescheduleRouter = FlowFactory.router('Reason', '', [outboundCancelRescheduleEvent, outboundTakeNotes]);
+    const outboundCancelRescheduleLink = FlowFactory.link(reasonForCall.id, outboundCancelRescheduleRouter.id);
+    
+    // OUTBOUND - APPOINTMENT
+    const outboundEventLink = FlowFactory.link(appointmentList.id, setAppointment.id);
+
+    // OUTBOUND - END/RECAP
+    const outboundEventCanceled = FlowFactory.condition('Event Canceled',(vars: any) => {
+      return vars['call_type'] === 'outbound' && vars['call_reason'] === 'cancel-appointment' ;
+    }, {}, end.id);
+
+    const outboundEventRescheduled = FlowFactory.condition('Event Reschedules',(vars: any) => {
+      return vars['call_type'] === 'outbound' && vars['call_reason'] !== 'cancel-appointment' ;
+    }, {}, recap.id);
+
+    const outboundEventRouter = FlowFactory.router('Inbound/Outbound Event', '', [outboundEventCanceled, outboundEventRescheduled, inboundEndCondition, inboundRecapCondition]);
+    const outboundEventRouterLink = FlowFactory.link(setAppointment.id, outboundEventRouter.id);
+    const outboundRecapLink = FlowFactory.link(appointmentList.id, outboundEventRouterLink.id);
 
     ///
     this.process
@@ -251,66 +279,59 @@ export class FlowBuilder {
       .addRouter(callTypeRouter)
       .addStep(searchNListLeads)
       .addStep(outboundType)
+      .addStep(reasonForCall)
+      .addStep(InboundReasonForCall)
       .addStep(appointmentList)
-    // .addLink(appointListToSetAppointment);
+      .addStep(setAppointment)
+      .addStep(recap)
+      .addStep(end);
 
     // 'inbound'
     this.process
-      .addRouter(searchNListLeadsRouter)
-      .addLink(toSearchNListLeadsRouter)
       .addStep(oppList)
-      .addLink(toOppList)
       .addStep(createLead)
       .addStep(editLead)
       .addStep(setLeadSource)
-      .addLink(setLeadSourceLink)
       .addStep(relationshipBuilding)
+      .addStep(powerQuestion)
+      .addStep(editOpp)
+      .addStep(createOpp)
+      .addRouter(searchNListLeadsRouter)
+      .addRouter(reasonForCallRouter)
+      .addRouter(inboundDealRouter)
+      .addLink(toSearchNListLeadsRouter)
+      .addLink(toOppList)
+      .addLink(setLeadSourceLink)
       .addLink(toRelationshipBuilding1)
       .addLink(toRelationshipBuilding2)
       .addLink(inboundSetApptLink)
       .addLink(inboundSetApptLink1)
-      .addStep(setAppointment)
-      .addStep(powerQuestion)
+      .addLink(toreasonForCallRouter)
       .addLink(toPowerQuestion)
-      .addStep(reasonForCall)
-      .addRouter(eventRouter)
-      .addLink(toeventRouter)
-      .addLink(toCancelReschedule)
-      .addStep(editOpp)
-      .addStep(createOpp)
-      .addLink(toOppListRouter)
-      .addLink(toSetAppointment)
-
-      .addStep(end)
-      .addLink(toInboundEnd);
+      .addLink(toInboundEnd)
+      .addLink(inboundDealLink);
 
 
     // 'outbound'
     this.process
-      .addRouter(webLeadRouter)
       .addStep(searchNListWebLeads)
       .addStep(searchNListContacts)
-      .addRouter(oppRouter)
-      .addLink(oppLink)
-      .addLink(oppLink2)
-      .addLink(webLeadLink)
-      .addRouter(contactRouter)
-      .addLink(contactLink)
-
-      .addStep(createContact)
-
-      .addStep(oppWithNoOutcomes)
-      .addStep(contactOppsWithNoOutcomes)
-      // .addLink(setApptLink)
-      // .addLink(setApptLink2)
-      // .addLink(setApptLink3)
-      // .addRouter(apptRouter)
-      .addStep(recap)
-      .addLink(apptLink)
+      .addStep(outboundContactOppsWithNoOutcomes)
+      .addStep(outboundOppWithNoOutcomes)
+      .addRouter(outboundWebLeadRouter)
+      .addRouter(outboundCancelRescheduleRouter)
+      .addRouter(outboundEventRouter)
+      .addLink(outboundWebLeadLink)
+      .addLink(outboundContactOppsLink)
+      .addLink(outboundOpps_ReasonForCallLink)
+      .addLink(outboundContactsOpps_ReasonForCallLink)
+      .addLink(outboundCancelRescheduleLink)
+      .addLink(outboundEventLink)
+      .addLink(outboundEventRouterLink)
+      .addLink(outboundRecapLink);
 
 
     // global
-
     this.process
       .addStep(objection)
       .addLink(toObjectionEnd);
