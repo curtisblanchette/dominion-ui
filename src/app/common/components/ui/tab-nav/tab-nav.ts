@@ -13,7 +13,7 @@ export interface IFiizTabNavItem {
 })
 export class FiizTabNavComponent implements AfterViewInit {
 
-  public selected: string;
+  public selected: IFiizTabNavItem;
   @Input('items') items: IFiizTabNavItem[] | any[];
   @Output('onSelect') onSelect: EventEmitter<any> = new EventEmitter<any>()
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
@@ -26,28 +26,50 @@ export class FiizTabNavComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.items = this.items.map((e) => ({...e, active: false}));
+    this.items = this.items.map((e, index) => ({...e, active: index < 1}));
+
+    this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', `${100 / this.items.length}%`);
     this.selected = this.items[0];
     this.updateActiveUnderline();
   }
+  //
+  // updateActiveUnderline() {
+  //   setTimeout(() => {
+  //     const el = this.links.find((item: any) => item.nativeElement.classList.contains('active'))?.nativeElement;
+  //
+  //     if (el) {
+  //       const link = {
+  //         left: el?.offsetLeft || 0
+  //       }
+  //       this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
+  //     }
+  //   })
+  //
+  // }
 
   updateActiveUnderline() {
+    setTimeout(() => {
       const el = this.links.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
 
       if (el) {
         const link = {
           left: el?.offsetLeft || 0,
-          // width: el?.offsetWidth || 0
+          width: el?.offsetWidth || 0
         }
 
         this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
-        // this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
+        this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
       }
+    });
   }
 
+
   public onClick($event: any) {
-    this.updateActiveUnderline()
+    this.items = this.items.map((e) => {
+      return { ...e, active: e.key === $event.key };
+    });
     this.selected = $event;
-    this.onSelect.next(this.selected);
+    this.onSelect.next(this.selected.key);
+    this.updateActiveUnderline()
   }
 }

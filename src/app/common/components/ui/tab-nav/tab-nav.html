@@ -2,8 +2,8 @@
   <button class="full-width transparent"
           #link
           *ngFor="let item of items"
-          (click)="onClick(item.key)"
-          [ngClass]="{'active': item.key === selected}">
+          (click)="onClick(item)"
+          [ngClass]="{'active': item.active}">
     {{item.label}}
   </button>
   <div class="active-underline" #activeUnderline></div>
