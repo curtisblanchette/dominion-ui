@@ -7,7 +7,8 @@ import { ViewStatus } from '../store/reports.reducer';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import * as dayjs from 'dayjs';
-import { ActivatedRoute, Router } from '@angular/router';
+
+export interface IStatCard { label: string | undefined; value: number, order: number }
 
 @UntilDestroy()
 @Component({
@@ -64,8 +65,16 @@ export class TeamReportComponent implements OnInit {
     consultations: ['appointments', 'shows', 'showRate', 'unqualifiedAtAppointment', 'noOutcomes', 'hires', 'hireRate']
   };
 
-  public teamStats: { label: string | undefined; value: number, order: number }[] = [];
-  public people: any = [];
+  public teamStats: { [ key: string]: IStatCard[] } = {
+    inbound: [],
+    outbound: [],
+    consultations: []
+  };
+  public people: any = {
+    inbound: [],
+    outbound: [],
+    consultations: []
+  };
 
 
   constructor(
@@ -105,23 +114,37 @@ export class TeamReportComponent implements OnInit {
 
     this.store.select(fromReports.selectTeam).subscribe((data: any) => {
       data = data.data
-      this.teamStats = [];
-      this.people = [];
+
+    this.teamStats = {
+        inbound: [],
+        outbound: [],
+        consultations: []
+      };
+    this.people = {
+        inbound: [],
+        outbound: [],
+        consultations: []
+      };
 
       // gather the team metrics into card objects
-      for (const key of Object.keys(data[this.activePath])) {
-        if (key !== 'people' && this.cards[this.activePath].includes(key)) {
-          this.teamStats.push({
-            label: this.getLabel(key, null),
-            value: data[this.activePath][key],
-            order: this.cards[this.activePath].indexOf(key)
-          });
-        } else if (key === 'people') {
-          this.people = data[this.activePath][key];
+      for(const key of Object.keys(data)) {
+        // inbound, outbound, consultations
+        for (const stat of Object.keys(data[key])) {
+          if (stat !== 'people' && this.cards[key].includes(stat)) {
+            (<IStatCard[]>this.teamStats[key]).push({
+              label: this.getLabel(stat, null),
+              value: data[this.activePath][stat],
+              order: this.cards[this.activePath].indexOf(stat)
+            });
+          } else if (stat === 'people') {
+            this.people = data[this.activePath][stat];
+          }
         }
+        this.teamStats[key] = (<IStatCard[]>this.teamStats[key]).sort((a, b) => a.order - b.order);
       }
 
-      this.teamStats.sort((a, b) => a.order - b.order);
+
+
       return data;
 
     });
@@ -141,8 +164,8 @@ export class TeamReportComponent implements OnInit {
     });
   }
 
-  goTo($event: { id: string, label: string}) {
-    this.activePath = $event.id;
+  goTo($event: string) {
+    this.activePath = $event;
   }
 
   getData() {

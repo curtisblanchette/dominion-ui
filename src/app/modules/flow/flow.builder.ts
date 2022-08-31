@@ -26,7 +26,7 @@ export class FlowBuilder {
   }
 
 
-  public async build(type?: string) {    
+  public async build(type?: string) {
 
     // this.process = new FlowProcess(this.store, this.flowService, this.entityCollectionServiceFactory, uuidv4());
     /**
@@ -50,7 +50,7 @@ export class FlowBuilder {
     const searchNListContacts = FlowFactory.searchNListContacts();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();
     const createLead = FlowFactory.createLead();
-    
+
     const appointmentList = FlowFactory.appointmentList((flowService: FlowService, vars: any, step: any) => {
       step.state.options['query'] ={
         dealId: vars.deal
@@ -62,10 +62,10 @@ export class FlowBuilder {
       return step;
     });
 
-    const InboundReasonForCall = FlowFactory.reasonForCall(undefined, (flowService: FlowService, vars:any, step:any) => {
+    const inboundReasonForCall = FlowFactory.reasonForCall(undefined, (flowService: FlowService, vars:any, step:any) => {
       return step;
     });
-    
+
     const editLead = FlowFactory.editLead((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
       return step;
@@ -80,7 +80,7 @@ export class FlowBuilder {
       };
       return step;
     });
-    const toOppList = FlowFactory.link(editLead.id, oppList.id);    
+    const toOppList = FlowFactory.link(editLead.id, oppList.id);
 
     const createOpp = FlowFactory.createDeal((flowService: FlowService, vars: any, step: any) => {
       step.state.data['payload'] = {
@@ -190,8 +190,8 @@ export class FlowBuilder {
     // const inboundSetApptLink = FlowFactory.link(relationshipBuilding.id, setAppointment.id);
     const inboundSetApptLink = FlowFactory.link(powerQuestion.id, setAppointment.id);
 
-    // INBOUND - REASON FOR CALL    
-    const inboundSetApptLink1 = FlowFactory.link(editOpp.id, InboundReasonForCall.id);
+    // INBOUND - REASON FOR CALL
+    const inboundSetApptLink1 = FlowFactory.link(editOpp.id, inboundReasonForCall.id);
 
     const cancelEvent = FlowFactory.condition('Cancel/Reschedule Inbound Event',(vars: any) => {
       return vars['call_type'] === 'inbound' && ( vars['call_reason'] === 'cancel-appointment' || vars['call_reason'] === 'reschedule-appointment' );
@@ -202,10 +202,10 @@ export class FlowBuilder {
     }, {}, appointmentList.id);
 
     const reasonForCallRouter = FlowFactory.router('Call Reason', '', [cancelEvent, inboundTakeNotes]);
-    const toreasonForCallRouter = FlowFactory.link(InboundReasonForCall.id, reasonForCallRouter.id);
+    const toReasonForCallRouter = FlowFactory.link(inboundReasonForCall.id, reasonForCallRouter.id);
 
     // INBOUND - RECAP/END
-    
+
     const inboundEndCondition = FlowFactory.condition('Inbound End',(vars: any) => {
       return vars['call_type'] === 'inbound' && vars['call_reason'] === 'cancel-appointment' ;
     }, {}, end.id);
@@ -218,7 +218,7 @@ export class FlowBuilder {
     // const inboundEventRouterLink = FlowFactory.link(setAppointment.id, inboundEventRouter.id);
 
     const toInboundEnd = FlowFactory.link(recap.id, end.id);
-    const toObjectionEnd = FlowFactory.link(objection.id, end.id);    
+    const toObjectionEnd = FlowFactory.link(objection.id, end.id);
 
     // OUTBOUND - CONTACT OR WEB LIST
     const outboundOppWithNoOutcomes = FlowFactory.noOutcomeList();
@@ -255,7 +255,7 @@ export class FlowBuilder {
 
     const outboundCancelRescheduleRouter = FlowFactory.router('Reason', '', [outboundCancelRescheduleEvent, outboundTakeNotes]);
     const outboundCancelRescheduleLink = FlowFactory.link(reasonForCall.id, outboundCancelRescheduleRouter.id);
-    
+
     // OUTBOUND - APPOINTMENT
     const outboundEventLink = FlowFactory.link(appointmentList.id, setAppointment.id);
 
@@ -280,7 +280,7 @@ export class FlowBuilder {
       .addStep(searchNListLeads)
       .addStep(outboundType)
       .addStep(reasonForCall)
-      .addStep(InboundReasonForCall)
+      .addStep(inboundReasonForCall)
       .addStep(appointmentList)
       .addStep(setAppointment)
       .addStep(recap)
@@ -306,7 +306,7 @@ export class FlowBuilder {
       .addLink(toRelationshipBuilding2)
       .addLink(inboundSetApptLink)
       .addLink(inboundSetApptLink1)
-      .addLink(toreasonForCallRouter)
+      .addLink(toReasonForCallRouter)
       .addLink(toPowerQuestion)
       .addLink(toInboundEnd)
       .addLink(inboundDealLink);

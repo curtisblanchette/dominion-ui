@@ -31,7 +31,7 @@
     <h5>All {{agentOrConsultant}}s</h5>
 
     <nav class="pipeline-nav">
-      <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;" *ngFor="let stat of teamStats; let i = index">
+      <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;" *ngFor="let stat of teamStats[activePath]; let i = index">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">{{stat.label}}</div>
           <div class="pipeline-nav__item__metric">{{stat.value}}<span class="supporting-metric" *ngIf="stat.label === 'Answers/Calls' && activePath === 'outbound'">/{{(data$ | async)[activePath].calls}}</span></div>
@@ -41,7 +41,7 @@
     </nav>
 
     <h5>Breakdown by {{agentOrConsultant}}</h5>
-    <fiiz-grid [cols]="columns[activePath].length + 1" class="table">
+    <fiiz-grid [cols]="columns[activePath]?.length + 1" class="table">
       <div  class="table-heading" style="color: #64738E;font-size: 12px;cursor: pointer; text-align: center;" (click)="sortField('name')">Name <i class="fa {{currentSort[1] === 'name' ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
       <div  class="table-heading" *ngFor="let column of columns[activePath]" style="color: #64738E;font-size: 12px;cursor: pointer; text-align: center;" (click)="sortField(column)">{{getLabel(column, 'table')}} <i class="fa {{currentSort[1] === column ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
       <ng-container *ngFor="let person of people">
