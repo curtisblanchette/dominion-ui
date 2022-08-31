@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.15.22 (2022-08-31)
+
+
+### Bug Fixes
+
+* **team-report:** team report switching between verticals ([b118fdc](https://github.com/4iiz/dominion-ui/commit/b118fdcffda55166471aa3be204a7d9725b782d0))
+
 ### 1.15.21 (2022-08-31)
 
 
