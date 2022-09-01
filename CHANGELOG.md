@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.15.26 (2022-09-01)
+
+
+### Bug Fixes
+
+* **II-2783:** add note records to outcome forms ([f0dd49d](https://github.com/4iiz/dominion-ui/commit/f0dd49dcdc11d562f13c2fdefdcff98af5319585))
+
 ### 1.15.25 (2022-08-31)
 
 ### 1.15.24 (2022-08-31)
