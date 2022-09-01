@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ModuleTypes } from '../../../data/entity-metadata';
 import { Fields } from '../../../common/models/event.model';
 import { Fields as ContactFields } from '../../../common/models/contact.model';
@@ -8,9 +8,12 @@ import { DefaultDataServiceFactory } from '@ngrx/data';
 import { firstValueFrom, take } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { NavigationService } from '../../../common/navigation.service';
 import { FiizDataComponent } from '../../../common/components/ui/data/data.component';
+import { environment } from '../../../../environments/environment';
+import { FiizTextAreaComponent } from '../../../common/components/ui/forms';
 
 @UntilDestroy()
 @Component({
@@ -25,16 +28,16 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
   public data: any;
   public ModuleTypes: any;
   public fields: any = Fields;
-  public callService: CustomDataService<DominionType>;
   public dealService: CustomDataService<DominionType>;
   public eventService: CustomDataService<DominionType>;
   public contactService: CustomDataService<DominionType>;
 
   public event: any;
   public deal: any;
-  public calls: any[] = [];
+  public notes: any[] = [];
 
   public allLoaded:boolean = false;
+  public notesFetched:boolean = false;
   public formValues:{ [ key:string ] : any } = {};
   public formValidation:{ [ key:string ] : boolean } = {};
 
@@ -58,14 +61,15 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
   };
 
   @ViewChildren(FiizDataComponent) childrenComponent: QueryList<FiizDataComponent>;
+  @ViewChild(FiizTextAreaComponent) textArea:FiizTextAreaComponent;
 
   constructor(
     private route: ActivatedRoute,
     private dataServiceFactory: DefaultDataServiceFactory,
     public navigation: NavigationService,
+    private http:HttpClient
   ) {
     this.ModuleTypes = ModuleTypes;
-    this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
     this.eventService = this.dataServiceFactory.create(ModuleTypes.EVENT) as CustomDataService<DominionType>;
     this.dealService = this.dataServiceFactory.create(ModuleTypes.DEAL) as CustomDataService<DominionType>;
     this.contactService = this.dataServiceFactory.create(ModuleTypes.CONTACT) as CustomDataService<DominionType>;
@@ -86,8 +90,11 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
       if( this.event && this.event.dealId ){
         this.dealService.getById(this.event.dealId).pipe(take(1)).subscribe(deal => {
           this.deal = deal;
-          this.callService.getWithQuery({dealId: this.deal.id}).pipe(take(1)).subscribe((res: any) => {
-            this.calls = res.rows;
+          this.http.get(`${environment.dominion_api_url}/notes?dealId=${this.deal.id}`).pipe(take(1)).subscribe( (res:any) => {            
+            if( res ){
+              this.notes = res;
+            }
+            this.notesFetched = true;
           });
         });
       }
@@ -117,6 +124,7 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
 
   public async updateEvent(){
     if( this.formIsValid ){
+      const eventId = this.formValues[ModuleTypes.EVENT]['id'];
 
       const eventData = {
         changes : this.formValues[ModuleTypes.EVENT],
@@ -133,6 +141,10 @@ export class OutcomeFormComponent implements AfterViewInit, OnInit {
 
       this.eventService.update( eventData ).pipe(take(1)).subscribe();
       this.contactService.update( contactData ).pipe(take(1)).subscribe();
+
+      if( this.textArea.value ){
+        this.http.post(`${environment.dominion_api_url}/events/${eventId}/notes`,{content : this.textArea.value}).pipe(take(1)).subscribe( (res:any) => {});
+      }
 
     } else {
       console.warn('Form in Invalid');

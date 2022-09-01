@@ -21,7 +21,7 @@ export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewIni
   @ViewChild('textarea', { read: ElementRef }) textarea:ElementRef;
 
   @Input('height') height = '35px';
-  value: string;
+  value: string = '';
 
   onChange: (value: any) => void = () => {};
   onTouched: Function = () => {};

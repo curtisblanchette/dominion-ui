@@ -7,6 +7,7 @@
   <div class="fields" *ngIf="allLoaded">
       <fiiz-data [module]="ModuleTypes.CONTACT" [data]="{id: contactId}" [options]="contactOptions"></fiiz-data>
       <fiiz-data [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="eventOptions"></fiiz-data>
+      <fiiz-textarea #textarea placeholder="Event Notes..." label="Notes" id="event_notes" height="100px"></fiiz-textarea>
       <div class="button-control">
         <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>
         <fiiz-button primary type="button" (click)="updateEvent()" [disabled]="!formIsValid" >Update Event</fiiz-button>
@@ -15,12 +16,20 @@
 
   <div class="notes">
     <h3>History</h3>
-    <div class="note" style="display: flex; flex-direction: row;" *ngFor="let call of calls">
-      <ng-contatainer *ngFor="let note of call.notes">
-        <div>{{note.createdAt | date}}</div>
-        <div>{{note.content}}</div>
-      </ng-contatainer>
-    </div>
+    <ng-container *ngIf="notesFetched">
+      <ng-container *ngFor="let note of notes">
+        <div class="notes__master" *ngIf="note.content !== ''">
+          <div class="notes__wrapper">
+            <i class="notes__wrapper__icon fa" [ngClass]="{'fa-phone' : note.noteFor == 'call', 'fa-calendar' : note.noteFor == 'event' }"></i> &nbsp;     
+            <span class="notes__wrapper__title" *ngIf="note.noteFor == 'call'" >{{note.direction | titlecase}} Call</span>
+            <span class="notes__wrapper__title" *ngIf="note.noteFor == 'event'" >{{note.type}}</span>
+            <time class="notes__wrapper__time" [dateTime]="note.createdAt" >{{ note.createdAt | date:'medium'}}</time>
+          </div>
+          <div class="notes__content" [innerHTML]="note.content"></div>
+        </div>
+        <h4 *ngIf="notes.length === 0" >No Historical Notes record avaialble for this Contact</h4>
+      </ng-container>
+    </ng-container>    
   </div>
 
 </div>
