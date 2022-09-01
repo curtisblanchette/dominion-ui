@@ -1,0 +1,10 @@
+:host {
+    display: block;
+    width: 100%;
+}
+.controls {
+    display: grid;
+    grid-auto-flow: column;
+    align-content: center;
+    justify-content: space-evenly;
+}
