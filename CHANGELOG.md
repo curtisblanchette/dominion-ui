@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.16.0 (2022-09-01)
+
+
+### Features
+
+* **II-2782:** connect objection flow to dropdown ([79eb1a3](https://github.com/4iiz/dominion-ui/commit/79eb1a385a1b9462bd638e4da77726e77c861586))
+
 ### 1.15.26 (2022-09-01)
 
 
