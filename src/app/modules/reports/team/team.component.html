@@ -1,5 +1,6 @@
-<div class="team__wrapper">
-  <div class="team__filters">
+<div class="page-heading">
+  <h2 class="page-heading__title">Reports/Team</h2>
+  <div class="page-heading__filters">
     <form [formGroup]="form" class="report-filters" *ngIf="form">
       <fiiz-date-picker
         #startDate
@@ -22,6 +23,9 @@
       ></fiiz-date-picker>
     </form>
   </div>
+</div>
+
+<div class="team__wrapper">
 
   <div class="team__reports" *ngIf="(status$ | async) === 'success'">
 
@@ -31,10 +35,10 @@
     <h5>All {{agentOrConsultant}}s</h5>
 
     <nav class="pipeline-nav">
-      <section class="pipeline-nav__section" style="flex:0.4; margin-right: 20px;" *ngFor="let stat of teamStats[activePath]; let i = index">
+      <section class="pipeline-nav__section" *ngFor="let stat of teamStats[activePath]; let i = index">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">{{stat.label}}</div>
-          <div class="pipeline-nav__item__metric"><span [countUp]="stat.value"></span><span class="supporting-metric" *ngIf="stat.label === 'Answers/Calls' && activePath === 'outbound'">/{{(data$ | async)[activePath].calls}}</span></div>
+          <div class="pipeline-nav__item__metric"><span [countUp]="stat.value" class="fluid-heading"></span><span class="supporting-metric" *ngIf="stat.label === 'Answers/Calls' && activePath === 'outbound'">/{{(data$ | async)[activePath].calls}}</span></div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
         </div>
       </section>
@@ -42,8 +46,8 @@
 
     <h5>Breakdown by {{agentOrConsultant}}</h5>
     <fiiz-grid [cols]="columns[activePath]?.length + 1" class="table">
-      <div  class="table-heading" (click)="sortField('name')">Name <i class="fa {{currentSort[1] === 'name' ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
-      <div  class="table-heading" *ngFor="let column of columns[activePath]" (click)="sortField(column)">{{getLabel(column, 'table')}} <i class="fa {{currentSort[1] === column ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
+      <div class="table-heading" (click)="sortField('name')">Name <i class="fa {{currentSort[1] === 'name' ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
+      <div class="table-heading" *ngFor="let column of columns[activePath]" (click)="sortField(column)">{{getLabel(column, 'table')}} <i class="fa {{currentSort[1] === column ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
       <ng-container *ngFor="let person of people[activePath]">
         <div data-column="name" style="text-align: left;">{{person.name}}</div>
         <div [attr.data-column]="column" *ngFor="let column of columns[activePath]" style="text-align:right;">{{person[column]}}{{column.indexOf('Rate') === -1 ? '' : '%' }}</div>

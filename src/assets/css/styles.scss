@@ -74,17 +74,32 @@ a {
 }
 
 .page-heading {
-  margin-bottom: 30px;
+  display:flex;
+  justify-content: space-between;
+  margin: 2em 0 4em 0;
+
 
   &__title {
     margin-bottom: 0;
     font-weight: 400;
+    margin-top: 21px;
   }
 
   &__subtitle {
     font-size: 16px;
     font-weight: 300;
     color: #A7B2D2;
+  }
+
+  &__filters {
+    display: grid;
+    gap: 1em;
+    grid-auto-flow: column;
+    form {
+      display: flex;
+      gap: 1em;
+      margin-bottom: 0;
+    }
   }
 }
 

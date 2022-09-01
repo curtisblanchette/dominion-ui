@@ -3,7 +3,7 @@
     <ng-container *ngFor="let step of (steps$ | async); let last = last">
       <button class="flow-timeline__item" #item tabindex="0" *ngIf="step" [id]="step.id"  [ngClass]="{'active': step.id === (currentStepId$ | async) }" (click)="!last && onClick(step.id)">
         <div class="flow-timeline__item__icon fa fa-{{step.nodeIcon}}"></div>
-        <div class="flow-timeline__item__title">{{step.nodeText }}</div>
+        <div class="flow-timeline__item__title fluid-heading">{{step.nodeText }}</div>
         <div class="flow-timeline__item__icon fa fa-check" *ngIf="step.valid && !last"></div>
       </button>
     </ng-container>
