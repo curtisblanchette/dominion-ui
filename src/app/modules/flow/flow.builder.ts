@@ -37,6 +37,7 @@ export class FlowBuilder {
     const objection = FlowFactory.objection();
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
+    const notes = FlowFactory.takeNotes();
 
     const callType = FlowFactory.callTypeDecision(undefined, (flowService: FlowService, vars: any) => {
       flowService.startCall(vars.call_type);
@@ -199,7 +200,7 @@ export class FlowBuilder {
 
     const inboundTakeNotes = FlowFactory.condition('Inbound Take Notes', (vars: any) => {
       return vars['call_type'] === 'inbound' && vars['call_reason'] === 'take-notes';
-    }, {}, appointmentList.id);
+    }, {}, notes.id);
 
     const reasonForCallRouter = FlowFactory.router('Call Reason', '', [cancelEvent, inboundTakeNotes]);
     const toReasonForCallRouter = FlowFactory.link(inboundReasonForCall.id, reasonForCallRouter.id);
@@ -219,6 +220,7 @@ export class FlowBuilder {
 
     const toInboundEnd = FlowFactory.link(recap.id, end.id);
     const toObjectionEnd = FlowFactory.link(objection.id, end.id);
+    const toNotesEnd = FlowFactory.link(notes.id, end.id);
 
     // OUTBOUND - CONTACT OR WEB LIST
     const outboundOppWithNoOutcomes = FlowFactory.noOutcomeList();
@@ -251,7 +253,7 @@ export class FlowBuilder {
 
     const outboundTakeNotes = FlowFactory.condition('Take Notes',(vars: any) => {
       return vars['call_reason'] === 'take-notes' && vars['call_type'] === 'outbound';
-    }, {}, appointmentList.id);
+    }, {}, notes.id);
 
     const outboundCancelRescheduleRouter = FlowFactory.router('Reason', '', [outboundCancelRescheduleEvent, outboundTakeNotes]);
     const outboundCancelRescheduleLink = FlowFactory.link(reasonForCall.id, outboundCancelRescheduleRouter.id);
@@ -284,7 +286,8 @@ export class FlowBuilder {
       .addStep(appointmentList)
       .addStep(setAppointment)
       .addStep(recap)
-      .addStep(end);
+      .addStep(end)
+      .addStep(notes);
 
     // 'inbound'
     this.process
@@ -334,7 +337,8 @@ export class FlowBuilder {
     // global
     this.process
       .addStep(objection)
-      .addLink(toObjectionEnd);
+      .addLink(toObjectionEnd)
+      .addLink(toNotesEnd);
 
     this.store.dispatch(flowActions.UpdateFlowAction({firstStepId: callType.id, lastStepId: end.id}));
   }

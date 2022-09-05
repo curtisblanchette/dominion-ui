@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { firstValueFrom, map, delay } from 'rxjs';
+import { firstValueFrom, map, debounceTime, distinctUntilChanged, delay, mergeMap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { EditorComponent } from '@tinymce/tinymce-angular';
 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { FlowService } from '../../flow.service';
@@ -41,13 +42,28 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public ModuleTypes: any;
   public contactFields: any = ContactModel;
   public formValidation:{ [ key:string ] : boolean } = {};
-  // public formValues:{ [ key:string ] : any } = {};
   public addressState:string = 'create';
   public variables: any;
   public status$: Observable<string>;
   public FlowStatus: any;
   public BotActionStatus: any;
 
+  public tinymceOptions: Object = {
+    branding: false,
+    menubar: false,
+    toolbar: 'bold italic strikethrough underline align',
+    statusbar: false,
+    content_style: `
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.5em;
+        color: #C6CEED;
+      }`
+  };
+
+  @ViewChild('tinymce') tinymce: EditorComponent;
   @ViewChild('botComment') botComment: ElementRef;
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -168,6 +184,11 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       }
       break;
 
+      case 'take-notes' : {
+        this.flowService.updateStep(this.flowStepId, {valid: true});
+      }
+      break;
+
       case 'end': {
         this.flowBot.run(this.flowService);
       }
@@ -200,6 +221,19 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         });
       });
     }
+
+    if( this.tinymce ){
+      this.tinymce.onKeyUp.pipe(
+        untilDestroyed(this),
+        map((action: any) => {
+          return action.event.currentTarget.innerHTML;
+        }),
+        debounceTime(750),
+        distinctUntilChanged(),
+        mergeMap(async (html) => this.flowService.updateNotesToCache(this.tinymce.editor.getContent()) )
+      ).subscribe();
+    }
+
   }
 
 
@@ -245,6 +279,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   public endCall() {
     return this.flowService.restart();
+  }
+
+  public async afterEditorInit( event:any ){
+    if( event ){
+      this.tinymce.editor.setContent( await this.flowService.getNotesFromCache() );
+    }
   }
 
 }

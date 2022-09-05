@@ -109,6 +109,17 @@
       </form>
     </ng-template>
 
+    <ng-template [ngSwitchCase]="'take-notes'">
+      <editor
+        #tinymce
+        apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
+        outputFormat="html"
+        id="editor"
+        [init]="tinymceOptions"
+        (onInit)="afterEditorInit($event)"
+        style="width: 550px;"
+      ></editor>
+    </ng-template>
 
 
     <ng-template ngSwitchDefault>This would be a default template</ng-template>

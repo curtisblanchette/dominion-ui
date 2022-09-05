@@ -543,6 +543,22 @@ export class FlowFactory {
     });
   }
 
+  public static takeNotes(beforeRoutingTriggers: any = undefined, afterRoutingTriggers: any = undefined): FlowStep {
+    return new FlowStep({
+      nodeText: 'Text Notes',
+      nodeIcon: 'note-sticky',
+      component: FlowTextComponent.name,
+      beforeRoutingTriggers,
+      afterRoutingTriggers,
+      state: {
+        data: {
+          title: 'Notes',
+          template: 'take-notes'
+        }
+      }
+    });
+  };
+
 
   public static step(data: Omit<FlowStep, '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed'>) {
     return new FlowStep(data)
