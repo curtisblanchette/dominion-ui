@@ -21,6 +21,8 @@ import { ManipulateType } from 'dayjs';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
+import * as isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 
 @UntilDestroy()
 @Component({
@@ -54,7 +56,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
-  @ViewChild('eventData') eventData: FiizDataComponent;
+  @ViewChild('eventData', {static : false}) eventData:FiizDataComponent;
   @ViewChild('dateRangePicker') dateRangePicker:FiizDatePickerComponent;
 
   constructor(
@@ -153,8 +155,9 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     }
 
     if (this.options.state != 'cancel') {
-      this.initEventSlots();
+      this.initEventSlots();      
     }
+
 
   }
 
@@ -197,17 +200,24 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   public buildForm(fields: string[]) {
     let form: { [key: string]: FormControl } = {};
-
+    const payload = this.flowService.getCurrentStepData(ModuleTypes.EVENT);
+    
     for (const field of fields) {
       const control = models[this.module][field];
-      form[field] = new FormControl(control.defaultValue, control.validators);
+      let value = control.defaultValue;
+      if( payload ){
+        value = payload[field];
+      }
+      form[field] = new FormControl(value, control.validators);
     }
-
+    
     this.form = this.fb.group(form);
-
     this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
       this.flowService.updateStep(this.flowStepId, {valid: this.form.valid});
     });
+
+    this.setData();
+    
   }
 
   public getData() {
@@ -248,6 +258,21 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       this.selectedBtnId = '';
       this.form.patchValue({startTime : slot['from'], endTime : slot['to']});
       this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
+    }
+  }
+
+  public setData(){
+    if( this.form && this.form.value ){
+      const today = dayjs().startOf('day');
+      const tomorrow = dayjs().add(1, 'day').endOf('day');      
+      const startTime = this.form.value.startTime;
+      const endTime = this.form.value.endTime;
+      if( dayjs(startTime).isBetween(today, tomorrow, 'm', '[]') ){
+        this.selectedBtnId = dayjs(startTime).format('dddd MMMM D, YYYY, hh:mm A');
+      } else {
+       this.dateRangePicker.value = [startTime, endTime];
+      }
+      
     }
   }
 

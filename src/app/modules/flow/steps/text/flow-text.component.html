@@ -45,14 +45,13 @@
           <p class="dictation">We will be sending information before, during the process and at the end of the process, so it is important that we verify the email.</p>
           <div class="appointment-time">
             <i class="fa fa-calendar-alt"></i>
-            <div>{{ (vars$ | async)?.appt_start_time | date : 'longDate' }} at {{ (vars$ | async)?.appt_start_time | date : 'shortTime' }}</div>
+            <div>{{ (eventPayload$ | async)?.startTime | date : 'longDate' }} at {{ (eventPayload$ | async)?.startTime | date : 'shortTime' }}</div>
           </div>
           <p class="dictation">Here's the deal. At your consult, you will need to make a decision. Either you will decide to do nothing and keep your life the same as it is today, or you will choose one of the paths we identify to make your life better</p>
           <p class="dictation">We always suggest that you bring some money to start the process; whatever is in your possibilities. Are there any family members or friends who must be involved to help you decide on how you are going to make your life better?</p>
         </div>
         <div style="flex: 1;">
-            <fiiz-data #contactForm [module]="ModuleTypes.CONTACT" [data]="{ id: (vars$ | async)?.contact }" [options]="{state: 'edit', fields: ['email', 'phone'] }"></fiiz-data>
-            <fiiz-data #addressForm [module]="ModuleTypes.ADDRESS" [data]="{ id: (vars$ | async)?.address }" [options]="{state: addressState, fields: ['line1', 'line2', 'city', 'stateCode', 'zipCode', 'countryCode'] }"></fiiz-data>
+            <fiiz-data [module]="ModuleTypes.LEAD" [data]="{ id: (vars$ | async)?.lead }" [options]="{state: 'edit', fields: ['email', 'phone'] }"></fiiz-data>
         </div>
       </div>
     </ng-template>
