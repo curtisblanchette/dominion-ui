@@ -13,7 +13,10 @@ h1, h2, h3, h4, h5 {
   margin-top: 1.5em;
 }
 
-body, p, span { font-size: 14px; }
+body, p, span {
+  //font-size: 14px;
+  @include fluid-type(font-size, 320px, 1440px, 12px, 14px)
+}
 h5   { font-size: 1em; }
 h4   { font-size: 1.25em; font-weight: 500; }
 h3   { font-size: 1.5em; font-weight: 500; }
@@ -21,3 +24,7 @@ h2   { font-size: 2.25em; font-weight: 500; }
 h1   { font-size: 3.375em; }
 
 
+.fluid-heading {
+  @include fluid-type(font-size, 320px, 1440px, 22px, 46px);
+  @include fluid-type(line-height, 320px, 1440px, 22px, 46px)
+}

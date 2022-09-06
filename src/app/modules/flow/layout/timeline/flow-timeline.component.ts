@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as fromFlow from '../../store/flow.reducer';
 import { FlowStep } from '../../classes';
@@ -25,7 +25,6 @@ export class FlowTimelineComponent implements AfterViewInit {
   @ViewChild('viewport') viewport: ElementRef;
 
   @ViewChildren('item') items: QueryList<ElementRef>;
-
   constructor(
     private store: Store<fromFlow.FlowState>,
     public renderer: Renderer2,
@@ -50,8 +49,11 @@ export class FlowTimelineComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit() {
+    fromEvent(window, 'resize').pipe(
+      debounceTime(0),
+      tap(() => this.scrollActiveIntoView())
+    ).subscribe();
 
-    this.scrollActiveIntoView();
 
     fromEvent(this.scroller.nativeElement, 'wheel').pipe(
       untilDestroyed(this),

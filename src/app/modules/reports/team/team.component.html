@@ -1,6 +1,7 @@
-<div class="total-pipeline__wrapper">
-  <div class="total-pipeline__filters">
-    <form [formGroup]="form" class="report-filters">
+<div class="page-heading">
+  <h2 class="page-heading__title">Reports/Team</h2>
+  <div class="page-heading__filters">
+    <form [formGroup]="form" class="report-filters" *ngIf="form">
       <fiiz-date-picker
         #startDate
         [pickerType]="'calendar'"
@@ -22,100 +23,35 @@
       ></fiiz-date-picker>
     </form>
   </div>
+</div>
 
-  <div class="total-pipeline__reports" *ngIf="(status$ | async) === 'success'">
-    <h4>In Pipeline</h4>
-    <nav class="pipeline-nav">
+<div class="team__wrapper">
 
-      <section class="pipeline-nav__section grid-2" style="flex:0.4; margin-right: 20px;">
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Qual. Leads</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).leads}}</div>
-          <div class="pipeline-nav__item__caption">&nbsp;</div>
-        </div>
+  <div class="team__reports" *ngIf="(status$ | async) === 'success'">
 
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Sets</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).sets}}</div>
-          <div class="pipeline-nav__item__caption">Set Rate 52%</div>
-        </div>
-      </section>
+    <fiiz-tab-nav (onSelect)="goTo($event)" [items]="[{key: 'inbound', label: 'Inbound Sales'}, {key: 'outbound', label: 'Outbound Sales'}, {key: 'consultations', label: 'Consultations'}]">
+    </fiiz-tab-nav>
 
-      <section class="pipeline-nav__section grid-3" style="flex:0.6">
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Total Appts.</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).totalAppointments}}</div>
-          <div class="pipeline-nav__item__caption">&nbsp;</div>
-        </div>
-
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Qual Shows</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).qualifiedShows}}<span class="pipeline-nav__item__metric__goal">/{{( in$ | async ).shows}}</span></div>
-          <div class="pipeline-nav__item__caption">Show Rate 52%</div>
-        </div>
-
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Hires</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).hires}}</div>
-          <div class="pipeline-nav__item__caption">Hire Rate 60%</div>
-        </div>
-      </section>
-
-    </nav>
-
-    <h4>Out of Pipeline</h4>
+    <h5>All {{agentOrConsultant}}s</h5>
 
     <nav class="pipeline-nav">
-      <section class="pipeline-nav__section grid-2" style="flex:0.4; margin-right: 20px;">
+      <section class="pipeline-nav__section" *ngFor="let stat of teamStats[activePath]; let i = index">
         <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Answers</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).answers}}</div>
+          <div class="pipeline-nav__item__title">{{stat.label}}</div>
+          <div class="pipeline-nav__item__metric"><span [countUp]="stat.value" class="fluid-heading"></span><span class="supporting-metric" *ngIf="stat.label === 'Answers/Calls' && activePath === 'outbound'">/{{(data$ | async)[activePath].calls}}</span></div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
-        </div>
-
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Sets</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).sets}}</div>
-          <div class="pipeline-nav__item__caption">Set Rate {{( out$ | async ).setRate}}%</div>
-        </div>
-      </section>
-
-      <section class="pipeline-nav__section grid-3" style="flex:0.6">
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Total Appts.</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).totalAppointments}}<span class="pipeline-nav__item__metric__goal">/51</span></div>
-          <div class="pipeline-nav__item__caption">&nbsp;</div>
-        </div>
-
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Qual Shows</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).qualifiedShows}}<span class="pipeline-nav__item__metric__goal">/{{( out$ | async ).sets}}</span></div>
-          <div class="pipeline-nav__item__caption">Show Rate {{( out$ | async ).showRate}}%</div>
-        </div>
-
-        <div class="pipeline-nav__item">
-          <div class="pipeline-nav__item__title">Hires</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).hires}}</div>
-          <div class="pipeline-nav__item__caption">Hire Rate {{( out$ | async ).hireRate}}%</div>
         </div>
       </section>
     </nav>
 
-
-    <fiiz-grid [cols]="11" class="table">
-      <div class="table-heading">Age</div>
-      <div class="table-heading">Dials</div>
-      <div class="table-heading">Answers</div>
-      <div class="table-heading">Sets</div>
-      <div class="table-heading">Set Rate</div>
-      <div class="table-heading">Total Appts.</div>
-      <div class="table-heading">Shows</div>
-      <div class="table-heading">Qual. Shows</div>
-      <div class="table-heading">Show Rate</div>
-      <div class="table-heading">Hires</div>
-      <div class="table-heading">Hire Rate</div>
-
-      <div *ngFor="let cell of grid$ | async">{{cell}}</div>
+    <h5>Breakdown by {{agentOrConsultant}}</h5>
+    <fiiz-grid [cols]="columns[activePath]?.length + 1" class="table">
+      <div class="table-heading" (click)="sortField('name')">Name <i class="fa {{currentSort[1] === 'name' ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
+      <div class="table-heading" *ngFor="let column of columns[activePath]" (click)="sortField(column)">{{getLabel(column, 'table')}} <i class="fa {{currentSort[1] === column ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
+      <ng-container *ngFor="let person of people[activePath]">
+        <div data-column="name" style="text-align: left;">{{person.name}}</div>
+        <div [attr.data-column]="column" *ngFor="let column of columns[activePath]" style="text-align:right;">{{person[column]}}{{column.indexOf('Rate') === -1 ? '' : '%' }}</div>
+      </ng-container>
     </fiiz-grid>
 
   </div>

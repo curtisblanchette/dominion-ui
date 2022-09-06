@@ -7,6 +7,7 @@
   position: relative;
   margin-bottom: var(--input-margin-bottom);
   width: 100%;
+  height: max-content;
   @include placeholderStyle();
 
 

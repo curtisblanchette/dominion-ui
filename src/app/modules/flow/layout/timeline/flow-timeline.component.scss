@@ -5,7 +5,8 @@
   //top: -100px;
   position: relative;
   display: block;
-  width: 300px;
+  //width: 300px;
+  @include fluid-type(width, 320px, 1440px, 150px, 250px );
   height: 100%;
   top: 0;
   //mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1), rgba(0,0,0,0));
@@ -13,7 +14,7 @@
 
   .wrapper {
     top: 50%;
-    width: 300px;
+    @include fluid-type(width, 320px, 1440px, 150px, 250px );
     height: fit-content;
     position: relative;
     transform: translateY(-50%);
@@ -27,16 +28,18 @@
   flex-direction: column;
   scroll-snap-type: y mandatory;
   scroll-snap-stop: always;
-  max-height: 76px;
+  //max-height: 76px;
   overflow-x: scroll;
 
 
   &__item {
     color: #1D3555;
-    width: 300px;
+    @include fluid-type(width, 320px, 1440px, 150px, 250px );
     display: flex;
+    align-items: center;
     cursor: pointer;
-    line-height: 76px;
+    //line-height: 76px;
+    @include fluid-type(line-height, 320px, 2460px, 54px, 96px);
     background: none;
     border: none;
     padding: 0;
@@ -44,12 +47,18 @@
     scroll-snap-align: start;
     scroll-snap-stop: always;
 
+
     &__icon {
-      font-size: 24px;
-      width: 84px;
-      min-width: 84px;
+      //font-size: 24px;
+      @include fluid-type(font-size, 320px, 2460px, 18px, 24px);
+      //height: 76px;
+      @include fluid-type(width, 320px, 2460px, 64px, 84px);
+      @include fluid-type(min-width, 320px, 2460px, 64px, 84px);
+      //width: 84px;
+      //min-width: 84px;
       text-align: center;
-      line-height: 76px;
+      //line-height: 76px;
+      @include fluid-type(line-height, 320px, 2460px, 54px, 76px);
 
       &:last-child {
         margin-left: auto;
@@ -57,8 +66,9 @@
     }
 
     &__title {
-      font-size: 18px;
+      //font-size: 18px;
       font-weight: 500;
+      @include fluid-type(font-size, 320px, 1440px, 12px, 18px);
       @include ellipsis();
     }
 
@@ -96,7 +106,7 @@
   z-index: 999;
 
   height: calc(77px * 8);
-  width: 300px;
+  @include fluid-type(width, 320px, 1440px, 150px, 250px );
 
   scroll-snap-type: y mandatory;
   scroll-snap-stop: always;
@@ -108,7 +118,8 @@
   &__item {
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    height: 76px;
+    //height: 76px;
+    @include fluid-type(height, 320px, 2460px, 24px, 76px);
     width: 100%;
     //background: rgba(0, 255, 0, .07);
     //border-bottom: 1px solid grey;
@@ -121,8 +132,9 @@
   z-index: 888;
   background: var(--slate-shade1);
   opacity: .3;
-  width: 300px;
-  height: 76px;
+  @include fluid-type(width, 320px, 1440px, 150px, 250px );
+  //height: 76px;
+  @include fluid-type(height, 320px, 2460px, 54px, 76px);
   transform: translateY(-100%);
 }
 

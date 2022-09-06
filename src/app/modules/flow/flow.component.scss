@@ -25,6 +25,8 @@ router-outlet {
     display: flex;
     justify-content: end;
     gap: .5em;
+    padding-right: var(--container-padding);
+    padding-left: var(--container-padding);
   }
   &__content {
     display: flex;
@@ -101,3 +103,4 @@ section ng-component {
   right: calc(100vw - 95%);
   z-index: 1;
 }
+

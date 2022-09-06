@@ -1,6 +1,7 @@
-<div class="total-pipeline__wrapper">
-  <div class="total-pipeline__filters">
-    <form [formGroup]="form" class="report-filters">
+<div class="page-heading">
+  <h2 class="page-heading__title">Reports/Total Pipeline</h2>
+  <div class="page-heading__filters">
+    <form [formGroup]="form" class="report-filters" *ngIf="form">
       <fiiz-date-picker
         #startDate
         [pickerType]="'calendar'"
@@ -22,21 +23,21 @@
       ></fiiz-date-picker>
     </form>
   </div>
-
+</div>
+<div class="total-pipeline__wrapper">
   <div class="total-pipeline__reports" *ngIf="(status$ | async) === 'success'">
-    <h4>In Pipeline</h4>
-    <nav class="pipeline-nav">
 
+    <nav class="pipeline-nav">
       <section class="pipeline-nav__section grid-2" style="flex:0.4; margin-right: 20px;">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Qual. Leads</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).leads}}</div>
+          <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( in$ | async ).leads"></div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
         </div>
 
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Sets</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).sets}}</div>
+          <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( in$ | async ).sets"></div>
           <div class="pipeline-nav__item__caption">Set Rate 52%</div>
         </div>
       </section>
@@ -44,19 +45,22 @@
       <section class="pipeline-nav__section grid-3" style="flex:0.6">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Total Appts.</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).totalAppointments}}</div>
+          <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( in$ | async ).totalAppointments"></div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
         </div>
 
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Qual Shows</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).qualifiedShows}}<span class="pipeline-nav__item__metric__goal">/{{( in$ | async ).shows}}</span></div>
+          <div class="pipeline-nav__item__metric">
+            <span class="fluid-heading" [countUp]="( in$ | async ).qualifiedShows"></span>
+            <span class="pipeline-nav__item__metric__goal">/{{( in$ | async ).shows}}</span>
+          </div>
           <div class="pipeline-nav__item__caption">Show Rate 52%</div>
         </div>
 
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Hires</div>
-          <div class="pipeline-nav__item__metric">{{( in$ | async ).hires}}</div>
+          <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( in$ | async ).hires"></div>
           <div class="pipeline-nav__item__caption">Hire Rate 60%</div>
         </div>
       </section>
@@ -69,13 +73,13 @@
       <section class="pipeline-nav__section grid-2" style="flex:0.4; margin-right: 20px;">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Answers</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).answers}}</div>
+          <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( out$ | async ).answers"></div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
         </div>
 
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Sets</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).sets}}</div>
+          <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( out$ | async ).sets"></div>
           <div class="pipeline-nav__item__caption">Set Rate {{( out$ | async ).setRate}}%</div>
         </div>
       </section>
@@ -83,19 +87,25 @@
       <section class="pipeline-nav__section grid-3" style="flex:0.6">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Total Appts.</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).totalAppointments}}<span class="pipeline-nav__item__metric__goal">/51</span></div>
+          <div class="pipeline-nav__item__metric fluid-heading">
+            <span class="fluid-heading" [countUp]="( out$ | async ).totalAppointments"></span>
+            <span class="pipeline-nav__item__metric__goal">/51</span>
+          </div>
           <div class="pipeline-nav__item__caption">&nbsp;</div>
         </div>
 
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Qual Shows</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).qualifiedShows}}<span class="pipeline-nav__item__metric__goal">/{{( out$ | async ).sets}}</span></div>
+          <div class="pipeline-nav__item__metric">
+            <span class="fluid-heading" [countUp]="( out$ | async ).qualifiedShows"></span>
+            <span class="pipeline-nav__item__metric__goal">/{{( out$ | async ).sets}}</span>
+          </div>
           <div class="pipeline-nav__item__caption">Show Rate {{( out$ | async ).showRate}}%</div>
         </div>
 
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Hires</div>
-          <div class="pipeline-nav__item__metric">{{( out$ | async ).hires}}</div>
+          <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( out$ | async ).hires"></div>
           <div class="pipeline-nav__item__caption">Hire Rate {{( out$ | async ).hireRate}}%</div>
         </div>
       </section>

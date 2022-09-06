@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.16.3 (2022-09-01)
+
+### 1.16.2 (2022-09-01)
+
+### 1.16.1 (2022-09-01)
+
+## 1.16.0 (2022-09-01)
+
+
+### Features
+
+* **II-2782:** connect objection flow to dropdown ([79eb1a3](https://github.com/4iiz/dominion-ui/commit/79eb1a385a1b9462bd638e4da77726e77c861586))
+
+### 1.15.26 (2022-09-01)
+
+
+### Bug Fixes
+
+* **II-2783:** add note records to outcome forms ([f0dd49d](https://github.com/4iiz/dominion-ui/commit/f0dd49dcdc11d562f13c2fdefdcff98af5319585))
+
+### 1.15.25 (2022-08-31)
+
+### 1.15.24 (2022-08-31)
+
+### 1.15.23 (2022-08-31)
+
+### 1.15.22 (2022-08-31)
+
+
+### Bug Fixes
+
+* **team-report:** team report switching between verticals ([b118fdc](https://github.com/4iiz/dominion-ui/commit/b118fdcffda55166471aa3be204a7d9725b782d0))
+
+### 1.15.21 (2022-08-31)
+
+
+### Bug Fixes
+
+* **II-2784:** connect Outbound flow ([75f01f6](https://github.com/4iiz/dominion-ui/commit/75f01f6a2869f05b46cfc6efe8a9c715efc9b7fd))
+
+### 1.15.20 (2022-08-30)
+
 ### 1.15.19 (2022-08-26)
 
 ### 1.15.18 (2022-08-26)

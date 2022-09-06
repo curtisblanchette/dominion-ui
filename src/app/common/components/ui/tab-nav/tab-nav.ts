@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 
 export interface IFiizTabNavItem {
   key: string;
@@ -11,10 +11,10 @@ export interface IFiizTabNavItem {
   templateUrl: './tab-nav.html',
   styleUrls: ['./tab-nav.scss']
 })
-export class FiizTabNavComponent implements OnInit {
+export class FiizTabNavComponent implements AfterViewInit {
 
-  public selected: string;
-  @Input('items') items: IFiizTabNavItem[];
+  public selected: IFiizTabNavItem;
+  @Input('items') items: IFiizTabNavItem[] | any[];
   @Output('onSelect') onSelect: EventEmitter<any> = new EventEmitter<any>()
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
   @ViewChildren('link') links: QueryList<ElementRef>;
@@ -25,31 +25,51 @@ export class FiizTabNavComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-    this.items = this.items.map((e) => ({...e, active: false}));
-    this.selected = this.items[0].key;
+  ngAfterViewInit() {
+    this.items = this.items.map((e, index) => ({...e, active: index < 1}));
+
+    this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', `${100 / this.items.length}%`);
+    this.selected = this.items[0];
     this.updateActiveUnderline();
   }
+  //
+  // updateActiveUnderline() {
+  //   setTimeout(() => {
+  //     const el = this.links.find((item: any) => item.nativeElement.classList.contains('active'))?.nativeElement;
+  //
+  //     if (el) {
+  //       const link = {
+  //         left: el?.offsetLeft || 0
+  //       }
+  //       this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
+  //     }
+  //   })
+  //
+  // }
 
   updateActiveUnderline() {
     setTimeout(() => {
-        const el = this.links.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
+      const el = this.links.find(item => item.nativeElement.classList.contains('active'))?.nativeElement;
 
-        if (el) {
-          const link = {
-            left: el?.offsetLeft || 0,
-            // width: el?.offsetWidth || 0
-          }
-
-          this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
-          // this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
+      if (el) {
+        const link = {
+          left: el?.offsetLeft || 0,
+          width: el?.offsetWidth || 0
         }
-      }, 0);
+
+        this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
+        this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', link.width + 'px');
+      }
+    });
   }
 
-  public onClick($event: string) {
-    this.updateActiveUnderline()
+
+  public onClick($event: any) {
+    this.items = this.items.map((e) => {
+      return { ...e, active: e.key === $event.key };
+    });
     this.selected = $event;
-    this.onSelect.next(this.selected);
+    this.onSelect.next(this.selected.key);
+    this.updateActiveUnderline()
   }
 }
