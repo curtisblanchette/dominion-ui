@@ -1,4 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { animationFrameScheduler, auditTime, fromEvent, tap } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { debounceTime } from 'rxjs/operators';
 
 export interface IFiizTabNavItem {
   key: string;
@@ -6,12 +9,13 @@ export interface IFiizTabNavItem {
   active?: boolean;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'fiiz-tab-nav',
   templateUrl: './tab-nav.html',
   styleUrls: ['./tab-nav.scss']
 })
-export class FiizTabNavComponent implements AfterViewInit {
+export class FiizTabNavComponent implements AfterViewInit, OnInit {
 
   public selected: IFiizTabNavItem;
   @Input('items') items: IFiizTabNavItem[] | any[];
@@ -30,22 +34,20 @@ export class FiizTabNavComponent implements AfterViewInit {
 
     this.renderer.setStyle(this.activeUnderline.nativeElement, 'width', `${100 / this.items.length}%`);
     this.selected = this.items[0];
+
+
     this.updateActiveUnderline();
   }
-  //
-  // updateActiveUnderline() {
-  //   setTimeout(() => {
-  //     const el = this.links.find((item: any) => item.nativeElement.classList.contains('active'))?.nativeElement;
-  //
-  //     if (el) {
-  //       const link = {
-  //         left: el?.offsetLeft || 0
-  //       }
-  //       this.renderer.setStyle(this.activeUnderline.nativeElement, 'left', link.left + 'px');
-  //     }
-  //   })
-  //
-  // }
+
+  ngOnInit() {
+    fromEvent(window, 'resize').pipe(
+      untilDestroyed(this),
+      auditTime(10, animationFrameScheduler),
+      tap(() => {
+        return this.updateActiveUnderline();
+      })
+    ).subscribe();
+  }
 
   updateActiveUnderline() {
     setTimeout(() => {

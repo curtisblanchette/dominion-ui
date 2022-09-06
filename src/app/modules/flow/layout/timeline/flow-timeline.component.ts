@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as fromFlow from '../../store/flow.reducer';
 import { FlowStep } from '../../classes';
-import { fromEvent, Observable, of, skip, tap } from 'rxjs';
+import { animationFrameScheduler, auditTime, fromEvent, Observable, of, skip, tap } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FlowService } from '../../flow.service';
 
 @UntilDestroy()
@@ -50,7 +50,8 @@ export class FlowTimelineComponent implements AfterViewInit {
 
   public ngAfterViewInit() {
     fromEvent(window, 'resize').pipe(
-      debounceTime(0),
+      untilDestroyed(this),
+      auditTime(10, animationFrameScheduler),
       tap(() => this.scrollActiveIntoView())
     ).subscribe();
 
