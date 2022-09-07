@@ -72,6 +72,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @Input('title') title!: string | number | boolean | undefined;
   @Input('id') id!: string;
   @Input('default') default: string | number | boolean | undefined;
+  @Input('mandatory') mandatory: boolean | undefined = true;
   @Input('disabled') disabled: boolean = false;
 
   @Input('type') dropdownType!: 'anchor' | 'button' | 'search';
@@ -98,7 +99,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.showDropDowns = false;
   }
 
-  onChange: (value: string | number | boolean | DropdownItem | undefined) => void = () => {};
+  onChange: (value: string | number | boolean | DropdownItem | undefined | null) => void = () => {};
   onTouched: Function = () => {};
 
   @ViewChild('dropdownList') dropdownList: ElementRef;
@@ -246,13 +247,18 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onTouched = fn;
   }
 
-  public setTheValue(value: DropdownItem) {
-    this.onChange(value.id);
-    this.onTouched();
-    this.title = value.label;
-    if( this.apiData?.length ){
-      const find = this.apiData.find( c => c.id === value.id );
-      this.getValues.emit(find);
+  public setTheValue(value: DropdownItem | null) {
+    if( !value ){
+      this.onChange(value);
+      this.title = '--None--';
+    } else {
+      this.onChange(value.id);
+      this.onTouched();
+      this.title = value.label;
+      if( this.apiData?.length ){
+        const find = this.apiData.find( c => c.id === value.id );
+        this.getValues.emit(find);
+      }
     }
   }
 

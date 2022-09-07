@@ -46,7 +46,8 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   }
 
   override update(entity: Update<T>, notify: boolean = true) {
-    const data = this.removeNulls(entity);
+    // const data = this.removeNulls(entity);
+    const data = entity;
     const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
 
     return of('dummy-delay').pipe(

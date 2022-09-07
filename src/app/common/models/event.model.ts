@@ -79,6 +79,7 @@ export const EventModel: {[key: string]: IModel} = {
     type: 'dropdown-search',
     service: ModuleTypes.OFFICE,
     defaultValue: null,
+    mandatory: false,
     validators: []
   },
   [Fields.OUTCOME_ID]: {
@@ -86,6 +87,7 @@ export const EventModel: {[key: string]: IModel} = {
     type: 'dropdown-search',
     service: 'eventOutcome',
     defaultValue: null,
+    mandatory: false,
     validators: []
   },
   [Fields.OBJECTION_ID]: {
@@ -93,6 +95,7 @@ export const EventModel: {[key: string]: IModel} = {
     type: 'dropdown-search',
     service: 'eventObjection',
     defaultValue: null,
+    mandatory: false,
     validators: []
   }
 }

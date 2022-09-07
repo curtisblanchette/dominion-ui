@@ -27,6 +27,7 @@
         [label]="control.label"
         [title]="control.label"
         [module]="control.service"
+        [mandatory]="control.mandatory"
         [disabled]="control.key === 'leadSourceId' && control.module !== ModuleTypes.CAMPAIGN"
       >{{control.label}}</fiiz-dropdown>
     </ng-container>

@@ -30,6 +30,15 @@
       </form>
       <div class="fiiz-dropdown-button__content__wrapper">
 
+        <fiiz-button
+          *ngIf="mandatory == false"
+          tabindex="-1"
+          class="dropdown"
+          (click)="setTheValue(null)"
+          style="border-radius: 0;"
+        >
+        --None--
+        </fiiz-button>
         <fiiz-button tabindex="-1"
            *ngFor="let item of items$ | async; let i = index; let last = last;"
            [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}"

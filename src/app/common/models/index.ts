@@ -15,6 +15,7 @@ export interface IModel {
   type: 'text' | 'email' | 'tel' | 'textarea' | 'number' | 'dropdown' | 'currency' | 'percentage' | 'calendar' | 'timer' | 'both' | 'virtual' | 'timestamp' | 'dropdown-search',
   service?: string;
   defaultValue?: any;
+  mandatory?:boolean;
   validators?: Validators[]
 }
 

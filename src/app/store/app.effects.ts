@@ -104,6 +104,7 @@ export class AppEffects {
           [LookupTypes.ROLE]: this.http.get(environment.dominion_api_url + '/roles'),
           // Call Lookups
           [LookupTypes.CALL_OUTCOME]: this.http.get(environment.dominion_api_url + '/call-outcomes'),
+          [LookupTypes.CALL_TYPE]: this.http.get(environment.dominion_api_url + '/call-types'),
           [LookupTypes.CALL_OBJECTION]: this.http.get(environment.dominion_api_url + '/call-objections'),
           [LookupTypes.CALL_STATUS]: this.http.get(environment.dominion_api_url + '/call-statuses'),
           // Deal Lookups
