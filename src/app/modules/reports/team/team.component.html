@@ -50,7 +50,7 @@
       <div class="table-heading" *ngFor="let column of columns[activePath]" (click)="sortField(column)">{{getLabel(column, 'table')}} <i class="fa {{currentSort[1] === column ? sortStates[currentSort[0]].iconClass : ''}}"></i></div>
       <ng-container *ngFor="let person of people[activePath]">
         <div data-column="name" style="text-align: left;">{{person.name}}</div>
-        <div [attr.data-column]="column" *ngFor="let column of columns[activePath]" style="text-align:right;">{{person[column]}}{{column.indexOf('Rate') === -1 ? '' : '%' }}</div>
+        <div [attr.data-column]="column" *ngFor="let column of columns[activePath]" style="text-align:right;">{{person[column] || 0}}{{column.indexOf('Rate') === -1 ? '' : '%' }}</div>
       </ng-container>
     </fiiz-grid>
 
