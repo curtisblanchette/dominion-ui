@@ -30,16 +30,84 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   public ModuleTypes: any;
   public fields: any = CallFields;
   public selectedId:number;
-  public resolution:{ [key:number] : string } = {
-    1 : 'Objection 1',
-    2 : 'Objection 2',
-    3 : 'Objection 3',
-    4 : 'Objection 4',
-    5 : 'Objection 5',
-    6 : 'Objection 6',
-    7 : 'Objection 7',
-    8 : 'Objection 8',
-    9 : 'Objection 9',
+  public resolution:{ [key:number] : any } = {
+    1 : { // I want to know the price first what the case will cost me
+      steps : [
+        'Absolutely, we all want to know how much this investment will affect our wallet.',
+        'I would be happy to give you a brief estimate, however, our cases pricing vary depending on each person\'s case.',
+        'In your case, may I ask when was the first time you entered the United states?',
+        'May I ask if what country you are from?',
+        'Have you tried doing this process before?',
+        'When was the last time you tried a legal process?'
+      ],
+      secret : [
+        'At this point, you will need to ask a question depending on what\'s next in your script. Whether it\'s gathering their contact information, continuing with your usual call script or performing the immigration questionnaire. It\'s important we do not stutter when overcoming these objections, therefore, we always suggest a 15 minute roleplay every morning within agents to help them practice this before doing it live on a phone call.'
+      ]
+    },
+    2 : { // The consultation fee is too expensive
+      steps : [
+        'You are correct, the prices are expensive',
+        'Since you would be speaking to the experts, our attorneys have created a system that will let us know if you have any option available before setting any consultation.',
+        'May I ask, have you tried fixing your legal status before or is this the first time you look into it?',
+        'What country are you originally from?',
+        'How long have you been in the United States?'
+      ],
+      secret : [
+        'As mentioned above, our goal is to focus on following what\'s next in your script. However, it is important to highlight how crucial it is to agree with anybody that the consultation fee is too expensive. What if they don\'t say a word or simply give you small talk letting you know in other words that it\'s too expensive? At that point, skip step 1 and go straight to step 2 and 3. Always finish with a question.'
+      ]
+    },
+    3 : { // What guarantees can you give me that this will work?
+      steps : [
+        'In the 15 years we have been working with the immigrant community we have helped over 50,000 people fix their legal status.',
+        'Unfortunately, no attorney can offer you any guarantees as we are subject to the law, however, we always guarantee you will get the same work and dedication we gave to those 50,000 so you can be 50k and 1 more!',
+        'Have you tried doing this before or is this your first time looking into it?',
+        'How long have you been in the US?',
+        'May I ask where you would be right now if you would\'ve had your legal status 5 years ago? (power question)',
+        'What is the first thing you would like to do if you had your green card today?'
+      ],
+      secret : [
+        'When people are fearful of starting a process, we want to focus on the positive outcome of what will happen if they proceed with the case. Ask power questions that will make them think about a positive future for their family. You can also ask questions that inspire fear towards immigration such as: "Do you have an attorney backing you up right now if ICE tried to deport you right now?" or "What would your life look like if you or your family members were separated by ICE today?'
+      ]
+    },
+    4 : { // Are you guys legit?
+      steps : [
+        'In the 15 years we have been working with the immigrant community we have helped over 50,000 people fix their legal status.',
+        'We\'d love you to be 50k and 1, however, we know there are many attorneys out there that are not trustworthy. Our attorney founder of the firm was also an immigrant, so she understands the struggles of fighting for a legal status.',
+        'Did you you have a bad experience in the past with other attorneys?',
+        'How long has it been since you tried looking into fixing your legal status?'
+      ],
+      secret : [
+        'Always focus on the fact that we are helping immigrants, not working against them. Get creative on what and how you answer, however, it\'s important we speak smoothly and with a smile during this portion. If we sound agitated, frustrated or mad, they will hang up. This is where our tone of voice will have to transform into the friendliest tone possible so they can trust us. Remember, most immigrants that ask this have gone through scams with other attorneys or simply fear getting scammed/deported.'
+      ]
+    },
+    5 : { // I don't want to give out my credit card
+      steps : [
+        'I understand; a credit card is confidential information.',
+        'Our firm\'s system only allows us to remove the exact amount of the consultation for your security. Nonetheless, we always encourage our potential clients to use a debit card for their own safety.',
+        'Would you prefer to use in that case your debit card or a family member\'s debit card?'
+      ],
+      secret : [
+        'This one is pretty straight forward. We want to sound confident but smiling at all times. This is a common objection that can be easily overcome by saying exactly that. If the person continues objecting, feel free to offer other payment options available or a free consultation on Wednesday without a guarantee of getting a consultation in place soon. Again, the secret is to sound confident on this one.'
+      ]
+    },
+    6 : { // Okay, thank you for the info. I'll call back when I am ready!
+      steps : [
+        'Of course!',
+        'We get hundreds of calls a day.',
+        'When are you looking to call back so I can let my co-workers know in case I\'m not here so they can help you?'
+      ]
+    },
+    7 : { // Let me talk it over with my spouse
+      steps : [
+        'Absolutely! Please review with your loved ones your options and let us know what you decide.',
+        'Based on the notes, it looks like we can find a way to help you get a legal status and in our line of work, we get to see the good and the bad of when people decide to start or when they decide to wait, not knowing when is the next time a loved one will get deported.',
+        'When are you planning to start?',
+        'What is stopping you from scheduling a consultation?'
+      ],
+      secret : [
+        'The secret to lack of urgency is simply overconfidence due to being in the US for many years, money or fear. We want to dig in by asking questions. If that takes us to more objections, we continue following the 3 steps to overcome objections until they give us a yes to the consultation.'
+      ]
+    }
   }
 
   constructor(
