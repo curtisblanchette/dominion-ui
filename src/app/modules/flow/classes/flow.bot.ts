@@ -49,7 +49,10 @@ export class FlowBot {
 
   public run(flowService: FlowService) {
     this.store.select(fromFlow.selectFlowBotContext).pipe(take(1)).subscribe(async (result: any) => {
-      const [timeline, status] = result;
+      let [timeline, status, didObject] = result;
+
+      // contains objection, filter out anything invalid
+      timeline = didObject && timeline.filter((step: FlowStep) => step.valid) || timeline;
 
       if(!timeline.every((step: FlowStep) => step.valid)) {
         // TODO Should highlight the invalid steps in the sidemenu
