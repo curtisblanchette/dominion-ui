@@ -53,7 +53,7 @@ export class FlowBuilder {
     const createLead = FlowFactory.createLead();
 
     const appointmentList = FlowFactory.appointmentList((flowService: FlowService, vars: any, step: any) => {
-      step.state.options['query'] ={
+      step.state.options['query'] = {
         dealId: vars.deal
       };
       return step;

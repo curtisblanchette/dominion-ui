@@ -234,8 +234,9 @@ export const selectFlowTimeline = createSelector(selectSteps, selectLinks, selec
 
 });
 export const selectFlowStatus = createSelector(selectFlow, (flow: FlowState) => flow.status);
-export const selectFlowBotContext = createSelector(selectFlowTimeline, selectFlowStatus, (timeline, status) => {
-  return [timeline, status];
+export const selectFlowBotContext = createSelector(selectFlowTimeline, selectFlowStatus, selectAllVariables, (timeline, status,  vars) => {
+  const didObject = vars['objectAndEndCall'] || false;
+  return [timeline, status, didObject];
 });
 
 export const selectIsValid = createSelector(selectSteps, selectCurrentStepId, (steps: FlowStep[], currentStepId) => {
