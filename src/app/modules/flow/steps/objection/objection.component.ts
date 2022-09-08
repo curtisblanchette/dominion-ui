@@ -30,13 +30,13 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   public ModuleTypes: any;
   public fields: any = CallFields;
   public selectedId:number;
-  public resolution:{ [key:number] : any } = {
+  public resolution: { [key:number]: any } = {
     1 : { // I want to know the price first what the case will cost me
       steps : [
         'Absolutely, we all want to know how much this investment will affect our wallet.',
         'I would be happy to give you a brief estimate, however, our cases pricing vary depending on each person\'s case.',
         'In your case, may I ask when was the first time you entered the United states?',
-        'May I ask if what country you are from?',
+        'May I ask, what country are you from?',
         'Have you tried doing this process before?',
         'When was the last time you tried a legal process?'
       ],
@@ -48,7 +48,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
       steps : [
         'You are correct, the prices are expensive',
         'Since you would be speaking to the experts, our attorneys have created a system that will let us know if you have any option available before setting any consultation.',
-        'May I ask, have you tried fixing your legal status before or is this the first time you look into it?',
+        'May I ask, have you tried fixing your legal status before or is this the first time you\'re look into it?',
         'What country are you originally from?',
         'How long have you been in the United States?'
       ],
