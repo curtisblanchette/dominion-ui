@@ -1,6 +1,6 @@
 <!--<h3>{{data.title}}</h3>-->
 <form [formGroup]="form" (ngSubmit)="save()" >
-  <fiiz-grid [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : false}">
+  <fiiz-grid [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : 'initial'}">
     <ng-container *ngFor="let control of controlData">
       <fiiz-input #inputList *ngIf="['text','tel','email'].includes(control.type)" [type]="control.type" [id]="control.key" [label]="control.label" [placeholder]="control.label" [formControlName]="control.key"></fiiz-input>
       <fiiz-textarea class="span-3" *ngIf="control.type === 'textarea'" [formControlName]="control.key" [id]="control.key" [label]="control.key" [placeholder]="control.label" [height]="'100px'" ></fiiz-textarea>

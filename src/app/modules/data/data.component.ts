@@ -63,6 +63,9 @@ export class DataComponent implements OnInit {
               options: {
                 state : 'edit',
                 controls: true,
+                grid: {
+                  minColWidth: 240,
+                },
                 fields: Object.keys(models[res.module])
               }
             }
@@ -78,6 +81,9 @@ export class DataComponent implements OnInit {
             options: {
               state : 'create',
               controls: true,
+              grid: {
+                minColWidth: 240,
+              },
               fields: Object.keys(models[res.module])
             }
           }
@@ -89,7 +95,7 @@ export class DataComponent implements OnInit {
           const url = `${environment.dominion_api_url}/${uriOverrides[res.module]}/${res.record.id}`;
           firstValueFrom(this.http.delete(url)).then( (response) => {
             if( response instanceof HttpErrorResponse ){
-              
+
             } else {
               componentRef.data$.forEach((items) => {
                 const index = items.findIndex( item => item?.id === res.record.id );

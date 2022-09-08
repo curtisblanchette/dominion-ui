@@ -65,13 +65,6 @@
 
 .flex-table {
 
-  height: calc(100% - 58px);
-  position: absolute;
-  top: 58px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
   &__header {
     justify-content: center;
     flex-wrap: nowrap;
