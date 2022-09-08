@@ -10,8 +10,10 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'outbound-type'">
-      <h3 class="title">{{data.title}}</h3>
-      <p>{{data.body}}</p>
+      <header>
+        <h3>{{data.title}}</h3>
+        <p>{{data.body}}</p>
+      </header>
 
       <form [formGroup]="form" *ngIf="form">
         <fiiz-radio [items]="outboundTypes$" formControlName="outbound_type" name="outbound_type"></fiiz-radio>
@@ -19,8 +21,10 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'relationship-building'">
-      <h3 class="title">{{data.title}}</h3>
-      <p style="text-align: center;">{{data.body}}</p>
+      <header>
+        <h3>{{data.title}}</h3>
+        <p>{{data.body}}</p>
+      </header>
 
       <p class="dictation">Excellent, so you were telling me your case is regarding...</p>
 
@@ -35,7 +39,14 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'power-question'">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet aperiam autem, dolore dolorem eum explicabo laborum maiores quae quasi! Animi corporis dolorum eum expedita iste placeat sapiente tenetur vel!</p>
+      <header>
+        <h3>Power Question</h3>
+        <p>Be sure to use a power question. We want to create a sense of urgency so the PC shows up to their consultation ready to hire.</p>
+      </header>
+      <ol style="margin: 0 auto; max-width: 460px; text-align: left; font-size: 16px;">
+        <li>When was the last time you saw your family in (enter country)?</li>
+        <li>Are you going to trust your family to do the process for you or you’re going to act on it?</li>
+      </ol>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'recap'" >
