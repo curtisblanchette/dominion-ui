@@ -162,6 +162,9 @@ export class FlowFactory {
         options: {
           controls: false,
           state: 'edit',
+          grid: {
+            minColWidth: 240
+          },
           fields: Object.values(LeadFields),
           optimisticSave: false
         }
@@ -260,6 +263,9 @@ export class FlowFactory {
         options: {
           controls: false,
           state: 'edit',
+          grid: {
+            minColWidth: 240
+          },
           fields: Object.values(DealFields),
           optimisticSave: false
         }

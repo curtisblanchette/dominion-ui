@@ -35,7 +35,7 @@ router-outlet {
     justify-content: space-around;
     overflow-x: hidden;
     overflow-y: scroll;
-    max-width: 55%;
+    max-width: 40%;
     margin: 0 auto;
     width: 100%;
 
@@ -68,9 +68,9 @@ router-outlet {
 
   footer {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     width: 100%;
-    max-width: 55%;
+    max-width: 40%;
     margin: 0 auto;
     flex: 0;
     position: absolute;
@@ -104,3 +104,13 @@ section ng-component {
   z-index: 1;
 }
 
+
+@media all and (min-width: 1024px ) {
+  .flow-layout__content {
+    max-width: 680px;
+  }
+
+  .flow-layout footer {
+    max-width: 680px;
+  }
+}
