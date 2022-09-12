@@ -4,7 +4,7 @@ import { FlowHostDirective, FlowNotesComponent, FlowStep, FlowTransitions, NoSte
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
-import { firstValueFrom, lastValueFrom, Observable, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable, of, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { FiizDropDownComponent, IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
@@ -29,6 +29,15 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
   isLastStep$: Observable<boolean>;
   status$: Observable<string>;
   timeline$: Observable<FlowStep>;
+  objections$: Observable<DropdownItem[]> = of([
+    {id: 'cost-1', label: 'How much will it cost?'},
+    {id: 'cost-2', label: 'It\'s too expensive.'},
+    {id: 'fear-1', label: 'Will it work?'},
+    {id: 'fear-2', label: 'Are you legitimate?'},
+    {id: 'fear-3', label: 'Credit card fear.'},
+    {id: 'urgency-1', label: 'Not ready.'},
+    {id: 'urgency-2', label: 'Talk to spouse.'},
+  ])
 
   public menuItems: IDropDownMenuItem[] = [
     {
@@ -43,7 +52,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     }
   ];
 
-  public objections$: Observable<DropdownItem>;
+  // public objections$: Observable<DropdownItem[]>;
 
   @ViewChild(FlowHostDirective, {static: true}) flowHost!: FlowHostDirective;
   @ViewChild('objectionDropdown') objectionDropdown:FiizDropDownComponent;
@@ -55,7 +64,7 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
     private dialog: Dialog
   ) {
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
-    this.objections$ = this.store.select(fromApp.selectCallObjections)
+    // this.objections$ = this.store.select(fromApp.selectCallObjections)
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));

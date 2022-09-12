@@ -1,3 +1,5 @@
+@import '../../../../../assets/css/mixins';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -64,57 +66,12 @@
 }
 
 .flex-table {
-
-  &__header {
-    justify-content: center;
-    flex-wrap: nowrap;
-    align-content: center;
-    align-items: flex-end;
-    color: #80CBC2;
-  }
-
-  &__row {
-    justify-content: center;
-    flex-wrap: nowrap;
-    align-content: center;
-    align-items: stretch;
-    cursor: pointer !important;
-
-    &:focus {
-      box-shadow: none;
-      outline: none;
-    }
-
-    &:hover {
-      background: rgba(255, 255, 255, .02);
-    }
-
-    &.active {
-      position: relative;
-
-      &:before {
-        display: block;
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, .02);
-      }
-    }
-  }
-
   &__cell {
-
-
     &.phone { max-width: 8em;}
     &.createdAt { max-width: 12em; }
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    justify-content: flex-start;
-    font-weight: 400;
-    align-items: center;
+
+
 
     &:first-child {
       max-width: 52px;

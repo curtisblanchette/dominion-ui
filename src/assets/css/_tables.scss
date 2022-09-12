@@ -18,23 +18,8 @@
     align-items: flex-end;
     color: #80CBC2;
 
-    .flex-table__cell {
-      flex: 1;
-      font-weight: 400;
-      padding: .5em 0;
+    &__heading {
 
-      > div {
-        padding: 5px;
-        width: 100%;
-      }
-
-      &:first-child {
-        flex: 2;
-      }
-
-      //&:not(:first-child) {
-      //  text-align: center;
-      //}
     }
   }
 
@@ -48,17 +33,30 @@
   &__row {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: stretch;
+    cursor: pointer !important;
 
     &.editing {
       background: var(--primary);
-      color:white;
+      color: white;
       font-weight: 700;
 
       fiiz-date-picker {
-        color: #333!important;
-        font-weight: 400!important;
+        color: #333 !important;
+        font-weight: 400 !important;
       }
+    }
+
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, .02);
     }
   }
 
@@ -69,6 +67,10 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     justify-content: flex-start;
     font-weight: 400;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 0;
+    @include ellipsis();
+
 
     &:first-child {
       flex: 2;
@@ -78,10 +80,37 @@
       overflow: hidden;
     }
 
+    > div {
+      @include ellipsis();
+    }
+
     ~ div {
-      padding-top: 19px;
-      padding-bottom: 20px;
+      // simulating a table cell gutter of .25em
+      padding: 19px .25em 20px .25em;
       width: 100%;
+
+      &:first-child {
+        padding: 19px .25em 20px 0;
+      }
+
+      &:last-child {
+        padding: 19px 0 20px .25em;
+      }
+    }
+
+    &.heading {
+      flex: 1;
+      font-weight: 400;
+      padding: .5em 0;
+
+      > div {
+        padding: 5px;
+        width: 100%;
+      }
+
+      &:first-child {
+        flex: 2;
+      }
     }
   }
 
@@ -106,14 +135,15 @@
   }
 
   .align-center {
-    justify-content: space-around!important;
-    text-align: center!important;
-    display:flex;
+    justify-content: space-around !important;
+    text-align: center !important;
+    display: flex;
     align-items: center;
   }
+
   .align-left {
-    justify-content: space-between!important;
-    text-align: left!important;
+    justify-content: space-between !important;
+    text-align: left !important;
   }
 
 }
@@ -121,7 +151,7 @@
 .flex-table.striped {
   .flex-table__row {
     &:nth-child(2n+1) {
-      background: rgba(255,255,255, .02);
+      background: rgba(255, 255, 255, .02);
     }
   }
 }
@@ -134,8 +164,8 @@
 table.fiiz-table {
   width: 100%;
 
-  &.striped tr:nth-child(2n){
-    background: rgba(255,255,255, .02);
+  &.striped tr:nth-child(2n) {
+    background: rgba(255, 255, 255, .02);
   }
 
   tr {

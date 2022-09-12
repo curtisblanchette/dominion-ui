@@ -2,6 +2,10 @@
 
 :host {
   @include hideScrollBars();
+
+  fiiz-data {
+    width: 100%;
+  }
 }
 .flex_main_wrapper {
 
