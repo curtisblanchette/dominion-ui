@@ -70,7 +70,6 @@ router-outlet {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 40%;
     margin: 0 auto;
     flex: 0;
     position: absolute;
@@ -107,10 +106,10 @@ section ng-component {
 
 @media all and (min-width: 1024px ) {
   .flow-layout__content {
-    max-width: 680px;
+    max-width: 600px;
   }
 
   .flow-layout footer {
-    max-width: 680px;
+    max-width: 600px;
   }
 }

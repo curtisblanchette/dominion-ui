@@ -106,19 +106,21 @@
     </div>
     <ng-container *ngIf="item?.id">
       <div class="flex-table__cell {{column.id}}" *ngFor="let column of columns">
-        <ng-container [ngSwitch]="(item[column.id] | typeOf)">
-          <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date:'MMM d, y, h:mm a' }}</ng-container>
-          <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
-          <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
-          <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
-          <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
-          <ng-container *ngSwitchCase="'address'">{{item[column.id][0].fullName}}</ng-container>
-          <ng-container *ngSwitchCase="'array'">
-            <ng-container *ngFor="let item of item[column.id]">
-              {{item.firstName}} {{item.lastName}}
+        <div>
+          <ng-container [ngSwitch]="(item[column.id] | typeOf)">
+            <ng-container *ngSwitchCase="'date'">{{ item[column.id] | date:'MMM d, y, h:mm a' }}</ng-container>
+            <ng-container *ngSwitchCase="'string'">{{ item[column.id] }}</ng-container>
+            <ng-container *ngSwitchCase="'number'">{{ item[column.id] }}</ng-container>
+            <ng-container *ngSwitchCase="'uuid'">{{ item[column.id] }}</ng-container>
+            <ng-container *ngSwitchCase="'object'">{{ item[column.id].name }}</ng-container>
+            <ng-container *ngSwitchCase="'address'">{{item[column.id][0].fullName}}</ng-container>
+            <ng-container *ngSwitchCase="'array'">
+              <ng-container *ngFor="let item of item[column.id]">
+                {{item.firstName}} {{item.lastName}}
+              </ng-container>
             </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
     </ng-container>
   </div>

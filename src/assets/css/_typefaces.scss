@@ -15,7 +15,8 @@ h1, h2, h3, h4, h5 {
 
 body, p, span {
   //font-size: 14px;
-  @include fluid-type(font-size, 320px, 1440px, 12px, 14px)
+  @include fluid-type(font-size, 320px, 1440px, 12px, 15px);
+  letter-spacing: .018em;
 }
 h5   { font-size: 1em; }
 h4   { font-size: 1.25em; font-weight: 500; }
