@@ -151,7 +151,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         untilDestroyed(this),
         delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
       ).pipe(untilDestroyed(this)).subscribe(async (record: any) => {
-        const found = record.find( (rec: { id: string | null; }) => rec.id === this.id ) || record[0];
+        const found = record.find( (rec: { id: string | null; }) => rec?.id === this.id ) || record[0];
         if (found) {
           let entity: any = record.length && JSON.parse(JSON.stringify(found)) || null;
 

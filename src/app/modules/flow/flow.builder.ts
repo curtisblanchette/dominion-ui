@@ -67,10 +67,11 @@ export class FlowBuilder {
       return step;
     });
 
-    const editLead = FlowFactory.editLead(undefined, (flowService: FlowService, vars: any, step: any) => {
+    const editLead = FlowFactory.editLead((flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
       return step;
-    });
+    }, undefined);
+
     const setLeadSource = FlowFactory.setLeadSource(undefined, (flowService: FlowService, vars: any, step: any) => {
       step.state.data.id = vars.lead;
       return step;
