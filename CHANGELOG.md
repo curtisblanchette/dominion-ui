@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.16.8 (2022-09-13)
+
+
+### Bug Fixes
+
+* **develop:** fiiz-list edit button disabled until a selection made ([09dfff5](https://github.com/4iiz/dominion-ui/commit/09dfff51e7472303cbde10b26d18b155fcb03eb6))
+
 ### 1.16.7 (2022-09-06)
 
 ### 1.16.6 (2022-09-06)
