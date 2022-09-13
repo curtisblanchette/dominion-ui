@@ -10,7 +10,7 @@
       title="Actions"
       (onClick)="getActionItemValue($event)"
     ></fiiz-dropdown>
-    <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()">Edit</fiiz-button>
+    <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()" [disabled]="!selected">Edit</fiiz-button>
     <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
       New {{moduleName}}</fiiz-button>
   </div>
