@@ -38,6 +38,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { FiizGridComponent } from './grid/grid';
 import { FiizGridColsDirective } from './grid/cols.directive';
 import { FiizCountUpDirective } from '../../directives/countUp.directive';
+import { FiizButtonSizeDirective } from '../../directives/buttonSize.directive';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { FiizCountUpDirective } from '../../directives/countUp.directive';
     FiizToggleComponent,
     FiizDatePickerDirective,
     FiizCountUpDirective,
+    FiizButtonSizeDirective,
     // FiizMinDateDirective,
     // FiizMaxDateDirective,
     FiizStrokedDirective,
@@ -104,6 +106,7 @@ import { FiizCountUpDirective } from '../../directives/countUp.directive';
     FiizToggleComponent,
     FiizDatePickerDirective,
     FiizCountUpDirective,
+    FiizButtonSizeDirective,
     // FiizMinDateDirective,
     // FiizMaxDateDirective,
     FiizStrokedDirective,

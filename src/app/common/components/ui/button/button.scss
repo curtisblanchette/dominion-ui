@@ -63,17 +63,17 @@
     justify-content: space-around;
   }
 
-  &.large {
+  &.large button {
     height: 40px;
     line-height: 40px;
   }
 
-  &.small {
-    height: 30px;
-    line-height: 30px;
+  &.small button {
+    height: 32px;
+    line-height: 32px;
   }
 
-  &.x-small {
+  &.x-small button {
     font-size: 12px;
     height: 24px;
     line-height: 24px;
