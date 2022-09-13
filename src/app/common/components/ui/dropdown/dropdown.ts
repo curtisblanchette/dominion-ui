@@ -15,6 +15,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../../../store/app.reducer';
 import { selectLookupByKeyAndId } from '../../../../store/app.reducer';
+import { ButtonSizes } from '../../../directives/buttonSize.directive';
 
 export interface IDropDownMenu {
   type: string;
@@ -83,6 +84,9 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   @HostBinding('class.has-label')
   @Input('label') public label: string | undefined;
+
+  @HostBinding('attr.size')
+  @Input('size') public size: ButtonSizes;
 
   @HostListener('click', ['$event'])
   clickInside($event: any) {
