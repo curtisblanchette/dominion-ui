@@ -30,8 +30,20 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   public ModuleTypes: any;
   public fields: any = CallFields;
   public selectedId:number;
-  public resolution: { [key:string]: any } = {
-    'cost-1' : { // I want to know the price first what the case will cost me
+  public resolution: { [key:number]: any } = {
+    1 : { // too expensive
+      steps : [
+        'You are correct, the prices are expensive',
+        'Since you would be speaking to the experts, our attorneys have created a system that will let us know if you have any option available before setting any consultation.',
+        'May I ask, have you tried fixing your legal status before or is this the first time you\'re look into it?',
+        'What country are you originally from?',
+        'How long have you been in the United States?'
+      ],
+      secret : [
+        'As mentioned above, our goal is to focus on following what\'s next in your script. However, it is important to highlight how crucial it is to agree with anybody that the consultation fee is too expensive. What if they don\'t say a word or simply give you small talk letting you know in other words that it\'s too expensive? At that point, skip step 1 and go straight to step 2 and 3. Always finish with a question.'
+      ]
+    },
+    2 : { // I want to know the price first what the case will cost me
       steps : [
         'Absolutely, we all want to know how much this investment will affect our wallet.',
         'I would be happy to give you a brief estimate, however, our cases pricing vary depending on each person\'s case.',
@@ -44,19 +56,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
         'At this point, you will need to ask a question depending on what\'s next in your script. Whether it\'s gathering their contact information, continuing with your usual call script or performing the immigration questionnaire. It\'s important we do not stutter when overcoming these objections, therefore, we always suggest a 15 minute roleplay every morning within agents to help them practice this before doing it live on a phone call.'
       ]
     },
-    'cost-2' : { // The consultation fee is too expensive
-      steps : [
-        'You are correct, the prices are expensive',
-        'Since you would be speaking to the experts, our attorneys have created a system that will let us know if you have any option available before setting any consultation.',
-        'May I ask, have you tried fixing your legal status before or is this the first time you\'re look into it?',
-        'What country are you originally from?',
-        'How long have you been in the United States?'
-      ],
-      secret : [
-        'As mentioned above, our goal is to focus on following what\'s next in your script. However, it is important to highlight how crucial it is to agree with anybody that the consultation fee is too expensive. What if they don\'t say a word or simply give you small talk letting you know in other words that it\'s too expensive? At that point, skip step 1 and go straight to step 2 and 3. Always finish with a question.'
-      ]
-    },
-    'fear-1' : { // What guarantees can you give me that this will work?
+    3 : { // Uncertain it will work.
       steps : [
         'In the 15 years we have been working with the immigrant community we have helped over 50,000 people fix their legal status.',
         'Unfortunately, no attorney can offer you any guarantees as we are subject to the law, however, we always guarantee you will get the same work and dedication we gave to those 50,000 so you can be 50k and 1 more!',
@@ -69,7 +69,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
         'When people are fearful of starting a process, we want to focus on the positive outcome of what will happen if they proceed with the case. Ask power questions that will make them think about a positive future for their family. You can also ask questions that inspire fear towards immigration such as: "Do you have an attorney backing you up right now if ICE tried to deport you right now?" or "What would your life look like if you or your family members were separated by ICE today?'
       ]
     },
-    'fear-2' : { // Are you guys legit?
+    4 : { // Uncertain of legitimacy
       steps : [
         'In the 15 years we have been working with the immigrant community we have helped over 50,000 people fix their legal status.',
         'We\'d love you to be 50k and 1, however, we know there are many attorneys out there that are not trustworthy. Our attorney founder of the firm was also an immigrant, so she understands the struggles of fighting for a legal status.',
@@ -80,7 +80,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
         'Always focus on the fact that we are helping immigrants, not working against them. Get creative on what and how you answer, however, it\'s important we speak smoothly and with a smile during this portion. If we sound agitated, frustrated or mad, they will hang up. This is where our tone of voice will have to transform into the friendliest tone possible so they can trust us. Remember, most immigrants that ask this have gone through scams with other attorneys or simply fear getting scammed/deported.'
       ]
     },
-    'fear-3' : { // I don't want to give out my credit card
+    5 : { // Fear to share credit card.
       steps : [
         'I understand; a credit card is confidential information.',
         'Our firm\'s system only allows us to remove the exact amount of the consultation for your security. Nonetheless, we always encourage our potential clients to use a debit card for their own safety.',
@@ -90,14 +90,14 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
         'This one is pretty straight forward. We want to sound confident but smiling at all times. This is a common objection that can be easily overcome by saying exactly that. If the person continues objecting, feel free to offer other payment options available or a free consultation on Wednesday without a guarantee of getting a consultation in place soon. Again, the secret is to sound confident on this one.'
       ]
     },
-    'urgency-1' : { // Okay, thank you for the info. I'll call back when I am ready!
+    6 : { // Calling for information
       steps : [
         'Of course!',
         'We get hundreds of calls a day.',
         'When are you looking to call back so I can let my co-workers know in case I\'m not here so they can help you?'
       ]
     },
-    'urgency-2' : { // Let me talk it over with my spouse
+    7 : { // Needs to talk to spouse.
       steps : [
         'Absolutely! Please review with your loved ones your options and let us know what you decide.',
         'Based on the notes, it looks like we can find a way to help you get a legal status and in our line of work, we get to see the good and the bad of when people decide to start or when they decide to wait, not knowing when is the next time a loved one will get deported.',
