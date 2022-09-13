@@ -3,7 +3,7 @@
 
   <header style="padding-top: 20px;">
     <!--    <fiiz-dropdown type="button" (onClick)="handleFabAction($event)" [items]="menuItems" position="bottom-right"></fiiz-dropdown>-->
-    <fiiz-dropdown size="small" #objectionDropdown id="objection" type="search" [items]="objections$" title="Objections" label="Objections" (getValues)="goToObjections($event)"></fiiz-dropdown>
+    <fiiz-dropdown size="small" #objectionDropdown id="objection" type="search" [items]="objections$" title="Objections" (getValues)="goToObjections($event)"></fiiz-dropdown>
     <!--    <div class="button-group">-->
     <fiiz-button size="small" (click)="openNotesDialog()" style="align-self: end;"><i class="fa fa-note-sticky"></i> Notes</fiiz-button>
     <fiiz-button size="small" warning stroked style="align-self: end;" (click)="endCall()">End Call</fiiz-button>
