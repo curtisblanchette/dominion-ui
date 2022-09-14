@@ -76,12 +76,12 @@ export class FlowBuilder {
       step.state.data.id = vars.lead;
       return step;
     });
-    const oppList = FlowFactory.opportunityList(undefined, (flowService: FlowService, vars: any, step: any) => {
+    const oppList = FlowFactory.opportunityList((flowService: FlowService, vars: any, step: any) => {
       step.state.options['query'] = {
         leadId: vars.lead
       };
       return step;
-    });
+    }, undefined);
     const toOppList = FlowFactory.link(editLead.id, oppList.id);
 
     const createOpp = FlowFactory.createDeal((flowService: FlowService, vars: any, step: any) => {

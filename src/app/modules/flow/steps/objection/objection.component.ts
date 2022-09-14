@@ -43,7 +43,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
         'As mentioned above, our goal is to focus on following what\'s next in your script. However, it is important to highlight how crucial it is to agree with anybody that the consultation fee is too expensive. What if they don\'t say a word or simply give you small talk letting you know in other words that it\'s too expensive? At that point, skip step 1 and go straight to step 2 and 3. Always finish with a question.'
       ]
     },
-    2 : { // I want to know the price first what the case will cost me
+    2 : { // I want to know the price first what will the case cost me
       steps : [
         'Absolutely, we all want to know how much this investment will affect our wallet.',
         'I would be happy to give you a brief estimate, however, our cases pricing vary depending on each person\'s case.',
