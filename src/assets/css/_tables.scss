@@ -217,3 +217,13 @@ table.fiiz-table {
 
   }
 }
+
+
+fiiz-grid.table {
+  .table-heading {
+    @include ellipsis();
+    color: var(--green1);
+    line-height: 36px;
+    font-size: .9em;
+  }
+}

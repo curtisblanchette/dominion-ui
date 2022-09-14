@@ -2,13 +2,24 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   margin-top: 2em;
+  border-radius: 8px;
+
+
 }
 
 // ::ng-deep disables encapsulation for this style
 // :host ensure the style doesn't bleed outside of this component
 :host.table ::ng-deep > * {
-  border-bottom: 1px solid rgba(255, 255, 255, .09) !important;
-  line-height: 56px !important;
+  border: {
+    right: 1px solid rgba(255,255,255,.05) !important;
+    bottom: 1px solid rgba(255,255,255,.05) !important;
+  }
+  line-height: 45px !important;
+  padding: 0 .75em;
 }
 
-
+:host.table {
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.05) !important;
+  border-radius: var(--input-border-radius);
+}
