@@ -83,7 +83,7 @@
       </ng-container>
 
 
-      <fiiz-button *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="!(allValid$ | async)">Finish Call</fiiz-button>
+      <fiiz-button *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="!(allValid$ | async) || !(didObject$ | async)">Finish Call</fiiz-button>
     </ng-template>
 
 

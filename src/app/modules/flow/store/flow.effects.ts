@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, firstValueFrom, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
+import { EMPTY, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowService } from '../flow.service';
 import { FlowBot, FlowStep } from '../index';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { cloneDeep } from 'lodash';
 import { FlowState } from './flow.reducer';
@@ -34,10 +34,6 @@ export class FlowEffects {
         // new process started
         if(action.processId) {
           return this.http.post(`${environment.dominion_api_url}/flow/summaries`, { id: action.processId });
-        }
-
-        if(action.currentStepId) {
-          return this.flowService.renderComponent(action.currentStepId)
         }
 
       })

@@ -11,6 +11,7 @@ import { Injectable } from '@angular/core';
 import { BotAction, BotActionStatus } from './flow.botAction';
 import * as flowActions from '../store/flow.actions';
 import { FlowStep } from './flow.step';
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * The FlowBot is capable of traversing a flow entirely as it was by a physical user.
@@ -22,6 +23,8 @@ import { FlowStep } from './flow.step';
 
 @Injectable({providedIn: 'root'})
 export class FlowBot {
+
+  private id: string = uuidv4();
 
   private readonly services: { [key: string]: EntityCollectionService<DominionType> };
   public botActions: BotAction[] = [];

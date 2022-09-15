@@ -33,6 +33,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   @Input('data') override data: any;
   public form: FormGroup;
   public allValid$: Observable<boolean>;
+  public didObject$: Observable<boolean> = of(false);
   public callTypes$: Observable<RadioItem[]>;
   public outboundTypes$: Observable<RadioItem[]>;
   public callReasons$: Observable<DropdownItem[]>;
@@ -101,13 +102,19 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         this.flowStepId = currentStepId;
       }
     });
-    this.store.select(fromFlow.selectAllVariables).subscribe(variables => {
+    this.store.select(fromFlow.selectAllVariables).pipe(
+      map(vars => {
+        this.didObject$ = of(!vars['objectAndEndCall']);
+        return vars;
+      })).subscribe(variables => {
       this.variables = variables;
     });
     this.allValid$ = this.store.select(fromFlow.selectFlowTimeline).pipe(
       map(steps => {
-        const passing = steps.every((value: any) => !!value.valid);
-        return passing;
+        if (steps) {
+          const passing = steps.every((value: any) => !!value.valid);
+          return passing;
+        }
       })
     );
 
@@ -191,7 +198,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'recap' : {
         const apptStep = this.flowService.builder.process.steps.find( step => step.component === 'FlowAppointmentComponent' );
-        this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);        
+        this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);
       }
       break;
 

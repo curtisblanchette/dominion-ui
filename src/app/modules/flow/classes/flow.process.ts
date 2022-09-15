@@ -3,7 +3,6 @@ import * as fromFlow from '../store/flow.reducer';
 import { FlowStep } from './flow.step';
 import { FlowRouter } from './flow.router';
 import { FlowLink } from './flow.link';
-import { FlowStepHistoryEntry } from './flow.stepHistory';
 import * as flowActions from '../store/flow.actions';
 import { Subscription } from 'rxjs';
 import { accumulateVariables } from '../store/flow.reducer';
@@ -19,7 +18,6 @@ export class FlowProcess {
   public links: FlowLink[] = [];
   public currentStepId: string;
   public firstStepId: string | undefined;
-  // public stepHistory: FlowStepHistoryEntry[];
   public variables: { [key: string]: any };
 
   public steps$: Subscription;
@@ -58,13 +56,6 @@ export class FlowProcess {
     this.firstStepId$ = this.store.select(fromFlow.selectFirstStepId).subscribe(id => {
       this.firstStepId = id;
     });
-
-    // this.bot = new FlowBot(this.store, this.flowService, this.entityCollectionServiceFactory);
-
-    // this.stepHistory$ = this.store.select(fromFlow.selectStepHistory).subscribe(stepHistory => {
-    //   this.stepHistory = stepHistory;
-    // });
-
   }
 
   public addStep(step: FlowStep): FlowProcess {
@@ -78,8 +69,6 @@ export class FlowProcess {
   }
 
   public addLink(link: FlowLink): FlowProcess {
-    // link.to = (<FlowStep>link.to)._serialize();
-    // link.from = (<FlowStep>link.from)._serialize();
     this.store.dispatch(flowActions.AddLinkAction({payload: link}));
     return this;
   }
