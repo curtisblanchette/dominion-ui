@@ -3,10 +3,29 @@
 
   <header style="padding-top: 20px;">
     <!--    <fiiz-dropdown type="button" (onClick)="handleFabAction($event)" [items]="menuItems" position="bottom-right"></fiiz-dropdown>-->
-    <fiiz-dropdown size="small" #objectionDropdown id="objection" type="search" [items]="objections$" title="Objections" (getValues)="goToObjections($event)"></fiiz-dropdown>
+    <fiiz-dropdown
+      size="small"
+      #objectionDropdown
+      [disabled]="(status$ | async) === 'success'"
+      id="objection"
+      type="search"
+      [items]="objections$"
+      title="Objections"
+      (getValues)="goToObjections($event)">
+    </fiiz-dropdown>
     <!--    <div class="button-group">-->
-    <fiiz-button size="small" (click)="openNotesDialog()" style="align-self: end;"><i class="fa fa-note-sticky"></i> Notes</fiiz-button>
-    <fiiz-button size="small" warning stroked style="align-self: end;" (click)="endCall()">End Call</fiiz-button>
+    <fiiz-button
+      size="small"
+      (click)="openNotesDialog()"
+      [disabled]="(status$ | async) === 'success'"
+      style="align-self: end;"><i class="fa fa-note-sticky"></i> Notes</fiiz-button>
+    <fiiz-button
+      size="small"
+      warning
+      stroked
+      style="align-self: end;"
+      [disabled]="(status$ | async) === 'success'"
+      (click)="endCall()">End Call</fiiz-button>
     <!--    </div>-->
 
   </header>
@@ -19,8 +38,8 @@
   <section [@slide]="animationIndex" class="flow-layout__content">
     <div style="position: absolute; top: 20px; left: 0; right: 0; bottom: 20px;">
       <ng-template flowHost></ng-template>
-      <footer>
-        <fiiz-button (click)="onBack($event)" stroked *ngIf="(status$ | async) !== 'complete'">Back</fiiz-button>
+      <footer *ngIf="(status$ | async) !== 'success'">
+        <fiiz-button (click)="onBack($event)" stroked>Back</fiiz-button>
         <fiiz-button primary type="submit" [disabled]="!(valid$ | async)" *ngIf="!(isLastStep$ | async)" (click)="onNext($event)">Continue</fiiz-button>
       </footer>
     </div>

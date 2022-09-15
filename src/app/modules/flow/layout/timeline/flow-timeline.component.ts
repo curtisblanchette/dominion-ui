@@ -6,6 +6,7 @@ import { animationFrameScheduler, auditTime, fromEvent, Observable, of, skip, ta
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FlowService } from '../../flow.service';
+import { FlowStatus } from '../../store/flow.reducer';
 
 @UntilDestroy()
 @Component({
@@ -17,7 +18,7 @@ export class FlowTimelineComponent implements AfterViewInit {
 
   public steps$: Observable<FlowStep[]>;
   public currentStepId$: Observable<string | undefined>;
-
+  public status$: Observable<FlowStatus>;
   @Output('onSelect') onSelect: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('content') content: ElementRef;
@@ -31,6 +32,7 @@ export class FlowTimelineComponent implements AfterViewInit {
     public flowService: FlowService
   ) {
 
+    this.status$ = this.store.select(fromFlow.selectFlowStatus);
     // find steps, stop at current
     this.store.select(fromFlow.selectCurrentStepId).pipe(
       distinctUntilChanged()
