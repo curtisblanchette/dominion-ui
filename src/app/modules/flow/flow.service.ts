@@ -59,6 +59,7 @@ export class FlowService {
     private http: HttpClient,
     public builder: FlowBuilder
   ) {
+    console.log('FlowService Id: ', this.id);
     this.renderer = rendererFactory.createRenderer(null, null);
 
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
