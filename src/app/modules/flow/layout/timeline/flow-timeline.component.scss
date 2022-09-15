@@ -76,6 +76,11 @@
       color: var(--text1);
     }
 
+    &:disabled:active,
+    &:disabled.disabled {
+      color: #1D3555;
+    }
+
   }
 }
 
@@ -103,7 +108,6 @@
   z-index: 999;
   left: 0;
   top: 50%;
-  z-index: 999;
 
   height: calc(77px * 8);
   @include fluid-type(width, 320px, 1440px, 150px, 250px );
