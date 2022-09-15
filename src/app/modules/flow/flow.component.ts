@@ -87,7 +87,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
   }
 
   /**
-   * This is how WHERE view is rendered.
+   * This is where views are rendered.
    */
   ngAfterViewInit() {
     this.store.select(fromFlow.selectCurrentStepId).pipe(

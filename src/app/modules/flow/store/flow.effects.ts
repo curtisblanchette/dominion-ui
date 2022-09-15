@@ -73,9 +73,11 @@ export class FlowEffects {
   onPrevStep$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(flowActions.PrevStepAction),
-      withLatestFrom(this.store.select(fromFlow.selectAllVariables)),
-      withLatestFrom(this.store.select(fromFlow.selectSteps)),
-      withLatestFrom(this.store.select(fromFlow.selectRouters)),
+      withLatestFrom(
+        this.store.select(fromFlow.selectAllVariables),
+        this.store.select(fromFlow.selectSteps),
+        this.store.select(fromFlow.selectRouters)
+      ),
       mergeMap(async (action: any) => {
         let [payload, variables, steps, routers]: [any, any, FlowStep[], FlowRouter[]] = action;
         let frozenVars = Object.freeze({...variables});
@@ -85,8 +87,10 @@ export class FlowEffects {
           const router = routers.find(router => router.id === payload.stepId);
         } else {
 
-          const fn = eval((<FlowStep>step).beforeRoutingTriggers);
-          await fn({}, frozenVars, step);
+          if (typeof step?.beforeRoutingTriggers === 'string') {
+            const fn = eval((<FlowStep>step).beforeRoutingTriggers);
+            await fn({}, frozenVars, step);
+          }
 
           if(step?.id) {
             return flowActions.UpdateFlowAction({ currentStepId: step.id });

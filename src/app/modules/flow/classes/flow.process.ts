@@ -25,11 +25,10 @@ export class FlowProcess {
   public links$: Subscription;
   public currentStepId$: Subscription;
   public firstStepId$: Subscription;
-  public variables$: Subscription;
 
   constructor(
     private store: Store<fromFlow.FlowState>,
-    public bot: FlowBot,
+    public bot: FlowBot
   ) {
 
     this.store.select(fromFlow.selectProcessId).subscribe(id => {
