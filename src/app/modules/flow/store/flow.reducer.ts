@@ -19,6 +19,7 @@ export interface FlowState {
   firstStepId: string | undefined;
   lastStepId: string | undefined;
   status: FlowStatus;
+  callId: string | undefined;
   notes: string | undefined;
 }
 
@@ -61,7 +62,8 @@ export const initialState: FlowState = {
   firstStepId: undefined,
   lastStepId: undefined,
   status: getInitialStateByKey('flow.status') || 'default',
-  notes: undefined
+  notes: undefined,
+  callId: undefined
 };
 
 export const reducer = createReducer(

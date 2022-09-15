@@ -158,8 +158,6 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   public async endCall(){
     const id = await this.flowService.getVariable('objectionId');
 
-    const objectionOutcomeMap = new Map();
-
     const stepId = this.flowService.builder.process.steps.find( step => step.component === 'FlowObjectionComponent' )?.id as string;
     this.flowService.addVariables({ objectAndEndCall: true }, stepId);
     this.flowService.updateCall({
