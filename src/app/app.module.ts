@@ -74,7 +74,6 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     OverlayModule
   ],
   providers: [
-    FlowService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptor,

@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FlowService } from './flow.service';
 import { FlowHostDirective, FlowNotesComponent, FlowStep, FlowTransitions, NoStepFoundError } from './index';
 import { Store } from '@ngrx/store';
@@ -19,7 +19,7 @@ import { DropdownItem } from '../../common/components/interfaces/dropdownitem.in
   styleUrls: ['../../../assets/css/_container.scss', './flow.component.scss'],
   animations: FlowTransitions
 })
-export class FlowComponent implements AfterContentInit, OnDestroy {
+export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy {
 
   animationIndex = 0;
   tabIndex = 1;
@@ -74,7 +74,6 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
 
   public async ngAfterContentInit() {
     // check for an existing process and pass it to start command
-    this.flowService.flowHost = this.flowHost;
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectProcessId).pipe(take(1)));
     await this.flowService.start(!!processExists);
 
@@ -84,6 +83,17 @@ export class FlowComponent implements AfterContentInit, OnDestroy {
       }
     });
 
+  }
+
+  /**
+   * This is how WHERE view is rendered.
+   */
+  ngAfterViewInit() {
+    this.store.select(fromFlow.selectCurrentStepId).subscribe(stepId => {
+      if(stepId) {
+        this.flowService.renderComponent(stepId);
+      }
+    });
   }
 
   public onNext($event: Event) {

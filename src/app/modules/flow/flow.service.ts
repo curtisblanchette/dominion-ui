@@ -1,5 +1,5 @@
-import { FlowHostDirective, FlowListComponent, FlowRouter, FlowStep, FlowStepClassMap, FlowTextComponent, NoStepFoundError } from './index';
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { FlowListComponent, FlowRouter, FlowStep, FlowStepClassMap, FlowTextComponent, NoStepFoundError } from './index';
+import { Injectable, Renderer2, RendererFactory2, ViewContainerRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import { FlowStatus } from './store/flow.reducer';
@@ -34,7 +34,7 @@ export class FlowService {
   public callId: string | undefined;
   public noteId: string | undefined;
   public user$: Observable<User | null>;
-  public flowHost!: FlowHostDirective;
+  public flowHost: { viewContainerRef: ViewContainerRef };
   public callService: CustomDataService<DominionType>;
 
   private leadService: EntityCollectionService<DominionType>;

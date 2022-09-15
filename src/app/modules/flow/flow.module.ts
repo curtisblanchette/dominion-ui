@@ -15,6 +15,7 @@ import { FlowBuilder } from './flow.builder';
 import { DictationPipe } from '../../common/pipes/dictation.pipe';
 import { FlowProcess, FlowBot } from './classes';
 import { SharedModule } from '../shared/shared.module';
+import { FlowService } from './flow.service';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SharedModule } from '../shared/shared.module';
     SharedModule
   ],
   providers: [
+    FlowService,
     FlowBuilder,
     FlowProcess,
     FlowBot

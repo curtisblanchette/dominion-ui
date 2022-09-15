@@ -34,15 +34,15 @@
           </div>
           <div style="align-self: center;">Or</div>
           <div>
-            <div class="flex_main_wrapper__slots__day" style="text-align: center;">Select a Custom Time</div>
+            <div class="flex_main_wrapper__slots__day" style="text-align: center;">Select a Custom Date</div>
             <fiiz-date-picker
               #dateRangePicker
               id="date_range"
               pickerType="both"
-              placeholder="Date Time range"
+              placeholder="Select a date."
               selectMode="range"
               (change)="getCustomSlot($event)"
-              label="Custom Time Slot"
+              label="Appointment Time"
               [min]="minDate"
               [stepMinute]="appointmentSettings['duration'].value || 30"
             ></fiiz-date-picker>

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { FlowLink, FlowRouter, FlowStep, FlowStepHistoryEntry } from '../index';
+import { FlowLink, FlowRouter, FlowStep } from '../index';
 import { FlowState } from './flow.reducer';
 
 export const ActionTypes = {
@@ -48,11 +48,6 @@ export const AddRouterAction = createAction(
   ActionTypes.ADD_ROUTER,
   props<{ payload: FlowRouter }>()
 );
-
-// export const SetStepHistoryAction = createAction(
-//   ActionTypes.SET_STEP_HISTORY,
-//   props<{ payload: FlowStepHistoryEntry }>()
-// );
 
 export const GoToStepByIdAction = createAction(
   ActionTypes.GO_TO_STEP,
