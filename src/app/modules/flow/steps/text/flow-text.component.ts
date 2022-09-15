@@ -257,6 +257,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   public async onSave(){
     switch(this.data.template) {
+      case 'call-type': {
+        this.flowService.startCall(this.form.value.call_type);
+      }
+      break;
 
       case 'relationship-building': {
         this.dataComponents.map(cmp => cmp.save(false));

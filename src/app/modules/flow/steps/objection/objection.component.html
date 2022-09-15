@@ -1,6 +1,6 @@
 <header>
   <h3>{{data.title}}</h3>
-  <p>{{resolution[selectedId].secret}}</p>
+  <p *ngIf="resolution[selectedId]?.secret">{{resolution[selectedId].secret}}</p>
 </header>
 <div *ngIf="data">
   <ng-container *ngIf="resolution[selectedId]">

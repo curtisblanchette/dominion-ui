@@ -1,5 +1,5 @@
 import { FlowProcess } from './classes/flow.process';
-import { Inject, Injectable, Injector, Renderer2, RendererFactory2 } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
@@ -7,28 +7,19 @@ import { FlowFactory } from './flow.factory';
 import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
-// import { v4 as uuidv4 } from 'uuid';
-// import { EntityCollectionServiceFactory } from '@ngrx/data';
 
 @Injectable({providedIn: 'root'})
 export class FlowBuilder {
 
-  // public process: FlowProcess;
-  // private renderer: Renderer2;
-
   constructor(
     private store: Store<fromFlow.FlowState>,
-    // private rendererFactory: RendererFactory2,
-    // private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     public process: FlowProcess,
   ) {
-    // this.renderer = rendererFactory.createRenderer(null, null);
   }
 
 
   public async build(type?: string) {
 
-    // this.process = new FlowProcess(this.store, this.flowService, this.entityCollectionServiceFactory, uuidv4());
     /**
      * Everything that is passed to factory functions must be Serializable!
      */
@@ -38,15 +29,8 @@ export class FlowBuilder {
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
     const notes = FlowFactory.takeNotes();
-
-    const callType = FlowFactory.callTypeDecision(undefined, (flowService: FlowService, vars: any) => {
-      flowService.startCall(vars.call_type);
-    });
-
-    const searchNListLeads = FlowFactory.searchNListLeads(undefined, (flowService: FlowService, vars: any) => {
-      flowService.updateCall({leadId: vars.lead});
-    });
-
+    const callType = FlowFactory.callTypeDecision();
+    const searchNListLeads = FlowFactory.searchNListLeads();
     const outboundType = FlowFactory.outboundType();
     const searchNListContacts = FlowFactory.searchNListContacts();
     const searchNListWebLeads = FlowFactory.searchNListWebLeads();

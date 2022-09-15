@@ -5,7 +5,7 @@ import * as fromFlow from './store/flow.reducer';
 import { FlowStatus } from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, lastValueFrom, Observable, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable, Subscription, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
@@ -19,6 +19,7 @@ import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 export interface IHistory {
   prevStepId: string;
@@ -34,6 +35,7 @@ export class FlowService {
   public callId: string | undefined;
   public noteId: string | undefined;
   public user$: Observable<User | null>;
+  public variables$: Subscription;
   public flowHost: { viewContainerRef: ViewContainerRef };
   public callService: CustomDataService<DominionType>;
 
@@ -77,6 +79,16 @@ export class FlowService {
     this.callsService = this.entityCollectionServiceFactory.create(ModuleTypes.CALL) as EntityCollectionService<DominionType>;
 
     this.user$ = this.store.select(fromLogin.selectUser);
+
+    this.variables$ = this.store.select(fromFlow.selectVariableByKey('lead')).pipe(distinctUntilChanged()).subscribe((leadId) => {
+      if(leadId) {
+        // if a lead selection changes we have to update the call
+        // we could alos have done this in the FlowListComponent.onSave with a switch on "lead" module
+        // having them here make them process specific things that need to happen when any variables are set.
+        this.updateCall({leadId: leadId})
+
+      }
+    })
   }
 
   public async restart(): Promise<any> {
@@ -148,7 +160,8 @@ export class FlowService {
         direction: direction
       }, false).pipe(take(1)).subscribe(async (res) => {
         this.callId = res.id;
-        this.updateStep(this.builder.process.currentStepId, {variables: { call: this.callId } });
+        this.store.dispatch(flowActions.UpdateFlowAction({ callId: this.callId }));
+        this.updateStep(this.builder.process.currentStepId, { variables: { call: this.callId } });
         await this.createNote('');
       });
     } else {
