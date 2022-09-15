@@ -9,9 +9,10 @@ import { Router } from '@angular/router';
 import { FiizDropDownComponent, IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @UntilDestroy()
 @Component({
@@ -89,7 +90,10 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
    * This is how WHERE view is rendered.
    */
   ngAfterViewInit() {
-    this.store.select(fromFlow.selectCurrentStepId).subscribe(stepId => {
+    this.store.select(fromFlow.selectCurrentStepId).pipe(
+      distinctUntilChanged(),
+      untilDestroyed(this)
+    ).subscribe(stepId => {
       if(stepId) {
         this.flowService.renderComponent(stepId);
       }
