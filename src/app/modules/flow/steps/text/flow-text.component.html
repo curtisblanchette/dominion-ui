@@ -123,9 +123,9 @@
         #tinymce
         apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
         outputFormat="html"
-        id="editor"
+        id="flow-text-editor"
         [init]="tinymceOptions"
-        (onInit)="afterEditorInit($event)"
+        (onInit)="afterEditorInit($event, 'flow-text-editor')"
         style="width: 550px;"
       ></editor>
     </ng-template>

@@ -89,7 +89,6 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
       }
     }
 
-
     public async getHistoricNotes(){
         const lead = await this.flowService.getVariable('lead');
         const deal = await this.flowService.getVariable('deal');
@@ -135,11 +134,11 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
       return this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
     }
 
-    public async afterEditorInit( event:any ){
+    public async afterEditorInit( event:any, id:string ){
       if( event ){
         this.editorLoading = false;
         this.tinymce.editor.setContent( await this.flowService.getNotesFromCache() );
-        this.tinymce.editor.dom.addClass(document.getElementById('editor') as HTMLElement, 'shadow');
+        this.tinymce.editor.dom.addClass(document.getElementById(id) as HTMLElement, 'shadow');
       }
     }
 
