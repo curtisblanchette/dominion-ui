@@ -303,7 +303,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
       this.setSelectedItem(this.currentIndex);
     } else if ((event.code === 'Enter' || event.code === 'NumpadEnter') && this.currentIndex >= 0) {
-      this.showDropDowns = false;
+      this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
+      this.setSelectedItem(this.currentIndex);
     } else if (event.code === 'Escape') {
       this.showDropDowns = false;
     }
