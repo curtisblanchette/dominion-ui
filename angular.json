@@ -28,7 +28,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
             "styles": [
               "./node_modules/normalize.css/normalize.css",
@@ -36,7 +37,9 @@
               "./node_modules/@angular/cdk/overlay-prebuilt.css",
               "src/assets/css/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/tinymce/tinymce.min.js"
+            ],
             "allowedCommonJsDependencies": [
               "rxjs-compat"
             ]

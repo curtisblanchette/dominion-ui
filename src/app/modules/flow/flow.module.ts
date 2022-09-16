@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { EffectsModule } from '@ngrx/effects';
 import { FlowEffects } from './store/flow.effects';
-import { EditorModule } from '@tinymce/tinymce-angular';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { FlowRouting } from './flow.routing';
 import { FlowBuilder } from './flow.builder';
 import { DictationPipe } from '../../common/pipes/dictation.pipe';
@@ -40,13 +40,17 @@ import { FlowService } from './flow.service';
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
-    SharedModule
+    SharedModule,
   ],
   providers: [
     FlowService,
     FlowBuilder,
     FlowProcess,
-    FlowBot
+    FlowBot,
+    {
+      provide: TINYMCE_SCRIPT_SRC,
+      useValue: 'tinymce/tinymce.min.js'
+    }
   ],
   exports: [
     DictationPipe

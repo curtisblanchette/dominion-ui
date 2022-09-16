@@ -40,6 +40,8 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
   public currentCallId:string | undefined;
 
   public tinymceOptions: Object = {
+    base_url: '/tinymce',
+    suffix: '.min',
     branding: false,
     menubar: false,
     toolbar: 'bold italic strikethrough underline align',
