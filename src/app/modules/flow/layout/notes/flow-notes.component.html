@@ -13,7 +13,7 @@
         <fiiz-loading *ngIf="dataLoading" type="ring" ></fiiz-loading>
         <ng-container *ngIf="!dataLoading">
           <ng-container *ngFor="let note of notes$ | async; let i = index">
-            <div *ngIf="note.callId !== currentCallId" class="flow-notes__item" [ngClass]="{'active' : selectedIndex == i}" (click)="loadNotesInView(note, i)">              
+            <div *ngIf="note.callId !== currentCallId" class="flow-notes__item" [ngClass]="{'active' : selectedIndex == i}" (click)="loadNotesInView(note, i)">
               <i class="flow-notes__item__icon fa"
                 [ngClass]="{'fa-phone' : note.noteFor == 'call', 'fa-calendar' : note.noteFor == 'event' }"></i>
               <div class="flow-notes__item__content">
@@ -22,22 +22,22 @@
                 <h5 *ngIf="note.noteFor == 'event'" [ngClass]="{'active' : selectedIndex == i}">{{note.type}}</h5>
                 <time [dateTime]="note.createdAt"
                       [ngClass]="{'active' : selectedIndex == i}">{{ note.createdAt | date:'medium'}}</time>
-              </div>              
+              </div>
             </div>
-          </ng-container>          
+          </ng-container>
         </ng-container>
       </div>
     </div>
     <fiiz-loading *ngIf="editorLoading" class="loading"></fiiz-loading>
-    <div class="flow-notes__content">      
+    <div class="flow-notes__content">
       <div class="autoSave" [@appear]="isSaving">Auto Saved.</div>
       <editor
         #tinymce
         apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
         outputFormat="html"
-        id="editor"
+        id="flow-notes-editor"
         [init]="tinymceOptions"
-        (onInit)="afterEditorInit($event)"
+        (onInit)="afterEditorInit($event, 'flow-notes-editor')"
       ></editor>
     </div>
   </div>
