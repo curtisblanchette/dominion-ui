@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.16.21 (2022-09-20)
+
+
+### Bug Fixes
+
+* **II-2801:** keep notes in memory ([8ccc1f5](https://github.com/4iiz/dominion-ui/commit/8ccc1f584990ce3e8416e236a143ae8423af63ee))
+
 ### 1.16.20 (2022-09-16)
 
 ### 1.16.19 (2022-09-16)
