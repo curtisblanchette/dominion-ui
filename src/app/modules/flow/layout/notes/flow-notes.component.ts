@@ -33,6 +33,7 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
 
   public selectedIndex:number = -1;
   public notes$: Observable<Array<any>> = of([]);
+  public content: string = '';
   public isSaving: boolean = false;
   public saveError: Error | null = null;
   public editorLoading:boolean = true;
@@ -76,12 +77,13 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
         this.tinymce.onKeyUp.pipe(
           untilDestroyed(this),
           map((action: any) => {
-            return action.event.currentTarget.innerHTML;
+            this.content = action.event.currentTarget.innerHTML;
+            return this.content;
           }),
-          debounceTime(750),
+          debounceTime(500),
           distinctUntilChanged(),
           mergeMap(async (html) => (this.isSaving = true) && this.saveNotes()),
-          delay(200),
+          delay(100),
           map(() => {
             this.isSaving = false;
           })
@@ -131,7 +133,7 @@ export class FlowNotesComponent implements OnInit, AfterViewInit {
     }
 
     public saveNotes(): void {
-      return this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
+      return this.flowService.updateNotesToCache(this.content);
     }
 
     public async afterEditorInit( event:any, id:string ){
