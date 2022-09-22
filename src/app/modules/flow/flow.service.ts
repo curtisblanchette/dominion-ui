@@ -142,10 +142,29 @@ export class FlowService {
 
   public async resume(): Promise<any> {
     // resuming from store
-    // this.builder.process = new FlowProcess(this.store, this.renderer,  this.entityCollectionServiceFactory);
+    // when a user navigates to the DataModule, from Flow, during a call
+    // the entityCollectionService filters will be mutated during Data interactions
+    // the filters must be reset to the Flow selections upon resuming.
     const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
 
+    if(vars['lead']){
+      this.leadService.setFilter({id: vars['lead']});
+    }
+
+    if(vars['contact']){
+      this.contactService.setFilter({id: vars['contact']});
+    }
+
+    if(vars['deal']){
+      this.dealService.setFilter({id: vars['deal']});
+    }
+
+    if(vars['event']){
+      this.eventService.setFilter({id: vars['event']});
+    }
+
     if (vars['call']) {
+      this.callsService.setFilter({id: vars['call']});
       this.callId = <string>vars['call'];
       this.noteId = <string>vars['note'];
     }
