@@ -9,8 +9,7 @@ import * as fromApp from '../../../../store/app.reducer';
 
 import { FiizDatePickerComponent, FiizInputComponent } from '../forms';
 import { NavigationService } from '../../../navigation.service';
-import * as dayjs from 'dayjs';
-import { ManipulateType } from 'dayjs';
+import dayjs from 'dayjs';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { HttpClient } from '@angular/common/http';
 import { ModuleTypes } from '../../../../data/entity-metadata';
@@ -21,7 +20,7 @@ import { FormInvalidError } from '../../../../modules/flow';
 
 import { Fields as LeadFields } from '../../../models/lead.model';
 import { Fields as DealFields } from '../../../models/deal.model';
-import { INestedSetting } from '../../../../store/app.effects';
+import { ISetting } from '../../../../store/app.effects';
 import { FiizDropDownComponent } from '../dropdown';
 import { FlowService } from '../../../../modules/flow/flow.service';
 
@@ -72,7 +71,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
   };
 
-  public appointmentSettings: INestedSetting;
+  public appointmentSettings: ISetting[] = [];
 
   @Input('module') public override module: ModuleTypes;
   @Input('data') public override data: any = {id: undefined, payload: {}};
@@ -119,7 +118,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     }
     this.form = this.fb.group({});
 
-    this.store.select(fromApp.selectSettingGroup('appointment')).pipe(untilDestroyed(this)).subscribe((settings: INestedSetting) => {
+    this.store.select(fromApp.selectSettingGroup('appointment')).pipe(untilDestroyed(this)).subscribe((settings: any) => {
       this.appointmentSettings = settings;
     });
 
@@ -214,12 +213,12 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
         }
 
         this.form.get('startTime')?.valueChanges.pipe(untilDestroyed(this)).subscribe((value: any) => {
-          const duration = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['value'] || 30;
-          const unit = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['unit'] || 'minutes';
-          const endTime = dayjs(value).add(duration, unit as ManipulateType).format();
-          if (this.options.state == 'create') {
-            this.form.patchValue({'endTime': endTime});
-          }
+          // const duration = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['value'] || 30;
+          // const unit = this.appointmentSettings && this.appointmentSettings['duration'] && this.appointmentSettings['duration']['unit'] || 'minutes';
+          // const endTime = dayjs(value).add(duration, unit as ManipulateType).format();
+          // if (this.options.state == 'create') {
+          //   this.form.patchValue({'endTime': endTime});
+          // }
           this.configuration.endTime.min = value;
           this.configuration.startTime.max = value;
         });

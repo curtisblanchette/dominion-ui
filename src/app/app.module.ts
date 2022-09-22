@@ -29,9 +29,14 @@ import { OutcomeFormModule } from './modules/outcome-form/outcome-form.module';
 
 import { MetaReducer } from "@ngrx/store";
 import { hydrationMetaReducer } from './store/hydration.reducer';
-import { FlowService } from './modules/flow/flow.service';
 import { FiizUIModule } from './common/components/ui/fiiz-ui.module';
 import { OverlayModule } from '@angular/cdk/overlay';
+
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import isBetween from 'dayjs/plugin/isBetween';
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 
@@ -91,5 +96,12 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
   ]
 })
 export class AppModule {
+
+  constructor() {
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    dayjs.extend(customParseFormat);
+    dayjs.extend(isBetween);
+  }
 
 }

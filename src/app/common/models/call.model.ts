@@ -3,7 +3,7 @@ import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 import { ModuleTypes } from '../../data/entity-metadata';
 import { FiizValidators } from '../validators';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 export enum Fields {
   START_TIME = 'startTime',

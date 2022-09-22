@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable, of } from 'rxjs';
@@ -14,7 +14,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../../../store/app.reducer';
-import { selectLookupByKeyAndId } from '../../../../store/app.reducer';
 import { ButtonSizes } from '../../../directives/buttonSize.directive';
 
 export interface IDropDownMenu {
@@ -63,7 +62,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   public totalRecords: number;
   public currentIndex: number = -1;
 
-  public apiData:Array<any>;
+  public apiData: Array<any>;
 
   public moduleTypes: any;
   public lookupTypes: any;
@@ -91,7 +90,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   clickInside($event: any) {
     $event.stopPropagation();
     if ($event.target.id !== 'search-dropdown') { // This is to enter input search params
-      if(!this.disabled){
+      if (!this.disabled) {
         this.toggle();
       }
     }
@@ -102,8 +101,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.showDropDowns = false;
   }
 
-  onChange: (value: string | number | boolean | DropdownItem | undefined) => void = () => {};
-  onTouched: Function = () => {};
+  onChange: (value: string | number | boolean | DropdownItem | undefined) => void = () => {
+  };
+  onTouched: Function = () => {
+  };
 
   @ViewChild('dropdownList') dropdownList: ElementRef;
   @ViewChild('searchInput') searchInput: ElementRef;
@@ -169,10 +170,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   public async getData(value: string = '') {
     if (this.moduleName) {
       this.currentIndex = -1;
-      let data:any = {};
+      let data: any = {};
 
       // figure out if it's an entity or a lookup
-      if(this.isEntity()) {
+      if (this.isEntity()) {
         const params = new HttpParams({fromObject: {q: value, limit: this.perPage, page: this.page}});
         data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}`, {params}).pipe(map((res: any) => !!res.rows ? res.rows : res)));
         this.apiData = data;
@@ -184,7 +185,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         });
       }
 
-      if(this.isLookup()) {
+      if (this.isLookup()) {
         data = await firstValueFrom(
           this.store.select(fromApp.selectLookupByKey(this.moduleName))
             .pipe(
@@ -213,19 +214,19 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   async writeValue(value: any) {
     if (value && this.moduleName) {
       this.value = value;
-      let data:any;
+      let data: any;
 
       // have to get the initial value from api or store
       // because we haven't loaded any data into the component yet
 
-      if(this.isEntity()){
+      if (this.isEntity()) {
         data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`));
         this.title = data.name ? data.name : data.fullName;
       }
 
-      if(this.isLookup()) {
+      if (this.isLookup()) {
         data = await firstValueFrom(this.store.select(fromApp.selectLookupByKeyAndId(this.moduleName, value)));
-        if(data?.label) {
+        if (data?.label) {
           this.title = data?.label ? data?.label : data?.id;
         }
       }
@@ -254,20 +255,20 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onChange(value.id);
     this.onTouched();
     this.title = value.label;
-    if( this.apiData?.length ){
-      const find = this.apiData.find( c => c.id === value.id );
+    if (this.apiData?.length) {
+      const find = this.apiData.find(c => c.id === value.id);
       this.getValues.emit(find);
     }
   }
 
-  public emitTheValue(value: string) {
-    this.onClick.emit(value);
+  public emitTheValue(value: any) {
+    this.onClick.emit(value as string);
   }
 
   public toggle() {
     this.showDropDowns = !this.showDropDowns;
 
-    if(this.showDropDowns) {
+    if (this.showDropDowns) {
       this.getData();
     }
 

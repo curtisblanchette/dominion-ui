@@ -1,33 +1,50 @@
 import { createAction, props } from '@ngrx/store';
-import { INestedSetting } from './app.effects';
 
 export const ActionTypes = {
-  GET_SETTINGS: '[App] Get Settings',
-  SET_SETTINGS: '[App] Set Settings',
-  UPDATE_SETTINGS: '[App] Update Settings',
-  UPDATE_SETTINGS_SUCCESS: '[App] Update Settings Success',
+
+  FETCH_SETTINGS: '[App] Get Settings',
+  FETCH_SETTINGS_SUCCESS: '[App] Get Settings Success',
+  FETCH_SETTINGS_FAILURE: '[App] Get Settings Failure',
+
+  SAVE_SETTINGS: '[App] Save Settings',
+  SAVE_SETTINGS_SUCCESS: '[App] Save Settings Success',
+  SAVE_SETTINGS_FAILURE: '[App] Save Settings Failure',
+
   GET_LOOKUPS: '[App] Get Lookups',
   SET_LOOKUPS: '[App] Set Lookups',
   CLEAR: '[App] Clear Store',
   INITIALIZED: '[App] State Initialized'
 };
 
-export const GetSettingsAction = createAction(
-  ActionTypes.GET_SETTINGS,
+
+export const FetchSettingsAction = createAction(
+  ActionTypes.FETCH_SETTINGS,
 );
 
-export const SetSettingsAction = createAction(
-  ActionTypes.SET_SETTINGS,
+export const FetchSettingsSuccessAction = createAction(
+  ActionTypes.FETCH_SETTINGS_SUCCESS,
   props<{ payload: any }>()
 );
 
-export const UpdateSettingsAction = createAction(
-  ActionTypes.UPDATE_SETTINGS,
-  props<{ payload: any, keys:Array<any> }>()
+export const FetchSettingsFailureAction = createAction(
+  ActionTypes.FETCH_SETTINGS_FAILURE,
+  props<{ payload: any }>()
 );
 
-export const UpdateSettingsSuccessAction = createAction(
-  ActionTypes.UPDATE_SETTINGS_SUCCESS
+
+export const SaveSettingsAction = createAction(
+  ActionTypes.SAVE_SETTINGS,
+  props<{ payload: any }>()
+);
+
+export const SaveSettingsSuccessAction = createAction(
+  ActionTypes.SAVE_SETTINGS_SUCCESS,
+  props<{ payload: any }>()
+);
+
+export const SaveSettingsFailureAction = createAction(
+  ActionTypes.SAVE_SETTINGS_FAILURE,
+  props<{ payload: any }>()
 );
 
 export const GetLookupsAction = createAction(

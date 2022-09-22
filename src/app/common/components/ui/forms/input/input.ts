@@ -1,7 +1,6 @@
-import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as intlTelInput from 'intl-tel-input';
-import { BehaviorSubject, Subject } from 'rxjs';
+import intlTelInput from 'intl-tel-input';
 
 @Component({
   selector: 'fiiz-input',
@@ -91,6 +90,9 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
       this.intlTelInput.setNumber(this.value.toString());
       this.onChange(this.phoneNumber);
     } else {
+      if(this.type === 'number') {
+        this.value = parseInt(<string>this.value, 0);
+      }
       this.onChange(this.value);
     }
 

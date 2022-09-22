@@ -1,7 +1,7 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import * as reportsActions from './reports.actions';
 
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { FlowLink, FlowRouter, FlowStep } from '../../flow';
 import { get, merge } from 'lodash';
 

@@ -1,7 +1,7 @@
 import { Component, Renderer2, AfterViewInit, AfterContentInit, Input, ViewChild } from '@angular/core';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
-import * as dayjs from 'dayjs';
+import dayjs, { ManipulateType } from 'dayjs';
 import { IEvent } from '@4iiz/corev2';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
@@ -16,13 +16,11 @@ import { DropdownItem, FiizDatePickerComponent, RadioItem } from '../../../../co
 import { HttpClient } from '@angular/common/http';
 import { FormInvalidError, OnSave } from '../../classes';
 import { models } from '../../../../common/models';
-import { INestedSetting } from '../../../../store/app.effects';
-import { ManipulateType } from 'dayjs';
+import { ISetting } from '../../../../store/app.effects';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
-import * as isBetween from 'dayjs/plugin/isBetween';
-dayjs.extend(isBetween);
+
 
 @UntilDestroy()
 @Component({
@@ -34,7 +32,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   private flowStepId: string | undefined;
 
   public timeZone: any = 'America/New_York';
-  public appointmentSettings: INestedSetting;
+  public appointmentSettings: {[key: string]: ISetting} = {};
   public ModuleTypes: any;
 
   public days: Array<any> = [];
@@ -73,15 +71,11 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.offices$ = this.store.select(fromApp.selectOffices);
     this.ModuleTypes = ModuleTypes;
 
-    this.store.select(fromApp.selectSettingGroup('appointment')).subscribe((settings: INestedSetting) => {
-      this.appointmentSettings = settings;
-    });
-
-    this.store.select(fromApp.selectSettingByKey('timezone')).subscribe((res) => {
+    this.store.select(fromApp.selectSettingByKey('timezone')).pipe(untilDestroyed(this)).subscribe((res: any) => {
       this.timeZone = res.value;
     });
 
-    this.store.select(fromFlow.selectCurrentStepId).subscribe(id => {
+    this.store.select(fromFlow.selectCurrentStepId).pipe(untilDestroyed(this)).subscribe(id => {
       this.flowStepId = id;
     });
 
@@ -154,9 +148,15 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       this.getData();
     }
 
-    if (this.options.state != 'cancel') {
-      this.initEventSlots();      
-    }
+    this.store.select(fromApp.selectSettingGroup('appointment')).pipe(untilDestroyed(this)).subscribe((settings: any) => {
+      for(const setting of settings) {
+        this.appointmentSettings[setting.name] = setting;
+      }
+
+      if (this.options.state != 'cancel') {
+        this.initEventSlots();
+      }
+    });
 
 
   }
@@ -176,8 +176,8 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
           bookedSlots = data.map((appt: IEvent) => dayjs(appt.startTime));
         }
 
-        let startTime = dayjs(date).startOf('day').add(this.appointmentSettings['day_start'].value, this.appointmentSettings['day_start'].unit as ManipulateType);
-        const endTime = dayjs(date).startOf('day').add(this.appointmentSettings['day_end'].value, this.appointmentSettings['day_end'].unit as ManipulateType);
+        let startTime = dayjs(date).startOf('day').add(this.appointmentSettings['day_start']?.value, this.appointmentSettings['day_start']?.unit as ManipulateType);
+        const endTime = dayjs(date).startOf('day').add(this.appointmentSettings['day_end']?.value, this.appointmentSettings['day_end']?.unit as ManipulateType);
 
         while (endTime.diff(startTime, 'h') > 0) {
           const find = bookedSlots.filter(slot => {
@@ -188,7 +188,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
               freeSlots.push(startTime.format('hh:mm A'));
             }
           }
-          startTime = startTime.add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType);
+          startTime = startTime.add(this.appointmentSettings['duration']?.value, this.appointmentSettings['duration']?.unit as ManipulateType);
         }
 
         let day: string = dayjs(date).format('dddd MMMM D, YYYY');
@@ -201,7 +201,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public buildForm(fields: string[]) {
     let form: { [key: string]: FormControl } = {};
     const payload = this.flowService.getCurrentStepData(ModuleTypes.EVENT);
-    
+
     for (const field of fields) {
       const control = models[this.module][field];
       let value = control.defaultValue;
@@ -210,14 +210,14 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       }
       form[field] = new FormControl(value, control.validators);
     }
-    
+
     this.form = this.fb.group(form);
     this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
       this.flowService.updateStep(this.flowStepId, {valid: this.form.valid});
     });
 
     this.setData();
-    
+
   }
 
   public getData() {
@@ -241,7 +241,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     } else {
       this.selectedBtnId = event.target.id;
       const startTime = dayjs(event.target.id).format();
-      const endTime = dayjs(event.target.id).add(this.appointmentSettings['duration'].value, this.appointmentSettings['duration'].unit as ManipulateType).format();
+      const endTime = dayjs(event.target.id).add(this.appointmentSettings['duration']?.value, this.appointmentSettings['duration']?.unit as ManipulateType).format();
       this.form.patchValue({startTime, endTime});
       this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
     }
@@ -264,7 +264,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public setData(){
     if( this.form && this.form.value ){
       const today = dayjs().startOf('day');
-      const tomorrow = dayjs().add(1, 'day').endOf('day');      
+      const tomorrow = dayjs().add(1, 'day').endOf('day');
       const startTime = this.form.value.startTime;
       const endTime = this.form.value.endTime;
       if( dayjs(startTime).isBetween(today, tomorrow, 'm', '[]') ){
@@ -272,7 +272,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       } else {
        this.dateRangePicker.value = [startTime, endTime];
       }
-      
+
     }
   }
 

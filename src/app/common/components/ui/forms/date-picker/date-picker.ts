@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
 
 @Component({
@@ -24,18 +24,14 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
   @Input('placeholder') placeholder: string = "Select Date";
   @Input('selectMode') selectMode: "single"|"range"|"rangeFrom"|"rangeTo" = 'single';
   @Input('stepMinute') stepMinute: number = 1;
-
   @Input('min') min!: Dayjs | string | null;
   @Input('max') max!: Dayjs | string | null;
-
   @Input() isDisabled!: boolean;
-
   @Input('autofocus') autofocus = false;
 
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 
-
-  value!: string | Dayjs | Dayjs[];
+  public value!: string | Dayjs | Dayjs[];
   public startEndValidation:boolean = false;
   public separator:string = '~';
 
@@ -45,14 +41,14 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
 
   constructor(
   ) {
-    
+
   }
 
   ngOnInit(): void {
-   
+
   }
 
-  ngAfterViewInit(): void { 
+  ngAfterViewInit(): void {
   }
 
   writeValue(value: any) {
