@@ -40,7 +40,7 @@ export class SystemEffects {
       this.actions$.pipe(
         ofType(systemActions.SetActingForAction),
         tap(async () => {
-          this.store.dispatch(appActions.GetSettingsAction());
+          this.store.dispatch(appActions.FetchSettingsAction());
           this.store.dispatch(appActions.GetLookupsAction());
         })
       ),

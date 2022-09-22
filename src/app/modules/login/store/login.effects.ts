@@ -148,7 +148,7 @@ export class LoginEffects {
           // because settings are workspace specific
           // system users will fetch app settings when switching workspaces
           if(!action.roles.includes('system')) {
-            this.store.dispatch(appActions.GetSettingsAction());
+            this.store.dispatch(appActions.FetchSettingsAction());
             this.store.dispatch(loginActions.GetUserAction());
           }
 

@@ -44,7 +44,7 @@
               (change)="getCustomSlot($event)"
               label="Appointment Time"
               [min]="minDate"
-              [stepMinute]="appointmentSettings['duration'].value || 30"
+              [stepMinute]="appointmentSettings['duration']?.value || 30"
             ></fiiz-date-picker>
           </div>
         </div>

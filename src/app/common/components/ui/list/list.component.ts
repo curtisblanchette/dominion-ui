@@ -1,11 +1,11 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { firstValueFrom, Observable, of, startWith, take, tap } from 'rxjs';
+import { firstValueFrom, Observable, of, startWith, take } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
 import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
-import * as pluralize from 'pluralize';
+import pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { IDropDownMenuItem } from '../dropdown';
 import * as fromApp from '../../../../store/app.reducer'

@@ -1,7 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as dayjs from 'dayjs';
-const customParseFormat = require('dayjs/plugin/customParseFormat')
-dayjs.extend(customParseFormat);
+import dayjs from 'dayjs';
 import { validate as isUuid } from "uuid";
 
 @Pipe({

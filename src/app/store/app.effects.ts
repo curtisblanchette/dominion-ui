@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { firstValueFrom, forkJoin, map, mergeMap, of, tap } from 'rxjs';
+import { catchError, firstValueFrom, forkJoin, mergeMap, tap, throwError } from 'rxjs';
 import * as appActions from './app.actions';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { ISettingResponse } from '@4iiz/corev2';
 import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { AppState } from './app.reducer';
@@ -12,9 +11,7 @@ import * as ct from 'countries-and-timezones';
 import { UsaStates } from 'usa-states';
 import { LookupTypes } from '../data/entity-metadata';
 
-export interface INestedSetting {
-  [key: string]: { id:number, value: any; unit: string; }
-}
+export interface ISetting { id: number, name: string, value: any; group: string; unit: string; }
 
 @Injectable()
 export class AppEffects {
@@ -30,67 +27,30 @@ export class AppEffects {
 
   getSettings$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(appActions.GetSettingsAction),
+      ofType(appActions.FetchSettingsAction),
       mergeMap(async () => {
         const res = await firstValueFrom(this.http.get(environment.dominion_api_url + '/settings')) as any;
-
-        /** restructuring the response to be more state/selector friendly
-         * --- before ---
-         * [ { name: 'thing', group: 'things', value: 5, unit: 'minutes' }, ...]
-         *
-         * --- after ---
-         * {
-         *   [group: string]: {
-         *      [name: string]: { value: any, unit: string },
-         *      ...
-         *   },
-         * }
-         **/
-        const toNestedSetting = (setting: ISettingResponse): INestedSetting => {
-          return {
-            [setting.name]: { id : setting.id, value: setting.value, unit: setting.unit }
-          }
-        }
-
-        // organize settings into groups
-        const response = new Map();
-        res.rows?.map((setting: any) => response.set(setting.group, {...response.get(setting.group) || {}, ...toNestedSetting(setting)}));
-
-        // Map to Object
-        const transformed: { [key: string]: INestedSetting } = Object.fromEntries(response);
-
-        // localStorage.setItem('settings', JSON.stringify(transformed));
-        return appActions.SetSettingsAction({ payload: transformed });
-
+        return appActions.FetchSettingsSuccessAction({ payload: res.rows });
+      }),
+      catchError((err: any) => {
+        this.toastr.error(err.error.name || '', err.error.message);
+        return throwError(err);
       })
     )
   );
 
-  updateSettings$ = createEffect((): any =>
+  onSaveSettings$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(appActions.UpdateSettingsAction),
+      ofType(appActions.SaveSettingsAction),
       mergeMap(async ( action:any ) => {
-        const response = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/settings/${action['payload']['id']}`, { value : action['payload']['value'], unit : action['payload']['unit']} )).catch((err:HttpErrorResponse) => {
-          return err;
-        });
-        if( response instanceof HttpErrorResponse ){
-          this.toastr.error(response.error.name || '', response.error.message);
-        } else {
-          return appActions.UpdateSettingsSuccessAction();
-        }
+        const res = await firstValueFrom(this.http.put(`${environment.dominion_api_url}/settings`, action.payload )) as any;
+        return appActions.SaveSettingsSuccessAction({payload: res});
+      }),
+      catchError((err: any) => {
+        this.toastr.error(err.error.name || '', err.error.message);
+        return throwError(err);
       })
     )
-  );
-
-  updateSettingsSuccess$ = createEffect(
-    ():any =>
-    this.actions$.pipe(
-      ofType(appActions.UpdateSettingsSuccessAction),
-      map((action) => {
-        this.toastr.success('', 'Settings Updated!');
-      })
-    ),
-    { dispatch : false }
   );
 
   getLookups$ = createEffect((): any =>
