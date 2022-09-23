@@ -80,14 +80,14 @@ export class FlowService {
 
     this.user$ = this.store.select(fromLogin.selectUser);
 
-    this.variables$ = this.store.select(fromFlow.selectVariableByKey('lead')).pipe(distinctUntilChanged()).subscribe((leadId) => {
-      if(leadId) {
-        // if a lead selection changes we have to update the call
-        // we could alos have done this in the FlowListComponent.onSave with a switch on "lead" module
-        // having them here make them process specific things that need to happen when any variables are set.
-        this.updateCall({leadId: leadId})
+    // if a lead/deal/etc changes we have to update the call
+    // process related things that need should happen when variables are set.
+    this.store.select(fromFlow.selectAllVariables).pipe(distinctUntilChanged()).subscribe((vars:any) => {
+      let payload: {[key: string]: string } = {}
+      payload['leadId'] = vars.lead;
+      payload['dealId'] = vars.deal;
 
-      }
+      this.updateCall(payload)
     })
   }
 
