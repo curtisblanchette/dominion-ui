@@ -5,7 +5,7 @@ import * as fromFlow from './store/flow.reducer';
 import { FlowStatus } from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, lastValueFrom, Observable, Subscription, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, map, Observable, Subscription, take } from 'rxjs';
 import { FlowBuilder } from './flow.builder';
 import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
@@ -82,13 +82,23 @@ export class FlowService {
 
     // if a lead/deal/etc changes we have to update the call
     // process related things that need should happen when variables are set.
-    this.store.select(fromFlow.selectAllVariables).pipe(distinctUntilChanged()).subscribe((vars:any) => {
-      let payload: {[key: string]: string } = {}
-      payload['leadId'] = vars.lead;
-      payload['dealId'] = vars.deal;
+    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal'])).pipe(
+      distinctUntilChanged((prev, curr) =>{
+        return (
+          prev['lead'] === curr['lead'] &&
+          prev['deal'] === curr['deal']
+        );
+      }),
+      map((vars: any) => {
+        if(this.callId) {
+          let payload: {[key: string]: string } = {}
+          payload['leadId'] = vars.lead;
+          payload['dealId'] = vars.deal;
 
-      this.updateCall(payload)
-    })
+          this.updateCall(payload)
+        }
+      })
+      ).subscribe();
   }
 
   public async restart(): Promise<any> {
