@@ -259,6 +259,14 @@ export const selectVariableByKey = (key: string) => createSelector(selectAllVari
   return variables[key];
 });
 
+export const selectVariablesByKeys = (keys: string[]) => createSelector(selectAllVariables, (variables: { [key:string]: any }) => {
+  let vars:any = {};
+  for(const key of keys) {
+    vars[key] = variables[key];
+  }
+  return vars;
+})
+
 export function accumulateVariables(steps: FlowStep[]): { [key: string]: string | number | Date } {
   let items: { [key: string]: any } = {};
 

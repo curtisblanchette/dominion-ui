@@ -31,15 +31,6 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
   status$: Observable<string>;
   timeline$: Observable<FlowStep>;
   objections$: Observable<DropdownItem[]>;
-  // = of([
-  //   {id: 'cost-1', label: 'How much will it cost?'},
-  //   {id: 'cost-2', label: 'It\'s too expensive.'},
-  //   {id: 'fear-1', label: 'Will it work?'},
-  //   {id: 'fear-2', label: 'Are you legitimate?'},
-  //   {id: 'fear-3', label: 'Credit card fear.'},
-  //   {id: 'urgency-1', label: 'Not ready.'},
-  //   {id: 'urgency-2', label: 'Talk to spouse.'},
-  // ])
 
   public menuItems: IDropDownMenuItem[] = [
     {
@@ -53,8 +44,6 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
       emitterValue: 'end-call'
     }
   ];
-
-  // public objections$: Observable<DropdownItem[]>;
 
   @ViewChild(FlowHostDirective, {static: true}) flowHost!: FlowHostDirective;
   @ViewChild('objectionDropdown') objectionDropdown:FiizDropDownComponent;
