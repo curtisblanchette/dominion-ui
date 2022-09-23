@@ -191,9 +191,14 @@ export class FlowBot {
                   }
                 }
 
+                const moduleIds: any = this.botActions
+                  .filter(action => action.operation === 'add') // anything newly created
+                  .map(action => ({ [action.module]: action.response.id })) // return a key/value pair
+                  .reduce((a, b) => ({...a, ...b})); // merge results into singular object
+
                 flowService.updateCall({
-                  leadId: this.botActions.find(action => action.module === ModuleTypes.LEAD)?.response?.id,
-                  dealId: this.botActions.find(action => action.module === ModuleTypes.DEAL)?.response?.id,
+                  leadId: moduleIds.lead,
+                  dealId: moduleIds.deal,
                   statusId: callStatusId,
                   outcomeId: callOutcomeId
                 });
