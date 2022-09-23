@@ -7,7 +7,7 @@
     [min]="min"
     [max]="max"
     [(ngModel)]="value"
-
+    (ngModelChange)="changed($event)"
     [selectMode]="selectMode"
     [rangeSeparator]="separator"
   />
