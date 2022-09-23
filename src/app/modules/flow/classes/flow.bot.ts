@@ -8,7 +8,7 @@ import { ModuleTypes } from '../../../data/entity-metadata';
 import { firstValueFrom, take } from 'rxjs';
 import { FlowService } from '../flow.service';
 import { Injectable } from '@angular/core';
-import { BotAction, BotActionStatus } from './flow.botAction';
+import { FlowBotAction, FlowBotActionStatus } from './flow.botAction';
 import * as flowActions from '../store/flow.actions';
 import { FlowStep } from './flow.step';
 import { v4 as uuidv4 } from "uuid";
@@ -27,7 +27,7 @@ export class FlowBot {
   private id: string = uuidv4();
 
   private readonly services: { [key: string]: EntityCollectionService<DominionType> };
-  public botActions: BotAction[] = [];
+  public botActions: FlowBotAction[] = [];
 
   constructor(
     private store: Store<fromFlow.FlowState>,
@@ -74,8 +74,7 @@ export class FlowBot {
             switch (step.component) {
               case 'FlowDataComponent': {
                 const service = this.services[`${step.state.module}Service`];
-                const isCreate = step.state.options.state === 'create';
-                const operation = isCreate ? 'add' : 'update';
+                const operation = step.state.options.state === 'create' ? 'add' : 'update';
 
                 // some FlowTextComponents need to perform updates on entities
                 // we'll capture the extra entity payloads now
@@ -92,15 +91,6 @@ export class FlowBot {
 
                 console.log(additions);
 
-                const botAction = new BotAction({
-                  name: operation + '-' + step.state.module,
-                  icon: 'fa-user',
-                  module: step.state.module,
-                  status: BotActionStatus.INITIAL
-                });
-
-                this.botActions.push(botAction);
-
                 let filter: any = await firstValueFrom(service.filter$);
                 if (filter['id']) {
                   payload['id'] = filter['id'];
@@ -110,23 +100,16 @@ export class FlowBot {
                   payload = { ...payload, ...step.state.data.payload };
                 }
 
-                try {
-                  const response = await service[operation](payload).toPromise();
-                  botAction.status = BotActionStatus.SUCCESS;
+                const action = new FlowBotAction(this.entityCollectionServiceFactory,{
+                  name: operation + '-' + step.state.module,
+                  icon: 'fa-user',
+                  module: step.state.module,
+                  operation,
+                  payload
+                });
+                this.botActions.push(action);
 
-                  // the id's we get back should be saved to the process.
-                  flowService.updateStep(step.id, {state: {data: {id: response?.id}}}, 'merge');
-
-                  // set the entityCollection filter to target this record going forward
-                  service.setFilter({id: response?.id});
-
-                  // notify the client
-                  botAction.message = `${this.getModuleName(step.state.module)} ${operation === 'add' ? 'Created' : 'Updated'}.`;
-                } catch(e: any) {
-                  botAction.status = BotActionStatus.FAILURE;
-                  botAction.errorMessage = e.message;
-                }
-
+                await action.execute();
 
               }
                 break;
@@ -141,55 +124,47 @@ export class FlowBot {
 
                 switch (step.state.options.state) {
                   case 'cancel': {
-                    const botAction = new BotAction({
+                    const action = new FlowBotAction(this.entityCollectionServiceFactory, {
                       name: 'cancel-event',
                       icon: 'fa-calendar',
-                      message: 'Cancel Event',
-                      status: BotActionStatus.PENDING
-                    });
-                    this.botActions.push(botAction);
-
-                    try {
-                      // TODO outcomeId should be a retrieved value
-                      await this.services['eventService'].update({
+                      module: ModuleTypes.EVENT,
+                      operation: 'update',
+                      payload: {
                         id: step.state.data.toCancel,
                         outcomeId: 2
-                      }).toPromise();
-                      botAction.status = BotActionStatus.SUCCESS;
-                      botAction.message = 'Appointment Cancelled.'
-                    } catch(e: any) {
-                      botAction.status = BotActionStatus.FAILURE;
-                      botAction.errorMessage = e.message;
-                    }
-
+                      },
+                      message: 'Cancel Event',
+                    });
+                    this.botActions.push(action);
+                    await action.execute().then(() => action.message = 'Appointment Canceled.');
                   }
-                    break;
+                  break;
+
                   case 'reschedule':
                   case 'set': {
                     if (step.state.options.state === 'reschedule') {
-                      const botAction = new BotAction({
+                      const action = new FlowBotAction(this.entityCollectionServiceFactory, {
                         name: 'reschedule-event',
                         icon: 'fa-calendar',
                         message: 'Reschedule Event',
-                        status: BotActionStatus.PENDING
-                      });
-                      this.botActions.push(botAction);
-
-                      try {
-                        await this.services['eventService'].update({
+                        module: ModuleTypes.EVENT,
+                        operation: 'update',
+                        payload: {
                           id: step.state.data.toReschedule,
                           outcomeId: 1
-                        }).toPromise();
-                        botAction.status = BotActionStatus.SUCCESS;
-                        botAction.message = 'Appointment Rescheduled.';
-                        // TODO outcomeId should be a retrieved value
+                        }
+                      });
+                      this.botActions.push(action);
+
+                      try {
+                        await action.execute().then(() => action.message = 'Appointment Rescheduled.');
+
                         callOutcomeId = outcomes.find(o => o.label === 'Set Appointment')?.id;
                       } catch(e : any) {
-                        botAction.status = BotActionStatus.FAILURE;
-                        botAction.errorMessage = e.message;
+                        action.status = FlowBotActionStatus.FAILURE;
+                        action.errorMessage = e.message;
                       }
                     } else {
-                      // TODO outcomeId should be a retrieved value
                       callOutcomeId = outcomes.find(o => o.label === 'Rescheduled Appointment')?.id;
                     }
 
@@ -201,33 +176,30 @@ export class FlowBot {
                     payload['leadId'] = leadFilter['id'];
                     payload['contactId'] = contactFilter['id'];
 
-                    const botAction = new BotAction({
+                    const action = new FlowBotAction(this.entityCollectionServiceFactory, {
                       name: 'add-event',
                       icon: 'fa-calendar',
-                      status: BotActionStatus.PENDING,
+                      module: ModuleTypes.EVENT,
+                      operation: 'add',
+                      payload,
                       message: 'Creating Appointment'
                     });
-                    this.botActions.push(botAction);
+                    this.botActions.push(action);
 
-                    try {
-                      const created = await this.services['eventService'].add(payload).toPromise();
-                      flowService.updateStep(step.id, {state: {data: {id: created?.id}}}, 'merge');
-                      this.services['eventService'].setFilter({id: created?.id});
-                      botAction.status = BotActionStatus.SUCCESS;
-                      botAction.message = 'Appointment Created.';
-                    } catch(e: any) {
-                      botAction.status = BotActionStatus.FAILURE;
-                      botAction.errorMessage = e.message;
-                    }
-
+                    await action.execute().then(() => action.message = 'Appointment Created');
+                    flowService.updateStep(step.id, {state: {data: {id: action.response?.id}}}, 'merge');
                   }
                 }
 
-                flowService.updateCall({statusId:callStatusId, outcomeId:callOutcomeId});
+                flowService.updateCall({
+                  leadId: this.botActions.find(action => action.module === ModuleTypes.LEAD)?.response?.id,
+                  dealId: this.botActions.find(action => action.module === ModuleTypes.DEAL)?.response?.id,
+                  statusId: callStatusId,
+                  outcomeId: callOutcomeId
+                });
               }
                 break;
               case 'FlowTextComponent': {
-
 
 
               }
@@ -256,9 +228,5 @@ export class FlowBot {
 
   }
 
-  private getModuleName(module: ModuleTypes) {
-    if (module) {
-      return module[0].toUpperCase() + module.substring(1, module.length);
-    }
-  }
+
 }

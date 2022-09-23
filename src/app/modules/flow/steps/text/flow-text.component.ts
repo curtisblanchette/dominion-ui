@@ -19,7 +19,7 @@ import { CustomDataService } from '../../../../data/custom.dataservice';
 import { RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
-import { BotAction, BotActionStatus, FlowBot } from '../../classes';
+import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
 
 @UntilDestroy()
 @Component({
@@ -82,7 +82,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.ModuleTypes = ModuleTypes;
     this.FlowStatus = fromFlow.FlowStatus;
-    this.BotActionStatus = BotActionStatus;
+    this.BotActionStatus = FlowBotActionStatus;
     this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
     this.outboundTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
     this.callReasons$ = of([{ id : 'cancel-appointment', label : 'Cancel Appointment' }, { id : 'reschedule-appointment', label : 'Reschedule Appointment' }, { id : 'take-notes', label : 'Take Notes' }]);
@@ -284,7 +284,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.flowBot.run(this.flowService);
   }
 
-  get botActions(): BotAction[] {
+  get botActions(): FlowBotAction[] {
     return this.flowBot.botActions;
   }
 
