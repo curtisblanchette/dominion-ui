@@ -38,7 +38,9 @@
               "src/assets/css/styles.scss"
             ],
             "scripts": [
-              "node_modules/tinymce/tinymce.min.js"
+              "node_modules/tinymce/tinymce.min.js",
+              "node_modules/tinymce/themes/silver/theme.js",
+              "node_modules/tinymce/icons/default/icons.js"
             ],
             "allowedCommonJsDependencies": [
               "rxjs-compat"
