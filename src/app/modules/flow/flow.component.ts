@@ -115,7 +115,10 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     this.dialog.open(FiizDialogComponent, {
       data: {
         title: `Hold on!`,
-        body: `All information will be lost. \n\n Are you sure you want to end the call?`,
+        body: `
+            <div>All information will be lost.</div>
+            <div>Are you sure you want to end the call?</div>
+        `,
         buttons: {
           cancel: {
             label: 'Cancel',
