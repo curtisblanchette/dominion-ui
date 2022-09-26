@@ -329,7 +329,7 @@ export class FlowFactory {
 
   public static noOutcomeList(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'Pending Outcome List',
+      nodeText: 'No Set/Show/Hire',
       nodeIcon: 'table-list',
       component: FlowListComponent.name,
       beforeRoutingTrigger,
@@ -337,7 +337,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.DEAL,
         data: {
-          title: 'Pending Outcome List',
+          title: 'No Set/Show/Hire',
         },
         options: {
           searchable: false,
@@ -347,7 +347,6 @@ export class FlowFactory {
           columns: [],
           query: {
             stageId: '2,4,5',
-            // outcome: null,
           },
           controls: {
             perPage: false,
