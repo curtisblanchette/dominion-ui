@@ -386,7 +386,7 @@ export class FlowFactory {
       state: {
         data: {
           title: 'Power Question',
-          // body: '',
+          body: 'Be sure to use a power question. We want to create a sense of urgency so the PC shows up to their consultation ready to hire.',
           template: 'power-question'
         }
       }

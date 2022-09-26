@@ -40,8 +40,8 @@
 
     <ng-template [ngSwitchCase]="'power-question'">
       <header>
-        <h3>Power Question</h3>
-        <p>Be sure to use a power question. We want to create a sense of urgency so the PC shows up to their consultation ready to hire.</p>
+        <h3>{{data.title}}</h3>
+        <p>{{data.body}}</p>
       </header>
       <ol style="margin: 0 auto; max-width: 460px; text-align: left; font-size: 16px;">
         <li>When was the last time you saw your family in (enter country)?</li>
@@ -50,9 +50,7 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'recap'" >
-
       <div style="display: flex; flex-direction: column;">
-
         <p class="dictation">We will be sending information before, during the process and at the end of the process, so it is important that we verify the email.</p>
         <fiiz-data [module]="ModuleTypes.LEAD" [data]="{ id: (vars$ | async)?.lead }" [options]="{state: 'edit', fields: ['email', 'phone'] }"></fiiz-data>
         <div class="appointment-time">
@@ -61,13 +59,10 @@
         </div>
         <p class="dictation">Here's the deal. At your consult, you will need to make a decision. Either you will decide to do nothing and keep your life the same as it is today, or you will choose one of the paths we identify to make your life better</p>
         <p class="dictation">We always suggest that you bring some money to start the process; whatever is in your possibilities. Are there any family members or friends who must be involved to help you decide on how you are going to make your life better?</p>
-
       </div>
-
     </ng-template>
 
     <ng-template [ngSwitchCase]="'end'">
-
       <ng-container *ngIf="(status$ | async) === (FlowStatus.SUCCESS || FlowStatus.PENDING)">
         <div style="display: flex; justify-content: space-around; gap: 2em; margin-bottom: 2em;">
           <div class="bot-message" *ngFor="let action of botActions" style="display:flex; flex-direction: column; align-items: center; justify-content: space-around;">
@@ -81,14 +76,15 @@
        <p>All information has been captured, thank you!</p>
       </ng-container>
 
-
       <fiiz-button *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="(status$ | async) !== 'success'">Finish Call</fiiz-button>
     </ng-template>
 
 
     <ng-template [ngSwitchCase]="'reason-for-call'">
-      <h3 class="title">{{data.title}}</h3>
-      <p>{{data.body}}</p>
+      <header>
+        <h3>{{data.title}}</h3>
+        <p>Be sure to use a power question. We want to create a sense of urgency so the PC shows up to their consultation ready to hire.</p>
+      </header>
 
       <form [formGroup]="form" *ngIf="form">
         <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason"></fiiz-radio>
@@ -96,12 +92,13 @@
     </ng-template>
 
     <ng-template [ngSwitchCase]="'follow-up-script'">
-      <h3 class="title">{{data.title}}</h3>
-      <p>{{data.body}}</p>
+      <header>
+        <h3>{{data.title}}</h3>
+        <p>{{data.body}}</p>
+      </header>
 
       <form [formGroup]="form" *ngIf="form">
         <fiiz-radio [items]="answerOptions$" formControlName="answered" name="answered"></fiiz-radio>
-
 
         <ng-container [ngSwitch]="form.controls['answered'].value">
           <ng-template ngSwitchCase="yes">
@@ -112,13 +109,17 @@
           <ng-template ngSwitchCase="no"></ng-template>
           <ng-template ngSwitchCase="leaving-message"></ng-template>
           <ng-template [ngSwitchCase]="'bad-number' || 'wrong-number' || 'not-working'"></ng-template>
-
         </ng-container>
 
       </form>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'take-notes'">
+      <header>
+        <h3>{{data.title}}</h3>
+        <p>{{data.body}}</p>
+      </header>
+
       <editor
         #tinymce
         apiKey="urnz0s9a4al78qoc2vppvb448lleii59pbarcr4cgviahk1i"
@@ -130,9 +131,7 @@
       ></editor>
     </ng-template>
 
-
     <ng-template ngSwitchDefault>This would be a default template</ng-template>
   </ng-container>
-
 
 </div>

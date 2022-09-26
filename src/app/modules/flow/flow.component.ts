@@ -27,6 +27,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
   valid$: Observable<boolean | undefined>;
   notes$: Observable<string | null | undefined>;
   notesData: any;
+  isFirstStep$: Observable<boolean>;
   isLastStep$: Observable<boolean>;
   status$: Observable<string>;
   timeline$: Observable<FlowStep>;
@@ -57,6 +58,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
     this.objections$ = this.store.select(fromApp.selectCallObjections)
     this.valid$ = this.store.select(fromFlow.selectIsValid);
+    this.isFirstStep$ = this.store.select(fromFlow.selectIsFirstStep);
     this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
     this.timeline$ = this.store.select(fromFlow.selectFlowTimeline);

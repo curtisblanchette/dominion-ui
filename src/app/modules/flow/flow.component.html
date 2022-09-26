@@ -6,7 +6,7 @@
     <fiiz-dropdown
       size="small"
       #objectionDropdown
-      [disabled]="(status$ | async) === 'success'"
+      [disabled]="(status$ | async) === 'success' || (isFirstStep$ | async)"
       id="objection"
       type="search"
       [items]="objections$"
@@ -17,14 +17,14 @@
     <fiiz-button
       size="small"
       (click)="openNotesDialog()"
-      [disabled]="(status$ | async) === 'success'"
+      [disabled]="(status$ | async) === 'success' || (isFirstStep$ | async)"
       style="align-self: end;"><i class="fa fa-note-sticky"></i> Notes</fiiz-button>
     <fiiz-button
       size="small"
       warning
       stroked
       style="align-self: end;"
-      [disabled]="(status$ | async) === 'success'"
+      [disabled]="(status$ | async) === 'success' || (isFirstStep$ | async)"
       (click)="endCall()">End Call</fiiz-button>
     <!--    </div>-->
 

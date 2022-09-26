@@ -32,9 +32,12 @@
               { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
             "styles": [
-              "./node_modules/normalize.css/normalize.css",
-              "./node_modules/ngx-toastr/toastr.css",
-              "./node_modules/@angular/cdk/overlay-prebuilt.css",
+              "node_modules/normalize.css/normalize.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/@angular/cdk/overlay-prebuilt.css",
+              "node_modules/tinymce/skins/ui/oxide/skin.min.css",
+              "node_modules/tinymce/skins/ui/oxide/content.min.css",
+              "node_modules/tinymce/skins/content/default/content.css",
               "src/assets/css/styles.scss"
             ],
             "scripts": [
