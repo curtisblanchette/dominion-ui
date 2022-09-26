@@ -1,9 +1,10 @@
 <!--<h3>{{data.title}}</h3>-->
 <form [formGroup]="form" (ngSubmit)="save()" >
   <fiiz-grid [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : 'initial'}">
-    <ng-container *ngFor="let control of controlData">
+    <ng-container *ngFor="let control of controlData; first as isFirst;">
       <fiiz-input
         #inputList
+        [autofocus]="isFirst"
         *ngIf="['text','tel','email'].includes(control.type)"
         [type]="control.type"
         [id]="control.key"
@@ -15,6 +16,7 @@
       <fiiz-textarea
         class="span-3"
         *ngIf="control.type === 'textarea'"
+        [autofocus]="isFirst"
         [formControlName]="control.key"
         [id]="control.key"
         [label]="control.key"
@@ -25,6 +27,7 @@
         *ngIf="['calendar', 'timer', 'both'].includes(control.type)"
         #picker
         [pickerType]="control.type"
+        [autofocus]="isFirst"
         [id]="control.key"
         [label]="control.label"
         [formControlName]="control.key"
@@ -36,6 +39,7 @@
       <fiiz-dropdown
         *ngIf="control.type === 'dropdown-search'"
         #dropdown
+        [autofocus]="isFirst"
         (getValues)="getDropdownObjects($event)"
         type="search"
         tabindex="-1"

@@ -95,10 +95,10 @@
   </div>
   <div class="flex-table__row"
        [ngClass]="{'active' : selected?.id === item?.id}"
+       [attr.data-id]="item.id"
        tabindex="0" #row
        (mousedown)="onClick($event, item)"
-       (focusin)="onFocusIn($event, item)"
-       (focusout)="onFocusOut($event)"
+       (keyup)="onKeyUp($event, item)"
        *ngFor="let item of data$ | async | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: count$ | async } ">
     <div *ngIf="item?.id" class="flex-table__cell" style="justify-content:space-around;">
       <input name="recordId" id="{{item?.id}}" [checked]="selected?.id === item?.id" [value]="item?.id" type="radio">

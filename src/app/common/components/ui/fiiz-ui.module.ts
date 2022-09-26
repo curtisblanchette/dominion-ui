@@ -16,7 +16,7 @@ import { FiizTableComponent } from './table';
 import { FiizTabNavComponent } from './tab-nav/tab-nav';
 import { RouterModule } from '@angular/router';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
-import { AutofocusDirective } from '../../directives/autofocus/autofocus.directive';
+import { AutofocusDirective, FiizFocusDirective} from '../../directives/autofocus/autofocus.directive';
 import { FiizInputCurrencyComponent } from './forms/input-currency';
 import { FiizBigButtonComponent } from './big-button';
 import { FiizDropDownComponent } from './dropdown';
@@ -59,6 +59,7 @@ import { FiizButtonSizeDirective } from '../../directives/buttonSize.directive';
     FiizPrimaryDirective,
     FiizWarningDirective,
     AutofocusDirective,
+    FiizFocusDirective,
     ProgressBarComponent,
     FiizButtonComponent,
     FiizBigButtonComponent,
@@ -107,6 +108,7 @@ import { FiizButtonSizeDirective } from '../../directives/buttonSize.directive';
     FiizPrimaryDirective,
     FiizWarningDirective,
     AutofocusDirective,
+    FiizFocusDirective,
     ProgressBarComponent,
     FiizButtonComponent,
     FiizBigButtonComponent,
