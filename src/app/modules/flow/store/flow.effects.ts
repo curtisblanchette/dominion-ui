@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs';
+import { EMPTY, mergeMap, switchMap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
-import { FlowBot, FlowRouter, FlowStep } from '../index';
+import { FlowRouter, FlowStep } from '../index';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { cloneDeep } from 'lodash';
@@ -18,8 +18,7 @@ export class FlowEffects {
     private actions$: Actions,
     private router: Router,
     private store: Store<fromFlow.FlowState>,
-    private http: HttpClient,
-    private flowBot: FlowBot
+    private http: HttpClient
   ) {
 
   }
@@ -38,13 +37,6 @@ export class FlowEffects {
     ), { dispatch: false }
   );
 
-  onReset = createEffect((): any =>
-  this.actions$.pipe(
-    ofType(flowActions.ResetAction),
-    tap((action) => {
-      this.flowBot.reset();
-    })
-  ), { dispatch: false });
 
   // flowSummary$ = createEffect((): any =>
   //   this.actions$.pipe(

@@ -34,6 +34,7 @@ export class FlowBot {
     private appStore: Store<fromApp.AppState>,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
+    console.log('id', this.id);
     this.services = {
       leadService: this.entityCollectionServiceFactory.create(ModuleTypes.LEAD),
       contactService: this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT),

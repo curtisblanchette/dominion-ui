@@ -294,6 +294,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public endCall() {
+    this.flowBot.reset();
     return this.flowService.restart();
   }
 
