@@ -251,6 +251,11 @@ export const selectIsValid = createSelector(selectSteps, selectCurrentStepId, (s
   return false;
 });
 
+export const selectIsFirstStep = createSelector(selectCurrentStepId, selectFirstStepId, (currentStepId, firstStepId) => {
+  return currentStepId === firstStepId;
+});
+
+
 export const selectIsLastStep = createSelector(selectCurrentStepId, selectLastStepId, (currentStepId, lastStepId) => {
   return currentStepId === lastStepId;
 });
