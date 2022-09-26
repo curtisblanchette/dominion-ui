@@ -208,13 +208,7 @@ export class FlowService {
       id: this.callId,
       changes: payload
     }
-    this.callService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe((res) => {
-      // const variables: any = {};
-      // for (const key of Object.keys(res)) {
-      //   variables[`call_${key}`] = res[key];
-      // }
-      // this.addVariables(variables);
-    });
+    this.callService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
   }
 
   public async createNote(content: string): Promise<ICallNote> {
