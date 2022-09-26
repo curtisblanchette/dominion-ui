@@ -20,15 +20,16 @@ const columns = new Map([
   ]],
   [ModuleTypes.EVENT, [
     {id: 'title', label: 'Title'},
-    {id: 'startTime', label: 'Start Time'},    
+    {id: 'startTime', label: 'Start Time'},
     {id: 'endTime', label: 'End Time'},
     {id: 'outcome', label: 'Outcome'},
     {id: 'createdAt', label: 'Created'}
   ]],
   [ModuleTypes.CALL, [
+    {id: 'type', label: 'Type'},
+    {id: 'status', label: 'Status'},
     {id: 'dialledNumber', label: 'Dialled'},
     {id: 'deal', label: 'Deal'},
-    {id: 'status', label: 'Status'},
     {id: 'outcome', label: 'Outcome'},
     {id: 'direction', label: 'Direction'},
     {id: 'createdAt', label: 'Created'}

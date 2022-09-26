@@ -47,7 +47,7 @@ export class FlowTimelineComponent implements AfterViewInit {
       }
 
     });
-    this.steps$ = this.store.pipe(select(fromFlow.selectFlowTimeline), distinctUntilChanged());
+    this.steps$ = this.store.pipe(select(fromFlow.selectTimeline), distinctUntilChanged());
   }
 
   public ngAfterViewInit() {

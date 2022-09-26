@@ -69,7 +69,7 @@ export const initialState: FlowState = {
 export const reducer = createReducer(
   initialState,
 
-  on(flowActions.UpdateFlowAction,(state, { firstStepId, currentStepId, lastStepId, processId, status }) => {
+  on(flowActions.UpdateFlowAction, (state, {firstStepId, currentStepId, lastStepId, processId, status}) => {
     state = {...state};
     firstStepId ? state.firstStepId = firstStepId : false;
     lastStepId ? state.lastStepId = lastStepId : false;
@@ -100,17 +100,17 @@ export const reducer = createReducer(
       const index = state.steps.indexOf(found);
       let clone = cloneDeep(found);
 
-      switch(strategy) {
+      switch (strategy) {
         case 'merge': {
           clone = merge(clone, changes);
         }
-        break;
+          break;
         case 'overwrite': {
-          for(let key of Object.keys(changes)){
+          for (let key of Object.keys(changes)) {
             clone[key] = (<any>changes)[key];
           }
         }
-        break;
+          break;
       }
 
       // replace steps
@@ -185,31 +185,40 @@ export const getObjectByDeepKey = (obj: any): any => {
 
 export const selectFlow = createFeatureSelector<FlowState>('flow');
 
-export const selectProcessId     = createSelector(selectFlow, (flow: FlowState) => flow.processId);
-export const selectFirstStepId   = createSelector(selectFlow, (flow: FlowState) => flow.firstStepId);
-export const selectLastStepId    = createSelector(selectFlow, (flow: FlowState) => flow.lastStepId);
+export const selectProcessId = createSelector(selectFlow, (flow: FlowState) => flow.processId);
+export const selectFirstStepId = createSelector(selectFlow, (flow: FlowState) => flow.firstStepId);
+export const selectLastStepId = createSelector(selectFlow, (flow: FlowState) => flow.lastStepId);
 export const selectCurrentStepId = createSelector(selectFlow, (flow: FlowState) => flow.currentStepId);
-export const selectAllVariables  = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.steps));
-export const selectNotes         = createSelector(selectFlow, (flow: FlowState) => flow.notes);
+export const selectAllVariables = createSelector(selectFlow, (flow: FlowState) => accumulateVariables(flow.steps));
+export const selectNotes = createSelector(selectFlow, (flow: FlowState) => flow.notes);
 
 
-export const selectSteps   = createSelector(selectFlow, (flow: FlowState) => flow.steps.map((step: any) => new FlowStep(step)));
+export const selectSteps = createSelector(selectFlow, (flow: FlowState) => flow.steps.map((step: any) => new FlowStep(step) || undefined));
 export const selectRouters = createSelector(selectFlow, (flow: FlowState) => flow.routers.map((router: any) => new FlowRouter(router)));
-export const selectLinks   = createSelector(selectFlow, (flow: FlowState) => flow.links.map((link: any) => new FlowLink(link)));
+export const selectLinks = createSelector(selectFlow, (flow: FlowState) => flow.links.map((link: any) => new FlowLink(link)));
 
-export const selectStepById   = (id: string) => createSelector(selectSteps, (steps: FlowStep[]) => steps.filter((item: FlowStep) => item.id === id));
+export const selectCurrentStep = createSelector(selectFlow, selectCurrentStepId, selectSteps,(flow: FlowState, currentStepId, steps) => {
+  if (currentStepId) {
+    const found = steps.find((step: any) => step.id === currentStepId);
+    if (found) {
+      return new FlowStep(found);
+    }
+  }
+  return;
+});
+
+export const selectStepById = (id: string) => createSelector(selectSteps, (steps: FlowStep[]) => steps.filter((item: FlowStep) => item.id === id));
 export const selectRouterById = (id: string) => createSelector(selectRouters, (routers: FlowRouter[]) => routers.filter((item: FlowRouter) => item.id === id));
-export const selectLinkById   = (id: string) => createSelector(selectLinks, (links: FlowLink[]) => links.find(item => item.to === id));
+export const selectLinkById = (id: string) => createSelector(selectLinks, (links: FlowLink[]) => links.find(item => item.to === id));
 
 
-
-export const selectFlowTimeline = createSelector(selectSteps, selectLinks, selectRouters, selectAllVariables, selectFirstStepId, (steps, links, routers, variables, firstStepId) => {
-  if(steps?.length && links?.length && routers?.length) {
+export const selectTimeline = createSelector(selectSteps, selectLinks, selectRouters, selectAllVariables, selectFirstStepId, (steps, links, routers, variables, firstStepId) => {
+  if (steps?.length && links?.length && routers?.length) {
     const firstStep = steps.find((step: any) => step.id === firstStepId);
     const timeline: FlowStep[] = [firstStep];
 
     const _findNextStep = (stepId: string | undefined): any => {
-      const nextLink = links.find((link: any) => link.from === stepId );
+      const nextLink = links.find((link: any) => link.from === stepId);
       const nextStep = steps.find((step: FlowStep) => step.id === nextLink?.to);
       const nextRouter = routers.find((router: FlowRouter) => router.id === nextLink?.to);
 
@@ -236,19 +245,30 @@ export const selectFlowTimeline = createSelector(selectSteps, selectLinks, selec
 
 });
 export const selectFlowStatus = createSelector(selectFlow, (flow: FlowState) => flow.status);
-export const selectFlowBotContext = createSelector(selectFlowTimeline, selectFlowStatus, selectAllVariables, (timeline, status,  vars) => {
+export const selectFlowBotContext = createSelector(selectTimeline, selectFlowStatus, selectAllVariables, (timeline, status, vars) => {
   const didObject = vars['objectAndEndCall'] || false;
   return [timeline, status, didObject];
 });
 
 export const selectIsValid = createSelector(selectSteps, selectCurrentStepId, (steps: FlowStep[], currentStepId) => {
-  if(currentStepId) {
+  if (currentStepId) {
     const found = steps.find((step: any) => step.id === currentStepId);
-    if(found) {
+    if (found) {
       return found.valid;
     }
   }
   return false;
+});
+
+export const selectTriggers = createSelector(selectSteps, selectCurrentStepId, (steps: FlowStep[], currentStepId) => {
+  let result: { before: string | null; after: string | null } = { before: null, after: null };
+  if (currentStepId) {
+    const found = steps.find((step: any) => step.id === currentStepId);
+    if (found) {
+      result.before = found.beforeRoutingTrigger;
+    }
+  }
+  return result;
 });
 
 export const selectIsFirstStep = createSelector(selectCurrentStepId, selectFirstStepId, (currentStepId, firstStepId) => {
@@ -264,9 +284,9 @@ export const selectVariableByKey = (key: string) => createSelector(selectAllVari
   return variables[key];
 });
 
-export const selectVariablesByKeys = (keys: string[]) => createSelector(selectAllVariables, (variables: { [key:string]: any }) => {
-  let vars:any = {};
-  for(const key of keys) {
+export const selectVariablesByKeys = (keys: string[]) => createSelector(selectAllVariables, (variables: { [key: string]: any }) => {
+  let vars: any = {};
+  for (const key of keys) {
     vars[key] = variables[key];
   }
   return vars;
