@@ -109,7 +109,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       })).subscribe(variables => {
       this.variables = variables;
     });
-    this.allValid$ = this.store.select(fromFlow.selectFlowTimeline).pipe(
+    this.allValid$ = this.store.select(fromFlow.selectTimeline).pipe(
       map(steps => {
         if (steps) {
           const passing = steps.every((value: any) => !!value.valid);

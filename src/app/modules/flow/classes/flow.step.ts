@@ -1,6 +1,5 @@
 import { FlowNode } from "./index";
 import { FlowSerialization } from './flow.serialization';
-import { OnDestroy } from '@angular/core';
 
 type OmitMethods = '_serialize' | '_deserialize' | 'apply' | 'save' | 'release' | 'elapsed';
 
@@ -11,8 +10,8 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   public override nodeIcon: string;
   public component: any; // TODO make this type right
 
-  public beforeRoutingTriggers: string;
-  public afterRoutingTriggers: string;
+  public beforeRoutingTrigger: string;
+  public afterRoutingTrigger: string;
 
   public state: any;
   public valid?: boolean;
@@ -29,15 +28,15 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
     this.state = data.state;
     this._constructedAt = 0;
 
-    if(typeof data.beforeRoutingTriggers === 'function') {
-      this.beforeRoutingTriggers = String(data.beforeRoutingTriggers);
+    if(typeof data.beforeRoutingTrigger === 'function') {
+      this.beforeRoutingTrigger = String(data.beforeRoutingTrigger);
     } else {
-      this.beforeRoutingTriggers = data.beforeRoutingTriggers;
+      this.beforeRoutingTrigger = data.beforeRoutingTrigger;
     }
-    if(typeof data.afterRoutingTriggers === 'function') {
-      this.afterRoutingTriggers = String(data.afterRoutingTriggers);
+    if(typeof data.afterRoutingTrigger === 'function') {
+      this.afterRoutingTrigger = String(data.afterRoutingTrigger);
     } else {
-      this.afterRoutingTriggers = data.afterRoutingTriggers;
+      this.afterRoutingTrigger = data.afterRoutingTrigger;
     }
 
     // only modify constructed at if its unset
@@ -72,19 +71,6 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   }
 
   public _serialize(): FlowStep {
-    // we need to keep the step.component class name so that it can be retrieved again
-    // if(typeof this.component !== 'string') {
-    //   this.component = this.component.name;
-    // }
-    //
-    // if(typeof this.beforeRoutingTriggers === 'function') {
-    //   this.beforeRoutingTriggers = this.beforeRoutingTriggers.toString();
-    // }
-    //
-    // if(typeof this.afterRoutingTriggers === 'function') {
-    //   this.afterRoutingTriggers = this.afterRoutingTriggers.toString();
-    // }
-
     return this;
   }
 

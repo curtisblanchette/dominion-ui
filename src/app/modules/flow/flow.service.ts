@@ -80,25 +80,25 @@ export class FlowService {
 
     this.user$ = this.store.select(fromLogin.selectUser);
 
-    // if a lead/deal/etc changes we have to update the call
-    // process related things that need should happen when variables are set.
+    // things that must happen IMMEDIATELY after specific variables are set.
     this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal'])).pipe(
-      distinctUntilChanged((prev, curr) =>{
+      distinctUntilChanged((prev, curr) => {
         return (
           prev['lead'] === curr['lead'] &&
           prev['deal'] === curr['deal']
         );
       }),
       map((vars: any) => {
-        if(this.callId) {
-          let payload: {[key: string]: string } = {}
+        if (this.callId) {
+          let payload: { [key: string]: string } = {}
           payload['leadId'] = vars.lead;
           payload['dealId'] = vars.deal;
 
           this.updateCall(payload)
         }
       })
-      ).subscribe();
+    ).subscribe();
+
   }
 
   public async restart(): Promise<any> {
@@ -140,7 +140,7 @@ export class FlowService {
     if (resume) return this.resume();
 
     // we're starting a new process
-    this.store.dispatch(flowActions.UpdateFlowAction({ processId: uuidv4(), status: FlowStatus.INITIAL }));
+    this.store.dispatch(flowActions.UpdateFlowAction({processId: uuidv4(), status: FlowStatus.INITIAL}));
     await this.builder.build();
     const step: FlowStep = this.builder.process.steps[0];
 
@@ -157,19 +157,19 @@ export class FlowService {
     // the filters must be reset to the Flow selections upon resuming.
     const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
 
-    if(vars['lead']){
+    if (vars['lead']) {
       this.leadService.setFilter({id: vars['lead']});
     }
 
-    if(vars['contact']){
+    if (vars['contact']) {
       this.contactService.setFilter({id: vars['contact']});
     }
 
-    if(vars['deal']){
+    if (vars['deal']) {
       this.dealService.setFilter({id: vars['deal']});
     }
 
-    if(vars['event']){
+    if (vars['event']) {
       this.eventService.setFilter({id: vars['event']});
     }
 
@@ -186,15 +186,19 @@ export class FlowService {
     if (!this.callId) {
       this.callService.add({
         startTime: new Date().toISOString(),
+        typeId: 1,
         direction: direction
       }, false).pipe(take(1)).subscribe(async (res) => {
         this.callId = res.id;
-        this.store.dispatch(flowActions.UpdateFlowAction({ callId: this.callId }));
-        this.updateStep(this.builder.process.currentStepId, { variables: { call: this.callId } });
+        this.store.dispatch(flowActions.UpdateFlowAction({callId: this.callId}));
+        this.updateStep(this.builder.process.currentStepId, {variables: {call: this.callId}});
         await this.createNote('');
       });
     } else {
-      this.updateCall({direction: direction});
+      this.updateCall({
+        direction: direction,
+        typeId: 1
+      });
     }
 
   }
@@ -223,14 +227,14 @@ export class FlowService {
   }
 
   public updateNote(content: string): Observable<ICallNote> {
-    return this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, { content }).pipe(take(1)).subscribe() as unknown as Observable<ICallNote>;
+    return this.http.put(`${environment.dominion_api_url}/calls/${this.callId}/notes/${this.noteId}`, {content}).pipe(take(1)).subscribe() as unknown as Observable<ICallNote>;
   }
 
-  public updateNotesToCache( notes:string ){
+  public updateNotesToCache(notes: string) {
     this.store.dispatch(flowActions.addNotesAction({notes}));
   }
 
-  public async getNotesFromCache(){
+  public async getNotesFromCache() {
     const notes = await firstValueFrom(this.store.select(fromFlow.selectNotes));
     return notes ? notes : '';
   }
@@ -247,12 +251,12 @@ export class FlowService {
 
       const step = this.builder.process.steps.find(step => step.id === link?.to);
 
-      if(step) {
+      if (step) {
         return step;
       }
 
       const router = this.builder.process.routers.find(router => router.id === link?.to);
-      if(router) {
+      if (router) {
         return router;
       }
       // return <FlowStep | FlowRouter>link?.to;
@@ -300,7 +304,7 @@ export class FlowService {
       this.cmpReference.instance.onBack();
     }
 
-    const timeline = [...(await firstValueFrom(this.store.select(fromFlow.selectFlowTimeline)))];
+    const timeline = [...(await firstValueFrom(this.store.select(fromFlow.selectTimeline)))];
     const currentStepIndex = timeline.indexOf(timeline.find(step => step.id === this.cmpReference.instance.flowStepId));
     const prevStep = timeline[currentStepIndex - 1];
 
@@ -384,15 +388,15 @@ export class FlowService {
     }
   }
 
-  public addVariables(data: any, id?:string ): void {
+  public addVariables(data: any, id?: string): void {
     this.store.dispatch(flowActions.UpdateStepAction({
       id: id || this.builder.process.currentStepId,
-      changes: { variables: data },
+      changes: {variables: data},
       strategy: 'merge'
     }));
   }
 
-  public updateStep(stepId: string| undefined, changes: Partial<FlowStep>, strategy: 'merge' | 'overwrite' = 'merge') {
+  public updateStep(stepId: string | undefined, changes: Partial<FlowStep>, strategy: 'merge' | 'overwrite' = 'merge') {
     this.store.dispatch(flowActions.UpdateStepAction({id: stepId, changes, strategy}))
   }
 
@@ -408,17 +412,17 @@ export class FlowService {
     return value;
   }
 
-  public getCurrentStepData( moduleType:ModuleTypes ){
+  public getCurrentStepData(moduleType: ModuleTypes) {
     const currentStepId = this.builder.process.currentStepId;
-    const currentStep = this.builder.process.steps.find( step => step?.id === currentStepId );
+    const currentStep = this.builder.process.steps.find(step => step?.id === currentStepId);
     return currentStep?.state.data[moduleType];
   }
 
-  public aggregateDataForModule( module:ModuleTypes ){
+  public aggregateDataForModule(module: ModuleTypes) {
     let data = {};
-    this.builder.process.steps.map((step:FlowStep) => {
-      if( step.state?.module === module && step.state?.data[module] ){
-        data = { ...data, ...step?.state?.data[module] };
+    this.builder.process.steps.map((step: FlowStep) => {
+      if (step.state?.module === module && step.state?.data[module]) {
+        data = {...data, ...step?.state?.data[module]};
       }
     });
     return data;

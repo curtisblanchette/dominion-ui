@@ -4,7 +4,7 @@ import { FlowHostDirective, FlowNotesComponent, FlowStep, FlowTransitions, NoSte
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
-import { firstValueFrom, lastValueFrom, Observable, of, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable, take, withLatestFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { FiizDropDownComponent, IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
@@ -13,6 +13,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { cloneDeep } from 'lodash';
+import * as flowActions from './store/flow.actions';
 
 @UntilDestroy()
 @Component({
@@ -61,7 +63,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     this.isFirstStep$ = this.store.select(fromFlow.selectIsFirstStep);
     this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
-    this.timeline$ = this.store.select(fromFlow.selectFlowTimeline);
+    this.timeline$ = this.store.select(fromFlow.selectTimeline);
   }
 
   public async ngAfterContentInit() {
@@ -69,25 +71,55 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectProcessId).pipe(take(1)));
     await this.flowService.start(!!processExists);
 
-    this.store.select(fromFlow.selectVariableByKey('objectAndEndCall')).subscribe( obj => {
-      if( obj ){
-        this.objectionDropdown.title = 'Objections';
-      }
-    });
-
   }
 
   /**
-   * This is where views are rendered.
+   * This is where views are rendered
+   * triggers are fired here also
    */
   ngAfterViewInit() {
     this.store.select(fromFlow.selectCurrentStepId).pipe(
+      withLatestFrom(this.store.select(fromFlow.selectTimeline), this.store.select(fromFlow.selectAllVariables)),
       distinctUntilChanged(),
       untilDestroyed(this)
-    ).subscribe(stepId => {
-      if(stepId) {
-        this.flowService.renderComponent(stepId);
+    ).subscribe(async (res) => {
+      let [stepId, steps, vars]: any = res;
+
+      if(steps) {
+        const step = steps?.find((step: FlowStep) => step.id === stepId);
+        const prevStep = steps[steps.findIndex((step: FlowStep) => step.id === stepId) - 1];
+
+        if (typeof prevStep?.afterRoutingTrigger === 'string') {
+          const sourceMapComment = `\n //# sourceURL=${prevStep.nodeText}.after.js \n`;
+          let code = prevStep?.afterRoutingTrigger;
+          code = code.concat(sourceMapComment);
+          const afterFn = eval(code);
+          // if we want to let triggers call the flow service
+          // we'd have to move the trigger calls out of FlowEffects
+          const updates = await afterFn(this.flowService, vars, {...cloneDeep(prevStep)});
+          if(updates) {
+            this.store.dispatch(flowActions.UpdateStepAction({ id: prevStep.id, changes: updates, strategy: 'merge' } ));
+          }
+        }
+
+        if (typeof step.beforeRoutingTrigger === 'string') {
+          const sourceMapComment = `\n //# sourceURL=${step.nodeText}.before.js \n`;
+          let code = step.beforeRoutingTrigger;
+          code = code.concat(sourceMapComment);
+          const beforeFn = eval(code);
+          const updates = await beforeFn(this.flowService, vars, {...cloneDeep(step)});
+          if (updates) {
+            this.store.dispatch(flowActions.UpdateStepAction({id: stepId, changes: updates, strategy: 'merge'}));
+          }
+        }
+
+        if(stepId) {
+          // current step Before Routing
+          this.flowService.renderComponent(stepId);
+          // current step Before Routing
+        }
       }
+
     });
   }
 

@@ -63,6 +63,7 @@ export class AppEffects {
           [LookupTypes.PRACTICE_AREA]: this.http.get(environment.dominion_api_url + '/practice-areas'),
           [LookupTypes.ROLE]: this.http.get(environment.dominion_api_url + '/roles'),
           // Call Lookups
+          [LookupTypes.CALL_TYPE]: this.http.get(environment.dominion_api_url + '/call-types'),
           [LookupTypes.CALL_OUTCOME]: this.http.get(environment.dominion_api_url + '/call-outcomes'),
           [LookupTypes.CALL_TYPE]: this.http.get(environment.dominion_api_url + '/call-types'),
           [LookupTypes.CALL_OBJECTION]: this.http.get(environment.dominion_api_url + '/call-objections'),
