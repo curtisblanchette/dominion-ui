@@ -94,8 +94,6 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
           let code = prevStep?.afterRoutingTrigger;
           code = code.concat(sourceMapComment);
           const afterFn = eval(code);
-          // if we want to let triggers call the flow service
-          // we'd have to move the trigger calls out of FlowEffects
           const updates = await afterFn(this.flowService, vars, {...cloneDeep(prevStep)});
           if(updates) {
             this.store.dispatch(flowActions.UpdateStepAction({ id: prevStep.id, changes: updates, strategy: 'merge' } ));
