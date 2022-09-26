@@ -39,7 +39,7 @@
     <div style="position: absolute; top: 20px; left: 0; right: 0; bottom: 20px;">
       <ng-template flowHost></ng-template>
       <footer *ngIf="(status$ | async) !== 'success'">
-        <fiiz-button (click)="onBack($event)" stroked>Back</fiiz-button>
+        <fiiz-button (click)="onBack($event)" stroked [disabled]="isFirstStep$ | async">Back</fiiz-button>
         <fiiz-button primary type="submit" [disabled]="!(valid$ | async)" *ngIf="!(isLastStep$ | async)" (click)="onNext($event)">Continue</fiiz-button>
       </footer>
     </div>
