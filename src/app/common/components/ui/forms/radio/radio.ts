@@ -78,7 +78,7 @@ export class FiizRadioComponent implements ControlValueAccessor, AfterViewInit {
   }
 
   handleKeyup($event: any) {
-    if($event.keyCode === 32) {
+    if([13, 32].includes($event.keyCode) || ['Space', 'Enter'].includes($event.code)) {
       const input = $event.currentTarget.children[0];
       this.value = input.value;
       this.onChange(this.value);

@@ -40,7 +40,8 @@
             "scripts": [
               "node_modules/tinymce/tinymce.min.js",
               "node_modules/tinymce/themes/silver/theme.js",
-              "node_modules/tinymce/icons/default/icons.js"
+              "node_modules/tinymce/icons/default/icons.js",
+              "node_modules/tinymce/models/dom/model.js"
             ],
             "allowedCommonJsDependencies": [
               "rxjs-compat"

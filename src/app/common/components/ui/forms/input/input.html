@@ -6,26 +6,28 @@
 
   <div class="wrapper">
     <input [id]="id"
-         autocomplete="off"
-         #inputElement
-         [type]="type"
-         [minlength]="minlength"
-         [maxlength]="maxlength"
-         [attr.min]="min"
-         [attr.max]="max"
-         [placeholder]="placeholder"
-         [value]="value"
-         [autofocus]="autofocus"
-         [(ngModel)]="value"
-         [disabled]="disabled"
-         [ngClass]="{ 'number': type === 'number', 'has-icon': !!icon }"
-         (ngModelChange)="changed($event)"/>
+           autocomplete="off"
+           tabindex="0"
+           #inputElement
+           [type]="type"
+           [minlength]="minlength"
+           [maxlength]="maxlength"
+           [attr.min]="min"
+           [attr.max]="max"
+           [placeholder]="placeholder"
+           [fiizfocus]="autofocus"
+           [attr.autofocus]="autofocus || null"
+           [value]="value"
+           [(ngModel)]="value"
+           [disabled]="disabled"
+           [ngClass]="{ 'number': type === 'number', 'has-icon': !!icon }"
+           (ngModelChange)="changed($event)"/>
   </div>
 </ng-template>
 
 <ng-template #textarea>
 	<textarea class="text-area" [id]="id" [attr.min]="min" [attr.max]="max" [placeholder]="placeholder"
-			  [disabled]="disabled">
+            [disabled]="disabled">
 		value
 	</textarea>
 </ng-template>

@@ -203,14 +203,26 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public onFocusOut($event: any) {
     $event.preventDefault();
-    this.values.emit( { module: this.module, record: null });
-    this.selected = null;
+    // this.values.emit( { module: this.module, record: null });
+    // this.selected = null;
   }
 
   public onFocusIn($event: any, record: any) {
     $event.preventDefault();
-    this.selected = record;
-    this.values.emit( { module: this.module, record: record } );
+    // this.selected = record;
+    // this.values.emit( { module: this.module, record: record } );
+  }
+
+  public onKeyUp($event: any, record: any) {
+    $event.preventDefault();
+    if(this.selected?.id === $event.target.attributes['data-id']) {
+      return;
+    }
+    if([13, 32].includes($event.keyCode) || ['Space', 'Enter'].includes($event.code)) {
+      this.selected = record;
+      this.values.emit( { module: this.module, record: record } );
+    }
+
   }
 
 
