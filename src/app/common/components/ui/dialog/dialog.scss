@@ -10,22 +10,24 @@ $padding: 40px;
     padding: 0 $padding;
   }
   .header { padding-top: $padding; }
-  .footer { padding-bottom: $padding; } 
+  .footer { padding-bottom: $padding; }
 
   .icon {
     display: block;
     font-size: 40px;
     margin: 0 auto;
     text-align: center;
-
   }
 
   .title {
     text-align: center;
     color: var(--green1);
     line-height: 34px;
-    font-size: 18px;
-    margin-bottom: 1.4em;
+    font-size: 32px;
+    margin:  {
+      top: .75em;
+      bottom: 1em;
+    }
   }
 
   hr {
@@ -37,7 +39,6 @@ $padding: 40px;
 
   .body {
     margin-top: 30px;
-    font-size: 14px;
     text-align: center;
   }
 }
