@@ -76,9 +76,12 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
     return this.values.next(value);
   }
 
-
+  /**
+   * The "create New" button stores a variable example: { new_lead: true }
+   * which can later be referenced by FlowConditions
+   **/
   public create($event: Event) {
-    this.flowService.updateStep(this.flowStepId, {valid: true, variables: {[`new_${this.module}`]: true}});
+    this.flowService.updateStep(this.flowStepId, {valid: true, variables: {[`new_${this.options.createModule || this.module}`]: true}});
     this.onCreate.next(true);
   }
 

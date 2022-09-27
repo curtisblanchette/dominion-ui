@@ -58,7 +58,7 @@ export class FlowFactory {
     });
   }
 
-  public static searchNListLeads(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
+  public static searchLeads(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Lead Search',
       nodeIcon: 'address-book',
@@ -91,7 +91,7 @@ export class FlowFactory {
   }
 
 
-  public static searchNListContacts(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
+  public static searchContacts(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Search Contacts',
       nodeIcon: 'address-book',
@@ -102,6 +102,7 @@ export class FlowFactory {
         module: ModuleTypes.CONTACT,
         data: {
           title: 'Search Contacts',
+          body: 'Search for any contact.'
         },
         options: {
           searchable: true,
@@ -113,8 +114,9 @@ export class FlowFactory {
           controls: {
             perPage: false,
             pagination: false,
-            createNew: false
-          }
+            createNew: true
+          },
+          createModule: ModuleTypes.LEAD
         }
       }
     })

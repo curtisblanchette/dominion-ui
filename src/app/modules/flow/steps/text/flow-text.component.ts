@@ -93,6 +93,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       {id: 'web-leads', label: 'Web Leads'}
     ]);
     this.callReasons$ = of([
+      {id: 'set-appointment', label: 'Set Appointment'},
       {id: 'cancel-appointment', label: 'Cancel Appointment'},
       {id: 'reschedule-appointment', label: 'Reschedule Appointment'},
       {id: 'take-notes', label: 'Take Notes'}
