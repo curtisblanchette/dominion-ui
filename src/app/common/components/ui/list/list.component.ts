@@ -26,10 +26,11 @@ export interface IListOptions {
   controls: {
     perPage?: boolean;
     pagination?: boolean;
-    createNew?:boolean;
+    createNew?: boolean;
   };
   loadInitial?: boolean;
   query?: any;
+  createModule?: ModuleTypes; // if you need to override the module that should be
 }
 
 export enum SortDirections {
