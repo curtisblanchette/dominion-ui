@@ -1,11 +1,14 @@
 <div *ngIf="data" [ngClass]="data.template">
 
   <ng-container [ngSwitch]="data.template">
-    <ng-template [ngSwitchCase]="'call-type'" >
-<!--      <h3>{{data.title}}</h3>-->
-      <p>{{data.body}}</p>
+    <ng-template [ngSwitchCase]="'call-direction'">
+      <header>
+        <h3>{{data.title}}</h3>
+        <p>{{data.body}}</p>
+      </header>
+
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="callTypes$" formControlName="call_type" name="call_type"></fiiz-radio>
+        <fiiz-radio [items]="callDirections$" formControlName="call_direction" name="call_direction"></fiiz-radio>
       </form>
     </ng-template>
 
