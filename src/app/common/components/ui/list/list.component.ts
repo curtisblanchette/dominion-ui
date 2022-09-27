@@ -160,8 +160,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
-    // @ts-ignore
-    this.searchForm.get('search').valueChanges.pipe(
+
+    this.searchForm.get('search')?.valueChanges.pipe(
       untilDestroyed(this),
       map(action => {
         return action;
@@ -172,7 +172,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.page = 1;
       this.searchInModule();
     });
-    // this.template$ = of(this.initialTemplate);
 
     if(this.options.loadInitial) {
       this.searchInModule();
@@ -183,7 +182,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     $event.preventDefault();
 
     if([2,3].includes($event.which)) {
-      // don't process if it's a middle-click or right-click
+      // don't proceed if it's `middle-click` or `right-click`
       return false;
     }
 
@@ -202,18 +201,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.store.dispatch(dataActions.SetPerPageAction({payload: parseInt($event.target.value, 0)}));
   }
 
-  public onFocusOut($event: any) {
-    $event.preventDefault();
-    // this.values.emit( { module: this.module, record: null });
-    // this.selected = null;
-  }
-
-  public onFocusIn($event: any, record: any) {
-    $event.preventDefault();
-    // this.selected = record;
-    // this.values.emit( { module: this.module, record: record } );
-  }
-
   public onKeyUp($event: any, record: any) {
     $event.preventDefault();
     if(this.selected?.id === $event.target.attributes['data-id']) {
@@ -223,9 +210,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.selected = record;
       this.values.emit( { module: this.module, record: record } );
     }
-
   }
-
 
   get pluralModuleName() {
     if (this.module) {
@@ -242,8 +227,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       return module[0].toUpperCase() + module.substring(1, module.length);
     }
   }
-
-
 
   public onCreateNew() {
     this.selected = null;
@@ -270,7 +253,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public async getData() {
     const params = await this.parseQuery();
     // this._dynamicCollectionService.setFilter(params); // this modifies filteredEntities$ subset
-    /** Proxy to the underlying dataService to do some processing */
+    /** Proxy to the underlying dataService for processing */
     this.getWithQuery(params).pipe(take(1)).subscribe(); // this performs an API call
   }
 
@@ -333,5 +316,4 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.onDelete.emit( { module: this.module, record: this.selected } );
     }
   }
-
 }
