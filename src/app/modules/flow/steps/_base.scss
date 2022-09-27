@@ -10,7 +10,7 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 25%;
+  bottom: 15%;
   width: 100%;
   margin: 0 auto;
   padding: 0 0 0;
@@ -63,6 +63,7 @@
 
     h3, p {
       margin: 0;
+      text-align: center;
     }
     p {
       color: $text1-shade25;
