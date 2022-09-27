@@ -34,7 +34,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public form: FormGroup;
   public allValid$: Observable<boolean>;
   public didObject$: Observable<boolean> = of(false);
-  public callTypes$: Observable<RadioItem[]>;
+  public callDirections$: Observable<RadioItem[]>;
   public outboundTypes$: Observable<RadioItem[]>;
   public callReasons$: Observable<DropdownItem[]>;
   public answerOptions$: Observable<DropdownItem[]>;
@@ -83,7 +83,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.ModuleTypes = ModuleTypes;
     this.FlowStatus = fromFlow.FlowStatus;
     this.BotActionStatus = FlowBotActionStatus;
-    this.callTypes$ = of([
+    this.callDirections$ = of([
       {id: 'inbound', label: 'Inbound'},
       {id: 'outbound', label: 'Outbound'}
     ]);
@@ -171,8 +171,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
     switch (this.data.template) {
 
-      case 'call-type': {
-        form['call_type'] = new FormControl(this.variables['call_type'] || null, [Validators.required]);
+      case 'call-direction': {
+        form['call_direction'] = new FormControl(this.variables['call_direction'] || null, [Validators.required]);
       }
         break;
 
@@ -275,28 +275,19 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
 
-  public async onSave() {
+  public async onSave(): Promise<any> {
     switch (this.data.template) {
-      case 'call-type': {
-        this.flowService.startCall(this.form.value.call_type);
+      case 'call-direction': {
+        return this.flowService.startCall(this.form.value.call_direction);
       }
-        break;
-
       case 'relationship-building': {
-        this.dataComponents.map(cmp => cmp.save(false));
-        // should I make it append this form data to the lead create form?
-        // that might make the most sense, but a new entity update would allow it to continue ambiguously (as intended)
-
+        return this.dataComponents.map(cmp => cmp.save(false));
       }
-        break;
-
       case 'recap': {
         const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.Lead);
         leadForm?.form.markAsDirty();
-        leadForm?.save(true);
+        return leadForm?.save(true);
       }
-        break;
-
     }
   }
 

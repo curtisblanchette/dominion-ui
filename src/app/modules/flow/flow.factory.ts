@@ -24,18 +24,18 @@ export class FlowFactory {
     });
   }
 
-  public static callTypeDecision(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
+  public static callDirectionDecision(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'Call Type',
+      nodeText: 'Call Direction',
       nodeIcon: 'phone-volume',
       component: FlowTextComponent.name,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
         data: {
-          title: 'Call Type',
-          body: 'Select a call type.',
-          template: 'call-type'
+          title: 'Call Direction',
+          body: 'Select a call direction.',
+          template: 'call-direction'
         }
       }
     });
