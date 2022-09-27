@@ -237,8 +237,9 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   get moduleName() {
-    if(this.module) {
-      return this.module[0].toUpperCase() + this.module.substring(1, this.module.length);
+    const module = this.options.createModule || this.module
+    if(module) {
+      return module[0].toUpperCase() + module.substring(1, module.length);
     }
   }
 
