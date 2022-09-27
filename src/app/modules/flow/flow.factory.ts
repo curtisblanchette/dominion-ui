@@ -327,9 +327,9 @@ export class FlowFactory {
     });
   };
 
-  public static noOutcomeList(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
+  public static oppFollowUpList(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'No Set/Show/Hire',
+      nodeText: 'Opportunity Follow Up',
       nodeIcon: 'table-list',
       component: FlowListComponent.name,
       beforeRoutingTrigger,
@@ -337,7 +337,8 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.DEAL,
         data: {
-          title: 'No Set/Show/Hire',
+          title: 'Opportunity Follow Up',
+          body: 'No Set, No Show, No Hires'
         },
         options: {
           searchable: false,
@@ -392,7 +393,7 @@ export class FlowFactory {
     })
   }
 
-  public static searchNListWebLeads(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
+  public static webLeadsList(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'table-list',

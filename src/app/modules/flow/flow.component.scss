@@ -62,7 +62,7 @@ router-outlet {
   &__right {
     display: flex;
     flex-direction: column;
-    height: var(--full-height-minus-navbar);
+    height: calc(100% - 184px); // var(--full-height-minus-navbar);
     padding: 30px 0;
   }
 

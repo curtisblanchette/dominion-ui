@@ -42,13 +42,13 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public vars$: Observable<any>;
   public ModuleTypes: any;
   public contactFields: any = ContactModel;
-  public formValidation:{ [ key:string ] : boolean } = {};
-  public addressState:string = 'create';
+  public formValidation: { [key: string]: boolean } = {};
+  public addressState: string = 'create';
   public variables: any;
   public status$: Observable<string>;
   public FlowStatus: any;
   public BotActionStatus: any;
-  public eventPayload$:Observable<any>;
+  public eventPayload$: Observable<any>;
 
   public tinymceOptions: Object = {
     branding: false,
@@ -83,22 +83,33 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     this.ModuleTypes = ModuleTypes;
     this.FlowStatus = fromFlow.FlowStatus;
     this.BotActionStatus = FlowBotActionStatus;
-    this.callTypes$ = of([{id: 'inbound',label: 'Inbound'}, {id: 'outbound',label: 'Outbound'}]);
-    this.outboundTypes$ = of([{ id : 'contacts', label : 'Contacts' }, { id : 'web_leads', label : 'Web Leads' }]);
-    this.callReasons$ = of([{ id : 'cancel-appointment', label : 'Cancel Appointment' }, { id : 'reschedule-appointment', label : 'Reschedule Appointment' }, { id : 'take-notes', label : 'Take Notes' }]);
+    this.callTypes$ = of([
+      {id: 'inbound', label: 'Inbound'},
+      {id: 'outbound', label: 'Outbound'}
+    ]);
+    this.outboundTypes$ = of([
+      {id: 'contacts', label: 'Search Contacts'},
+      {id: 'opp-follow-up', label: 'Opportunity Follow Up'},
+      {id: 'web-leads', label: 'Web Leads'}
+    ]);
+    this.callReasons$ = of([
+      {id: 'cancel-appointment', label: 'Cancel Appointment'},
+      {id: 'reschedule-appointment', label: 'Reschedule Appointment'},
+      {id: 'take-notes', label: 'Take Notes'}
+    ]);
     this.answerOptions$ = of([
-      { id : 'yes', label : 'Yes' },
-      { id : 'no', label : 'No' },
-      { id : 'leaving-message', label : 'Leaving Message' },
-      { id : 'bad-number', label : 'Bad Number' },
-      { id : 'wrong-number', label : 'Wrong Number' },
-      { id : 'not-working', label : 'Not Working (Disconnected)' },
+      {id: 'yes', label: 'Yes'},
+      {id: 'no', label: 'No'},
+      {id: 'leaving-message', label: 'Leaving Message'},
+      {id: 'bad-number', label: 'Bad Number'},
+      {id: 'wrong-number', label: 'Wrong Number'},
+      {id: 'not-working', label: 'Not Working (Disconnected)'}
     ]);
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
 
     this.store.select(fromFlow.selectCurrentStepId).subscribe(currentStepId => {
-      if(currentStepId) {
+      if (currentStepId) {
         this.flowStepId = currentStepId;
       }
     });
@@ -120,9 +131,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   }
 
-  public async ngOnInit(){
+  public async ngOnInit() {
     if (this.data) {
-      if( await this.flowService.getVariable('address') ){
+      if (await this.flowService.getVariable('address')) {
         this.addressState = 'edit';
       }
       this.initStep();
@@ -133,18 +144,21 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     // this is where we need to update step.state.data for relationship building
     // and probably all the others too, so I won't target anything specific
     // module has to be set.
-    this.dataComponents.map( (item:FiizDataComponent, index:number) => {
-      item.values.subscribe( value => {
-        this.flowService.updateStep(this.flowStepId, { state: { data: { [this.module]: value }}, valid: this.dataComponents.map(item => item.form.valid).every(x => x) });
+    this.dataComponents.map((item: FiizDataComponent, index: number) => {
+      item.values.subscribe(value => {
+        this.flowService.updateStep(this.flowStepId, {
+          state: {data: {[this.module]: value}},
+          valid: this.dataComponents.map(item => item.form.valid).every(x => x)
+        });
       });
     });
 
-    if( this.data.template === 'recap' ){
+    if (this.data.template === 'recap') {
       const newLead = await this.flowService.getVariable('new_lead');
-      if( newLead ){
-        const leadInfo:any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
+      if (newLead) {
+        const leadInfo: any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
         const leadForm = this.dataComponents.find(item => item.module === ModuleTypes.LEAD);
-        leadForm?.form.patchValue({email : leadInfo['email'], phone : leadInfo['phone']});
+        leadForm?.form.patchValue({email: leadInfo['email'], phone: leadInfo['phone']});
       }
     }
 
@@ -154,27 +168,27 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     const form: any = {};
     let valid: boolean = false;
 
-    switch(this.data.template) {
+    switch (this.data.template) {
 
       case 'call-type': {
         form['call_type'] = new FormControl(this.variables['call_type'] || null, [Validators.required]);
       }
-      break;
+        break;
 
       case 'outbound-type': {
         form['outbound_type'] = new FormControl(this.variables['outbound_type'] || null, [Validators.required]);
       }
-      break;
+        break;
 
       case 'power-question': {
-        this.flowService.updateStep(this.flowStepId, {valid: true, variables: { appointment_action: 'set' }});
+        this.flowService.updateStep(this.flowStepId, {valid: true, variables: {appointment_action: 'set'}});
       }
-      break;
+        break;
 
       case 'reason-for-call': {
         form['call_reason'] = new FormControl(this.variables['call_reason'] || null, [Validators.required]);
       }
-      break;
+        break;
 
       case 'follow-up-script': {
         this.callOutcomes$ = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(map((res: any) => {
@@ -184,7 +198,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         form['answered'] = new FormControl(this.variables['answered'] || null, [Validators.required]);
         form['call_outcome'] = new FormControl(this.variables['call_outcome'] || null, [Validators.required]);
       }
-      break;
+        break;
 
       case 'relationship-building': {
         // in this case: we won't be adding anything to this component's form
@@ -192,32 +206,37 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         // to do so we can give this step.state a `module` and some `data`
         // FlowBots logic can stay relatively the same
         this.module = ModuleTypes.LEAD;
-        this.flowService.updateStep(this.flowStepId, { state: { module: ModuleTypes.LEAD, data: { lead: { practiceAreaId: null, state: null } } } })
+        this.flowService.updateStep(this.flowStepId, {
+          state: {
+            module: ModuleTypes.LEAD,
+            data: {lead: {practiceAreaId: null, state: null}}
+          }
+        })
       }
-      break;
+        break;
 
       case 'recap' : {
-        const apptStep = this.flowService.builder.process.steps.find( step => step.component === 'FlowAppointmentComponent' );
+        const apptStep = this.flowService.builder.process.steps.find(step => step.component === 'FlowAppointmentComponent');
         this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);
       }
-      break;
+        break;
 
       case 'take-notes' : {
         this.flowService.updateStep(this.flowStepId, {valid: true});
       }
-      break;
+        break;
 
       case 'end': {
         this.flowBot.run(this.flowService);
       }
-      break;
+        break;
 
       default:
         valid = true;
-      break;
+        break;
     }
 
-    if(Object.keys(form).length) {
+    if (Object.keys(form).length) {
 
       this.form = this.fb.group(form);
       // valid = this.form.valid;
@@ -235,12 +254,12 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         delay(100)
       ).subscribe(() => {
         this.form.valueChanges.subscribe((value: any) => {
-          this.flowService.updateStep(this.flowStepId, { variables: value, valid: this.form.valid });
+          this.flowService.updateStep(this.flowStepId, {variables: value, valid: this.form.valid});
         });
       });
     }
 
-    if( this.tinymce ){
+    if (this.tinymce) {
       this.tinymce.onKeyUp.pipe(
         untilDestroyed(this),
         map((action: any) => {
@@ -248,19 +267,19 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         }),
         debounceTime(750),
         distinctUntilChanged(),
-        mergeMap(async (html) => this.flowService.updateNotesToCache(this.tinymce.editor.getContent()) )
+        mergeMap(async (html) => this.flowService.updateNotesToCache(this.tinymce.editor.getContent()))
       ).subscribe();
     }
 
   }
 
 
-  public async onSave(){
-    switch(this.data.template) {
+  public async onSave() {
+    switch (this.data.template) {
       case 'call-type': {
         this.flowService.startCall(this.form.value.call_type);
       }
-      break;
+        break;
 
       case 'relationship-building': {
         this.dataComponents.map(cmp => cmp.save(false));
@@ -268,14 +287,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         // that might make the most sense, but a new entity update would allow it to continue ambiguously (as intended)
 
       }
-      break;
+        break;
 
       case 'recap': {
         const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.Lead);
         leadForm?.form.markAsDirty();
         leadForm?.save(true);
       }
-      break;
+        break;
 
     }
   }
@@ -298,9 +317,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     return this.flowService.restart();
   }
 
-  public async afterEditorInit( event:any ){
-    if( event ){
-      this.tinymce.editor.setContent( await this.flowService.getNotesFromCache() );
+  public async afterEditorInit(event: any) {
+    if (event) {
+      this.tinymce.editor.setContent(await this.flowService.getNotesFromCache());
     }
   }
 
