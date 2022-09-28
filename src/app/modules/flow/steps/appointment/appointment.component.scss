@@ -1,73 +1,11 @@
 @import '../../../../../assets/css/mixins';
 
 :host {
+  display: flex;
+  justify-content: start;
   @include hideScrollBars();
 
   fiiz-data {
     width: 100%;
-  }
-}
-.flex_main_wrapper {
-
-  &__slots {
-
-    display: grid;
-    align-content: center;
-    justify-content: center;
-    align-items: flex-start;
-
-    &__day {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--green1);
-    }
-
-    &__times {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-start;
-
-      width: 150px;
-      height: 200px;
-      overflow: auto;
-      align-content: flex-start;
-      margin: 1em auto 0;
-
-      & div {
-        margin-right: 10px;
-      }
-    }
-
-  }
-
-  &__form{
-    width: 100%;
-
-    fiiz-data {
-
-      fiiz-textarea {
-        grid-column-end: span 3;
-      }
-    }
-  }
-
-}
-
-.btn_time_slots{
-  border: 1px solid #7D89A6;
-  color: #7D89A6;
-  background: none;
-  width: 142px;
-  padding: 8px;
-  margin: 0px 0px 10px 0px;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &.active, &:hover {
-    border: 1px solid #95A9C0;
-    color: #000000;
-    background: #6F93BB;
   }
 }
