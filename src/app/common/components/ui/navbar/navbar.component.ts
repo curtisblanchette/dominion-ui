@@ -6,7 +6,7 @@ import { delay, filter } from 'rxjs/operators';
 import * as fromApp from '../../../../store/app.reducer';
 import * as fromSystem from '../../../../modules/system/store/system.reducer';
 import * as fromLogin from '../../../../modules/login/store/login.reducer';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 const mobileThreshold = 1024;
@@ -79,6 +79,9 @@ export class NavbarComponent implements AfterViewInit {
   onWindowResize() {
     this.isMobile = window.innerWidth < mobileThreshold;
     this.menuOpen = false;
+    if( !this.isMobile ){
+      of('').pipe(delay(0)).subscribe(() => this.updateActiveUnderline())
+    }
   }
   @HostListener('click', ['$event'])
   clickInside($event: any) {
