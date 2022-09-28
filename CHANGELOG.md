@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.17.0 (2022-09-28)
+
+
+### Features
+
+* **develop:** cleanup changelog.md ([6664d43](https://github.com/4iiz/dominion-ui/commit/6664d43d3c2ddfaa6ad54526fb48231b9309c0d2))
 
 ### 1.16.21 (2022-09-20)
 
