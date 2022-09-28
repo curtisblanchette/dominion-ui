@@ -1,7 +1,8 @@
 import { Component, Renderer2, AfterViewInit, AfterContentInit, Input, ViewChild } from '@angular/core';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
-import dayjs, { ManipulateType } from 'dayjs';
+import { ManipulateType } from 'dayjs';
+import dayjs from 'dayjs';
 import { IEvent } from '@4iiz/corev2';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
@@ -51,11 +52,14 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   public apptData: Observable<Array<any>>;
   public allValid$: Observable<boolean>;
   public minDate:string = dayjs().startOf('day').add(2,'days').format();
+  public customSlotDate:string;
+  public regularSlot:boolean = false;
+  public customSlot:boolean = false;
 
   @Input('options') public override options: { state: 'set' | 'cancel' | 'reschedule', fields: Fields[], payload: any };
 
   @ViewChild('eventData', {static : false}) eventData:FiizDataComponent;
-  @ViewChild('dateRangePicker') dateRangePicker:FiizDatePickerComponent;
+  @ViewChild('datePicker') datePicker:FiizDatePickerComponent;
 
   constructor(
     private router: Router,
@@ -154,7 +158,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       }
 
       if (this.options.state != 'cancel') {
-        this.initEventSlots();
+        // this.initEventSlots();
       }
     });
 
@@ -234,7 +238,6 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
   }
 
   public setEventTime(event: any) {
-    this.dateRangePicker.value = '';
     if( this.selectedBtnId === event.target.id ){
       this.selectedBtnId = '';
       this.flowService.updateStep(this.flowStepId, { valid: false }, 'merge');
@@ -253,11 +256,9 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
     this.form.enable();
   }
 
-  public getCustomSlot( slot:any ){
-    if( slot ){
-      this.selectedBtnId = '';
-      this.form.patchValue({startTime : slot['from'], endTime : slot['to']});
-      this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
+  public getCustomSlot( date:string ){
+    if( date ){
+      this.customSlotDate = dayjs(date).format('YYYY-MM-DD');
     }
   }
 
@@ -267,13 +268,27 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
       const tomorrow = dayjs().add(1, 'day').endOf('day');
       const startTime = this.form.value.startTime;
       const endTime = this.form.value.endTime;
+      this.selectedBtnId = dayjs(startTime).format('dddd MMMM D, YYYY, hh:mm A');
       if( dayjs(startTime).isBetween(today, tomorrow, 'm', '[]') ){
-        this.selectedBtnId = dayjs(startTime).format('dddd MMMM D, YYYY, hh:mm A');
+        this.regularSlot = true;
       } else {
-       this.dateRangePicker.value = [startTime, endTime];
-      }
-
+        this.datePicker.value = dayjs(startTime).format('YYYY-MM-DD');
+        this.customSlotDate = this.datePicker.value;
+        this.customSlot = true;
+      }      
     }
+  }
+
+  public getValue( $event:any, type:string ){
+    if( type == 'custom' ){
+      this.customSlot = true;
+      this.regularSlot = false;
+    } else {
+      this.customSlot = false;
+      this.regularSlot = true;
+    }
+    this.form.patchValue({startTime : $event['startTime'], endTime : $event['endTime']});
+    this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
   }
 
 }

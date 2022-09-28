@@ -1,77 +1,55 @@
-<div class="flex_main_wrapper">
+<ng-container [ngSwitch]="options.state">
+  <!-- Set Appointment Template -->
+  <ng-template [ngSwitchDefault]>
+    <header>
+      <h3 style="text-transform: capitalize;">{{options.state}} Appointment</h3>
+    </header>
 
-  <ng-container [ngSwitch]="options.state">
-    <!-- Set Appointment Template -->
-    <ng-template [ngSwitchDefault]>
-      <div class="flex_main_wrapper__header">
-        <h3 style="margin: 0 auto;" *ngIf="options.state == 'set'" >Set Appointment</h3>
-        <h3 style="margin: 0 auto;" *ngIf="options.state == 'reschedule'" >Reschedule Appointment</h3>
-        <div class="flex_main_wrapper__form">
-          <ng-container *ngIf="showSlots">
-            <fiiz-data #eventData [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="{controls: false, state: 'create', fields: ['title', 'officeId', 'typeId', 'description']}" (values)="form.patchValue($event)"></fiiz-data>
-          </ng-container>
+    <ng-container *ngIf="showSlots">
+      <fiiz-data #eventData [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="{controls: false, state: 'create', fields: ['title', 'officeId', 'typeId', 'description']}" (values)="form.patchValue($event)"></fiiz-data>
+    </ng-container>
+
+    <ng-container *ngIf="showSlots">
+
+      <div style="display:flex; justify-content:center; gap: 1em; width: 100%;">
+        <div style="flex: 2;">
+          <div class="flex_main_wrapper__slots__day dictation" style="text-align: center; line-height: 44px;">We have availability as soon as...</div>
+          <fiiz-time-slots [active]="regularSlot" [default]="selectedBtnId" (getValue)="getValue($event, 'regular')"></fiiz-time-slots>
+        </div>
+
+        <div style="align-self: start; line-height: 44px;">Or</div>
+        <div style="flex: 1;">
+<!--          <div class="flex_main_wrapper__slots__day" style="text-align: center;">Select a Custom Date</div>-->
+          <fiiz-date-picker
+            #datePicker
+            id="date_range"
+            pickerType="calendar"
+            placeholder="Select a Date"
+            selectMode="single"
+            (change)="getCustomSlot($event)"
+            [min]="minDate"
+          ></fiiz-date-picker>
+          <fiiz-time-slots (getValue)="getValue($event, 'custom')" *ngIf="customSlotDate" [active]="customSlot" [date]="customSlotDate" [default]="selectedBtnId" ></fiiz-time-slots>
         </div>
       </div>
 
-      <ng-container *ngIf="showSlots">
-        <p class="dictation" *ngIf="showSlots">We have availability at our office as soon as...</p>
-        <div style="display:flex; justify-content:center; gap: 2em;">
-          <div *ngFor="let day of days">
-            <div class="flex_main_wrapper__slots" *ngFor="let item of day | keyvalue">
-              <div class="flex_main_wrapper__slots__day">
-                {{ item.key }}
-              </div>
-              <div class="flex_main_wrapper__slots__times">
-                <button *ngFor="let time of item.value;"
-                        [id]="item.key+', '+time"
-                        [ngClass]="{'active' : selectedBtnId === item.key+', '+time}"
-                        class="btn_time_slots"
-                        (click)="setEventTime($event)">
-                  {{ time }}
-                </button>
-              </div>
-            </div>
-          </div>
-          <div style="align-self: center;">Or</div>
-          <div>
-            <div class="flex_main_wrapper__slots__day" style="text-align: center;">Select a Custom Date</div>
-            <fiiz-date-picker
-              #dateRangePicker
-              id="date_range"
-              pickerType="both"
-              placeholder="Select a date."
-              selectMode="range"
-              (change)="getCustomSlot($event)"
-              label="Appointment Time"
-              [min]="minDate"
-              [stepMinute]="appointmentSettings['duration']?.value || 30"
-            ></fiiz-date-picker>
-          </div>
-        </div>
 
 
-<!--        <div class="info">-->
-<!--          "May I have a good email address for you and I will send you a confirmation of your appointment, it will also-->
-<!--          include driving directions to our office."-->
-<!--        </div>-->
-      </ng-container>
-    </ng-template>
-    <!-- End -->
+    </ng-container>
+  </ng-template>
+  <!-- End -->
 
 
-    <!-- Cancel Appointment Template -->
-    <ng-template [ngSwitchCase]="'cancel'">
-      <div class="flex_main_wrapper__header__title">
-        Cancel Appointment
-      </div>
-      <h3>Continue to cancel the below appointment</h3>
-      <div *ngFor="let data of apptData | async">
-        <div> {{data.label}} : {{data.value}}</div>
-      </div>
-    </ng-template>
-    <!-- End -->
+  <!-- Cancel Appointment Template -->
+  <ng-template [ngSwitchCase]="'cancel'">
+    <div class="flex_main_wrapper__header__title">
+      Cancel Appointment
+    </div>
+    <h3>Continue to cancel the below appointment</h3>
+    <div *ngFor="let data of apptData | async">
+      <div> {{data.label}} : {{data.value}}</div>
+    </div>
+  </ng-template>
+  <!-- End -->
 
-  </ng-container>
-</div>
-
-
+</ng-container>
