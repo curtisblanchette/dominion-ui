@@ -82,8 +82,6 @@ export class FlowBuilder {
       flowService.addVariables({ call_typeId: 4 /* Sales */ });
 
       return step;
-    }, (flowService: FlowService, vars: any, step: any) => {
-      flowService.updateCall({dealId: vars.deal});
     });
 
     const relationshipBuilding = FlowFactory.relationshipBuilding(undefined,(flowService: FlowService, vars: any, step: any) => {

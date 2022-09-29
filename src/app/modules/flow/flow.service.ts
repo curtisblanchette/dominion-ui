@@ -91,7 +91,7 @@ export class FlowService {
         return (
           prev['lead'] === curr['lead'] &&
           prev['deal'] === curr['deal'] &&
-          prev['call_type'] === curr['call_typeId']
+          prev['call_typeId'] === curr['call_typeId']
         );
       }),
       map((vars: any) => {
