@@ -17,9 +17,11 @@ import { environment } from '../../../environments/environment';
 import { ICallNote } from '@4iiz/corev2';
 import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
+import * as fromApp from '../../store/app.reducer';
 import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
 
 export interface IHistory {
   prevStepId: string;
@@ -31,12 +33,15 @@ export interface IHistory {
 export class FlowService {
   public id: string = uuidv4();
   public cmpReference: any;
+  public flowHost: { viewContainerRef: ViewContainerRef };
 
   public callId: string | undefined;
   public noteId: string | undefined;
+
   public user$: Observable<User | null>;
   public variables$: Subscription;
-  public flowHost: { viewContainerRef: ViewContainerRef };
+  public callTypes$: Observable<DropdownItem[]>;
+
   public callService: CustomDataService<DominionType>;
 
   private leadService: EntityCollectionService<DominionType>;
@@ -67,7 +72,6 @@ export class FlowService {
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
 
     // Use the collection services to clear all entity caches after the call ends.
-    // TODO we're going to do this in the bot.
     this.leadService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD) as EntityCollectionService<DominionType>;
     this.contactService = this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT) as EntityCollectionService<DominionType>;
     this.dealService = this.entityCollectionServiceFactory.create(ModuleTypes.DEAL) as EntityCollectionService<DominionType>;
@@ -79,20 +83,23 @@ export class FlowService {
     this.callsService = this.entityCollectionServiceFactory.create(ModuleTypes.CALL) as EntityCollectionService<DominionType>;
 
     this.user$ = this.store.select(fromLogin.selectUser);
+    this.callTypes$ = this.store.select(fromApp.selectLookupByKey('callType'));
 
-    // things that must happen IMMEDIATELY after specific variables are set.
-    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal'])).pipe(
+    // update the Call IMMEDIATELY after specific variables are set.
+    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId'])).pipe(
       distinctUntilChanged((prev, curr) => {
         return (
           prev['lead'] === curr['lead'] &&
-          prev['deal'] === curr['deal']
+          prev['deal'] === curr['deal'] &&
+          prev['call_type'] === curr['call_typeId']
         );
       }),
       map((vars: any) => {
         if (this.callId) {
-          let payload: { [key: string]: string } = {}
+          let payload: { [key: string]: any } = {}
           payload['leadId'] = vars.lead;
           payload['dealId'] = vars.deal;
+          payload['typeId'] = vars.call_typeId;
 
           this.updateCall(payload)
         }
@@ -186,7 +193,6 @@ export class FlowService {
     if (!this.callId) {
       this.callService.add({
         startTime: new Date().toISOString(),
-        typeId: 1,
         direction: direction
       }, false).pipe(take(1)).subscribe(async (res) => {
         this.callId = res.id;

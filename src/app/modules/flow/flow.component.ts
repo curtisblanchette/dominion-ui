@@ -70,7 +70,6 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     // check for an existing process and pass it to start command
     const processExists = await lastValueFrom(this.store.select(fromFlow.selectProcessId).pipe(take(1)));
     await this.flowService.start(!!processExists);
-
   }
 
   /**

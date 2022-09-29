@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as flowActions from './store/flow.actions';
 import { FlowFactory } from './flow.factory';
-import { lastValueFrom, take } from 'rxjs';
+import {  lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
 
@@ -33,7 +33,9 @@ export class FlowBuilder {
     const searchLeads = FlowFactory.searchLeads();
     const outboundType = FlowFactory.outboundType();
     const searchContacts = FlowFactory.searchContacts();
-    const createLead = FlowFactory.createLead();
+    const createLead = FlowFactory.createLead((flowService: FlowService) => {
+      flowService.addVariables({ call_typeId: 9 /* Sales */ });
+    });
 
     const appointmentList = FlowFactory.appointmentList((flowService: FlowService, vars: any, step: any) => {
       step.state.options['query'] = {
@@ -76,6 +78,8 @@ export class FlowBuilder {
         id: vars.deal,
         leadId: vars.lead
       };
+
+      flowService.addVariables({ call_typeId: 4 /* Sales */ });
 
       return step;
     }, (flowService: FlowService, vars: any, step: any) => {
@@ -220,31 +224,47 @@ export class FlowBuilder {
 
     const webLeadsList = FlowFactory.webLeadsList();
 
+    const outboundWebLeads = FlowFactory.condition(
+      'Web Leads',
+      (vars: any) => {
+        return vars['outbound_type'] === 'web-leads';
+      },
+      {},
+      webLeadsList.id
+    );
 
-    const outboundWebLeads = FlowFactory.condition('Web Leads',(vars: any) => {
-      return vars['outbound_type'] === 'web-leads';
-    }, {}, webLeadsList.id);
+    const outboundContacts = FlowFactory.condition(
+      'Search Contacts',
+      (vars: any) => {
+        return vars['outbound_type'] === 'contacts';
+        },
+      {},
+      searchContacts.id
+    );
 
-    const outboundContacts = FlowFactory.condition('Search Contacts', (vars: any) => {
-      return vars['outbound_type'] === 'contacts';
-    }, {}, searchContacts.id);
-
-    const outboundOppFollowUp = FlowFactory.condition('Search Contacts', (vars: any) => {
-      return vars['outbound_type'] === 'opp-follow-up';
-    }, {}, oppFollowUpList.id);
+    const outboundOppFollowUp = FlowFactory.condition(
+      'Search Contacts',
+      (vars: any) => {
+        return vars['outbound_type'] === 'opp-follow-up';
+      },
+      {},
+      oppFollowUpList.id
+    );
 
     const outboundTypeRouter = FlowFactory.router('Outbound Type', '', [outboundWebLeads, outboundContacts, outboundOppFollowUp]);
-
     const outboundTypeRouterLink = FlowFactory.link(outboundType.id, outboundTypeRouter.id);
-    // const outboundContactOppsLink = FlowFactory.link(searchNListContacts.id, outboundContactOppsWithNoOutcomes.id);
-
 
     // OUTBOUND - EXISTING CONTACT / NEW LEAD
-    const existingContact_yes = FlowFactory.condition('Contact Selected', (vars: any) => {
-      return !vars['new_lead'];
-    }, {
-      contactId: ModuleTypes.CONTACT
-    }, oppList.id);
+    const existingContact_yes = FlowFactory.condition(
+      'Contact Selected',
+      (vars: any) => {
+        return !vars['new_lead'];
+      },
+      {
+        contactId: ModuleTypes.CONTACT
+      },
+      oppList.id
+    );
 
     const existingContact_no = FlowFactory.condition(
       'Create Lead',
@@ -265,10 +285,7 @@ export class FlowBuilder {
     );
     const toSearchContactsRouter = FlowFactory.link(searchContacts.id, searchContactsRouter.id);
 
-
-    // OUTBOUND - REASON FOR CALL
-    // const outboundContactsOpps_ReasonForCallLink = FlowFactory.link(outboundContactOppsWithNoOutcomes.id, reasonForCall.id);
-    const outboundOpps_ReasonForCallLink = FlowFactory.link(oppFollowUpList.id, reasonForCall.id);
+    // const outboundOpps_ReasonForCallLink = FlowFactory.link(oppFollowUpList.id, inboundReasonForCallRouter.id);
 
     const outboundSetCancelRescheduleCondition = FlowFactory.condition(
       '[Outbound] Cancel/Reschedule Appointment',
@@ -379,9 +396,8 @@ export class FlowBuilder {
       .addStep(webLeadsList)
       .addStep(oppFollowUpList)
       .addLink(toOppFollowUp)
-      .addStep(searchContacts)
-      // .addStep(outboundContactOppsWithNoOutcomes)
 
+      .addStep(searchContacts)
       .addRouter(searchContactsRouter)
       .addLink(toSearchContactsRouter)
 
@@ -389,8 +405,7 @@ export class FlowBuilder {
       .addRouter(outboundSetCancelRescheduleRouter)
       .addRouter(outboundEventRouter)
       .addLink(outboundTypeRouterLink)
-      // .addLink(outboundContactOppsLink)
-      .addLink(outboundOpps_ReasonForCallLink)
+      // .addLink(outboundOpps_ReasonForCallLink)
       // .addLink(outboundContactsOpps_ReasonForCallLink)
       .addLink(outboundSetCancelRescheduleLink)
       .addLink(outboundEventLink)
