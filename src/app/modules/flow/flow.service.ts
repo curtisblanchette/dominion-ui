@@ -202,8 +202,7 @@ export class FlowService {
       });
     } else {
       this.updateCall({
-        direction: direction,
-        typeId: 1
+        direction: direction
       });
     }
 
