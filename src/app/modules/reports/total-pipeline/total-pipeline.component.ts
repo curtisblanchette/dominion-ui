@@ -53,6 +53,8 @@ export class TotalPipelineComponent implements OnInit {
 
     this.form = this.fb.group(form);
     this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
+      values.startDate = dayjs(values.startDate).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+      values.endDate = dayjs(values.endDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
       this.store.dispatch(reportsActions.SetDateRangeAction(values));
       this.store.dispatch(reportsActions.FetchTotalPipeline());
     });
