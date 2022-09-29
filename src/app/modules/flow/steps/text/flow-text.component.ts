@@ -191,7 +191,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       }
         break;
 
-      case 'follow-up-script': {
+      case 'opp-follow-up': {
         this.callOutcomes$ = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(map((res: any) => {
           return of(CustomDataService.toDropdownItems(res));
         }))) as any;

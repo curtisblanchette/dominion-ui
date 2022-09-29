@@ -86,15 +86,19 @@
     <ng-template [ngSwitchCase]="'reason-for-call'">
       <header>
         <h3>{{data.title}}</h3>
-        <p>What is the reason for them calling today?</p>
+        <p *ngIf="(vars$ | async).call_direction === 'inbound'">What is the reason for them calling today?</p>
       </header>
+
+      <ng-container *ngIf="(vars$ | async).call_direction === 'outbound'">
+        <h3>No Hire</h3>
+      </ng-container>
 
       <form [formGroup]="form" *ngIf="form">
         <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason"></fiiz-radio>
       </form>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'follow-up-script'">
+    <ng-template [ngSwitchCase]="'opp-follow-up'">
       <header>
         <h3>{{data.title}}</h3>
         <p>{{data.body}}</p>
@@ -105,7 +109,7 @@
 
         <ng-container [ngSwitch]="form.controls['answered'].value">
           <ng-template ngSwitchCase="yes">
-            <p class="dictation">Hello how are you, am I speaking with {{'contact.name'}}? This is {{(flowService.user$ | async)?.fullName}} from {{'company.name'}}. I called you because the consultant (name of the consultant assigned to the office they were scheduled to) saw that he could not reach your appointment you had set and we wanted to know if everything was okay?</p>
+            <p class="dictation">Hello how are you, am I speaking with contact_name? This is username from company_name. I called you because the consultant (name of the consultant assigned to the office they were scheduled to) saw that he could not reach your appointment you had set and we wanted to know if everything was okay?</p>
             <p class="dictation">The best way to help you is, if we set you up with another appointment and I will be more than glad to set another one.</p>
             <fiiz-radio [items]="callOutcomes$" formControlName="call_outcome" name="call_outcome"></fiiz-radio>
           </ng-template>

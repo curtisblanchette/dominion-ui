@@ -12,6 +12,7 @@ import { FlowBotAction, FlowBotActionStatus } from './flow.botAction';
 import * as flowActions from '../store/flow.actions';
 import { FlowStep } from './flow.step';
 import { v4 as uuidv4 } from "uuid";
+import { DropdownItem } from '../../../common/components/ui/forms';
 
 /**
  * The FlowBot is capable of traversing a flow entirely as it was by a physical user.
@@ -132,7 +133,7 @@ export class FlowBot {
                       operation: 'update',
                       payload: {
                         id: step.state.data.toCancel,
-                        outcomeId: 2
+                        outcomeId: outcomes.find((o: DropdownItem) => o.label === 'Cancel Appointment')
                       },
                       message: 'Cancel Event',
                     });
@@ -194,7 +195,7 @@ export class FlowBot {
 
                 const moduleIds: any = this.botActions
                   .filter(action => action.operation === 'add') // anything newly created
-                  .map(action => ({ [action.module]: action.response.id })) // return a key/value pair
+                  .map(action => ({ [action.module]: action.response?.id })) // return a key/value pair
                   .reduce((a, b) => ({...a, ...b})); // merge results into singular object
 
                 flowService.updateCall({

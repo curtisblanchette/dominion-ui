@@ -331,7 +331,7 @@ export class FlowFactory {
 
   public static oppFollowUpList(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
-      nodeText: 'Opportunity Follow Up',
+      nodeText: 'Opportunity Follow Up List',
       nodeIcon: 'table-list',
       component: FlowListComponent.name,
       beforeRoutingTrigger,
@@ -339,7 +339,7 @@ export class FlowFactory {
       state: {
         module: ModuleTypes.DEAL,
         data: {
-          title: 'Opportunity Follow Up',
+          title: 'Opportunity Follow Up List',
           body: 'No Set, No Show, No Hires'
         },
         options: {
@@ -360,6 +360,23 @@ export class FlowFactory {
       }
     });
   };
+
+  public static oppFollowUp(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
+    return new FlowStep({
+      nodeText: 'Opportunity Follow Up',
+      nodeIcon: 'clipboard',
+      component: FlowTextComponent.name,
+      beforeRoutingTrigger,
+      afterRoutingTrigger,
+      state: {
+        data: {
+          title: 'Opportunity Follow Up',
+          // body: '',
+          template: 'opp-follow-up'
+        }
+      }
+    });
+  }
 
   public static relationshipBuilding(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
