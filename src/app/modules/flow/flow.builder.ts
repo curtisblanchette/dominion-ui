@@ -311,7 +311,7 @@ export class FlowBuilder {
     const toSearchContactsRouter = FlowFactory.link(searchContacts.id, searchContactsRouter.id);
 
     const cancelCondition = FlowFactory.condition(
-      '[Outbound] Cancel Appointment',
+      'Cancel Appointment',
       (vars: any) => (vars['call_reason'] === 'cancel-appointment'),
       {},
       appointmentList.id
