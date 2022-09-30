@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromReports from '../store/reports.reducer';
 import * as reportsActions from '../store/reports.actions';
 import { ViewStatus } from '../store/reports.reducer';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import dayjs from 'dayjs';
 
 @UntilDestroy()
@@ -27,7 +27,7 @@ export class TotalPipelineComponent implements OnInit {
     private store: Store<fromReports.ReportsState>,
     private fb: FormBuilder
   ) {
-    this.buildForm();
+    
   }
 
   ngOnInit(): void {
@@ -43,21 +43,6 @@ export class TotalPipelineComponent implements OnInit {
       return res.grid;
     }));
     this.getData();
-  }
-
-  private async buildForm() {
-    let form: { [key: string]: FormControl } = {};
-    const dateRange = await firstValueFrom(this.store.select(fromReports.selectDateRange));
-    form['startDate'] = new FormControl(dateRange.startDate, Validators.required);
-    form['endDate'] = new FormControl(dateRange.endDate, Validators.required);
-
-    this.form = this.fb.group(form);
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
-      values.startDate = dayjs(values.startDate).startOf('day').format('YYYY-MM-DD HH:mm:ss');
-      values.endDate = dayjs(values.endDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
-      this.store.dispatch(reportsActions.SetDateRangeAction(values));
-      this.store.dispatch(reportsActions.FetchTotalPipeline());
-    });
   }
 
   getData() {

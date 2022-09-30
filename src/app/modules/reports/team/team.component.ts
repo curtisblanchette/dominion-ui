@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromReports from '../store/reports.reducer';
 import * as reportsActions from '../store/reports.actions';
 import { ViewStatus } from '../store/reports.reducer';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import dayjs from 'dayjs';
 
 export interface IStatCard { label: string | undefined; value: number, order: number }
@@ -23,7 +22,6 @@ export class TeamReportComponent implements OnInit {
   public in$: Observable<any>;
   public out$: Observable<any>;
   public grid$: Observable<any[]>;
-  public form: FormGroup;
 
   public data$: Observable<any>;
   public currentSort: [number, string];
@@ -79,7 +77,6 @@ export class TeamReportComponent implements OnInit {
 
   constructor(
     private store: Store<fromReports.ReportsState>,
-    private fb: FormBuilder
   ) {
     this.sortStates = [
       {
@@ -107,7 +104,7 @@ export class TeamReportComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    this.buildForm();
+    
     this.status$ = this.store.select(fromReports.selectTeam).pipe(map((res:any) => res.status));
 
     this.getData();
@@ -148,22 +145,6 @@ export class TeamReportComponent implements OnInit {
     });
   }
 
-
-  private async buildForm() {
-    let form: { [key: string]: FormControl } = {};
-    const dateRange = await firstValueFrom(this.store.select(fromReports.selectDateRange));
-    form['startDate'] = new FormControl(dateRange.startDate, Validators.required);
-    form['endDate'] = new FormControl(dateRange.endDate, Validators.required);
-
-    this.form = this.fb.group(form);
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
-      values.startDate = dayjs(values.startDate).startOf('day').format('YYYY-MM-DD HH:mm:ss');
-      values.endDate = dayjs(values.endDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
-      this.store.dispatch(reportsActions.SetDateRangeAction(values));
-      this.store.dispatch(reportsActions.FetchTeam());
-    });
-  }
-
   goTo($event: string) {
     this.activePath = $event;
   }
@@ -171,7 +152,6 @@ export class TeamReportComponent implements OnInit {
   getData() {
     this.store.dispatch(reportsActions.FetchTeam());
   }
-
 
 
   public sortField(field: string) {

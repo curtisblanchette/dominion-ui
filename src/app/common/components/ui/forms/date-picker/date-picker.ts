@@ -2,6 +2,17 @@ import { AfterViewInit, Component, EventEmitter, forwardRef, HostBinding, Input,
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
+import { Store } from '@ngrx/store';
+
+import * as fromReports from '../../../../../modules/reports/store/reports.reducer';
+import * as reportsActions from '../../../../../modules/reports/store/reports.actions';
+import { firstValueFrom } from 'rxjs';
+import { isObject } from 'lodash';
+
+interface IReport {
+  startDate : string,
+  endDate : string
+}
 
 @Component({
   selector: 'fiiz-date-picker',
@@ -21,6 +32,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
 
   @Input('id') id!: string;
   @Input('pickerType') pickerType: "calendar"|"timer"|"both";
+  @Input('reporting') reporting:boolean = false;
   @Input('placeholder') placeholder: string = "Select Date";
   @Input('selectMode') selectMode: "single"|"range"|"rangeFrom"|"rangeTo" = 'single';
   @Input('stepMinute') stepMinute: number = 1;
@@ -31,29 +43,39 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
 
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 
-  public value!: string | Dayjs | Dayjs[];
+  public value!: any;
   public startEndValidation:boolean = false;
   public separator:string = '~';
 
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: any) => void = () => { console.log('this.value',this.value) };
   onTouched: Function = () => {};
 
   constructor(
+    private store: Store<fromReports.ReportsState>,
   ) {
 
   }
 
-  ngOnInit(): void {
-
+  async ngOnInit() {
+    if( this.reporting ){
+      const dateRange = await firstValueFrom(this.store.select(fromReports.selectDateRange));
+      this.writeValue(dateRange);
+    }
   }
 
   ngAfterViewInit(): void {
   }
 
-  writeValue(value: any) {
+  writeValue( value:IReport | string ) {
     if( value ){
-      this.value = dayjs(value).format();
+      if( isObject(value) ){
+        this.value = Object.values(value).map( val => {
+          return new Date(val);
+        });  
+      } else {
+        this.value = dayjs(value).format();
+      }
     }
   }
 
@@ -77,10 +99,20 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
       } else if ( this.pickerType == 'timer' ){
         format = 'HH:mm';
       }
-      const range = {
+      let range = {
         from : dayjs(value[0]).format(format),
         to : dayjs(value[1]).format(format)
       };
+
+      if( this.reporting ){
+        let range = {
+          startDate : dayjs(value[0]).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+          endDate : dayjs(value[1]).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+        };
+        this.store.dispatch(reportsActions.SetDateRangeAction(range));
+        this.store.dispatch(reportsActions.FetchTeam());
+      }
+      
       this.change.emit(range);
     } else if (value && dayjs(value).isValid()){
       this.value = dayjs(value).format();

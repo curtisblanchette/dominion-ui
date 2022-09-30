@@ -1,27 +1,15 @@
 <div class="page-heading">
   <h2 class="page-heading__title">Reports/Team</h2>
   <div class="page-heading__filters">
-    <form [formGroup]="form" class="report-filters" *ngIf="form">
-      <fiiz-date-picker
-        #startDate
-        [pickerType]="'calendar'"
-        [id]="'filter_start_date'"
-        [label]="'START DATE'"
-        [max]="today"
-        [formControlName]="'startDate'"
-        [placeholder]="'Start Date'"
-      ></fiiz-date-picker>
-      <fiiz-date-picker
-        #endDate
-        [pickerType]="'calendar'"
-        [id]="'filter_end_date'"
-        [label]="'END DATE'"
-        [formControlName]="'endDate'"
-        [placeholder]="'End Date'"
-        [min]="startDate.value"
-        [max]="today"
-      ></fiiz-date-picker>
-    </form>
+    <fiiz-date-picker
+      [selectMode]="'range'"
+      [pickerType]="'calendar'"
+      [id]="'filter_date_range'"
+      [label]="'Date Range'"
+      [max]="today"
+      [reporting]="true"
+      [placeholder]="'Select a Date Range'"
+    ></fiiz-date-picker>
   </div>
 </div>
 
