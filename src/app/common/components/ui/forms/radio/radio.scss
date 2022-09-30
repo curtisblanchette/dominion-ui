@@ -24,6 +24,10 @@
       display: none;
     }
 
+    &.disabled {
+      opacity: .5;
+    }
+
     /* Create a custom radio button */
     .checkmark {
       height: 20px;

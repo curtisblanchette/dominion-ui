@@ -92,13 +92,11 @@ export class AppEffects {
             }
           }
 
-
           // Add any additional state lookup lists
           const states = new UsaStates().states;
 
           res['state'] = states.map((state: any) => ({id: state.abbreviation, label: state.name}));
           res['timezone'] = Object.values(ct.getAllTimezones()).map(tz => ({id: tz.name, label: tz.name}));
-
 
           this.store.dispatch(appActions.SetLookupsAction({ payload: res }) );
           this.store.dispatch(appActions.AppInitializedAction());

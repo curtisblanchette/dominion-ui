@@ -31,14 +31,14 @@ export class FlowBotAction extends FlowBaseModel{
     this.service = this.entityCollectionServiceFactory.create(this.module);
   }
 
-  async execute() {
+  async execute(): Promise<any | void> {
     this.status = FlowBotActionStatus.PENDING;
     return this.service[this.operation](this.payload).toPromise().then(res => {
       delete this.errorMessage;
       this.response = res;
       this.status = FlowBotActionStatus.SUCCESS;
       this.message = `${this.getModuleName(this.module)} ${this.operation === 'add' ? 'Created' : 'Updated'}.`;
-
+      
       // set the entityCollection filter to target this record going forward
       this.service.setFilter({id: this.response?.id});
 

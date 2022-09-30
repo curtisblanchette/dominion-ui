@@ -1,5 +1,6 @@
 import { Store } from '@ngrx/store';
 import * as fromFlow from '../store/flow.reducer';
+import * as flowActions from '../store/flow.actions';
 import { FlowStatus } from '../store/flow.reducer';
 import * as fromApp from '../../../store/app.reducer';
 import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -9,7 +10,7 @@ import { firstValueFrom, take } from 'rxjs';
 import { FlowService } from '../flow.service';
 import { Injectable } from '@angular/core';
 import { FlowBotAction, FlowBotActionStatus } from './flow.botAction';
-import * as flowActions from '../store/flow.actions';
+
 import { FlowStep } from './flow.step';
 import { v4 as uuidv4 } from "uuid";
 import { DropdownItem } from '../../../common/components/ui/forms';
@@ -111,7 +112,20 @@ export class FlowBot {
                 });
                 this.botActions.push(action);
 
-                await action.execute();
+                await action.execute().then(response => {
+                  if(step.state.module === ModuleTypes.DEAL || step.state.module === ModuleTypes.LEAD) {
+                    // update the call with the new lead / deal id
+                    // this.store.dispatch(flowActions.UpdateStepAction({
+                    //   id: step.id,
+                    //   changes: {
+                    //     variables: {
+                    //       [step.state.module]: response.id
+                    //     }
+                    //   },
+                    //   strategy: 'merge'
+                    // }));
+                  }
+                });
 
               }
                 break;
