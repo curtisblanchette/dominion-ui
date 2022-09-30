@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.17.6 (2022-09-30)
+
+
+### Bug Fixes
+
+* **develop:** cleaning up the flowBuilder for sanity ([8a298ed](https://github.com/4iiz/dominion-ui/commit/8a298ed6259a8566418ef83215c6fab025eb970a))
 
 ### 1.17.3 (2022-09-29)
 
