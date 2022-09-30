@@ -89,11 +89,12 @@
         <p *ngIf="(vars$ | async).call_direction === 'inbound'">What is the reason for them calling today?</p>
       </header>
 
-      <ng-container *ngIf="(vars$ | async).call_direction === 'outbound'">
-
-      </ng-container>
 
       <form [formGroup]="form" *ngIf="form">
+        <ng-container *ngIf="(vars$ | async).call_direction === 'outbound'">
+          <fiiz-radio [items]="callStatuses$" formControlName="answered" name="answered"></fiiz-radio>
+        </ng-container>
+
         <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason"></fiiz-radio>
       </form>
     </ng-template>

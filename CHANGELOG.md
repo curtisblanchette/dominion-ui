@@ -2,9 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### 1.17.5 (2022-09-29)
-
-### 1.17.4 (2022-09-29)
 
 ### 1.17.3 (2022-09-29)
 
@@ -13,7 +10,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 * **II-2799:** fix call type setting ([fbc073f](https://github.com/4iiz/dominion-ui/commit/fbc073f5dd6704819b9b14a853fded2792df368f))
 
-### 1.17.2 (2022-09-29)
 
 ### 1.17.1 (2022-09-28)
 
@@ -22,7 +18,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * **ii 2799:** block unavailable time ([8dbee0a](https://github.com/4iiz/dominion-ui/commit/8dbee0a1655c11321c399401414bf37c99a6a149))
 
-## 1.17.0 (2022-09-28)
+### 1.17.0 (2022-09-28)
 
 
 ### Features

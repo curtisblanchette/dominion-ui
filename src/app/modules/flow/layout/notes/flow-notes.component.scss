@@ -38,7 +38,7 @@
     cursor: pointer;
 
     &__icon {
-      font-size: 12px;
+      font-size: 14px;
     }
 
     &__content {
@@ -50,7 +50,8 @@
       }
 
       time {
-        font-size: 10px;
+        font-size: 12px;
+        line-height: 1.2em;
         color: var(--primary-shade5);
       }
     }
@@ -78,10 +79,10 @@
 }
 
 .loading {
-  position: absolute; 
-  z-index:1; 
-  top:25%; 
-  left:50%; 
-  width: 100px; 
+  position: absolute;
+  z-index:1;
+  top:25%;
+  left:50%;
+  width: 100px;
   height: 100px;
 }

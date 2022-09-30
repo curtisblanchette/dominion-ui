@@ -86,12 +86,13 @@ export class FlowService {
     this.callTypes$ = this.store.select(fromApp.selectLookupByKey('callType'));
 
     // update the Call IMMEDIATELY after specific variables are set.
-    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId'])).pipe(
+    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId', 'call_outcomeId'])).pipe(
       distinctUntilChanged((prev, curr) => {
         return (
           prev['lead'] === curr['lead'] &&
           prev['deal'] === curr['deal'] &&
-          prev['call_typeId'] === curr['call_typeId']
+          prev['call_typeId'] === curr['call_typeId'] &&
+          prev['call_outcomeId'] === curr['call_outcomeId']
         );
       }),
       map((vars: any) => {
@@ -100,6 +101,7 @@ export class FlowService {
           payload['leadId'] = vars.lead;
           payload['dealId'] = vars.deal;
           payload['typeId'] = vars.call_typeId;
+          payload['outcomeId'] = vars.call_outcomeId;
 
           this.updateCall(payload)
         }

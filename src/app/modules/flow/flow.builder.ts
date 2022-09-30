@@ -94,7 +94,7 @@ export class FlowBuilder {
     const toPowerQuestion = FlowFactory.link(relationshipBuilding.id, powerQuestion.id);
 
 
-    const setAppointment = FlowFactory.setAppointment(undefined, (flowService: FlowService, vars: any, step: any) => {
+    const setAppointment = FlowFactory.setAppointment((flowService: FlowService, vars: any, step: any) => {
       // globals
       step.state.options['payload'] = {
         contactId: vars.contact,
@@ -106,16 +106,20 @@ export class FlowBuilder {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
           step.state.data.resolveId = vars.event;
+          flowService.addVariables({ call_outcomeId: 4 /* Cancel Appointment */ });
+
         }
           break;
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
           step.state.data.resolveId = vars.event;
+          flowService.addVariables({ call_outcomeId: 3 /* Reschedule Appointment */ });
         }
           break;
         // no event selected
         case !vars.event: {
           step.state.options.state = 'set';
+          flowService.addVariables({ call_outcomeId: 2 /* Set Appointment */ });
         }
           break;
         default: {
@@ -127,45 +131,82 @@ export class FlowBuilder {
     });
 
     // INBOUND - CALL TYPE
-    const callDirection_inbound = FlowFactory.condition('Inbound', (vars: any) => {
-      return vars['call_direction'] === 'inbound';
-    }, {}, searchLeads.id);
+    const callDirection_inbound = FlowFactory.condition(
+      'Inbound Condition',
+      (vars: any) => (vars['call_direction'] === 'inbound'),
+      {},
+      searchLeads.id
+    );
 
-    const callDirection_outbound = FlowFactory.condition('Outbound', (vars: any) => {
-      return vars['call_direction'] === 'outbound';
-    }, {}, outboundType.id);
+    const callDirection_outbound = FlowFactory.condition(
+      'Outbound Condition',
+      (vars: any) => (vars['call_direction'] === 'outbound'),
+      {},
+      outboundType.id
+    );
 
-    const callDirectionRouter = FlowFactory.router('Call Direction', '', [callDirection_inbound, callDirection_outbound]);
+    const callDirectionRouter = FlowFactory.router(
+      'Call Direction Router',
+      '',
+      [
+        callDirection_inbound,
+        callDirection_outbound
+      ]
+    );
     const toCallDirectionRouter = FlowFactory.link(callDirection.id, callDirectionRouter.id);
 
     // INBOUND - NEW/EXISTING LEAD
-    const existingLead_yes = FlowFactory.condition('Lead Selected', (vars: any) => {
-      return !vars['new_lead'];
-    }, {
-      leadId: ModuleTypes.LEAD
-    }, editLead.id);
+    const editLeadCondition = FlowFactory.condition(
+      'Lead Selected',
+      (vars: any) => (!vars['new_lead']),
+      {
+       leadId: ModuleTypes.LEAD
+      },
+      editLead.id
+    );
 
-    const existingLead_no = FlowFactory.condition('Create Lead', (vars: any) => {
-      return vars['new_lead'];
-    }, {}, createLead.id);
+    const createLeadCondition = FlowFactory.condition(
+      'Create Lead Condition',
+      (vars: any) => (vars['new_lead']),
+      {},
+      createLead.id
+    );
 
-    const searchLeadsRouter = FlowFactory.router('Lead Selected', '', [existingLead_yes, existingLead_no]);
+    const searchLeadsRouter = FlowFactory.router(
+      'Lead Selected Router',
+      '',
+      [
+        editLeadCondition,
+        createLeadCondition
+      ]
+    );
     const toSearchLeadsRouter = FlowFactory.link(searchLeads.id, searchLeadsRouter.id);
 
-
-
     // INBOUND - NEW/EXISTING DEAL
-    const inboundExistingDeal_yes = FlowFactory.condition('deal Selected', (vars: any) => {
-      return !vars['new_deal'];
-    }, {
-      leadId: ModuleTypes.DEAL
-    }, editOpp.id);
+    const existingDeal_yes = FlowFactory.condition(
+      'Deal Selected Condition',
+      (vars: any) => (!vars['new_deal']),
+      {
+        leadId: ModuleTypes.DEAL
+      },
+      editOpp.id
+    );
 
-    const inboundExistingLead_no = FlowFactory.condition('Create Deal', (vars: any) => {
-      return vars['new_deal'];
-    }, {}, createOpp.id);
+    const existingLead_no = FlowFactory.condition(
+      'Create Deal Condition',
+      (vars: any) => (vars['new_deal']),
+      {},
+      createOpp.id
+    );
 
-    const inboundDealRouter = FlowFactory.router('Deal Decision', '', [inboundExistingDeal_yes, inboundExistingLead_no]);
+    const inboundDealRouter = FlowFactory.router(
+      'Deal Decision',
+      '',
+      [
+        existingDeal_yes,
+        existingLead_no
+      ]
+    );
     const inboundDealLink = FlowFactory.link(oppList.id, inboundDealRouter.id);
 
     // INBOUND - NEW LEAD SELECT CAMPAIGN
@@ -173,37 +214,25 @@ export class FlowBuilder {
 
     // INBOUND - NEW LEAD RELATIONSHIP BUILDING
     const toRelationshipBuilding2 = FlowFactory.link(createOpp.id, relationshipBuilding.id);
-    // const inboundSetApptLink = FlowFactory.link(relationshipBuilding.id, setAppointment.id);
     const inboundSetApptLink = FlowFactory.link(powerQuestion.id, setAppointment.id);
 
     // INBOUND - REASON FOR CALL
-    const inboundSetApptLink1 = FlowFactory.link(editOpp.id, reasonForCall.id);
-
-    const cancelEvent = FlowFactory.condition('Cancel/Reschedule Inbound Event',(vars: any) => {
-      return (
-        vars['call_direction'] === 'inbound' &&
-        ['cancel-appointment', 'reschedule-appointment'].includes(vars['call_reason'])
-      );
-    }, {}, appointmentList.id);
-
-    const inboundTakeNotes = FlowFactory.condition('Inbound Take Notes', (vars: any) => {
-      return (
-        vars['call_direction'] === 'inbound' &&
-        vars['call_reason'] === 'take-notes'
-      );
-    }, {}, notes.id);
-
-    const inboundReasonForCallRouter = FlowFactory.router('Call Reason', '', [cancelEvent, inboundTakeNotes]);
-    const toReasonForCallRouter = FlowFactory.link(reasonForCall.id, inboundReasonForCallRouter.id);
+    const toReasonForCall = FlowFactory.link(editOpp.id, reasonForCall.id);
 
     // INBOUND - RECAP/END
-    const inboundEndCondition = FlowFactory.condition('Inbound End',(vars: any) => {
-      return vars['call_direction'] === 'inbound' && vars['call_reason'] === 'cancel-appointment' ;
-    }, {}, end.id);
+    const endCondition = FlowFactory.condition(
+      'End Condition',
+      (vars: any) => (vars['call_reason'] === 'cancel-appointment'),
+      {},
+      end.id
+    );
 
-    const inboundRecapCondition = FlowFactory.condition('Inbound Recap',(vars: any) => {
-      return vars['call_direction'] === 'inbound' && vars['call_reason'] !== 'cancel-appointment' ;
-    }, {}, recap.id);
+    const recapCondition = FlowFactory.condition(
+      'Recap Condition',
+      (vars: any) => (vars['call_reason'] !== 'cancel-appointment'),
+      {},
+      recap.id
+    );
 
     const toInboundEnd = FlowFactory.link(recap.id, end.id);
     const toObjectionEnd = FlowFactory.link(objection.id, end.id);
@@ -224,40 +253,40 @@ export class FlowBuilder {
 
     const outboundWebLeads = FlowFactory.condition(
       'Web Leads',
-      (vars: any) => {
-        return vars['outbound_type'] === 'web-leads';
-      },
+      (vars: any) => (vars['outbound_type'] === 'web-leads'),
       {},
       webLeadsList.id
     );
 
     const outboundContacts = FlowFactory.condition(
       'Search Contacts',
-      (vars: any) => {
-        return vars['outbound_type'] === 'contacts';
-        },
+      (vars: any) => (vars['outbound_type'] === 'contacts'),
       {},
       searchContacts.id
     );
 
     const outboundOppFollowUp = FlowFactory.condition(
       'Search Contacts',
-      (vars: any) => {
-        return vars['outbound_type'] === 'opp-follow-up';
-      },
+      (vars: any) => (vars['outbound_type'] === 'opp-follow-up'),
       {},
       oppFollowUpList.id
     );
 
-    const outboundTypeRouter = FlowFactory.router('Outbound Type', '', [outboundWebLeads, outboundContacts, outboundOppFollowUp]);
+    const outboundTypeRouter = FlowFactory.router(
+      'Outbound Type',
+      '',
+      [
+        outboundWebLeads,
+        outboundContacts,
+        outboundOppFollowUp
+      ]
+    );
     const outboundTypeRouterLink = FlowFactory.link(outboundType.id, outboundTypeRouter.id);
 
     // OUTBOUND - EXISTING CONTACT / NEW LEAD
     const existingContact_yes = FlowFactory.condition(
       'Contact Selected',
-      (vars: any) => {
-        return !vars['new_lead'];
-      },
+      (vars: any) => (!vars['new_lead']),
       {
         contactId: ModuleTypes.CONTACT
       },
@@ -266,9 +295,7 @@ export class FlowBuilder {
 
     const existingContact_no = FlowFactory.condition(
       'Create Lead',
-      (vars: any) => {
-        return vars['new_lead'];
-      },
+      (vars: any) => (vars['new_lead']),
       {},
       createLead.id
     );
@@ -283,40 +310,30 @@ export class FlowBuilder {
     );
     const toSearchContactsRouter = FlowFactory.link(searchContacts.id, searchContactsRouter.id);
 
-    // const outboundOpps_ReasonForCallLink = FlowFactory.link(oppFollowUpList.id, inboundReasonForCallRouter.id);
-
-    const outboundSetCancelRescheduleCondition = FlowFactory.condition(
-      '[Outbound] Cancel/Reschedule Appointment',
-      (vars: any) => {
-        return (
-          vars['call_direction'] === 'outbound' &&
-          ['reschedule-appointment','cancel-appointment'].includes(vars['call_reason'])
-        );
-      },
+    const cancelCondition = FlowFactory.condition(
+      '[Outbound] Cancel Appointment',
+      (vars: any) => (vars['call_reason'] === 'cancel-appointment'),
       {},
       appointmentList.id
     );
 
-    const outboundSetAppointmentCondition = FlowFactory.condition(
-      '[Outbound] Set Appointment',
-      (vars: any) => {
-        return (
-          vars['call_direction'] === 'outbound' &&
-          ['reschedule-appointment','cancel-appointment'].includes(vars['call_reason'])
-        );
-      },
+    const rescheduleCondition = FlowFactory.condition(
+      'Reschedule Appointment Condition',
+      (vars: any) => (vars['call_reason'] === 'reschedule-appointment'),
       {},
       appointmentList.id
     );
 
-    const outboundTakeNotesCondition = FlowFactory.condition(
+    const setAppointmentCondition = FlowFactory.condition(
+      'Set Appointment',
+      (vars: any) => (vars['call_reason'] === 'set-appointment'),
+      {},
+      powerQuestion.id
+    );
+
+    const takeNotesCondition = FlowFactory.condition(
       '[Outbound] Take Notes',
-      (vars: any) => {
-        return (
-          vars['call_direction'] === 'outbound' &&
-          vars['call_reason'] === 'take-notes'
-        );
-      },
+      (vars: any) => (vars['call_reason'] === 'take-notes'),
       {},
       notes.id
     );
@@ -325,9 +342,10 @@ export class FlowBuilder {
       '[Outbound] Reason for Call',
       '',
       [
-        outboundSetCancelRescheduleCondition,
-        outboundSetAppointmentCondition,
-        outboundTakeNotesCondition
+        cancelCondition,
+        rescheduleCondition,
+        setAppointmentCondition,
+        takeNotesCondition
       ]
     );
     const outboundSetCancelRescheduleLink = FlowFactory.link(reasonForCall.id, outboundSetCancelRescheduleRouter.id);
@@ -336,15 +354,30 @@ export class FlowBuilder {
     const outboundEventLink = FlowFactory.link(appointmentList.id, setAppointment.id);
 
     // OUTBOUND - END/RECAP
-    const outboundEventCanceled = FlowFactory.condition('Event Canceled',(vars: any) => {
-      return vars['call_direction'] === 'outbound' && vars['call_reason'] === 'cancel-appointment' ;
-    }, {}, end.id);
+    const eventCanceled = FlowFactory.condition(
+      'Event Canceled Condition',
+      (vars: any) => (vars['call_reason'] === 'cancel-appointment'),
+      {},
+      end.id
+    );
 
-    const outboundEventRescheduled = FlowFactory.condition('Event Reschedules',(vars: any) => {
-      return vars['call_direction'] === 'outbound' && vars['call_reason'] !== 'cancel-appointment' ;
-    }, {}, recap.id);
+    const eventRescheduled = FlowFactory.condition(
+      'Event Rescheduled Condition',
+      (vars: any) => (vars['call_reason'] !== 'cancel-appointment'),
+      {},
+      recap.id
+    );
 
-    const outboundEventRouter = FlowFactory.router('Inbound/Outbound Event', '', [outboundEventCanceled, outboundEventRescheduled, inboundEndCondition, inboundRecapCondition]);
+    const outboundEventRouter = FlowFactory.router(
+      'Call Reason Router',
+      '',
+      [
+        eventCanceled,
+        eventRescheduled,
+        endCondition,
+        recapCondition
+      ]
+    );
     const outboundEventRouterLink = FlowFactory.link(setAppointment.id, outboundEventRouter.id);
     const outboundRecapLink = FlowFactory.link(appointmentList.id, outboundEventRouterLink.id);
 
@@ -356,6 +389,7 @@ export class FlowBuilder {
       .addStep(searchLeads)
       .addStep(outboundType)
       .addStep(reasonForCall)
+      .addLink(toReasonForCall)
       .addStep(appointmentList)
       .addStep(setAppointment)
       .addStep(recap)
@@ -373,7 +407,6 @@ export class FlowBuilder {
       .addStep(editOpp)
       .addStep(createOpp)
       .addRouter(searchLeadsRouter)
-      .addRouter(inboundReasonForCallRouter)
       .addRouter(inboundDealRouter)
       .addLink(toSearchLeadsRouter)
       .addLink(toOppList)
@@ -381,8 +414,6 @@ export class FlowBuilder {
       .addLink(toRelationshipBuilding1)
       .addLink(toRelationshipBuilding2)
       .addLink(inboundSetApptLink)
-      .addLink(inboundSetApptLink1)
-      .addLink(toReasonForCallRouter)
       .addLink(toPowerQuestion)
       .addLink(toInboundEnd)
       .addLink(inboundDealLink);

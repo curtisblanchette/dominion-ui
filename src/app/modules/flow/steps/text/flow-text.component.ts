@@ -12,6 +12,7 @@ import { EditorComponent } from '@tinymce/tinymce-angular';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { FlowService } from '../../flow.service';
 import * as fromFlow from '../../store/flow.reducer';
+import * as fromApp from '../../../../store/app.reducer';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
 import { environment } from '../../../../../environments/environment';
@@ -37,7 +38,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public callDirections$: Observable<RadioItem[]>;
   public outboundTypes$: Observable<RadioItem[]>;
   public callReasons$: Observable<DropdownItem[]>;
-  public answerOptions$: Observable<DropdownItem[]>;
+  public callStatuses$: Observable<DropdownItem[]>;
   public callOutcomes$: Observable<DropdownItem[]>;
   public vars$: Observable<any>;
   public ModuleTypes: any;
@@ -98,14 +99,15 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       {id: 'reschedule-appointment', label: 'Reschedule Appointment'},
       {id: 'take-notes', label: 'Take Notes'}
     ]);
-    this.answerOptions$ = of([
-      {id: 'yes', label: 'Yes'},
-      {id: 'no', label: 'No'},
-      {id: 'leaving-message', label: 'Leaving Message'},
-      {id: 'bad-number', label: 'Bad Number'},
-      {id: 'wrong-number', label: 'Wrong Number'},
-      {id: 'not-working', label: 'Not Working (Disconnected)'}
-    ]);
+    this.callStatuses$ = this.store.select(fromApp.selectLookupByKey('callStatus'));
+    //   of([
+    //   {id: 'yes', label: 'Yes'},
+    //   {id: 'no', label: 'No'},
+    //   {id: 'leaving-message', label: 'Leaving Message'},
+    //   {id: 'bad-number', label: 'Bad Number'},
+    //   {id: 'wrong-number', label: 'Wrong Number'},
+    //   {id: 'not-working', label: 'Not Working (Disconnected)'}
+    // ]);
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
 
