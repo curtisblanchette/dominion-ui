@@ -33,6 +33,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
   @Input('id') id!: string;
   @Input('pickerType') pickerType: "calendar"|"timer"|"both";
   @Input('reporting') reporting:boolean = false;
+  @Input('report') report:string;
   @Input('placeholder') placeholder: string = "Select Date";
   @Input('selectMode') selectMode: "single"|"range"|"rangeFrom"|"rangeTo" = 'single';
   @Input('stepMinute') stepMinute: number = 1;
@@ -110,7 +111,11 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
           endDate : dayjs(value[1]).endOf('day').format('YYYY-MM-DD HH:mm:ss')
         };
         this.store.dispatch(reportsActions.SetDateRangeAction(range));
-        this.store.dispatch(reportsActions.FetchTeam());
+        if( this.report == 'team' ){
+          this.store.dispatch(reportsActions.FetchTeam());
+        } else if ( this.report == 'total-pipeline' ){
+          this.store.dispatch(reportsActions.FetchTotalPipeline());
+        }
       }
       
       this.change.emit(range);
