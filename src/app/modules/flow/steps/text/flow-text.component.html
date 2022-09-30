@@ -84,18 +84,21 @@
 
 
     <ng-template [ngSwitchCase]="'reason-for-call'">
-      <header>
-        <h3>{{data.title}}</h3>
-        <p *ngIf="(vars$ | async).call_direction === 'inbound'">What is the reason for them calling today?</p>
-      </header>
+<!--      <header>-->
+<!--        <h3>{{data.title}}</h3>-->
+<!--        <p *ngIf="(vars$ | async).call_direction === 'inbound'">What is the reason for them calling today?</p>-->
+<!--      </header>-->
 
 
-      <form [formGroup]="form" *ngIf="form">
-        <ng-container *ngIf="(vars$ | async).call_direction === 'outbound'">
-          <fiiz-radio [items]="callStatuses$" formControlName="answered" name="answered"></fiiz-radio>
-        </ng-container>
-
-        <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason"></fiiz-radio>
+      <form [formGroup]="form" *ngIf="form" style="display:flex; justify-content: start; gap: 2em;">
+        <div *ngIf="(vars$ | async).call_direction === 'outbound'">
+          <h3>Call Status</h3>
+          <fiiz-radio [items]="callStatuses$" formControlName="call_status" name="call_status" #callStatusRadio></fiiz-radio>
+        </div>
+        <div>
+          <h3>Reason for Call</h3>
+          <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason" #callReasonRadio></fiiz-radio>
+        </div>
       </form>
     </ng-template>
 
@@ -106,7 +109,7 @@
       </header>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="answerOptions$" formControlName="answered" name="answered"></fiiz-radio>
+        <fiiz-radio [items]="callStatuses$" formControlName="call_status" name="call_status"></fiiz-radio>
 
         <ng-container [ngSwitch]="form.controls['answered'].value">
           <ng-template ngSwitchCase="yes">

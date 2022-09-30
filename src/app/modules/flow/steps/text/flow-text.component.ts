@@ -17,7 +17,7 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
 import { environment } from '../../../../../environments/environment';
 import { CustomDataService } from '../../../../data/custom.dataservice';
-import { RadioItem } from '../../../../common/components/ui/forms';
+import { FiizRadioComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
@@ -32,6 +32,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   private flowStepId: string | undefined;
 
   @Input('data') override data: any;
+
   public form: FormGroup;
   public allValid$: Observable<boolean>;
   public didObject$: Observable<boolean> = of(false);
@@ -68,6 +69,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   @ViewChild('tinymce') tinymce: EditorComponent;
   @ViewChild('botComment') botComment: ElementRef;
+  @ViewChild('callStatusRadio') callStatusRadio: FiizRadioComponent;
+  @ViewChild('callReasonRadio') callReasonRadio: FiizRadioComponent;
+
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
   constructor(
@@ -93,13 +97,20 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       {id: 'opp-follow-up', label: 'Opportunity Follow Up'},
       {id: 'web-leads', label: 'Web Leads'}
     ]);
+
     this.callReasons$ = of([
-      {id: 'set-appointment', label: 'Set Appointment'},
-      {id: 'cancel-appointment', label: 'Cancel Appointment'},
-      {id: 'reschedule-appointment', label: 'Reschedule Appointment'},
-      {id: 'take-notes', label: 'Take Notes'}
+      {id: 'set-appointment', label: 'Set Appointment', disabled: false},
+      {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false,},
+      {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: false},
+      {id: 'take-notes', label: 'Take Notes', disabled: false}
     ]);
-    this.callStatuses$ = this.store.select(fromApp.selectLookupByKey('callStatus'));
+
+    this.callStatuses$ = this.store.select(fromApp.selectLookupByKey('callStatus')).pipe(map(statuses => {
+      return statuses.map(status => {
+        return {...status, disabled: false };
+      });
+    }));
+
     //   of([
     //   {id: 'yes', label: 'Yes'},
     //   {id: 'no', label: 'No'},
@@ -189,6 +200,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'reason-for-call': {
+        form['call_status'] = new FormControl(this.variables['call_status'] || null, [Validators.required]);
         form['call_reason'] = new FormControl(this.variables['call_reason'] || null, [Validators.required]);
       }
         break;
@@ -198,7 +210,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
           return of(CustomDataService.toDropdownItems(res));
         }))) as any;
 
-        form['answered'] = new FormControl(this.variables['answered'] || null, [Validators.required]);
+        form['call_status'] = new FormControl(this.variables['call_status'] || null, [Validators.required]);
         form['call_outcome'] = new FormControl(this.variables['call_outcome'] || null, [Validators.required]);
       }
         break;
@@ -249,22 +261,33 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     if (Object.keys(form).length) {
 
       this.form = this.fb.group(form);
-      // valid = this.form.valid;
-
-      // this.form.valueChanges.subscribe((value: any) => {
-      //   this.flowService.updateStep(this.flowStepId, { variables: value, valid: this.form.valid });
-      // });
-      //
-      // this.form.statusChanges.subscribe((value: any) => {
-      //   this.flowService.setValidity(this.flowStepId, value === 'VALID');
-      // });
 
       of('').pipe(
         untilDestroyed(this),
         delay(100)
       ).subscribe(() => {
-        this.form.valueChanges.subscribe((value: any) => {
+        this.form.valueChanges.pipe(distinctUntilChanged((prev, curr) => {
+          return (
+            prev['call_status'] === curr['call_status']
+          );
+        }),).subscribe((value: any) => {
           this.flowService.updateStep(this.flowStepId, {variables: value, valid: this.form.valid});
+
+          if(value.call_status === '1') {
+            this.form.patchValue({call_reason: 'set-appointment'});
+            this.callReasons$ = of([{id: 'set-appointment', label: 'Set Appointment', disabled: false},
+              {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false,},
+              {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: false},
+              {id: 'take-notes', label: 'Take Notes', disabled: false}
+            ]);
+          } else {
+            this.callReasons$ = of([{id: 'set-appointment', label: 'Set Appointment', disabled: true},
+              {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: true,},
+              {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: true},
+              {id: 'take-notes', label: 'Take Notes', disabled: false}
+            ]);
+            this.form.patchValue({call_reason: 'set-appointment'});
+          }
         });
       });
     }

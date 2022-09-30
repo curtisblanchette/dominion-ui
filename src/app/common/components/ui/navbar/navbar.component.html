@@ -18,7 +18,7 @@
       </svg>
 
     </a>
-    <div class="acting-for" *ngIf="actingFor$ | async">{{(actingFor$ | async).label}}</div>
+    <div class="acting-for" *ngIf="actingFor$ | async">{{(actingFor$ | async)?.label}}</div>
   </div>
 
   <nav>
