@@ -58,7 +58,7 @@ export class AppEffects {
       ofType(appActions.FetchWorkspaceAction),
       mergeMap(async (action: any) => {
         const res = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/workspace` )) as any;
-        return appActions.SaveSettingsSuccessAction({payload: res});
+        return appActions.FetchWorkspaceSuccessAction({payload: res});
       }),
       catchError((err: any) => {
         this.toastr.error(err.error.name || '', err.error.message);
