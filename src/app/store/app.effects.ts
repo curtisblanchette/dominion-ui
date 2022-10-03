@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, firstValueFrom, forkJoin, mergeMap, tap, throwError } from 'rxjs';
+import { catchError, firstValueFrom, forkJoin, mergeMap, of, tap, throwError } from 'rxjs';
 import * as appActions from './app.actions';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -51,6 +51,20 @@ export class AppEffects {
         return throwError(err);
       })
     )
+  );
+
+  getWorkspace$ = createEffect((): any =>
+    this.actions$.pipe(
+      ofType(appActions.FetchWorkspaceAction),
+      mergeMap(async (action: any) => {
+        const res = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/workspace` )) as any;
+        return appActions.SaveSettingsSuccessAction({payload: res});
+      }),
+      catchError((err: any) => {
+        this.toastr.error(err.error.name || '', err.error.message);
+        return throwError(err);
+      })
+    ), { dispatch: false }
   );
 
   getLookups$ = createEffect((): any =>

@@ -6,6 +6,7 @@ import { DropdownItem } from '../common/components/ui/forms';
 
 export interface AppState {
   settings: any;
+  workspace: any;
   lookups: any;
   initialized: boolean;
   loading: boolean;
@@ -14,6 +15,7 @@ export interface AppState {
 
 export const initialState: AppState = {
   settings: getInitialStateByKey('app.settings') || null,
+  workspace: getInitialStateByKey('app.workspace') || null,
   lookups: getInitialStateByKey('app.lookups') || null,
   initialized: getInitialStateByKey('app.initialized') || false,
   loading: false,
@@ -22,6 +24,15 @@ export const initialState: AppState = {
 
 export const reducer = createReducer(
   initialState,
+
+  on(appActions.FetchWorkspaceAction, (state) => ({...state, loading: true})),
+  on(appActions.FetchWorkspaceSuccessAction, (state, {payload}) => ({...state, workspace: payload, loading: false})),
+  on(appActions.FetchWorkspaceFailureAction, (state, {payload}) => ({
+    ...state,
+    errorMessage: 'Error fetching workspace.',
+    loading: false
+  })),
+
   on(appActions.FetchSettingsAction, (state) => ({...state, loading: true})),
   on(appActions.FetchSettingsSuccessAction, (state, {payload}) => ({...state, settings: payload, loading: false})),
   on(appActions.FetchSettingsFailureAction, (state, {payload}) => ({
