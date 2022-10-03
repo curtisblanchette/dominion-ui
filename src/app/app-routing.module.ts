@@ -46,7 +46,7 @@ const routes: Routes = [
   {
     path: 'data',
     canActivate: [RoleGuard],
-    data: { roles: ['system', 'admin', 'owner'] },
+    data: { roles: ['system', 'admin', 'owner', 'consultant', 'agent'] },
     loadChildren: () => import('./modules/data/data.module').then(m => m.DataModule)
   },
   {
