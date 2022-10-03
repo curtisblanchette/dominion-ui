@@ -2,19 +2,19 @@ import { createAction, props } from '@ngrx/store';
 
 export const ActionTypes = {
 
-  FETCH_WORKSPACE: '[App] Get Workspace',
-  FETCH_WORKSPACE_SUCCESS: '[App] Get Workspace Success',
-  FETCH_WORKSPACE_FAILURE: '[App] Get Workspace Failure',
+  FETCH_WORKSPACE: '[App] Fetch Workspace',
+  FETCH_WORKSPACE_SUCCESS: '[App] Fetch Workspace Success',
+  FETCH_WORKSPACE_FAILURE: '[App] Fetch Workspace Failure',
 
-  FETCH_SETTINGS: '[App] Get Settings',
-  FETCH_SETTINGS_SUCCESS: '[App] Get Settings Success',
-  FETCH_SETTINGS_FAILURE: '[App] Get Settings Failure',
+  FETCH_SETTINGS: '[App] Fetch Settings',
+  FETCH_SETTINGS_SUCCESS: '[App] Fetch Settings Success',
+  FETCH_SETTINGS_FAILURE: '[App] Fetch Settings Failure',
 
   SAVE_SETTINGS: '[App] Save Settings',
   SAVE_SETTINGS_SUCCESS: '[App] Save Settings Success',
   SAVE_SETTINGS_FAILURE: '[App] Save Settings Failure',
 
-  GET_LOOKUPS: '[App] Get Lookups',
+  FETCH_LOOKUPS: '[App] Fetch Lookups',
   SET_LOOKUPS: '[App] Set Lookups',
   CLEAR: '[App] Clear Store',
   INITIALIZED: '[App] State Initialized'
@@ -65,8 +65,8 @@ export const SaveSettingsFailureAction = createAction(
   props<{ payload: any }>()
 );
 
-export const GetLookupsAction = createAction(
-  ActionTypes.GET_LOOKUPS,
+export const FetchLookupsAction = createAction(
+  ActionTypes.FETCH_LOOKUPS,
 );
 
 export const SetLookupsAction = createAction(
