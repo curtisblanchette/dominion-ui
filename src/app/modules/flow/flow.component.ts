@@ -78,14 +78,17 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
    */
   ngAfterViewInit() {
     this.store.select(fromFlow.selectCurrentStepId).pipe(
-      withLatestFrom(this.store.select(fromFlow.selectTimeline), this.store.select(fromFlow.selectAllVariables)),
+      withLatestFrom(
+        this.store.select(fromFlow.selectTimeline),
+        this.store.select(fromFlow.selectAllVariables)
+      ),
       distinctUntilChanged(),
       untilDestroyed(this)
     ).subscribe(async (res) => {
       let [stepId, steps, vars]: any = res;
 
       if(steps) {
-        const step = steps?.find((step: FlowStep) => step.id === stepId);
+        const step = steps.find((step: FlowStep) => step.id === stepId);
         const prevStep = steps[steps.findIndex((step: FlowStep) => step.id === stepId) - 1];
 
         if (typeof prevStep?.afterRoutingTrigger === 'string') {
@@ -99,7 +102,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
           }
         }
 
-        if (typeof step.beforeRoutingTrigger === 'string') {
+        if (typeof step?.beforeRoutingTrigger === 'string') {
           const sourceMapComment = `\n //# sourceURL=${step.nodeText}.before.js \n`;
           let code = step.beforeRoutingTrigger;
           code = code.concat(sourceMapComment);
