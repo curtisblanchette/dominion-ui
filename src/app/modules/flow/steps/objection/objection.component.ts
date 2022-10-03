@@ -173,7 +173,9 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   }
 
   async ngOnInit() {
-    this.selectedId = await this.flowService.getVariable('objectionId');
+    this.store.select(fromFlow.selectVariableByKey('objectionId')).subscribe(val => {
+      this.selectedId = val;
+    });
   }
 
   public async onSave():Promise<any> {
