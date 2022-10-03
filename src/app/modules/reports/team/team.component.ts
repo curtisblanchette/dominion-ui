@@ -142,15 +142,15 @@ export class TeamReportComponent implements OnInit, AfterViewInit {
       // gather the team metrics into card objects
       for(const key of Object.keys(data)) {
         // inbound, outbound, consultations
-        for (const stat of Object.keys(data[key])) {
+        for (const stat of Object.keys(data[key])) {          
           if (stat !== 'people' && this.cards[key].includes(stat)) {
             (<IStatCard[]>this.teamStats[key]).push({
               label: this.getLabel(stat, null),
-              value: data[this.activePath][stat],
-              order: this.cards[this.activePath].indexOf(stat)
+              value: data[key][stat],
+              order: this.cards[key].indexOf(stat)
             });
           } else if (stat === 'people') {
-            this.people[key] = [...data[this.activePath][stat]];
+            this.people[key] = [...data[key][stat]];
           }
         }
         this.teamStats[key] = (<IStatCard[]>this.teamStats[key]).sort((a, b) => a.order - b.order);
