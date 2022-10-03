@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.17.19 (2022-10-03)
+
+
+### Bug Fixes
+
+* **develop:** fix that goddamn stupid thing I did to fix other things ([64afbdd](https://github.com/4iiz/dominion-ui/commit/64afbdd13aaec78af01c1b9f453223fe23e0cf36))
+
 ### 1.17.18 (2022-10-03)
 
 ### 1.17.17 (2022-10-03)
