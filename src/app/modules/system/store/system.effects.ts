@@ -41,7 +41,7 @@ export class SystemEffects {
         ofType(systemActions.SetActingForAction),
         tap(async () => {
           this.store.dispatch(appActions.FetchSettingsAction());
-          this.store.dispatch(appActions.GetLookupsAction());
+          this.store.dispatch(appActions.FetchLookupsAction());
         })
       ),
     {dispatch: false}

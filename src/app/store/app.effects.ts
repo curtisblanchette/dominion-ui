@@ -69,7 +69,7 @@ export class AppEffects {
 
   getLookups$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(appActions.GetLookupsAction),
+      ofType(appActions.FetchLookupsAction),
       tap(() => {
         // Fork Join the results of all dominion lookups
         return forkJoin({

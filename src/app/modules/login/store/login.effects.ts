@@ -151,6 +151,7 @@ export class LoginEffects {
             this.store.dispatch(appActions.FetchWorkspaceAction());
             this.store.dispatch(appActions.FetchSettingsAction());
             this.store.dispatch(loginActions.GetUserAction());
+            return appActions.FetchLookupsAction();
           }
 
           return appActions.ClearAction();
