@@ -2,6 +2,10 @@ import { createAction, props } from '@ngrx/store';
 
 export const ActionTypes = {
 
+  FETCH_WORKSPACE: '[App] Get Workspace',
+  FETCH_WORKSPACE_SUCCESS: '[App] Get Workspace Success',
+  FETCH_WORKSPACE_FAILURE: '[App] Get Workspace Failure',
+
   FETCH_SETTINGS: '[App] Get Settings',
   FETCH_SETTINGS_SUCCESS: '[App] Get Settings Success',
   FETCH_SETTINGS_FAILURE: '[App] Get Settings Failure',
@@ -15,6 +19,21 @@ export const ActionTypes = {
   CLEAR: '[App] Clear Store',
   INITIALIZED: '[App] State Initialized'
 };
+
+export const FetchWorkspaceAction = createAction(
+  ActionTypes.FETCH_SETTINGS,
+);
+
+export const FetchWorkspaceSuccessAction = createAction(
+  ActionTypes.FETCH_WORKSPACE_SUCCESS,
+  props<{ payload: any }>()
+);
+
+export const FetchWorkspaceFailureAction = createAction(
+  ActionTypes.FETCH_WORKSPACE_FAILURE,
+  props<{ payload: any }>()
+);
+
 
 
 export const FetchSettingsAction = createAction(
