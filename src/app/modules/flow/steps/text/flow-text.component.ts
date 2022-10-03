@@ -45,7 +45,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public ModuleTypes: any;
   public contactFields: any = ContactModel;
   public formValidation: { [key: string]: boolean } = {};
-  public addressState: string = 'create';
   public variables: any;
   public status$: Observable<string>;
   public FlowStatus: any;
@@ -134,16 +133,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         }
       })
     );
-
   }
 
   public async ngOnInit() {
-    if (this.data) {
-      if (await this.flowService.getVariable('address')) {
-        this.addressState = 'edit';
-      }
-      this.initStep();
-    }
+
   }
 
   public async ngAfterViewInit() {
@@ -159,15 +152,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       });
     });
 
-    if (this.data.template === 'recap') {
-      const newLead = await this.flowService.getVariable('new_lead');
-      if (newLead) {
-        const leadInfo: any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
-        const leadForm = this.dataComponents.find(item => item.module === ModuleTypes.LEAD);
-        leadForm?.form.patchValue({email: leadInfo['email'], phone: leadInfo['phone']});
-      }
+    if (this.data) {
+      this.initStep();
     }
-
   }
 
   public async initStep() {
@@ -225,6 +212,13 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'recap' : {
+        const newLead = await this.flowService.getVariable('new_lead');
+        if (newLead) {
+          const leadInfo: any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
+          const leadForm = this.dataComponents.find(item => item.module === ModuleTypes.LEAD);
+          leadForm?.form.patchValue({email: leadInfo['email'], phone: leadInfo['phone']});
+        }
+
         this.module = ModuleTypes.LEAD;
         this.flowService.updateStep(this.flowStepId, {
           state: {
@@ -261,14 +255,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         delay(100)
       ).subscribe(() => {
         this.form.valueChanges.pipe(
-          tap((value) => {
-            // DO NOT REMOVE: keeps form validity up to date
-            this.flowService.updateStep(this.flowStepId, {variables: value, valid: this.form.valid});
-          }),
           distinctUntilChanged((prev, curr) => {
             return (
               prev['call_statusId'] === curr['call_statusId']
             );
+          }),
+          tap((value) => {
+            // DO NOT REMOVE: keeps form validity up to date
+            this.flowService.updateStep(this.flowStepId, {variables: value, valid: this.form.valid});
           })
         ).subscribe();
       });
@@ -285,7 +279,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
               {id: 'take-notes', label: 'Take Notes', disabled: false}
             ];
 
-            if (status !== '1') {
+            if (status !== 1) {
               // No Answer
               data = data.map(reason => {
                 reason.disabled = reason.id !== 'take-notes';
