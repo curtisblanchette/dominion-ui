@@ -21,7 +21,7 @@ export const ActionTypes = {
 };
 
 export const FetchWorkspaceAction = createAction(
-  ActionTypes.FETCH_SETTINGS,
+  ActionTypes.FETCH_WORKSPACE,
 );
 
 export const FetchWorkspaceSuccessAction = createAction(
@@ -33,7 +33,6 @@ export const FetchWorkspaceFailureAction = createAction(
   ActionTypes.FETCH_WORKSPACE_FAILURE,
   props<{ payload: any }>()
 );
-
 
 
 export const FetchSettingsAction = createAction(

@@ -26,7 +26,9 @@ export const reducer = createReducer(
   initialState,
 
   on(appActions.FetchWorkspaceAction, (state) => ({...state, loading: true})),
-  on(appActions.FetchWorkspaceSuccessAction, (state, {payload}) => ({...state, workspace: payload, loading: false})),
+  on(appActions.FetchWorkspaceSuccessAction, (state, {payload}) => {
+    return {...state, workspace: payload, loading: false};
+  }),
   on(appActions.FetchWorkspaceFailureAction, (state, {payload}) => ({
     ...state,
     errorMessage: 'Error fetching workspace.',
@@ -56,11 +58,14 @@ export const reducer = createReducer(
   on(appActions.GetLookupsAction, (state) => ({...state})),
   on(appActions.SetLookupsAction, (state, {payload}) => ({...state, lookups: payload})),
 
-  on(appActions.ClearAction, (state) => ({...state, roles: null, settings: null, initialized: false, loading: false})),
+  on(appActions.ClearAction, (state) => ({...state, roles: null, settings: null, workspace: null, initialized: false, loading: false})),
   on(appActions.AppInitializedAction, (state) => ({...state, loading: false, initialized: true}))
 );
 
 export const selectApp = createFeatureSelector<AppState>('app');
+
+
+export const selectWorkspace = createSelector(selectApp, (state: AppState) => state.workspace);
 
 export const selectSettings = createSelector(selectApp, (state: AppState) => state.settings);
 export const selectSettingGroup = (group: string) => createSelector(selectSettings, (settings: ISetting[]) => settings.filter(setting => setting.group === group));
