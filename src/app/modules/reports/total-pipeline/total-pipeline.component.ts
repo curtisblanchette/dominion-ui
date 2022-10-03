@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromReports from '../store/reports.reducer';
 import * as reportsActions from '../store/reports.actions';
 import { ViewStatus } from '../store/reports.reducer';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import dayjs from 'dayjs';
+
+import { FiizDatePickerComponent } from '../../../common/components/ui/forms';
 
 @UntilDestroy()
 @Component({
@@ -14,7 +16,7 @@ import dayjs from 'dayjs';
   templateUrl: './total-pipeline.component.html',
   styleUrls: ['../../../../assets/css/_container.scss','./total-pipeline.component.scss']
 })
-export class TotalPipelineComponent implements OnInit {
+export class TotalPipelineComponent implements OnInit, AfterViewInit {
 
   public today: any = dayjs().format();
   public status$: Observable<ViewStatus>;
@@ -23,11 +25,13 @@ export class TotalPipelineComponent implements OnInit {
   public grid$: Observable<any[]>;
   public form: FormGroup;
 
+  @ViewChild('dateRange', {static : false}) dateRangePicker: FiizDatePickerComponent;
+
   constructor(
     private store: Store<fromReports.ReportsState>,
     private fb: FormBuilder
   ) {
-    this.buildForm();
+    
   }
 
   ngOnInit(): void {
@@ -45,20 +49,28 @@ export class TotalPipelineComponent implements OnInit {
     this.getData();
   }
 
-  private async buildForm() {
-    let form: { [key: string]: FormControl } = {};
-    const dateRange = await firstValueFrom(this.store.select(fromReports.selectDateRange));
-    form['startDate'] = new FormControl(dateRange.startDate, Validators.required);
-    form['endDate'] = new FormControl(dateRange.endDate, Validators.required);
-
-    this.form = this.fb.group(form);
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
-      this.store.dispatch(reportsActions.SetDateRangeAction(values));
-      this.store.dispatch(reportsActions.FetchTotalPipeline());
+  ngAfterViewInit(): void {
+    this.store.select(fromReports.selectDateRange).subscribe((data:any) => {
+      if( data ){
+        const dates = Object.values(data).map( (val:any) => {
+          return new Date(val);
+        });
+        
+        this.dateRangePicker.writeValue(dates);
+      }
     });
   }
 
   getData() {
+    this.store.dispatch(reportsActions.FetchTotalPipeline());
+  }
+
+  public getChangedValues( value:any ){
+    const range = {
+      startDate : dayjs(value.from).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      endDate : dayjs(value.to).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+    };
+    this.store.dispatch(reportsActions.SetDateRangeAction(range));
     this.store.dispatch(reportsActions.FetchTotalPipeline());
   }
 

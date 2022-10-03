@@ -1,7 +1,11 @@
-import { AfterViewInit, Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
+import { Store } from '@ngrx/store';
+
+import * as fromReports from '../../../../../modules/reports/store/reports.reducer';
+import { isArray } from 'lodash';
 
 @Component({
   selector: 'fiiz-date-picker',
@@ -13,7 +17,7 @@ import { Dayjs } from 'dayjs';
     multi: true
   }]
 })
-export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewInit, OnInit {
+export class FiizDatePickerComponent implements ControlValueAccessor, OnInit {
 
 
   @HostBinding('class.has-label')
@@ -31,29 +35,31 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
 
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 
-  public value!: string | Dayjs | Dayjs[];
+  public value!: any;
   public startEndValidation:boolean = false;
   public separator:string = '~';
 
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: any) => void = () => { console.log('this.value',this.value) };
   onTouched: Function = () => {};
 
   constructor(
+    private store: Store<fromReports.ReportsState>,
   ) {
 
   }
 
   ngOnInit(): void {
-
+    
   }
 
-  ngAfterViewInit(): void {
-  }
-
-  writeValue(value: any) {
+  writeValue( value:any ) {
     if( value ){
-      this.value = dayjs(value).format();
+      if( isArray(value) ){
+        this.value = value;
+      } else {
+        this.value = dayjs(value).format();
+      }
     }
   }
 
@@ -77,10 +83,12 @@ export class FiizDatePickerComponent implements ControlValueAccessor, AfterViewI
       } else if ( this.pickerType == 'timer' ){
         format = 'HH:mm';
       }
-      const range = {
+
+      let range = {
         from : dayjs(value[0]).format(format),
         to : dayjs(value[1]).format(format)
       };
+      
       this.change.emit(range);
     } else if (value && dayjs(value).isValid()){
       this.value = dayjs(value).format();

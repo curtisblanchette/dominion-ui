@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromReports from '../store/reports.reducer';
 import * as reportsActions from '../store/reports.actions';
 import { ViewStatus } from '../store/reports.reducer';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import dayjs from 'dayjs';
+
+import { FiizDatePickerComponent } from '../../../common/components/ui/forms';
 
 export interface IStatCard { label: string | undefined; value: number, order: number }
 
@@ -16,14 +17,13 @@ export interface IStatCard { label: string | undefined; value: number, order: nu
   templateUrl: './team.component.html',
   styleUrls: ['../../../../assets/css/_container.scss','./team.component.scss']
 })
-export class TeamReportComponent implements OnInit {
+export class TeamReportComponent implements OnInit, AfterViewInit {
 
   public today: any = dayjs().format();
   public status$: Observable<ViewStatus>;
   public in$: Observable<any>;
   public out$: Observable<any>;
   public grid$: Observable<any[]>;
-  public form: FormGroup;
 
   public data$: Observable<any>;
   public currentSort: [number, string];
@@ -76,10 +76,11 @@ export class TeamReportComponent implements OnInit {
     consultations: []
   };
 
+  @ViewChild('dateRange', {static : false}) dateRangePicker: FiizDatePickerComponent;
+
 
   constructor(
     private store: Store<fromReports.ReportsState>,
-    private fb: FormBuilder
   ) {
     this.sortStates = [
       {
@@ -106,8 +107,20 @@ export class TeamReportComponent implements OnInit {
     this.activePath = 'inbound';
   }
 
+  ngAfterViewInit(): void {
+    this.store.select(fromReports.selectDateRange).subscribe((data:any) => {
+      if( data ){
+        const dates = Object.values(data).map( (val:any) => {
+          return new Date(val);
+        });
+        
+        this.dateRangePicker.writeValue(dates);
+      }
+    });
+  }
+
   public async ngOnInit() {
-    this.buildForm();
+    
     this.status$ = this.store.select(fromReports.selectTeam).pipe(map((res:any) => res.status));
 
     this.getData();
@@ -148,20 +161,6 @@ export class TeamReportComponent implements OnInit {
     });
   }
 
-
-  private async buildForm() {
-    let form: { [key: string]: FormControl } = {};
-    const dateRange = await firstValueFrom(this.store.select(fromReports.selectDateRange));
-    form['startDate'] = new FormControl(dateRange.startDate, Validators.required);
-    form['endDate'] = new FormControl(dateRange.endDate, Validators.required);
-
-    this.form = this.fb.group(form);
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: any) => {
-      this.store.dispatch(reportsActions.SetDateRangeAction(values));
-      this.store.dispatch(reportsActions.FetchTeam());
-    });
-  }
-
   goTo($event: string) {
     this.activePath = $event;
   }
@@ -169,7 +168,6 @@ export class TeamReportComponent implements OnInit {
   getData() {
     this.store.dispatch(reportsActions.FetchTeam());
   }
-
 
 
   public sortField(field: string) {
@@ -238,6 +236,15 @@ export class TeamReportComponent implements OnInit {
       return 'Answers/Calls';
     }
     return this.labelMap.get(key);
+  }
+
+  public getChangedValues( value:any ){
+    const range = {
+      startDate : dayjs(value.from).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      endDate : dayjs(value.to).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+    };
+    this.store.dispatch(reportsActions.SetDateRangeAction(range));
+    this.store.dispatch(reportsActions.FetchTeam());
   }
 
   get agentOrConsultant() {
