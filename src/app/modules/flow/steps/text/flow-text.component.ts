@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { firstValueFrom, map, debounceTime, distinctUntilChanged, delay, mergeMap } from 'rxjs';
+import { firstValueFrom, map, debounceTime, distinctUntilChanged, delay, mergeMap, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -111,14 +111,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       });
     }));
 
-    //   of([
-    //   {id: 'yes', label: 'Yes'},
-    //   {id: 'no', label: 'No'},
-    //   {id: 'leaving-message', label: 'Leaving Message'},
-    //   {id: 'bad-number', label: 'Bad Number'},
-    //   {id: 'wrong-number', label: 'Wrong Number'},
-    //   {id: 'not-working', label: 'Not Working (Disconnected)'}
-    // ]);
     this.vars$ = this.store.select(fromFlow.selectAllVariables);
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
 
@@ -200,7 +192,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'reason-for-call': {
-        form['call_status'] = new FormControl(this.variables['call_status'] || null, [Validators.required]);
+        if(this.variables['call_direction'] === 'outbound') {
+          form['call_statusId'] = new FormControl(this.variables['call_statusId'] || null, [Validators.required]);
+        }
         form['call_reason'] = new FormControl(this.variables['call_reason'] || null, [Validators.required]);
       }
         break;
@@ -210,8 +204,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
           return of(CustomDataService.toDropdownItems(res));
         }))) as any;
 
-        form['call_status'] = new FormControl(this.variables['call_status'] || null, [Validators.required]);
-        form['call_outcome'] = new FormControl(this.variables['call_outcome'] || null, [Validators.required]);
+        form['call_statusId'] = new FormControl(this.variables['call_statusId'] || null, [Validators.required]);
+        form['call_outcomeId'] = new FormControl(this.variables['call_outcomeId'] || null, [Validators.required]);
       }
         break;
 
@@ -266,30 +260,42 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         untilDestroyed(this),
         delay(100)
       ).subscribe(() => {
-        this.form.valueChanges.pipe(distinctUntilChanged((prev, curr) => {
-          return (
-            prev['call_status'] === curr['call_status']
-          );
-        }),).subscribe((value: any) => {
-          this.flowService.updateStep(this.flowStepId, {variables: value, valid: this.form.valid});
+        this.form.valueChanges.pipe(
+          tap((value) => {
+            // DO NOT REMOVE: keeps form validity up to date
+            this.flowService.updateStep(this.flowStepId, {variables: value, valid: this.form.valid});
+          }),
+          distinctUntilChanged((prev, curr) => {
+            return (
+              prev['call_statusId'] === curr['call_statusId']
+            );
+          })
+        ).subscribe();
+      });
 
-          if(value.call_status === '1') {
-            this.form.patchValue({call_reason: 'set-appointment'});
-            this.callReasons$ = of([{id: 'set-appointment', label: 'Set Appointment', disabled: false},
-              {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false,},
+      if(this.variables['call_direction'] === 'outbound') {
+        this.callReasons$ = this.form.controls['call_statusId'].valueChanges.pipe(
+          distinctUntilChanged(),
+          map(status => {
+
+            let data = [
+              {id: 'set-appointment', label: 'Set Appointment', disabled: false},
+              {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false},
               {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: false},
               {id: 'take-notes', label: 'Take Notes', disabled: false}
-            ]);
-          } else {
-            this.callReasons$ = of([{id: 'set-appointment', label: 'Set Appointment', disabled: true},
-              {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: true,},
-              {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: true},
-              {id: 'take-notes', label: 'Take Notes', disabled: false}
-            ]);
-            this.form.patchValue({call_reason: 'set-appointment'});
-          }
-        });
-      });
+            ];
+
+            if (status !== '1') {
+              // No Answer
+              data = data.map(reason => {
+                reason.disabled = reason.id !== 'take-notes';
+                return reason;
+              })
+            }
+            return data;
+          })
+        );
+      }
     }
 
     if (this.tinymce) {

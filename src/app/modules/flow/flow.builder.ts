@@ -28,7 +28,9 @@ export class FlowBuilder {
     const objection = FlowFactory.objection();
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
-    const notes = FlowFactory.takeNotes();
+    const notes = FlowFactory.takeNotes((flowService: FlowService ) => {
+      flowService.addVariables({ call_outcomeId: 12 /* Left Note / Took Message */ });
+    });
     const callDirection = FlowFactory.callDirectionDecision();
     const searchLeads = FlowFactory.searchLeads();
     const outboundType = FlowFactory.outboundType();
@@ -117,7 +119,7 @@ export class FlowBuilder {
         }
           break;
         // no event selected
-        case !vars.event: {
+        case vars.call_reason === 'set-appointment' || !vars.event: {
           step.state.options.state = 'set';
           flowService.addVariables({ call_outcomeId: 2 /* Set Appointment */ });
         }
@@ -332,7 +334,7 @@ export class FlowBuilder {
     );
 
     const takeNotesCondition = FlowFactory.condition(
-      '[Outbound] Take Notes',
+      'Take Notes',
       (vars: any) => (vars['call_reason'] === 'take-notes'),
       {},
       notes.id

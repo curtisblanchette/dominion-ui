@@ -1,4 +1,4 @@
-<div *ngIf="data" [ngClass]="data.template">
+<div *ngIf="data.template" [ngClass]="data.template">
 
   <ng-container [ngSwitch]="data.template">
     <ng-template [ngSwitchCase]="'call-direction'">
@@ -93,7 +93,7 @@
       <form [formGroup]="form" *ngIf="form" style="display:flex; justify-content: start; gap: 2em;">
         <div *ngIf="(vars$ | async).call_direction === 'outbound'">
           <h3>Call Status</h3>
-          <fiiz-radio [items]="callStatuses$" formControlName="call_status" name="call_status" #callStatusRadio></fiiz-radio>
+          <fiiz-radio [items]="callStatuses$" formControlName="call_statusId" name="call_statusId" #callStatusRadio></fiiz-radio>
         </div>
         <div>
           <h3>Reason for Call</h3>
@@ -109,13 +109,13 @@
       </header>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="callStatuses$" formControlName="call_status" name="call_status"></fiiz-radio>
+        <fiiz-radio [items]="callStatuses$" formControlName="call_statusId" name="call_statusId"></fiiz-radio>
 
         <ng-container [ngSwitch]="form.controls['answered'].value">
           <ng-template ngSwitchCase="yes">
             <p class="dictation">Hello how are you, am I speaking with contact_name? This is username from company_name. I called you because the consultant (name of the consultant assigned to the office they were scheduled to) saw that he could not reach your appointment you had set and we wanted to know if everything was okay?</p>
             <p class="dictation">The best way to help you is, if we set you up with another appointment and I will be more than glad to set another one.</p>
-            <fiiz-radio [items]="callOutcomes$" formControlName="call_outcome" name="call_outcome"></fiiz-radio>
+            <fiiz-radio [items]="callOutcomes$" formControlName="call_outcomeId" name="call_outcomeId"></fiiz-radio>
           </ng-template>
           <ng-template ngSwitchCase="no"></ng-template>
           <ng-template ngSwitchCase="leaving-message"></ng-template>

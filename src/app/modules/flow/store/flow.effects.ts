@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, mergeMap, switchMap, withLatestFrom } from 'rxjs';
+import { EMPTY, map, mergeMap, switchMap, withLatestFrom } from 'rxjs';
 import * as flowActions from './flow.actions';
 import * as fromFlow from './flow.reducer';
 import { FlowRouter, FlowStep } from '../index';
@@ -72,17 +72,15 @@ export class FlowEffects {
     this.actions$.pipe(
       ofType(flowActions.NextStepAction),
       withLatestFrom(this.store.select(fromFlow.selectSteps)),
-      mergeMap(async (action: any) => {
+      map(async (action: any) => {
         let [payload, steps]: [any, FlowStep[]] = action;
         let step = steps.find((step: FlowStep) => step.id === payload.stepId);
 
         if(step) {
-          return flowActions.UpdateFlowAction({currentStepId: step.id});
+          this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: step.id}));
         }
-
-        return EMPTY;
       })
-    ), { dispatch: true }
+    ), { dispatch: false }
   );
 
 }

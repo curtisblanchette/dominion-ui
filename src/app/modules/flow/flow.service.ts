@@ -92,6 +92,7 @@ export class FlowService {
           prev['lead'] === curr['lead'] &&
           prev['deal'] === curr['deal'] &&
           prev['call_typeId'] === curr['call_typeId'] &&
+          prev['call_statusId'] === curr['call_statusId'] &&
           prev['call_outcomeId'] === curr['call_outcomeId']
         );
       }),
@@ -102,6 +103,7 @@ export class FlowService {
           payload['dealId'] = vars.deal;
           payload['typeId'] = vars.call_typeId;
           payload['outcomeId'] = vars.call_outcomeId;
+          payload['statusId'] = vars.call_statusId;
 
           this.updateCall(payload)
         }
