@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromReports from '../store/reports.reducer';
@@ -6,6 +6,8 @@ import * as reportsActions from '../store/reports.actions';
 import { ViewStatus } from '../store/reports.reducer';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import dayjs from 'dayjs';
+
+import { FiizDatePickerComponent } from '../../../common/components/ui/forms';
 
 export interface IStatCard { label: string | undefined; value: number, order: number }
 
@@ -15,7 +17,7 @@ export interface IStatCard { label: string | undefined; value: number, order: nu
   templateUrl: './team.component.html',
   styleUrls: ['../../../../assets/css/_container.scss','./team.component.scss']
 })
-export class TeamReportComponent implements OnInit {
+export class TeamReportComponent implements OnInit, AfterViewInit {
 
   public today: any = dayjs().format();
   public status$: Observable<ViewStatus>;
@@ -74,6 +76,8 @@ export class TeamReportComponent implements OnInit {
     consultations: []
   };
 
+  @ViewChild('dateRange', {static : false}) dateRangePicker: FiizDatePickerComponent;
+
 
   constructor(
     private store: Store<fromReports.ReportsState>,
@@ -101,6 +105,18 @@ export class TeamReportComponent implements OnInit {
      */
     this.currentSort = [this.sortIndex, 'rank'];
     this.activePath = 'inbound';
+  }
+
+  ngAfterViewInit(): void {
+    this.store.select(fromReports.selectDateRange).subscribe((data:any) => {
+      if( data ){
+        const dates = Object.values(data).map( (val:any) => {
+          return new Date(val);
+        });
+        
+        this.dateRangePicker.writeValue(dates);
+      }
+    });
   }
 
   public async ngOnInit() {
@@ -220,6 +236,15 @@ export class TeamReportComponent implements OnInit {
       return 'Answers/Calls';
     }
     return this.labelMap.get(key);
+  }
+
+  public getChangedValues( value:any ){
+    const range = {
+      startDate : dayjs(value.from).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      endDate : dayjs(value.to).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+    };
+    this.store.dispatch(reportsActions.SetDateRangeAction(range));
+    this.store.dispatch(reportsActions.FetchTeam());
   }
 
   get agentOrConsultant() {
