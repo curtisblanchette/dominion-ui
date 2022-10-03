@@ -64,7 +64,7 @@ export class AppEffects {
         this.toastr.error(err.error.name || '', err.error.message);
         return throwError(err);
       })
-    ), { dispatch: false }
+    )
   );
 
   getLookups$ = createEffect((): any =>

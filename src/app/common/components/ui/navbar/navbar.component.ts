@@ -23,6 +23,7 @@ export class NavbarComponent implements AfterViewInit {
 
   public loggedUser!: User | null;
   public actingFor$: Observable<any>;
+  public workspace$: Observable<any>;
   public _isMobile: boolean;
 
   public menu: NavbarItem[] = [
@@ -102,6 +103,8 @@ export class NavbarComponent implements AfterViewInit {
     private renderer: Renderer2
   ) {
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
+    this.workspace$ = this.store.select(fromApp.selectWorkspace);
+
     this.store.select(fromLogin.selectUser).pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
         this.loggedUser = user as User;
