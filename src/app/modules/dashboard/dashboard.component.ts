@@ -6,6 +6,8 @@ import * as loginActions from '../../modules/login/store/login.actions';
 import { buttons } from './dashboard.buttons';
 import { bigButtons } from './dashboard.animations';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { FlowService } from '../flow/flow.service';
+import { Router } from '@angular/router';
 
 export interface IDashboardButton {
   title: string;
@@ -32,7 +34,9 @@ export class DashboardComponent implements OnInit {
   public supportMenu: IDashboardButton[] = buttons.support.get();
 
   constructor(
-    private store: Store<fromLogin.LoginState>
+    private store: Store<fromLogin.LoginState>,
+    private flowService : FlowService,
+    private router: Router
   ) {
     this.store.select(fromLogin.selectUser).pipe(untilDestroyed(this)).subscribe((user: any) => {
       if (user) {
@@ -45,8 +49,14 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public doSomething(value: any) {
-    console.log(`Emitted value received: ${value}`);
+  public async emitValue(value: any) {
+    if( ['inbound', 'outbound'].includes(value) ){
+      if( this.flowService.builder.process.firstStepId == this.flowService.builder.process.currentStepId ){
+        await this.flowService.start(true);
+        this.flowService.updateStep(this.flowService.builder.process.firstStepId, {variables: {call_direction : value}, valid: true});
+      }
+    }
+    this.router.navigate(['flow']);
   }
 
   public logout() {
