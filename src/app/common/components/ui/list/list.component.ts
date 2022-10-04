@@ -204,6 +204,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public onKeyUp($event: any, record: any) {
     $event.preventDefault();
     if(this.selected?.id === $event.target.attributes['data-id']) {
+      this._dynamicCollectionService.setFilter({});
       return;
     }
     if([13, 32].includes($event.keyCode) || ['Space', 'Enter'].includes($event.code)) {
