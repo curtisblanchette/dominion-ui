@@ -212,13 +212,6 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'recap' : {
-        const newLead = await this.flowService.getVariable('new_lead');
-        if (newLead) {
-          const leadInfo: any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
-          const leadForm = this.dataComponents.find(item => item.module === ModuleTypes.LEAD);
-          leadForm?.form.patchValue({email: leadInfo['email'], phone: leadInfo['phone']});
-        }
-
         this.module = ModuleTypes.LEAD;
         this.flowService.updateStep(this.flowStepId, {
           state: {
@@ -226,6 +219,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
             data: {lead: {email: null, phone: null}}
           }
         });
+
+        const newLead = await this.flowService.getVariable('new_lead');
+        if (newLead) {
+          const leadInfo: any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
+          const leadForm = this.dataComponents.find(item => item.module === ModuleTypes.LEAD);
+          leadForm?.form.patchValue({email: leadInfo['email'], phone: leadInfo['phone']});
+        }
+
         const apptStep = this.flowService.builder.process.steps.find(step => step.component === 'FlowAppointmentComponent');
         this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);
       }
