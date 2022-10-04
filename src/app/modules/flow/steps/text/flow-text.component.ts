@@ -219,15 +219,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
           leadForm?.form.patchValue({email: leadInfo['email'], phone: leadInfo['phone']});
         }
 
-        this.module = ModuleTypes.LEAD;
-        this.flowService.updateStep(this.flowStepId, {
-          state: {
-            module: ModuleTypes.LEAD,
-            data: {lead: {email: null, phone: null}}
-          }
-        });
         const apptStep = this.flowService.builder.process.steps.find(step => step.component === 'FlowAppointmentComponent');
         this.eventPayload$ = of(apptStep?.state.data[ModuleTypes.EVENT]);
+
       }
         break;
 
