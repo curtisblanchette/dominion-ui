@@ -209,7 +209,15 @@ export class FlowBot {
 
                 const moduleIds: any = this.botActions
                   .filter(action => action.operation === 'add') // anything newly created
-                  .map(action => ({ [action.module]: action.response?.id })) // return a key/value pair
+                  .map(action => {
+                        let data:{ [key:string] : any } = {};
+                        data[action.module] = action.response.id;
+                        if( ModuleTypes.EVENT == action.module ){
+                          data['deal'] = action.response.dealId;
+                        }
+                        return data;
+                      }
+                    ) // return a key/value pair
                   .reduce((a, b) => ({...a, ...b})); // merge results into singular object
 
                 flowService.updateCall({
