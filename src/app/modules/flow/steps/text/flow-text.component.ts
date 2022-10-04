@@ -136,7 +136,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngOnInit() {
-
+    if (this.data) {
+      this.initStep();
+    }
   }
 
   public async ngAfterViewInit() {
@@ -152,9 +154,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       });
     });
 
-    if (this.data) {
-      this.initStep();
-    }
+
   }
 
   public async initStep() {
@@ -255,11 +255,11 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         delay(100)
       ).subscribe(() => {
         this.form.valueChanges.pipe(
-          distinctUntilChanged((prev, curr) => {
-            return (
-              prev['call_statusId'] === curr['call_statusId']
-            );
-          }),
+          // distinctUntilChanged((prev, curr) => {
+          //   return (
+          //     prev['call_statusId'] === curr['call_statusId']
+          //   );
+          // }),
           tap((value) => {
             // DO NOT REMOVE: keeps form validity up to date
             this.flowService.updateStep(this.flowStepId, {variables: value, valid: this.form.valid});
@@ -267,7 +267,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         ).subscribe();
       });
 
-      if(this.variables['call_direction'] === 'outbound') {
+      if(this.variables['call_direction'] === 'outbound' && this.form.controls['call_statusId']) {
         this.callReasons$ = this.form.controls['call_statusId'].valueChanges.pipe(
           distinctUntilChanged(),
           map(status => {
