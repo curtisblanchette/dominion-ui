@@ -151,9 +151,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       }),
 
     );
-
     this.columns = getColumns(this.module);
-
+    if(this.options.columns?.length) {
+      this.columns = this.columns.filter(col => this.options.columns.includes(col.id));
+    }
     // set the default sort column from ./searchable-columns.ts
     this.sortableColumns = getSearchableColumns(this.module);
     this.sortColumn = this.sortableColumns[0].id as string;
