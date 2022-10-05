@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.17.29 (2022-10-05)
+
+
+### Bug Fixes
+
+* **II-2783:** flowbot allow dealId in calls ([ee8906c](https://github.com/4iiz/dominion-ui/commit/ee8906c6de87889346ffc245325545aa5696d5f5))
+
 ### 1.17.28 (2022-10-05)
 
 ### 1.17.27 (2022-10-05)
