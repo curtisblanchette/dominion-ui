@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.17.28 (2022-10-05)
+
+### 1.17.27 (2022-10-05)
+
+### 1.17.26 (2022-10-04)
+
+### 1.17.25 (2022-10-04)
+
+### 1.17.24 (2022-10-04)
+
+### 1.17.23 (2022-10-04)
+
+### 1.17.22 (2022-10-04)
+
+### 1.17.21 (2022-10-04)
+
+### 1.17.20 (2022-10-04)
+
+
+### Bug Fixes
+
+* **develop:** fix step update not firing ([29725f6](https://github.com/4iiz/dominion-ui/commit/29725f6d50125879b8bffeb53763b39eca4e846e))
+
 ### 1.17.19 (2022-10-03)
 
 

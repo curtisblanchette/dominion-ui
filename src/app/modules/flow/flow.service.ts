@@ -72,15 +72,15 @@ export class FlowService {
     this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
 
     // Use the collection services to clear all entity caches after the call ends.
-    this.leadService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD) as EntityCollectionService<DominionType>;
-    this.contactService = this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT) as EntityCollectionService<DominionType>;
-    this.dealService = this.entityCollectionServiceFactory.create(ModuleTypes.DEAL) as EntityCollectionService<DominionType>;
-    this.eventService = this.entityCollectionServiceFactory.create(ModuleTypes.EVENT) as EntityCollectionService<DominionType>;
-    this.addressService = this.entityCollectionServiceFactory.create(ModuleTypes.ADDRESS) as EntityCollectionService<DominionType>;
-    this.campaignService = this.entityCollectionServiceFactory.create(ModuleTypes.CAMPAIGN) as EntityCollectionService<DominionType>;
-    this.leadSourceService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD_SOURCE) as EntityCollectionService<DominionType>;
-    this.officeService = this.entityCollectionServiceFactory.create(ModuleTypes.OFFICE) as EntityCollectionService<DominionType>;
-    this.callsService = this.entityCollectionServiceFactory.create(ModuleTypes.CALL) as EntityCollectionService<DominionType>;
+    this.leadService       = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD);
+    this.contactService    = this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT);
+    this.dealService       = this.entityCollectionServiceFactory.create(ModuleTypes.DEAL);
+    this.eventService      = this.entityCollectionServiceFactory.create(ModuleTypes.EVENT);
+    this.addressService    = this.entityCollectionServiceFactory.create(ModuleTypes.ADDRESS);
+    this.campaignService   = this.entityCollectionServiceFactory.create(ModuleTypes.CAMPAIGN);
+    this.leadSourceService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD_SOURCE);
+    this.officeService     = this.entityCollectionServiceFactory.create(ModuleTypes.OFFICE);
+    this.callsService      = this.entityCollectionServiceFactory.create(ModuleTypes.CALL);
 
     this.user$ = this.store.select(fromLogin.selectUser);
     this.callTypes$ = this.store.select(fromApp.selectLookupByKey('callType'));
@@ -167,6 +167,14 @@ export class FlowService {
     // the entityCollectionService filters will be mutated during Data interactions
     // the filters must be reset to the Flow selections upon resuming.
     const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
+
+    for(const module of Object.values(ModuleTypes)) {
+      // there should be no filter or cached records
+      if(vars[`new_${module}`]) {
+        (<any>this[`${module}Service`]).clearCache();
+        (<any>this[`${module}Service`]).setFilter({});
+      }
+    }
 
     if (vars['lead']) {
       this.leadService.setFilter({id: vars['lead']});

@@ -33,17 +33,18 @@ export class FlowBotAction extends FlowBaseModel{
 
   async execute(): Promise<any | void> {
     this.status = FlowBotActionStatus.PENDING;
-    return this.service[this.operation](this.payload).toPromise().then(res => {
+    // @ts-ignore
+    return this.service[this.operation](this.payload, false).toPromise().then((res: any) => {
       delete this.errorMessage;
       this.response = res;
       this.status = FlowBotActionStatus.SUCCESS;
       this.message = `${this.getModuleName(this.module)} ${this.operation === 'add' ? 'Created' : 'Updated'}.`;
-      
+
       // set the entityCollection filter to target this record going forward
       this.service.setFilter({id: this.response?.id});
 
       return res;
-    }).catch(e => {
+    }).catch((e: any) => {
       delete this.response;
       this.errorMessage = e.message;
       this.status = FlowBotActionStatus.FAILURE;

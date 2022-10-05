@@ -1,8 +1,8 @@
 <div class="flex_main_wrapper">
-<header>
-  <h3 style="text-align: center;">{{data.title}}</h3>
-  <p>{{data.body}}</p>
-</header>
+  <header>
+    <h3 style="text-align: center;">{{data.title}}</h3>
+    <p>{{data.body}}</p>
+  </header>
 
     <p class="dictation" *ngIf="data.dictation">{{data.dictation | dictate}}</p>
     <fiiz-list #cmp [data]="data" [module]="module" [options]="options" (values)="emitValues($event)" (onCreate)="create($event)"></fiiz-list>

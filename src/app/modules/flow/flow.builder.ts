@@ -43,6 +43,11 @@ export class FlowBuilder {
       step.state.options['query'] = {
         dealId: vars.deal
       };
+
+      if(vars['call_reason'] === 'reschedule-appointment' || vars['call_reason'] === 'cancel-appointment') {
+        step.state.options['query']['savedSearch'] = 'opp-events';
+      }
+
       return step;
     });
 

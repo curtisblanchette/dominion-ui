@@ -29,23 +29,24 @@
     height: 100%;
     width: 100%;
 
-    &__header{
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-content: center;
-        justify-content: center;
-        align-items: flex-start;
-        padding-bottom: 3%;
+    &__header {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-content: center;
+      justify-content: center;
+      align-items: flex-start;
+      padding-bottom: 3%;
 
-        &__title {
-            font-size: 23px;
-            font-weight: 500;
-            padding : 0 0 23px 0;
-        }
-        &__sub_title {
-            line-height: 28px;
-        }
+      &__title {
+        font-size: 23px;
+        font-weight: 500;
+        padding: 0 0 23px 0;
+      }
+
+      &__sub_title {
+        line-height: 28px;
+      }
     }
   }
 
@@ -58,13 +59,19 @@
       content: '"'
     }
   }
+
   header {
     margin-bottom: 2em;
+
+    h3 {
+      text-transform: capitalize;
+    }
 
     h3, p {
       margin: 0;
       text-align: center;
     }
+
     p {
       color: $text1-shade25;
     }

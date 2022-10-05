@@ -151,9 +151,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       }),
 
     );
-
     this.columns = getColumns(this.module);
-
+    if(this.options.columns?.length) {
+      this.columns = this.columns.filter(col => this.options.columns.includes(col.id));
+    }
     // set the default sort column from ./searchable-columns.ts
     this.sortableColumns = getSearchableColumns(this.module);
     this.sortColumn = this.sortableColumns[0].id as string;
@@ -204,6 +205,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public onKeyUp($event: any, record: any) {
     $event.preventDefault();
     if(this.selected?.id === $event.target.attributes['data-id']) {
+      this._dynamicCollectionService.setFilter({});
       return;
     }
     if([13, 32].includes($event.keyCode) || ['Space', 'Enter'].includes($event.code)) {

@@ -19,7 +19,6 @@
 
         <div style="align-self: start; line-height: 44px;">Or</div>
         <div style="flex: 1;">
-<!--          <div class="flex_main_wrapper__slots__day" style="text-align: center;">Select a Custom Date</div>-->
           <fiiz-date-picker
             #datePicker
             id="date_range"
@@ -33,19 +32,17 @@
         </div>
       </div>
 
-
-
     </ng-container>
   </ng-template>
   <!-- End -->
 
-
   <!-- Cancel Appointment Template -->
   <ng-template [ngSwitchCase]="'cancel'">
-    <div class="flex_main_wrapper__header__title">
-      Cancel Appointment
-    </div>
-    <h3>Continue to cancel the below appointment</h3>
+    <header>
+      <h3>Cancel Appointment</h3>
+      <p>Continue to cancel the below appointment</p>
+    </header>
+
     <div *ngFor="let data of apptData | async">
       <div> {{data.label}} : {{data.value}}</div>
     </div>

@@ -459,7 +459,12 @@ export class FlowFactory {
           editable: false,
           loadInitial: true,
           perPage: 25,
-          columns: [],
+          columns: [
+            'title',
+            'startTime',
+            'endTime',
+            'createdAt'
+          ],
           query: {},
           controls: {
             perPage: false,

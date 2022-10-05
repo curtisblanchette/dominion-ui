@@ -1,4 +1,4 @@
-import {  Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, Renderer2 } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, Renderer2, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from "@angular/router";
 import { FlowService } from "../../flow.service";
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -18,7 +18,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   templateUrl: './objection.component.html',
   styleUrls: ['../_base.scss', './objection.component.scss']
 })
-export class FlowObjectionComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy {
+export class FlowObjectionComponent extends EntityCollectionComponentBase implements OnInit, OnDestroy, OnChanges {
 
   @Input('data') public override data: any;
   @Input('module') public override module: any;
@@ -40,7 +40,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
         'How long have you been in the United States?'
       ],
       secret : [
-        'As mentioned above, our goal is to focus on following what\'s next in your script. However, it is important to highlight how crucial it is to agree with anybody that the consultation fee is too expensive. What if they don\'t say a word or simply give you small talk letting you know in other words that it\'s too expensive? At that point, skip step 1 and go straight to step 2 and 3. Always finish with a question.'
+        'It is crucial to agree with them that the consultation fee is too expensive! <br><br> If they don\'t respond, or simply respond in their own words of how it\'s too expensive... Skip agreeing with them and go straight to step 2, 3, etc. Always finish with a question.'
       ]
     },
     2 : { // Uncertain it will work.
@@ -87,8 +87,8 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
     },
     6: { // office too far away
       steps : [
-        'We have offices all across US!',
-        'If we can\'t find something closer to you, I caould try to refer you to one of our partner firms within your area.',
+        'We have offices all across the US!',
+        'If we can\'t find something closer to you, I could try to refer you to one of our partner firms within your area.',
       ],
       secret: ''
     },
@@ -170,6 +170,10 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
       }
     });
 
+  }
+
+  public ngOnChanges(simpleChanges: SimpleChanges) {
+    console.log(simpleChanges);
   }
 
   async ngOnInit() {

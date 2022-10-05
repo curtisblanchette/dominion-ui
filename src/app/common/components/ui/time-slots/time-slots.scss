@@ -2,28 +2,26 @@
 
 :host {
   display: flex;
-  gap: 1em;
+  gap: 2em;
   width: 100%;
   margin-top: 1em;
-}
 
-.flex_main_wrapper {
-
-
-  &__slots {
+  .slots {
     display: grid;
     align-content: center;
     justify-content: center;
     align-items: flex-start;
-    border: 1px solid rgba(255,255,255,.05);
+    border: 1px solid rgba(255, 255, 255, .05);
     border-radius: var(--input-border-radius);
+    flex: 1;
+    @include elevate(2);
 
     &__day {
       text-align: center;
       font-weight: 500;
       color: var(--green1);
       padding: .5em;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     &__times {
@@ -39,36 +37,27 @@
 
       button {
         width: 100%;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         color: var(--text1);
         background: none;
         line-height: 44px;
         cursor: pointer;
 
         &:hover {
-          background: rgba(0,0,0,0.2);
+          background: rgba(255, 255, 255, 0.06);
         }
+
         &.active {
           color: #0a1930;
           background: var(--primary-tint1);
         }
+
         &:last-child {
           border: none;
         }
       }
     }
 
-  }
-
-  &__form {
-    width: 100%;
-
-    fiiz-data {
-
-      fiiz-textarea {
-        grid-column-end: span 3;
-      }
-    }
   }
 
 }

@@ -275,18 +275,15 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
         this.datePicker.value = dayjs(startTime).format('YYYY-MM-DD');
         this.customSlotDate = this.datePicker.value;
         this.customSlot = true;
-      }      
+      }
     }
   }
 
   public getValue( $event:any, type:string ){
-    if( type == 'custom' ){
-      this.customSlot = true;
-      this.regularSlot = false;
-    } else {
-      this.customSlot = false;
-      this.regularSlot = true;
-    }
+    const isCustom: boolean = type === 'custom'
+    this.customSlot = isCustom;
+    this.regularSlot = !isCustom;
+
     this.form.patchValue({startTime : $event['startTime'], endTime : $event['endTime']});
     this.flowService.updateStep(this.flowStepId, { valid: this.form.valid }, 'merge');
   }
