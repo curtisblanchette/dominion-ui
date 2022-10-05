@@ -212,6 +212,14 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'recap' : {
+        this.module = ModuleTypes.LEAD;
+        this.flowService.updateStep(this.flowStepId, {
+          state: {
+            module: ModuleTypes.LEAD,
+            data: {lead: {email: null, phone: null}}
+          }
+        });
+
         const newLead = await this.flowService.getVariable('new_lead');
         if (newLead) {
           const leadInfo: any = this.flowService.aggregateDataForModule(ModuleTypes.LEAD);
