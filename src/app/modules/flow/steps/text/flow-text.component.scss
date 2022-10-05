@@ -6,17 +6,37 @@
   @include hideScrollBars();
 
   .appointment-time {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    align-items: center;
-    justify-content: space-around;
-    padding: 2em;
-    i {
-      font-size: 3em;
+    width: fit-content;
+    position: relative;
+    margin: 32px auto;
+
+    label {
+      color: rgba(198, 203, 237, 0.62);
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-bottom: 0;
+      position: absolute;
+      top: -15px;
+      left: 2em;
+      line-height: 1em;
     }
-    div {
-      font-size: 18px;
+
+    &__body {
+      display: flex;
+      gap: 1em;
+      align-items: center;
+      justify-content: start;
+      line-height: 44px;
+      background: var(--slate-shade2);
+      border-radius: var(--input-border-radius);
+      padding: var(--input-padding-tb) var(--input-padding-lr) ;
+
+      i {
+        font-size: 1.5em;
+      }
+
+      div {
+      }
     }
   }
 
@@ -27,7 +47,9 @@
   }
 
   .relationship-building {
-    fiiz-data form { justify-content: space-around; }
+    fiiz-data form {
+      justify-content: space-around;
+    }
   }
 
   .bot-message {

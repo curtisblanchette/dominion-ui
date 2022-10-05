@@ -1,10 +1,14 @@
 <header>
   <h3>{{data.title}}</h3>
-  <p *ngIf="resolution[selectedId]?.secret">{{resolution[selectedId].secret}}</p>
+  <p *ngIf="resolution[selectedId]?.secret" [innerHTML]="resolution[selectedId].secret | safe: 'html'"></p>
 </header>
 <div *ngIf="data">
   <ng-container *ngIf="resolution[selectedId]">
-    <p class="dictation" *ngFor="let step of resolution[selectedId].steps">{{step}}</p>
+    <h4>Take the Following Steps:</h4>
+    <ol>
+      <li class="dictation" *ngFor="let step of resolution[selectedId].steps">{{step}}</li>
+    </ol>
+
   </ng-container>
   <div class="controls">
     <fiiz-button primary (click)="goToSetAppointment()">Set Appointment</fiiz-button>

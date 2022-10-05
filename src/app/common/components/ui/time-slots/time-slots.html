@@ -1,9 +1,9 @@
 <ng-container *ngFor="let day of days">
-  <div class="flex_main_wrapper__slots" *ngFor="let item of day | keyvalue">
-    <div class="flex_main_wrapper__slots__day">
+  <div class="slots" *ngFor="let item of day | keyvalue">
+    <div class="slots__day">
       {{ item.key | fiizDate : 'ddd, MMMM Do'}}
     </div>
-    <div class="flex_main_wrapper__slots__times">
+    <div class="slots__times">
       <button *ngFor="let time of item.value;" [id]="time.format()"
               [ngClass]="{'active': selectedDate === time.format()}"
               class="btn_time_slots"

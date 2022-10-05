@@ -2,18 +2,6 @@
 
 :host {
   @include hideScrollBars();
-}
-// TODO why do we have this, replace it or kill it sometime in the future
-.flex_main_wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-
-  h3 {
-
-  }
-
   fiiz-list {
     margin-top: 2em;
   }

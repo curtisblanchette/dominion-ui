@@ -22,7 +22,6 @@ import { DropdownItem } from '../../../common/components/ui/forms';
  * This provides FlowBot with all the necessary information to traverse the flow from cache.
  */
 
-
 @Injectable({providedIn: 'root'})
 export class FlowBot {
 
@@ -210,7 +209,7 @@ export class FlowBot {
                 const moduleIds: any = this.botActions
                   .filter(action => action.operation === 'add') // anything newly created
                   .map(action => ({ [action.module]: action.response?.id })) // return a key/value pair
-                  .reduce((a, b) => ({...a, ...b})); // merge results into singular object
+                  .reduce((a, b) => ({...a, ...b}), {}); // merge results into singular object
 
                 flowService.updateCall({
                   leadId: moduleIds.lead,
