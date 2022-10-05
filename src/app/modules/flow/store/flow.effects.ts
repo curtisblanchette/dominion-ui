@@ -53,20 +53,15 @@ export class FlowEffects {
           const router = routers.find(router => router.id === payload.stepId);
         } else {
 
-          if (typeof step?.beforeRoutingTrigger === 'string') {
-            const fn = eval((<FlowStep>step).beforeRoutingTrigger);
-            await fn({}, frozenVars, step);
-          }
-
           if(step?.id) {
-            return flowActions.UpdateFlowAction({ currentStepId: step.id });
+            this.store.dispatch(flowActions.UpdateFlowAction({ currentStepId: step.id }));
           }
 
         }
         return EMPTY;
-      }
-    )
-  ));
+      })
+    ), { dispatch: false }
+  );
 
   onNextStep$ = createEffect((): any =>
     this.actions$.pipe(
