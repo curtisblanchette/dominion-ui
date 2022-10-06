@@ -232,7 +232,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         } else {
           if(this.values) {
             data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}?id=${this.values.join(',')}`).pipe(map((res:any) => res.rows)));
-            this.title = data.map((x: any) => x.name).join(', ');
+            this.title = data.filter((c: any) => this.values.includes(c.id)).map((x: any) => x.name).join(', ');
           }
         }
       }
@@ -279,7 +279,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     } else {
 
       this.onTouched();
-      this.title = (await firstValueFrom(this.items$.pipe(map(items => items.find(x => x.id === value)))))?.label;
+      this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
       if (this.apiData?.length) {
         if(this.multiselect) {
           this.getValues.emit(this.values);
