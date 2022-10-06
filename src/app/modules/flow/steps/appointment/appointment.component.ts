@@ -13,7 +13,7 @@ import * as fromFlow from '../../store/flow.reducer';
 import { Observable, of, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { DropdownItem, FiizDatePickerComponent, RadioItem } from '../../../../common/components/ui/forms';
+import { FiizDatePickerComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { HttpClient } from '@angular/common/http';
 import { FormInvalidError, OnSave } from '../../classes';
 import { models } from '../../../../common/models';
@@ -21,6 +21,7 @@ import { ISetting } from '../../../../store/app.effects';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
+import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 
 
 @UntilDestroy()

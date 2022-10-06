@@ -146,7 +146,8 @@ export const reducer = createReducer(
     steps: [],
     routers: [],
     links: [],
-    currentStepId: undefined
+    currentStepId: undefined,
+    notes: undefined
   })),
 
   on(flowActions.addNotesAction, (state, {notes}) => ({

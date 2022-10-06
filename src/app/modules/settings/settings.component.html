@@ -59,11 +59,33 @@
                            formControlName="unit">
             </fiiz-dropdown>
           </div>
-          <div class="form-controls">
-            <fiiz-button [loading]="loading$" [disabled]="(loading$|async) || form.invalid" primary class="full-width"
-                         type="submit">Save Settings
-            </fiiz-button>
-          </div>
+      </div>
+    </section>
+
+    <section class="settings-module">
+      <div class="settings-module__header">
+        <h3>Flow Settings</h3>
+      </div>
+      <div class="settings-module__form">
+
+        <div class="settings-module__div" *ngFor="let setting of flow$ | async " [formGroupName]="setting.id">
+          <fiiz-dropdown type="search"
+                         style="flex: 2;"
+                         [multiselect]="true"
+                         [label]="getSettingDisplayName(setting.name)"
+                         class="has-label"
+                         [title]="'Select a Lead Source.'"
+                         [id]="setting.name"
+                         [module]="moduleTypes.LEAD_SOURCE"
+                         [options]="{remote: false}"
+                         formControlName="value">
+          </fiiz-dropdown>
+        </div>
+        <div class="form-controls">
+          <fiiz-button [loading]="loading$" [disabled]="(loading$|async) || form.invalid" primary class="full-width"
+                       type="submit">Save Settings
+          </fiiz-button>
+        </div>
 
       </div>
     </section>

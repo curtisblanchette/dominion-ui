@@ -4,7 +4,7 @@
   <ng-container [ngSwitch]="dropdownType">
 
     <fiiz-button class="full-width dropdown" size="{{size ? size : null}}" tabindex="-1">
-      {{title}}
+      {{getDisplayValue()}}
       <i class="fa-solid fa-caret-down" style="margin-left: auto;"></i>
     </fiiz-button>
 
@@ -35,16 +35,16 @@
           tabindex="-1"
           class="dropdown"
           (click)="setTheValue(null)"
-          style="border-radius: 0;"
-        >
+          style="border-radius: 0;">
         --None--
         </fiiz-button>
         <fiiz-button tabindex="-1"
-           *ngFor="let item of items$ | async; let i = index; let last = last;"
-           [ngClass]="{'selected': currentIndex === i, 'dropdown' : true, 'divider':!last}"
-           (click)="setTheValue(item)"
+           *ngFor="let item of items$ | async; let i = index; let last = last; "
+           [ngClass]="{'selected': multiselect ? isPreselected(item.id) : currentIndex === i, 'dropdown': true, 'divider':!last}"
+           (click)="setTheValue(item.id)"
            [disabled]="disabled"
            style="border-radius: 0;">
+          <i class="fa" [ngClass]="{'fa-square': multiselect, 'fa-square-check': multiselect && isPreselected(item.id) }" *ngIf="multiselect"></i>
           {{ item.label }}
         </fiiz-button>
 

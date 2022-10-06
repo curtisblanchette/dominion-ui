@@ -2,7 +2,7 @@ import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/
 import * as appActions from './app.actions';
 import { ISetting } from './app.effects';
 import { getInitialStateByKey } from './util';
-import { DropdownItem } from '../common/components/ui/forms';
+import { DropdownItem } from '../common/components/interfaces/dropdownitem.interface';
 
 export interface AppState {
   settings: any;

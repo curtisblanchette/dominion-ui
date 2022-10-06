@@ -5,6 +5,7 @@ import { SafePipe } from '../../common/pipes/safe.pipe';
 import { TypeOfPipe } from '../../common/pipes/typeof.pipe';
 import { FormsModule } from '@angular/forms';
 import { FiizDatePipe } from '../../common/pipes/date.pipe';
+import { IncludesPipe } from '../../common/pipes/includes.pipe';
 
 @NgModule({
   imports: [
@@ -15,14 +16,16 @@ import { FiizDatePipe } from '../../common/pipes/date.pipe';
     LoadingComponent,
     SafePipe,
     TypeOfPipe,
-    FiizDatePipe
+    FiizDatePipe,
+    IncludesPipe
   ],
   exports: [
     CommonModule,
     LoadingComponent,
     SafePipe,
     TypeOfPipe,
-    FiizDatePipe
+    FiizDatePipe,
+    IncludesPipe
   ]
 })
 export class SharedModule {

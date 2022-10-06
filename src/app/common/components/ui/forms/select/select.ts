@@ -5,12 +5,7 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { EntityCollectionComponentBase } from '../../../../../data/entity-collection.component.base';
 import { Router } from '@angular/router';
 import { ModuleTypes } from '../../../../../data/entity-metadata';
-
-export interface DropdownItem {
-  id: number | string | boolean;
-  label: string;
-  disabled?: boolean;
-}
+import { DropdownItem } from '../../../interfaces/dropdownitem.interface';
 
 @Component({
   selector: 'fiiz-select',

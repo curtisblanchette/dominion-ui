@@ -12,12 +12,12 @@ import * as fromApp from '../../../../store/app.reducer'
 import { Store } from '@ngrx/store';
 import * as dataActions from '../../../../modules/data/store/data.actions';
 import * as fromData from '../../../../modules/data/store/data.reducer';
-import { DropdownItem } from '../forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import { ModuleTypes } from '../../../../data/entity-metadata';
 import { getColumns } from './display-columns';
 import { getSearchableColumns } from './searchable-columns';
+import { DropdownItem } from '../../interfaces/dropdownitem.interface';
 
 export interface IListOptions {
   searchable: boolean;

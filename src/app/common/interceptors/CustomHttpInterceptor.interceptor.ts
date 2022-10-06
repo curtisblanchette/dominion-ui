@@ -9,7 +9,7 @@ import * as fromSystem from '../../modules/system/store/system.reducer';
 import * as fromLogin from '../../modules/login/store/login.reducer';
 import * as loginActions from '../../modules/login/store/login.actions';
 import { filter } from 'rxjs/operators';
-import { DropdownItem } from '../components/ui/forms';
+import { DropdownItem } from '../components/interfaces/dropdownitem.interface';
 
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {

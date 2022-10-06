@@ -1,5 +1,5 @@
-import { DropdownItem } from '../forms';
 import { ModuleTypes } from '../../../../data/entity-metadata';
+import { DropdownItem } from '../../interfaces/dropdownitem.interface';
 
 /**
  * NOTE:

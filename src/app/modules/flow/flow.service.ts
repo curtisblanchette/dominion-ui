@@ -378,7 +378,7 @@ export class FlowService {
         this.cmpReference.instance.values.subscribe((value: any) => {
 
         });
-
+        // FlowListComponents need to animate forward "onCreate"
         this.cmpReference.instance.onCreate.subscribe((val: boolean) => {
           const _injector = this.flowHost.viewContainerRef.parentInjector;
           const _parent: FlowComponent = _injector.get<FlowComponent>(FlowComponent);
