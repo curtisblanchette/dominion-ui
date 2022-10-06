@@ -131,6 +131,9 @@
     }
 
     fiiz-button.selected {
+      i {
+        color: var(--primary);
+      }
       button {
         background-color: #525252;
       }

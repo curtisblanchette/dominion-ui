@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { DropdownItem } from '../../../common/components/ui/forms';
+import { DropdownItem } from '../../../common/components/interfaces/dropdownitem.interface';
 
 export const ActionTypes = {
   GET_WORKSPACES: '[System] Get Workspaces',

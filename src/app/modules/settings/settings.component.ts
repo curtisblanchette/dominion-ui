@@ -1,15 +1,16 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import * as fromApp from '../../store/app.reducer';
 import * as appActions from '../../store/app.actions';
 
 import { ISetting } from '../../store/app.effects';
-import { DropdownItem } from '../../common/components/ui/forms';
 import { FiizDropDownComponent } from '../../common/components/ui/dropdown';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
+import { ModuleTypes } from '../../data/entity-metadata';
 
 @UntilDestroy()
 @Component({
@@ -22,10 +23,12 @@ export class SettingsComponent implements OnInit {
   public settings$: Observable<ISetting[]>;
   public general$: Observable<any[]>;
   public appointment$: Observable<any[]>;
+  public flow$: Observable<any[]>;
   public moduleTypes: any;
   public loading$: Observable<boolean>;
   public form: FormGroup;
   public timezones$: Observable<DropdownItem[]>;
+  public leadSources$: Observable<DropdownItem[]>
   public units$: Observable<DropdownItem[]> = of([
     {
       id: 'seconds',
@@ -57,9 +60,14 @@ export class SettingsComponent implements OnInit {
     // selecting grouped settings to build html controls
     this.general$ = this.store.select(fromApp.selectSettingGroup('general'));
     this.appointment$ = this.store.select(fromApp.selectSettingGroup('appointment'));
-
+    this.flow$ = this.store.select(fromApp.selectSettingGroup('flow'));
+    this.leadSources$ = this.store.select(fromApp.selectLookupByKey('leadSource')).pipe(map(sources => {
+      console.log(sources);
+      return sources;
+    }));
     this.loading$ = this.store.select(fromApp.loading);
     this.timezones$ = this.store.select(fromApp.selectTimezones);
+    this.moduleTypes = ModuleTypes;
   }
 
   ngOnInit(): void {

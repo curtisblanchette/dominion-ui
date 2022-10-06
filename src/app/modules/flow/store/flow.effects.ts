@@ -36,46 +36,36 @@ export class FlowEffects {
     ), { dispatch: false }
   );
 
-  onPrevStep$ = createEffect((): any =>
+  onNavigate$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(flowActions.PrevStepAction),
-      withLatestFrom(
-        this.store.select(fromFlow.selectAllVariables),
-        this.store.select(fromFlow.selectSteps),
-        this.store.select(fromFlow.selectRouters)
-      ),
+      ofType(flowActions.PrevStepAction, flowActions.NextStepAction),
+      withLatestFrom(this.store.select(fromFlow.selectSteps)),
       mergeMap(async (action: any) => {
-        let [payload, variables, steps, routers]: [any, any, FlowStep[], FlowRouter[]] = action;
-        let frozenVars = Object.freeze({...variables});
+        let [payload, steps]: [any, FlowStep[]] = action;
         let step = steps.find(step => step.id === payload.stepId);
 
-        if(!step) {
-          const router = routers.find(router => router.id === payload.stepId);
-        } else {
-
-          if(step?.id) {
-            this.store.dispatch(flowActions.UpdateFlowAction({ currentStepId: step.id }));
-          }
-
-        }
-        return EMPTY;
-      })
-    ), { dispatch: false }
-  );
-
-  onNextStep$ = createEffect((): any =>
-    this.actions$.pipe(
-      ofType(flowActions.NextStepAction),
-      withLatestFrom(this.store.select(fromFlow.selectSteps)),
-      map(async (action: any) => {
-        let [payload, steps]: [any, FlowStep[]] = action;
-        let step = steps.find((step: FlowStep) => step.id === payload.stepId);
-
-        if(step) {
-          this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: step.id}));
+        if(step?.id) {
+          this.store.dispatch(flowActions.UpdateFlowAction({ currentStepId: step.id }));
         }
       })
     ), { dispatch: false }
   );
+
+  // TODO this is exactly the same as onPrevStep now!?!
+  // probably don't even need it, just listen to both nextStepAction and PrevStepAction
+  // onNextStep$ = createEffect((): any =>
+  //   this.actions$.pipe(
+  //     ofType(flowActions.NextStepAction),
+  //     withLatestFrom(this.store.select(fromFlow.selectSteps)),
+  //     map(async (action: any) => {
+  //       let [payload, steps]: [any, FlowStep[]] = action;
+  //       let step = steps.find((step: FlowStep) => step.id === payload.stepId);
+  //
+  //       if(step) {
+  //         this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: step.id}));
+  //       }
+  //     })
+  //   ), { dispatch: false }
+  // );
 
 }

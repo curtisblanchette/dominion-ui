@@ -5,10 +5,10 @@ import * as fromSystem from './store/system.reducer';
 import * as loginActions from '../login/store/login.actions';
 import * as fromApp from '../../store/app.reducer';
 import * as systemActions from './store/system.actions';
-import { DropdownItem } from '../../common/components/ui/forms';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LookupTypes } from '../../data/entity-metadata';
+import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
 
 @UntilDestroy()
 @Component({

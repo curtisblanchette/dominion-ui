@@ -1,8 +1,8 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 
 import * as systemActions from './system.actions';
-import { DropdownItem } from '../../../common/components/ui/forms';
 import { getInitialStateByKey } from '../../../store/util';
+import { DropdownItem } from '../../../common/components/interfaces/dropdownitem.interface';
 
 
 export interface SystemState {

@@ -56,7 +56,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public searchForm: FormGroup;
   public showDropDowns: boolean = false;
-  public value: string | number | boolean | undefined;
+  public value: string | number | boolean | string[] | number[] | undefined;
+  public values: string[] = [];
   public perPage: number = 10;
   public page: number = 1;
   public totalRecords: number;
@@ -74,6 +75,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @Input('default') default: string | number | boolean | undefined;
   @Input('mandatory') mandatory: boolean | undefined = true;
   @Input('disabled') disabled: boolean = false;
+  @Input('multiselect') multiselect: boolean = false;
 
   @Input('type') dropdownType!: 'anchor' | 'button' | 'search';
   @Input('module') moduleName: ModuleTypes | LookupTypes;
@@ -91,18 +93,20 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   clickInside($event: any) {
     $event.stopPropagation();
     if ($event.target.id !== 'search-dropdown') { // This is to enter input search params
-      if (!this.disabled) {
+      if (!this.disabled || !this.multiselect) {
         this.toggle();
       }
     }
   }
 
-  @HostListener('document:click')
-  clickOutside() {
+  @HostListener('document:click', ['$event'])
+  clickOutside($event: any) {
+    $event.stopPropagation();
+    console.log($event.target.id);
     this.showDropDowns = false;
   }
 
-  onChange: (value: string | number | boolean | DropdownItem | undefined | null) => void = () => {};
+  onChange: (value: string | number | boolean | any[] | DropdownItem | DropdownItem[] | undefined | null) => void = () => {};
   onTouched: Function = () => {};
 
   @ViewChild('dropdownList') dropdownList: ElementRef;
@@ -127,7 +131,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public ngOnInit() {
-    // this.getData();
+
   }
 
   public async ngAfterViewInit() {
@@ -179,7 +183,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         data = data.map((item: any) => {
           return {
             label: item.name ? item.name : item.fullName,
-            id: item.id
+            id: item.id,
+            checked: false
           } as DropdownItem;
         });
       }
@@ -206,40 +211,49 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         this.items$ = of(data);
       }
     }
-
-
   }
 
   async writeValue(value: any) {
-    if (value && this.moduleName) {
+    if (this.multiselect) {
+      this.values = [...value]; // incoming value is data-bound to ngrx, must clone it or else it's not extensible.
+    } else {
       this.value = value;
+    }
+
+    if (value && this.moduleName) {
       let data: any;
 
       // have to get the initial value from api or store
       // because we haven't loaded any data into the component yet
-
       if (this.isEntity()) {
-        data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`));
-        this.title = data.name ? data.name : data.fullName;
+        if(!this.multiselect) {
+          data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`));
+          this.title = data.name ? data.name : data.fullName;
+        } else {
+          if(this.values) {
+            data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}?id=${this.values.join(',')}`).pipe(map((res:any) => res.rows)));
+            this.title = data.filter((c: any) => this.values.includes(c.id)).map((x: any) => x.name).join(', ');
+          }
+        }
       }
-
       if (this.isLookup()) {
         data = await firstValueFrom(this.store.select(fromApp.selectLookupByKeyAndId(this.moduleName, value)));
         if (data?.label) {
           this.title = data?.label ? data?.label : data?.id;
         }
       }
-
-      // if (data) {
-      //   this.apiData = data;
-      // }
-      //
     } else {
-      this.value = value;
       // the data source was statically provided (aka. its not a module or lookup)
       const data = [...(await firstValueFrom(this.items$))].find((item: any) => item.id === value) as any;
       this.title = data?.label ? data?.label : this.title;
     }
+  }
+
+  public isPreselected(value: any): boolean {
+    if(!this.values) {
+      return false;
+    }
+    return !!this.values.find(x => x === value);
   }
 
   registerOnChange(fn: any) {
@@ -250,32 +264,51 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onTouched = fn;
   }
 
-  public setTheValue(value: DropdownItem | null) {
+  public async setTheValue(value: string) {
+    // check if it's already selected
+    const found = this.values?.find((id) => id === value);
+    if(found) {
+      this.values = this.values.filter((id) => id !== value);
+    } else {
+      this.values.push(value);
+    }
+
     if( !value ){
       this.onChange(value);
       this.title = '--None--';
     } else {
-      this.onChange(value.id);
+
       this.onTouched();
-      this.title = value.label;
-      if( this.apiData?.length ){
-        const find = this.apiData.find( c => c.id === value.id );
-        this.getValues.emit(find);
+      this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
+      if (this.apiData?.length) {
+        if(this.multiselect) {
+          this.getValues.emit(this.values);
+          return this.onChange(this.values);
+        } else {
+          const find = this.apiData.find( c => c.id === value );
+          this.getValues.emit(find);
+        }
       }
+      this.onChange(value);
     }
   }
 
+  // only used for dropdown anchors/links
   public emitTheValue(value: any) {
     this.onClick.emit(value as string);
   }
 
   public toggle() {
-    this.showDropDowns = !this.showDropDowns;
+    this.showDropDowns = this.multiselect ? true : !this.showDropDowns;
 
     if (this.showDropDowns) {
       this.getData();
     }
 
+  }
+
+  public getDisplayValue() {
+    return this.title;
   }
 
   public async navigationByKeys(event: KeyboardEvent) {
