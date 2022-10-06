@@ -48,7 +48,7 @@
     align-content: center;
     justify-content: center;
     align-items: flex-start;
-    padding-left: 10px;
+    padding: 10px;
     line-height: 22px;
 
     &__title {
@@ -59,6 +59,7 @@
       font-weight: 400;
       font-size: 14px;
       font-style: normal;
+      text-align: left;
     }
   }
 
