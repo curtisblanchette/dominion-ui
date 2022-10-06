@@ -35,7 +35,7 @@ export class FlowBot {
     private appStore: Store<fromApp.AppState>,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
-    console.log('id', this.id);
+    
     this.services = {
       leadService: this.entityCollectionServiceFactory.create(ModuleTypes.LEAD),
       contactService: this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT),
@@ -91,8 +91,6 @@ export class FlowBot {
                   payload = {...payload, ...additions};
                 }
 
-                console.log(additions);
-
                 let filter: any = await firstValueFrom(service.filter$);
                 if (filter['id']) {
                   payload['id'] = filter['id'];
@@ -130,6 +128,7 @@ export class FlowBot {
                 break;
               case 'FlowAppointmentComponent': {
                 const outcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('callOutcome')));
+                const eventOutcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('eventOutcome')));
                 const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('callStatus')));
 
                 // TODO outcomeId should be a retrieved value;
@@ -146,7 +145,7 @@ export class FlowBot {
                       operation: 'update',
                       payload: {
                         id: step.state.data.toCancel,
-                        outcomeId: outcomes.find((o: DropdownItem) => o.label === 'Cancel Appointment')
+                        outcomeId: eventOutcomes.find(o => o.label === 'Canceled')?.id
                       },
                       message: 'Cancel Event',
                     });
@@ -166,7 +165,7 @@ export class FlowBot {
                         operation: 'update',
                         payload: {
                           id: step.state.data.toReschedule,
-                          outcomeId: 1
+                          outcomeId: eventOutcomes.find(o => o.label === 'Rescheduled')?.id
                         }
                       });
                       this.botActions.push(action);
@@ -252,6 +251,9 @@ export class FlowBot {
       this.services[key].clearCache();
       this.services[key].setFilter({});
     }
+
+    // Reset the Flow once all action are completed
+    this.store.dispatch(flowActions.ResetAction());
 
 
   }
