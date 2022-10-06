@@ -80,12 +80,13 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     this.store.select(fromFlow.selectCurrentStepId).pipe(
       withLatestFrom(
         this.store.select(fromFlow.selectTimeline),
-        this.store.select(fromFlow.selectAllVariables)
+        this.store.select(fromFlow.selectAllVariables),
+        this.store.select(fromApp.selectSettingGroup('flow'))
       ),
       distinctUntilChanged(),
       untilDestroyed(this)
     ).subscribe(async (res) => {
-      let [stepId, steps, vars]: any = res;
+      let [stepId, steps, vars, settings]: any = res;
 
       if(steps) {
         const step = steps.find((step: FlowStep) => step.id === stepId);
@@ -96,7 +97,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
           let code = prevStep?.afterRoutingTrigger;
           code = code.concat(sourceMapComment);
           const afterFn = eval(code);
-          const updates = await afterFn(this.flowService, vars, {...cloneDeep(prevStep)});
+          const updates = await afterFn(this.flowService, vars, {...cloneDeep(prevStep)}, settings);
           if(updates) {
             this.store.dispatch(flowActions.UpdateStepAction({ id: prevStep.id, changes: updates, strategy: 'merge' } ));
           }
@@ -107,7 +108,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
           let code = step.beforeRoutingTrigger;
           code = code.concat(sourceMapComment);
           const beforeFn = eval(code);
-          const updates = await beforeFn(this.flowService, vars, {...cloneDeep(step)});
+          const updates = await beforeFn(this.flowService, vars, {...cloneDeep(step)}, settings);
           if (updates) {
             this.store.dispatch(flowActions.UpdateStepAction({id: stepId, changes: updates, strategy: 'merge'}));
           }

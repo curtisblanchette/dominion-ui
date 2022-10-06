@@ -1,4 +1,4 @@
-import { FlowProcess } from './classes/flow.process';
+import { FlowProcess } from './classes';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
@@ -7,6 +7,7 @@ import { FlowFactory } from './flow.factory';
 import {  lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
 import { ModuleTypes } from '../../data/entity-metadata';
+import { ISetting } from '../../store/app.effects';
 
 @Injectable({providedIn: 'root'})
 export class FlowBuilder {
@@ -256,7 +257,17 @@ export class FlowBuilder {
     });
     const toOppFollowUp = FlowFactory.link(oppFollowUpList.id, oppFollowUp.id);
 
-    const webLeadsList = FlowFactory.webLeadsList();
+    const webLeadsList = FlowFactory.webLeadsList((flowService:FlowService, vars: any, step: any, settings: ISetting[]) => {
+
+      // we need to get the setting and modify the list query.
+      // getting it in the trigger ensures that it's always the latest value.
+      const sourceSetting = settings.find(s => s.name === 'web_leads_sources');
+      if(sourceSetting?.value) {
+        step.state.options.query['leadSourceId'] = sourceSetting.value.join(',');
+      }
+
+      return step;
+    });
 
     const outboundWebLeads = FlowFactory.condition(
       'Web Leads',
