@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.18.2 (2022-10-06)
+
+
+### Bug Fixes
+
+* **dropdown:** set the source values for web leads from settings ([da72432](https://github.com/4iiz/dominion-ui/commit/da7243211d854d111e1d033ec8f1e92281ff8f45))
+
 ### 1.18.1 (2022-10-06)
 
 ## 1.18.0 (2022-10-06)
