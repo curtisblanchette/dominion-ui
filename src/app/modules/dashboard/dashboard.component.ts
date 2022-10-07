@@ -53,10 +53,9 @@ export class DashboardComponent implements OnInit {
     if( ['inbound', 'outbound'].includes(value) ){
       if( this.flowService.builder.process.firstStepId == this.flowService.builder.process.currentStepId ){
         await this.flowService.start(true);
-        this.flowService.updateStep(this.flowService.builder.process.firstStepId, {variables: {call_direction : value}, valid: true});
+        this.router.navigate(['flow'], {state : {data : {'call_direction' : value}}}  );
       }
     }
-    this.router.navigate(['flow']);
   }
 
   public logout() {

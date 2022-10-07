@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
 import { firstValueFrom, lastValueFrom, Observable, take, withLatestFrom } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FiizDropDownComponent, IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';
@@ -55,7 +55,8 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     private store: Store<fromFlow.FlowState>,
     public flowService: FlowService,
     private router: Router,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private activatedRoute: ActivatedRoute
   ) {
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
     this.objections$ = this.store.select(fromApp.selectCallObjections)
@@ -64,6 +65,12 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
     this.notes$ = this.store.select(fromFlow.selectVariableByKey('notes'));
     this.timeline$ = this.store.select(fromFlow.selectTimeline);
+    if( this.router.getCurrentNavigation()?.extras?.state ){
+      const state = this.router.getCurrentNavigation()?.extras?.state;
+      if( state ){
+        this.flowService.updateStep(this.flowService.builder.process.currentStepId, {variables: state['data'], valid: true});
+      }
+    }
   }
 
   public async ngAfterContentInit() {
