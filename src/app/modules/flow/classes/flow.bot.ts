@@ -252,9 +252,6 @@ export class FlowBot {
       this.services[key].setFilter({});
     }
 
-    // Reset the Flow once all action are completed
-    this.store.dispatch(flowActions.ResetAction());
-
 
   }
 
