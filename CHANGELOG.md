@@ -9,9 +9,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 * **II-2822:** Fixed inbound issues ([#61](https://github.com/4iiz/dominion-ui/issues/61)) ([49c62fc](https://github.com/4iiz/dominion-ui/commit/49c62fc9b26f7e97b3ee068dc0664963348ad4a0))
 
-### 1.18.4 (2022-10-07)
-
-### 1.18.3 (2022-10-07)
 
 ### 1.18.2 (2022-10-06)
 
@@ -22,7 +19,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 1.18.1 (2022-10-06)
 
-## 1.18.0 (2022-10-06)
+### 1.18.0 (2022-10-06)
 
 
 ### Features
