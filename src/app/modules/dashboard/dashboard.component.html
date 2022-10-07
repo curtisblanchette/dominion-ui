@@ -8,14 +8,17 @@
 
   <h3>Quickstart</h3>
   <section class="dashboard__quickstart" *ngIf="quickStartMenu.length" @bigButtons>
-    <fiiz-big-button *ngFor="let item of quickStartMenu"
-                     tabindex="-1"
-                     [icon]="item?.icon"
-                     [title]="item?.title"
-                     [subtitle]="item?.subtitle"
-                     [theme]="item?.theme"
-                     [routerLink]="item?.route"
-                     (onClick)="doSomething($event)"></fiiz-big-button>
+    <fiiz-big-button 
+      *ngFor="let item of quickStartMenu"
+      tabindex="-1"
+      [icon]="item?.icon"
+      [title]="item?.title"
+      [subtitle]="item?.subtitle"
+      [theme]="item?.theme"
+      [routerLink]="item?.route"
+      (onClick)="emitValue(item?.emitter)"
+    >
+    </fiiz-big-button>
   </section>
 
   <h3>Education and Support</h3>
