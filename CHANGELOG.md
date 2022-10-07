@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.18.6 (2022-10-07)
+
+
+### Bug Fixes
+
+* **develop:** finish call button ([3c18e87](https://github.com/4iiz/dominion-ui/commit/3c18e878e22336b0f235dae3c24ad379bbe9c4b7))
+
 ### 1.18.5 (2022-10-07)
 
 
