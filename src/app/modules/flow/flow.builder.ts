@@ -190,7 +190,7 @@ export class FlowBuilder {
     );
     const toSearchLeadsRouter = FlowFactory.link(searchLeads.id, searchLeadsRouter.id);
 
-    // INBOUND - NEW/EXISTING DEAL
+    // NEW/EXISTING DEAL
     const existingDeal_yes = FlowFactory.condition(
       'Deal Selected Condition',
       (vars: any) => (!vars['new_deal']),
@@ -207,7 +207,7 @@ export class FlowBuilder {
       createOpp.id
     );
 
-    const inboundDealRouter = FlowFactory.router(
+    const dealRouter = FlowFactory.router(
       'Deal Decision',
       '',
       [
@@ -215,14 +215,14 @@ export class FlowBuilder {
         existingLead_no
       ]
     );
-    const inboundDealLink = FlowFactory.link(oppList.id, inboundDealRouter.id);
+    const inboundDealLink = FlowFactory.link(oppList.id, dealRouter.id);
 
     // INBOUND - NEW LEAD SELECT CAMPAIGN
     const setLeadSourceLink = FlowFactory.link(createLead.id, setLeadSource.id);
 
     // INBOUND - NEW LEAD RELATIONSHIP BUILDING
     const toRelationshipBuilding2 = FlowFactory.link(createOpp.id, relationshipBuilding.id);
-    const inboundSetApptLink = FlowFactory.link(powerQuestion.id, setAppointment.id);
+    const toSetApptLink = FlowFactory.link(powerQuestion.id, setAppointment.id);
 
     // INBOUND - REASON FOR CALL
     const toReasonForCall = FlowFactory.link(editOpp.id, reasonForCall.id);
@@ -326,7 +326,10 @@ export class FlowBuilder {
         existingContact_no
       ]
     );
+
+    // existingOpportunity_yes = FlowFactory.conddition
     const toSearchContactsRouter = FlowFactory.link(searchContacts.id, searchContactsRouter.id);
+    const toSearchContactsRouterWebLeads = FlowFactory.link(webLeadsList.id, searchContactsRouter.id);
 
     const cancelCondition = FlowFactory.condition(
       'Cancel Appointment',
@@ -425,13 +428,13 @@ export class FlowBuilder {
       .addStep(editOpp)
       .addStep(createOpp)
       .addRouter(searchLeadsRouter)
-      .addRouter(inboundDealRouter)
+      .addRouter(dealRouter)
       .addLink(toSearchLeadsRouter)
       .addLink(toOppList)
       .addLink(setLeadSourceLink)
       .addLink(toRelationshipBuilding1)
       .addLink(toRelationshipBuilding2)
-      .addLink(inboundSetApptLink)
+      .addLink(toSetApptLink)
       .addLink(toPowerQuestion)
       .addLink(toInboundEnd)
       .addLink(inboundDealLink);
@@ -447,13 +450,13 @@ export class FlowBuilder {
       .addStep(searchContacts)
       .addRouter(searchContactsRouter)
       .addLink(toSearchContactsRouter)
+      .addLink(toSearchContactsRouterWebLeads)
 
       .addRouter(outboundTypeRouter)
       .addRouter(outboundSetCancelRescheduleRouter)
       .addRouter(outboundEventRouter)
       .addLink(outboundTypeRouterLink)
-      // .addLink(outboundOpps_ReasonForCallLink)
-      // .addLink(outboundContactsOpps_ReasonForCallLink)
+
       .addLink(outboundSetCancelRescheduleLink)
       .addLink(outboundEventLink)
       .addLink(outboundEventRouterLink)
