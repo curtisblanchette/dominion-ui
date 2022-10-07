@@ -115,17 +115,28 @@
       </header>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="callStatuses$" formControlName="call_statusId" name="call_statusId"></fiiz-radio>
+        <fiiz-radio #callStatus [items]="callStatuses$" formControlName="call_statusId" name="call_statusId"></fiiz-radio>
 
-        <ng-container [ngSwitch]="form.controls['answered'].value">
-          <ng-template ngSwitchCase="yes">
-            <p class="dictation">Hello how are you, am I speaking with contact_name? This is username from company_name. I called you because the consultant (name of the consultant assigned to the office they were scheduled to) saw that he could not reach your appointment you had set and we wanted to know if everything was okay?</p>
-            <p class="dictation">The best way to help you is, if we set you up with another appointment and I will be more than glad to set another one.</p>
-            <fiiz-radio [items]="callOutcomes$" formControlName="call_outcomeId" name="call_outcomeId"></fiiz-radio>
-          </ng-template>
-          <ng-template ngSwitchCase="no"></ng-template>
-          <ng-template ngSwitchCase="leaving-message"></ng-template>
-          <ng-template [ngSwitchCase]="'bad-number' || 'wrong-number' || 'not-working'"></ng-template>
+        <!-- 1. Answered -->
+        <ng-container *ngIf="callStatus.value === '1'">
+          <p class="dictation">Hello how are you, am I speaking with contact_name? This is username from company_name. I called you because the consultant (name of the consultant assigned to the office they were scheduled to) saw that he could not reach your appointment you had set and we wanted to know if everything was okay?</p>
+          <p class="dictation">The best way to help you is, if we set you up with another appointment and I will be more than glad to set another one.</p>
+          <fiiz-radio [items]="callOutcomes$" formControlName="call_outcomeId" name="call_outcomeId"></fiiz-radio>
+        </ng-container>
+
+        <!-- 2. Bad Number -->
+        <!-- 3. Client Hung Up -->
+        <!-- 5. Number Disconnected -->
+        <!-- 6. Wrong Number -->
+        <ng-container *ngIf="callStatus.value === '2' ||
+          callStatus.value === '3' ||
+          callStatus.value === '5' ||
+          callStatus.value === '6'">
+        </ng-container>
+
+        <!-- 4. No Answer -->
+        <ng-container *ngIf="callStatus.value === '4'">
+
         </ng-container>
 
       </form>

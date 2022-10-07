@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { firstValueFrom, map, debounceTime, distinctUntilChanged, delay, mergeMap, tap } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged, delay, mergeMap, tap, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -187,9 +187,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'opp-follow-up': {
-        this.callOutcomes$ = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(map((res: any) => {
-          return of(CustomDataService.toDropdownItems(res));
-        }))) as any;
+        this.callOutcomes$ = this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(take(1), map((res:any) => CustomDataService.toDropdownItems(res)));
 
         form['call_statusId'] = new FormControl(this.variables['call_statusId'] || null, [Validators.required]);
         form['call_outcomeId'] = new FormControl(this.variables['call_outcomeId'] || null, [Validators.required]);

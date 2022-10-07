@@ -29,6 +29,9 @@
         ></fiiz-input>
       </form>
       <div class="fiiz-dropdown-button__content__wrapper">
+        <ng-template *ngIf="!(loadingSubject$ | async)">
+          <fiiz-loading type="ripple"></fiiz-loading>
+        </ng-template>
 
         <fiiz-button
           *ngIf="mandatory == false"
