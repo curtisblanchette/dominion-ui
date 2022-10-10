@@ -320,6 +320,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         leadForm?.form.markAsDirty();
         return leadForm?.save(true);
       }
+      case 'take-notes' : {
+        this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
+      }
     }
   }
 

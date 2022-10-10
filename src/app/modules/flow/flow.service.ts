@@ -64,7 +64,8 @@ export class FlowService {
     private dataServiceFactory: DefaultDataServiceFactory,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
     private http: HttpClient,
-    public builder: FlowBuilder
+    public builder: FlowBuilder,
+    private appStore: Store<fromApp.AppState>,
   ) {
     console.log('FlowService Id: ', this.id);
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -437,6 +438,11 @@ export class FlowService {
       }
     });
     return data;
+  }
+
+  public async getMappedData( label:string, lookup = 'callOutcomes' ){
+    const lookupValues = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey(lookup)));
+    return lookupValues.find( t => t.label === label )?.id;
   }
 
 }

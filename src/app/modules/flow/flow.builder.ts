@@ -2,6 +2,7 @@ import { FlowProcess } from './classes';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
+import * as fromApp from '../../store/app.reducer';
 import * as flowActions from './store/flow.actions';
 import { FlowFactory } from './flow.factory';
 import {  lastValueFrom, take } from 'rxjs';
@@ -10,11 +11,12 @@ import { ModuleTypes } from '../../data/entity-metadata';
 import { ISetting } from '../../store/app.effects';
 
 @Injectable({providedIn: 'root'})
-export class FlowBuilder {
+export class FlowBuilder {  
 
   constructor(
     private store: Store<fromFlow.FlowState>,
     public process: FlowProcess,
+    private appStore: Store<fromApp.AppState>,
   ) {
   }
 
@@ -29,15 +31,18 @@ export class FlowBuilder {
     const objection = FlowFactory.objection();
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
-    const notes = FlowFactory.takeNotes((flowService: FlowService ) => {
-      flowService.addVariables({ call_outcomeId: 12 /* Left Note / Took Message */ });
+    const notes = FlowFactory.takeNotes(async (flowService: FlowService ) => {
+      flowService.addVariables({ call_outcomeId: await flowService.getMappedData('Left Note/Took Message') });
     });
     const callDirection = FlowFactory.callDirectionDecision();
     const searchLeads = FlowFactory.searchLeads();
     const outboundType = FlowFactory.outboundType();
     const searchContacts = FlowFactory.searchContacts();
+    
     const createLead = FlowFactory.createLead((flowService: FlowService) => {
-      flowService.addVariables({ call_typeId: 9 /* Sales */ });
+      flowService.getMappedData('Sales', 'callType').then( id => {
+        flowService.addVariables({ call_typeId: id });
+      });
     });
 
     const appointmentList = FlowFactory.appointmentList((flowService: FlowService, vars: any, step: any) => {
@@ -87,7 +92,9 @@ export class FlowBuilder {
         leadId: vars.lead
       };
 
-      flowService.addVariables({ call_typeId: 4 /* Sales */ });
+      flowService.getMappedData('Sales', 'callType').then( id => {
+        flowService.addVariables({ call_typeId: id });
+      });
 
       return step;
     });
@@ -114,20 +121,29 @@ export class FlowBuilder {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
           step.state.data.resolveId = vars.event;
-          flowService.addVariables({ call_outcomeId: 4 /* Cancel Appointment */ });
+          flowService.getMappedData('Canceled').then( id => {
+            flowService.addVariables({ call_outcomeId: id });
+          });
+          // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Canceled')?.id });
 
         }
           break;
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
           step.state.data.resolveId = vars.event;
-          flowService.addVariables({ call_outcomeId: 3 /* Reschedule Appointment */ });
+          flowService.getMappedData('Rescheduled').then( id => {
+            flowService.addVariables({ call_outcomeId: id });
+          });
+          // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Rescheduled')?.id });
         }
           break;
         // no event selected
         case vars.call_reason === 'set-appointment' || !vars.event: {
           step.state.options.state = 'set';
-          flowService.addVariables({ call_outcomeId: 2 /* Set Appointment */ });
+          flowService.getMappedData('Set Appointment').then( id => {
+            flowService.addVariables({ call_outcomeId: id });
+          });
+          // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Set Appointment')?.id });
         }
           break;
         default: {
@@ -304,7 +320,9 @@ export class FlowBuilder {
     // OUTBOUND - EXISTING CONTACT / NEW LEAD
     const existingContact_yes = FlowFactory.condition(
       'Contact Selected',
-      (vars: any) => (!vars['new_lead']),
+      (vars: any) => {
+        return !vars['new_lead'];
+      },
       {
         contactId: ModuleTypes.CONTACT
       },
@@ -313,7 +331,9 @@ export class FlowBuilder {
 
     const existingContact_no = FlowFactory.condition(
       'Create Lead',
-      (vars: any) => (vars['new_lead']),
+      (vars: any) => {
+        return vars['new_lead'];
+      },
       {},
       createLead.id
     );
