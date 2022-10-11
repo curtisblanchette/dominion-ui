@@ -106,6 +106,12 @@ export class FlowService {
           payload['outcomeId'] = vars.call_outcomeId;
           payload['statusId'] = vars.call_statusId;
 
+          Object.entries(payload).map((elm) => {
+            if( elm[1] == undefined ){
+              delete payload[elm[0]];
+            }
+          });
+
           this.updateCall(payload)
         }
       })

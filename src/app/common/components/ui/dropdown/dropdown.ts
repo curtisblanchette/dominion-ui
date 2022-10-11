@@ -102,7 +102,6 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @HostListener('document:click', ['$event'])
   clickOutside($event: any) {
     $event.stopPropagation();
-    console.log($event.target.id);
     this.showDropDowns = false;
   }
 

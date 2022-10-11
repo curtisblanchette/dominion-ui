@@ -50,8 +50,6 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
   }
 
   public emitValues(value: { module: string, record: any }): void {
-    // this.values.next(value);
-
     let variables: any = {};
 
     if (value.record) {
