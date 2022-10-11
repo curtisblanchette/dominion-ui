@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.18.7 (2022-10-11)
+
+
+### Bug Fixes
+
+* **outbound-issues:** Fixed outbound issues ([a6b3515](https://github.com/4iiz/dominion-ui/commit/a6b3515922b7e5e5ca720ed8a01451545c2216a5))
+
 ### 1.18.6 (2022-10-07)
 
 
