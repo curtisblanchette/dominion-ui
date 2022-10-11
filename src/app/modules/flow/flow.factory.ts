@@ -78,7 +78,7 @@ export class FlowFactory {
           perPage: 25,
           columns: [],
           query: {
-            limit: 3
+            limit: 7
           },
           controls: {
             perPage: false,

@@ -104,7 +104,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       {id: 'take-notes', label: 'Take Notes', disabled: false}
     ]);
 
-    this.callStatuses$ = this.store.select(fromApp.selectLookupByKey('callStatus')).pipe(map(statuses => {
+    this.callStatuses$ = this.store.select(fromApp.selectLookupsByKey('callStatus')).pipe(map(statuses => {
       return statuses.map(status => {
         return {...status, disabled: false };
       });
@@ -319,6 +319,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.Lead);
         leadForm?.form.markAsDirty();
         return leadForm?.save(true);
+      }
+      case 'take-notes' : {
+        this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
       }
     }
   }
