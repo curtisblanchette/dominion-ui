@@ -61,7 +61,7 @@ export class SettingsComponent implements OnInit {
     this.general$ = this.store.select(fromApp.selectSettingGroup('general'));
     this.appointment$ = this.store.select(fromApp.selectSettingGroup('appointment'));
     this.flow$ = this.store.select(fromApp.selectSettingGroup('flow'));
-    this.leadSources$ = this.store.select(fromApp.selectLookupByKey('leadSource')).pipe(map(sources => {
+    this.leadSources$ = this.store.select(fromApp.selectLookupsByKey('leadSource')).pipe(map(sources => {
       console.log(sources);
       return sources;
     }));

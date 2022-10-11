@@ -104,7 +104,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       {id: 'take-notes', label: 'Take Notes', disabled: false}
     ]);
 
-    this.callStatuses$ = this.store.select(fromApp.selectLookupByKey('callStatus')).pipe(map(statuses => {
+    this.callStatuses$ = this.store.select(fromApp.selectLookupsByKey('callStatus')).pipe(map(statuses => {
       return statuses.map(status => {
         return {...status, disabled: false };
       });

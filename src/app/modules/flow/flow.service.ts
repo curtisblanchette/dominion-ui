@@ -11,7 +11,7 @@ import { FlowComponent } from './flow.component';
 import { CustomDataService } from '../../data/custom.dataservice';
 import { DominionType } from '../../common/models';
 import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
-import { ModuleTypes } from '../../data/entity-metadata';
+import { LookupTypes, ModuleTypes } from '../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ICallNote } from '@4iiz/corev2';
@@ -84,7 +84,7 @@ export class FlowService {
     this.callsService      = this.entityCollectionServiceFactory.create(ModuleTypes.CALL);
 
     this.user$ = this.store.select(fromLogin.selectUser);
-    this.callTypes$ = this.store.select(fromApp.selectLookupByKey('callType'));
+    this.callTypes$ = this.store.select(fromApp.selectLookupsByKey('callType'));
 
     // update the Call IMMEDIATELY after specific variables are set.
     this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId', 'call_statusId', 'call_outcomeId'])).pipe(
@@ -106,8 +106,9 @@ export class FlowService {
           payload['outcomeId'] = vars.call_outcomeId;
           payload['statusId'] = vars.call_statusId;
 
+          // removing anything undefined from the payload
           Object.entries(payload).map((elm) => {
-            if( elm[1] == undefined ){
+            if (elm[1] == undefined) {
               delete payload[elm[0]];
             }
           });
@@ -446,9 +447,8 @@ export class FlowService {
     return data;
   }
 
-  public async getMappedData( label:string, lookup = 'callOutcomes' ){
-    const lookupValues = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey(lookup)));
-    return lookupValues.find( t => t.label === label )?.id;
+  public getLookupByLabel(lookup: LookupTypes, label:string): Promise<DropdownItem | undefined> {
+    return firstValueFrom(this.appStore.select(fromApp.selectLookupByLabel(lookup, label)));
   }
 
 }

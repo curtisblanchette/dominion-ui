@@ -35,7 +35,7 @@ export class FlowBot {
     private appStore: Store<fromApp.AppState>,
     private entityCollectionServiceFactory: EntityCollectionServiceFactory
   ) {
-    
+
     this.services = {
       leadService: this.entityCollectionServiceFactory.create(ModuleTypes.LEAD),
       contactService: this.entityCollectionServiceFactory.create(ModuleTypes.CONTACT),
@@ -127,9 +127,9 @@ export class FlowBot {
               }
                 break;
               case 'FlowAppointmentComponent': {
-                const outcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('callOutcome')));
-                const eventOutcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('eventOutcome')));
-                const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupByKey('callStatus')));
+                const outcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callOutcome')));
+                const eventOutcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('eventOutcome')));
+                const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callStatus')));
 
                 // TODO outcomeId should be a retrieved value;
                 let callOutcomeId = outcomes.find(o => o.label === 'Cancelled Appointment')?.id;

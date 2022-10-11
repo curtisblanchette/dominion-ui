@@ -190,7 +190,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
       if (this.isLookup()) {
         data = await firstValueFrom(
-          this.store.select(fromApp.selectLookupByKey(this.moduleName))
+          this.store.select(fromApp.selectLookupsByKey(this.moduleName))
             .pipe(
               map((items: any) => {
                 return items.filter((item: DropdownItem) => item.label.toLowerCase().includes(value.toLowerCase()));

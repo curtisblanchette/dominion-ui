@@ -5,13 +5,13 @@ import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
 import * as flowActions from './store/flow.actions';
 import { FlowFactory } from './flow.factory';
-import {  lastValueFrom, take } from 'rxjs';
+import { lastValueFrom, take } from 'rxjs';
 import { FlowService } from './flow.service';
-import { ModuleTypes } from '../../data/entity-metadata';
+import { LookupTypes, ModuleTypes } from '../../data/entity-metadata';
 import { ISetting } from '../../store/app.effects';
 
 @Injectable({providedIn: 'root'})
-export class FlowBuilder {  
+export class FlowBuilder {
 
   constructor(
     private store: Store<fromFlow.FlowState>,
@@ -32,15 +32,15 @@ export class FlowBuilder {
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
     const notes = FlowFactory.takeNotes(async (flowService: FlowService ) => {
-      flowService.addVariables({ call_outcomeId: await flowService.getMappedData('Left Note/Took Message') });
+      flowService.addVariables({ call_outcomeId: await flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Left Note/Took Message') });
     });
     const callDirection = FlowFactory.callDirectionDecision();
     const searchLeads = FlowFactory.searchLeads();
     const outboundType = FlowFactory.outboundType();
     const searchContacts = FlowFactory.searchContacts();
-    
+
     const createLead = FlowFactory.createLead((flowService: FlowService) => {
-      flowService.getMappedData('Sales', 'callType').then( id => {
+      flowService.getLookupByLabel(LookupTypes.CALL_TYPE, 'Sales').then( id => {
         flowService.addVariables({ call_typeId: id });
       });
     });
@@ -92,7 +92,7 @@ export class FlowBuilder {
         leadId: vars.lead
       };
 
-      flowService.getMappedData('Sales', 'callType').then( id => {
+      flowService.getLookupByLabel(LookupTypes.CALL_TYPE, 'Sales').then( id => {
         flowService.addVariables({ call_typeId: id });
       });
 
@@ -121,7 +121,7 @@ export class FlowBuilder {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
           step.state.data.resolveId = vars.event;
-          flowService.getMappedData('Canceled').then( id => {
+          flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Canceled').then( id => {
             flowService.addVariables({ call_outcomeId: id });
           });
           // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Canceled')?.id });
@@ -131,7 +131,7 @@ export class FlowBuilder {
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
           step.state.data.resolveId = vars.event;
-          flowService.getMappedData('Rescheduled').then( id => {
+          flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Rescheduled').then( id => {
             flowService.addVariables({ call_outcomeId: id });
           });
           // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Rescheduled')?.id });
@@ -140,7 +140,7 @@ export class FlowBuilder {
         // no event selected
         case vars.call_reason === 'set-appointment' || !vars.event: {
           step.state.options.state = 'set';
-          flowService.getMappedData('Set Appointment').then( id => {
+          flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Set Appointment').then( id => {
             flowService.addVariables({ call_outcomeId: id });
           });
           // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Set Appointment')?.id });
