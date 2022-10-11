@@ -32,7 +32,9 @@ export class FlowBuilder {
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
     const notes = FlowFactory.takeNotes(async (flowService: FlowService ) => {
-      flowService.addVariables({ call_outcomeId: await flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Left Note/Took Message') });
+      flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(value => {
+        flowService.addVariables({ call_outcomeId:  value?.id });
+      });
     });
     const callDirection = FlowFactory.callDirectionDecision();
     const searchLeads = FlowFactory.searchLeads();
@@ -40,8 +42,8 @@ export class FlowBuilder {
     const searchContacts = FlowFactory.searchContacts();
 
     const createLead = FlowFactory.createLead((flowService: FlowService) => {
-      flowService.getLookupByLabel(LookupTypes.CALL_TYPE, 'Sales').then( id => {
-        flowService.addVariables({ call_typeId: id });
+      flowService.getLookupByLabel('callType', 'Sales').then( value => {
+        flowService.addVariables({ call_typeId: value?.id });
       });
     });
 
@@ -92,8 +94,8 @@ export class FlowBuilder {
         leadId: vars.lead
       };
 
-      flowService.getLookupByLabel(LookupTypes.CALL_TYPE, 'Sales').then( id => {
-        flowService.addVariables({ call_typeId: id });
+      flowService.getLookupByLabel('callType', 'Sales').then( value => {
+        flowService.addVariables({ call_typeId: value?.id });
       });
 
       return step;
@@ -121,8 +123,8 @@ export class FlowBuilder {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
           step.state.data.resolveId = vars.event;
-          flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Canceled').then( id => {
-            flowService.addVariables({ call_outcomeId: id });
+          flowService.getLookupByLabel('callOutcome', 'Canceled').then( value => {
+            flowService.addVariables({ call_outcomeId: value?.id });
           });
           // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Canceled')?.id });
 
@@ -131,8 +133,8 @@ export class FlowBuilder {
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
           step.state.data.resolveId = vars.event;
-          flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Rescheduled').then( id => {
-            flowService.addVariables({ call_outcomeId: id });
+          flowService.getLookupByLabel('callOutcome', 'Rescheduled').then( value => {
+            flowService.addVariables({ call_outcomeId: value?.id });
           });
           // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Rescheduled')?.id });
         }
@@ -140,8 +142,8 @@ export class FlowBuilder {
         // no event selected
         case vars.call_reason === 'set-appointment' || !vars.event: {
           step.state.options.state = 'set';
-          flowService.getLookupByLabel(LookupTypes.CALL_OUTCOME, 'Set Appointment').then( id => {
-            flowService.addVariables({ call_outcomeId: id });
+          flowService.getLookupByLabel('callOutcome', 'Set Appointment').then( value => {
+            flowService.addVariables({ call_outcomeId: value?.id });
           });
           // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Set Appointment')?.id });
         }
@@ -157,14 +159,14 @@ export class FlowBuilder {
     // INBOUND - CALL TYPE
     const callDirection_inbound = FlowFactory.condition(
       'Inbound Condition',
-      (vars: any) => (vars['call_direction'] === 'inbound'),
+      (vars: any) => vars['call_direction'] === 'inbound',
       {},
       searchLeads.id
     );
 
     const callDirection_outbound = FlowFactory.condition(
       'Outbound Condition',
-      (vars: any) => (vars['call_direction'] === 'outbound'),
+      (vars: any) => vars['call_direction'] === 'outbound',
       {},
       outboundType.id
     );
@@ -182,7 +184,7 @@ export class FlowBuilder {
     // INBOUND - NEW/EXISTING LEAD
     const editLeadCondition = FlowFactory.condition(
       'Lead Selected',
-      (vars: any) => (!vars['new_lead']),
+      (vars: any) => !vars['new_lead'],
       {
        leadId: ModuleTypes.LEAD
       },
@@ -191,7 +193,7 @@ export class FlowBuilder {
 
     const createLeadCondition = FlowFactory.condition(
       'Create Lead Condition',
-      (vars: any) => (vars['new_lead']),
+      (vars: any) => vars['new_lead'],
       {},
       createLead.id
     );
@@ -209,7 +211,7 @@ export class FlowBuilder {
     // NEW/EXISTING DEAL
     const existingDeal_yes = FlowFactory.condition(
       'Deal Selected Condition',
-      (vars: any) => (!vars['new_deal']),
+      (vars: any) => !vars['new_deal'],
       {
         leadId: ModuleTypes.DEAL
       },
@@ -218,7 +220,7 @@ export class FlowBuilder {
 
     const existingLead_no = FlowFactory.condition(
       'Create Deal Condition',
-      (vars: any) => (vars['new_deal']),
+      (vars: any) => vars['new_deal'],
       {},
       createOpp.id
     );
@@ -246,14 +248,14 @@ export class FlowBuilder {
     // INBOUND - RECAP/END
     const endCondition = FlowFactory.condition(
       'End Condition',
-      (vars: any) => (vars['call_reason'] === 'cancel-appointment'),
+      (vars: any) => vars['call_reason'] === 'cancel-appointment',
       {},
       end.id
     );
 
     const recapCondition = FlowFactory.condition(
       'Recap Condition',
-      (vars: any) => (vars['call_reason'] !== 'cancel-appointment'),
+      (vars: any) => vars['call_reason'] !== 'cancel-appointment',
       {},
       recap.id
     );
@@ -287,21 +289,21 @@ export class FlowBuilder {
 
     const outboundWebLeads = FlowFactory.condition(
       'Web Leads',
-      (vars: any) => (vars['outbound_type'] === 'web-leads'),
+      (vars: any) => vars['outbound_type'] === 'web-leads',
       {},
       webLeadsList.id
     );
 
     const outboundContacts = FlowFactory.condition(
       'Search Contacts',
-      (vars: any) => (vars['outbound_type'] === 'contacts'),
+      (vars: any) => vars['outbound_type'] === 'contacts',
       {},
       searchContacts.id
     );
 
     const outboundOppFollowUp = FlowFactory.condition(
       'Search Contacts',
-      (vars: any) => (vars['outbound_type'] === 'opp-follow-up'),
+      (vars: any) => vars['outbound_type'] === 'opp-follow-up',
       {},
       oppFollowUpList.id
     );
@@ -320,9 +322,7 @@ export class FlowBuilder {
     // OUTBOUND - EXISTING CONTACT / NEW LEAD
     const existingContact_yes = FlowFactory.condition(
       'Contact Selected',
-      (vars: any) => {
-        return !vars['new_lead'];
-      },
+      (vars: any) =>  !vars['new_lead'],
       {
         contactId: ModuleTypes.CONTACT
       },
@@ -331,9 +331,7 @@ export class FlowBuilder {
 
     const existingContact_no = FlowFactory.condition(
       'Create Lead',
-      (vars: any) => {
-        return vars['new_lead'];
-      },
+      (vars: any) => vars['new_lead'],
       {},
       createLead.id
     );
@@ -353,28 +351,28 @@ export class FlowBuilder {
 
     const cancelCondition = FlowFactory.condition(
       'Cancel Appointment',
-      (vars: any) => (vars['call_reason'] === 'cancel-appointment'),
+      (vars: any) => vars['call_reason'] === 'cancel-appointment',
       {},
       appointmentList.id
     );
 
     const rescheduleCondition = FlowFactory.condition(
       'Reschedule Appointment Condition',
-      (vars: any) => (vars['call_reason'] === 'reschedule-appointment'),
+      (vars: any) => vars['call_reason'] === 'reschedule-appointment',
       {},
       appointmentList.id
     );
 
     const setAppointmentCondition = FlowFactory.condition(
       'Set Appointment',
-      (vars: any) => (vars['call_reason'] === 'set-appointment'),
+      (vars: any) => vars['call_reason'] === 'set-appointment',
       {},
       powerQuestion.id
     );
 
     const takeNotesCondition = FlowFactory.condition(
       'Take Notes',
-      (vars: any) => (vars['call_reason'] === 'take-notes'),
+      (vars: any) => vars['call_reason'] === 'take-notes',
       {},
       notes.id
     );
@@ -397,14 +395,14 @@ export class FlowBuilder {
     // OUTBOUND - END/RECAP
     const eventCanceled = FlowFactory.condition(
       'Event Canceled Condition',
-      (vars: any) => (vars['call_reason'] === 'cancel-appointment'),
+      (vars: any) => vars['call_reason'] === 'cancel-appointment',
       {},
       end.id
     );
 
     const eventRescheduled = FlowFactory.condition(
       'Event Rescheduled Condition',
-      (vars: any) => (vars['call_reason'] !== 'cancel-appointment'),
+      (vars: any) => vars['call_reason'] !== 'cancel-appointment',
       {},
       recap.id
     );

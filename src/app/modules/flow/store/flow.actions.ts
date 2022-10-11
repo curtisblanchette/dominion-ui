@@ -3,7 +3,7 @@ import { FlowLink, FlowRouter, FlowStep } from '../index';
 import { FlowState } from './flow.reducer';
 
 export const ActionTypes = {
-  UPDATE_FLOW: '[Flow] Set First Step Id',
+  UPDATE_FLOW: '[Flow] Update Root Object',
   ADD_STEP: '[Flow] Add FlowStep',
   ADD_LINK: '[Flow] Add FlowLink',
   ADD_ROUTER: '[Flow] Add FlowRouter',

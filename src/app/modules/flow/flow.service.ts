@@ -447,7 +447,7 @@ export class FlowService {
     return data;
   }
 
-  public getLookupByLabel(lookup: LookupTypes, label:string): Promise<DropdownItem | undefined> {
+  public getLookupByLabel(lookup: LookupTypes | string, label:string): Promise<DropdownItem | undefined> {
     return firstValueFrom(this.appStore.select(fromApp.selectLookupByLabel(lookup, label)));
   }
 
