@@ -12,31 +12,31 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['system', 'admin', 'owner', 'consultant', 'agent'] },
     loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
   },
   {
     path: 'dashboard',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['system', 'admin', 'owner', 'consultant', 'agent'] },
     loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
     path: 'flow',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['system', 'admin', 'owner', 'consultant', 'agent'] },
     loadChildren: () => import('./modules/flow/flow.module').then(m => m.FlowModule)
   },
   {
     path: 'settings',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['system', 'admin', 'owner'] },
     loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule)
   },
   {
     path: 'system',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     resolve: {
       system: SystemResolver
     },
@@ -45,19 +45,19 @@ const routes: Routes = [
   },
   {
     path: 'data',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['system', 'admin', 'owner', 'consultant', 'agent'] },
     loadChildren: () => import('./modules/data/data.module').then(m => m.DataModule)
   },
   {
     path: 'no-outcome',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['system', 'admin', 'owner', 'consultant'] },
     loadChildren: () => import('./modules/outcome-form/outcome-form.module').then(m => m.OutcomeFormModule)
   },
   {
     path: 'reports',
-    canActivate: [RoleGuard],
+    // canActivate: [RoleGuard],
     data: { roles: ['system', 'admin', 'owner', 'consultant'] },
     loadChildren: () => import('./modules/reports/reports.module').then(m => m.ReportsModule)
   },
