@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.18.11 (2022-10-13)
+
+
+### Bug Fixes
+
+* **develop:** remove misplaces roles key ([bc2582a](https://github.com/4iiz/dominion-ui/commit/bc2582a035d18d31c8a09a61ff5d52602bb25440))
+
 ### 1.18.10 (2022-10-13)
 
 ### 1.18.9 (2022-10-13)
