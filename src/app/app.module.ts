@@ -65,7 +65,8 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
       AppEffects
     ]),
     EntityStoreModule,
-    environment.production ? [] : StoreDevtoolsModule.instrument(),
+    StoreDevtoolsModule.instrument(),
+    // environment.production ? [] : StoreDevtoolsModule.instrument(),
     DashboardModule,
     FlowModule,
     SystemModule,
