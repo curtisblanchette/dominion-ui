@@ -31,6 +31,7 @@ import { DropdownItem } from '../../../../common/components/interfaces/dropdowni
   styleUrls: ['../_base.scss', './appointment.component.scss']
 })
 export class FlowAppointmentComponent extends EntityCollectionComponentBase implements AfterViewInit, AfterContentInit, OnSave {
+  public static reference: string = 'FlowAppointmentComponent';
   private flowStepId: string | undefined;
 
   public timeZone: any = 'America/New_York';

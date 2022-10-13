@@ -20,6 +20,7 @@ import { DominionType } from '../../../../common/models';
   styleUrls: ['../_base.scss', './flow-data.component.scss']
 })
 export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, OnBack, OnNext {
+  public static reference: string = 'FlowDataComponent';
   private flowStepId: string | undefined;
 
   @Input('module') module: ModuleTypes;

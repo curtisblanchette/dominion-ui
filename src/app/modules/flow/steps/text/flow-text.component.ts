@@ -29,6 +29,7 @@ import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
   styleUrls: ['../_base.scss', './flow-text.component.scss']
 })
 export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
+  public static reference: string = 'FlowTextComponent';
   private flowStepId: string | undefined;
 
   @Input('data') override data: any;
