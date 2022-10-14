@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   usernameInput!: QueryList<FiizInputComponent>;
   @ViewChildren('username') set inputElRef(elRef: QueryList<FiizInputComponent>) {
     if (elRef) {
-      this.usernameInput = elRef;      
+      this.usernameInput = elRef;
     }
   };
 
@@ -107,7 +107,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         newUserFormGroup['workspaceId'] = new FormControl(this.invitationCode.workspaceId);
         newUserFormGroup['firstName'] = new FormControl('', Validators.required);
         newUserFormGroup['lastName'] = new FormControl('', Validators.required);
-        newUserFormGroup['password'] = new FormControl('', Validators.required);
+        newUserFormGroup['password'] = new FormControl('', [Validators.required, Validators.pattern('(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=[^0-9]*[0-9]).{8,}')]);
         newUserFormGroup['confirmPassword'] = new FormControl('', checkPasswords);
 
         this.newUserForm = this.fb.group(newUserFormGroup);

@@ -64,7 +64,7 @@ const support = {
       title: 'Consultant Courses',
       subtitle: 'Learn something new, or brush up on your skills.',
       theme: 'dark',
-      route: '/flow'
+      route: '/'
     },
     {
       icon: 'fa-solid fa-bug',
@@ -78,7 +78,7 @@ const support = {
       title: 'Ask the Tribe',
       subtitle: 'Discuss, share and learn from the 4iiz community.',
       theme: 'dark',
-      route: '/flow'
+      route: '/'
     }
   ]
 }
