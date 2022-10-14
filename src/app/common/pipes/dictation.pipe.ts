@@ -2,6 +2,7 @@ import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import * as fromLogin from '../../modules/login/store/login.reducer';
+import { ISetting } from '../../store/app.effects';
 
 @Pipe({
   name: 'dictate'
@@ -18,7 +19,7 @@ export class DictationPipe implements PipeTransform {
   ) {
 
     this.store.select(fromApp.selectSettings).subscribe((settings: any) => {
-      this.replacements['company'] = settings?.general?.company_name?.value;
+      this.replacements['company'] = settings?.find((s: ISetting) => s.name === 'company_name')?.value;
     });
     this.store.select(fromLogin.selectUser).subscribe((user: any) => {
       this.replacements['username'] = user?.firstName;
