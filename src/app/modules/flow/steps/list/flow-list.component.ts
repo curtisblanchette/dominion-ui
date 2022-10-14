@@ -11,8 +11,7 @@ import * as fromFlow from '../../store/flow.reducer';
   styleUrls: ['../_base.scss', './flow-list.component.scss']
 })
 export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
-
-
+  public static reference: string = 'FlowListComponent';
   private flowStepId: string | undefined;
 
   @Input('data') data: any;
@@ -50,12 +49,14 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
   }
 
   public emitValues(value: { module: string, record: any }): void {
-    // this.values.next(value);
-
     let variables: any = {};
 
     if (value.record) {
       variables[value.module] = value.record.id;
+      const moduleNames:Array<string> = [ModuleTypes.CONTACT, ModuleTypes.LEAD, ModuleTypes.DEAL];
+      moduleNames.forEach(element => {
+        variables[`new_${element}`] = false;
+      });
 
       // If selected record has relationships...
       // Sometimes they have multiple contacts, but we're only showing the first one.`
@@ -66,7 +67,7 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
       if (value.record.leadId || (value.record.leads && value.record.leads.length)) {
         variables[ModuleTypes.LEAD] = value.record.leadId || value.record.leads[0]?.id;
       }
-      variables[`new_${this.module}`] = false;
+
       this.flowService.updateStep(this.flowStepId, {variables, valid: true}, 'merge');
     } else {
       // remove variables

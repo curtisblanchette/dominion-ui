@@ -26,6 +26,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
+  public static reference: string = 'FlowObjectionComponent';
   private flowStepId: string;
   public ModuleTypes: any;
   public fields: any = CallFields;

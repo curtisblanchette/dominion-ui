@@ -102,7 +102,6 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @HostListener('document:click', ['$event'])
   clickOutside($event: any) {
     $event.stopPropagation();
-    console.log($event.target.id);
     this.showDropDowns = false;
   }
 
@@ -191,7 +190,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
       if (this.isLookup()) {
         data = await firstValueFrom(
-          this.store.select(fromApp.selectLookupByKey(this.moduleName))
+          this.store.select(fromApp.selectLookupsByKey(this.moduleName))
             .pipe(
               map((items: any) => {
                 return items.filter((item: DropdownItem) => item.label.toLowerCase().includes(value.toLowerCase()));
@@ -264,33 +263,35 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onTouched = fn;
   }
 
-  public async setTheValue(value: string) {
-    // check if it's already selected
-    const found = this.values?.find((id) => id === value);
-    if(found) {
-      this.values = this.values.filter((id) => id !== value);
-    } else {
-      this.values.push(value);
-    }
-
-    if( !value ){
+  public async setTheValue(value: string, label:string ) {
+    if( !label ){
       this.onChange(value);
       this.title = '--None--';
     } else {
-
       this.onTouched();
-      this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
-      if (this.apiData?.length) {
-        if(this.multiselect) {
+      if( this.multiselect ){
+        // check if it's already selected
+        const found = this.values?.find((id) => id === value);
+        if(found) {
+          this.values = this.values.filter((id) => id !== value);
+        } else {
+          this.values.push(value);
+        }
+        this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
+        if (this.apiData?.length) {            
           this.getValues.emit(this.values);
           return this.onChange(this.values);
-        } else {
-          const find = this.apiData.find( c => c.id === value );
-          this.getValues.emit(find);
         }
+      } else {
+        // if (this.apiData?.length) {
+          // const find = this.apiData.find( c => c.id === value );
+          // console.log('find', find);
+          this.title = label;
+          this.getValues.emit(value);
+        // }
       }
       this.onChange(value);
-    }
+    }    
   }
 
   // only used for dropdown anchors/links

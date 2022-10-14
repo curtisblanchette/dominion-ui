@@ -58,7 +58,7 @@ export const reducer = createReducer(
   on(appActions.FetchLookupsAction, (state) => ({...state})),
   on(appActions.SetLookupsAction, (state, {payload}) => ({...state, lookups: payload})),
 
-  on(appActions.ClearAction, (state) => ({...state, roles: null, settings: null, workspace: null, initialized: false, loading: false})),
+  on(appActions.ClearAction, (state) => ({...state, settings: null, workspace: null, initialized: false, loading: false})),
   on(appActions.AppInitializedAction, (state) => ({...state, loading: false, initialized: true}))
 );
 
@@ -72,7 +72,11 @@ export const selectSettingGroup = (group: string) => createSelector(selectSettin
 export const selectSettingByKey = (name: string) => createSelector(selectSettings, (settings: ISetting[]) => settings.find(setting => setting.name === name));
 
 export const selectLookups = createSelector(selectApp, (state: AppState) => state.lookups);
-export const selectLookupByKey = (key: string) => createSelector(selectLookups, (state: { [key: string]: DropdownItem[] }) => state[key]);
+export const selectLookupsByKey = (key: string) => createSelector(selectLookups, (state: { [key: string]: DropdownItem[] }) => state[key]);
+export const selectLookupByLabel = (key: string, label: string) => createSelector(selectLookupsByKey(key), (lookup: DropdownItem[]) => {
+  return lookup.find(lk => lk.label === label);
+});
+
 export const selectRoles = createSelector(selectApp, (state: AppState) => state.lookups.role);
 export const selectPracticeAreas = createSelector(selectApp, (state: AppState) => state.lookups.practiceArea);
 export const selectOffices = createSelector(selectApp, (state: AppState) => state.lookups.office);

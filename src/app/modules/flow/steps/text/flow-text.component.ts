@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { firstValueFrom, map, debounceTime, distinctUntilChanged, delay, mergeMap, tap } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged, delay, mergeMap, tap, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -29,6 +29,7 @@ import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
   styleUrls: ['../_base.scss', './flow-text.component.scss']
 })
 export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
+  public static reference: string = 'FlowTextComponent';
   private flowStepId: string | undefined;
 
   @Input('data') override data: any;
@@ -104,7 +105,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       {id: 'take-notes', label: 'Take Notes', disabled: false}
     ]);
 
-    this.callStatuses$ = this.store.select(fromApp.selectLookupByKey('callStatus')).pipe(map(statuses => {
+    this.callStatuses$ = this.store.select(fromApp.selectLookupsByKey('callStatus')).pipe(map(statuses => {
       return statuses.map(status => {
         return {...status, disabled: false };
       });
@@ -187,9 +188,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'opp-follow-up': {
-        this.callOutcomes$ = await firstValueFrom(this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(map((res: any) => {
-          return of(CustomDataService.toDropdownItems(res));
-        }))) as any;
+        this.callOutcomes$ = this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(take(1), map((res:any) => CustomDataService.toDropdownItems(res)));
 
         form['call_statusId'] = new FormControl(this.variables['call_statusId'] || null, [Validators.required]);
         form['call_outcomeId'] = new FormControl(this.variables['call_outcomeId'] || null, [Validators.required]);
@@ -321,6 +320,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         const leadForm = this.dataComponents.find(item => item.module === this.ModuleTypes.Lead);
         leadForm?.form.markAsDirty();
         return leadForm?.save(true);
+      }
+      case 'take-notes' : {
+        this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
       }
     }
   }

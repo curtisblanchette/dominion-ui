@@ -113,14 +113,14 @@ export class TeamReportComponent implements OnInit, AfterViewInit {
         const dates = Object.values(data).map( (val:any) => {
           return new Date(val);
         });
-        
+
         this.dateRangePicker.writeValue(dates);
       }
     });
   }
 
   public async ngOnInit() {
-    
+
     this.status$ = this.store.select(fromReports.selectTeam).pipe(map((res:any) => res.status));
 
     this.getData();
@@ -142,7 +142,7 @@ export class TeamReportComponent implements OnInit, AfterViewInit {
       // gather the team metrics into card objects
       for(const key of Object.keys(data)) {
         // inbound, outbound, consultations
-        for (const stat of Object.keys(data[key])) {          
+        for (const stat of Object.keys(data[key])) {
           if (stat !== 'people' && this.cards[key].includes(stat)) {
             (<IStatCard[]>this.teamStats[key]).push({
               label: this.getLabel(stat, null),

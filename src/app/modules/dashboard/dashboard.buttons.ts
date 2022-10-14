@@ -17,6 +17,7 @@ const user = {
       title: 'Inbound Call',
       subtitle: 'Start intake for a caller on the line',
       theme: 'orange',
+      emitter: 'inbound',
       route: '/flow',
       roles: ['system', 'admin', 'owner', 'agent']
     }, {
@@ -24,31 +25,32 @@ const user = {
       title: 'Outbound Call',
       subtitle: 'Follow up on existing opportunities.',
       theme: 'purple',
+      emitter: 'outbound',
       route: '/flow',
       roles: ['system', 'admin', 'owner', 'agent']
     },
     {
-      icon: 'fa-solid fa-file-lines',
-      title: 'Outcome Form',
-      subtitle: 'Fill an outcome form for a recent appointment',
+      icon: 'fa-solid fa-chart-pie',
+      title: 'Total Pipeline Report',
+      subtitle: 'Pipeline report',
       theme: 'light',
-      route: '/',
+      route: '/reports/total-pipeline',
       roles: ['system', 'admin', 'owner', 'consultant']
     },
     {
       icon: 'fa-solid fa-chart-pie',
-      title: 'Reports',
+      title: 'Team Report',
       subtitle: 'Monitor the health of your firm',
       theme: 'light',
-      route: '/reports',
+      route: '/reports/team',
       roles: ['system', 'admin', 'owner', 'consultant']
     },
     {
-      icon: 'fa-solid fa-chart-pie',
-      title: 'Reports',
+      icon: 'fa-solid fa-file-lines',
+      title: 'Outcome Forms',
       subtitle: 'Fill an outcome form for a recent appointment',
       theme: 'pitch',
-      route: '/flow',
+      route: '/no-outcome/list',
       roles: ['system', 'admin', 'owner']
     }
   ]

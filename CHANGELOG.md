@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.18.14 (2022-10-14)
+
+### 1.18.13 (2022-10-13)
+
+### 1.18.12 (2022-10-13)
+
+### 1.18.11 (2022-10-13)
+
+
+### Bug Fixes
+
+* **develop:** remove misplaces roles key ([bc2582a](https://github.com/4iiz/dominion-ui/commit/bc2582a035d18d31c8a09a61ff5d52602bb25440))
+
+### 1.18.10 (2022-10-13)
+
+### 1.18.9 (2022-10-13)
+
+### 1.18.8 (2022-10-12)
+
+### 1.18.7 (2022-10-11)
+
+
+### Bug Fixes
+
+* **outbound-issues:** Fixed outbound issues ([a6b3515](https://github.com/4iiz/dominion-ui/commit/a6b3515922b7e5e5ca720ed8a01451545c2216a5))
+
+### 1.18.6 (2022-10-07)
+
+
+### Bug Fixes
+
+* **develop:** finish call button ([3c18e87](https://github.com/4iiz/dominion-ui/commit/3c18e878e22336b0f235dae3c24ad379bbe9c4b7))
+
+### 1.18.5 (2022-10-07)
+
+
+### Bug Fixes
+
+* **II-2822:** Fixed inbound issues ([#61](https://github.com/4iiz/dominion-ui/issues/61)) ([49c62fc](https://github.com/4iiz/dominion-ui/commit/49c62fc9b26f7e97b3ee068dc0664963348ad4a0))
+
+
 ### 1.18.2 (2022-10-06)
 
 
@@ -11,7 +52,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 1.18.1 (2022-10-06)
 
-## 1.18.0 (2022-10-06)
+### 1.18.0 (2022-10-06)
 
 
 ### Features

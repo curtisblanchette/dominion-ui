@@ -11,7 +11,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Objection',
       nodeIcon: 'address-book',
-      component: FlowObjectionComponent.name,
+      component: FlowObjectionComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -28,7 +28,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Call Direction',
       nodeIcon: 'phone-volume',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -45,7 +45,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Outbound Type',
       nodeIcon: 'address-book',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -62,7 +62,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Lead Search',
       nodeIcon: 'address-book',
-      component: FlowListComponent.name,
+      component: FlowListComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -78,7 +78,7 @@ export class FlowFactory {
           perPage: 25,
           columns: [],
           query: {
-            limit: 3
+            limit: 7
           },
           controls: {
             perPage: false,
@@ -95,7 +95,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Search Contacts',
       nodeIcon: 'address-book',
-      component: FlowListComponent.name,
+      component: FlowListComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -126,7 +126,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Create New Lead',
       nodeIcon: 'user-plus',
-      component: FlowDataComponent.name,
+      component: FlowDataComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -153,7 +153,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Review Lead Info',
       nodeIcon: 'user-pen',
-      component: FlowDataComponent.name,
+      component: FlowDataComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -178,7 +178,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Create New Contact',
       nodeIcon: 'user-pen',
-      component: FlowDataComponent.name,
+      component: FlowDataComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -206,7 +206,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Create Opportunity',
       nodeIcon: 'landmark',
-      component: FlowDataComponent.name,
+      component: FlowDataComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -254,7 +254,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Review Opportunity',
       nodeIcon: 'marker',
-      component: FlowDataComponent.name,
+      component: FlowDataComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -279,7 +279,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Select Lead Source',
       nodeIcon: 'crosshairs',
-      component: FlowDataComponent.name,
+      component: FlowDataComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -304,7 +304,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Select an Opportunity',
       nodeIcon: 'table-list',
-      component: FlowListComponent.name,
+      component: FlowListComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -333,7 +333,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Opportunity Follow Up List',
       nodeIcon: 'table-list',
-      component: FlowListComponent.name,
+      component: FlowListComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -365,7 +365,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Opportunity Follow Up',
       nodeIcon: 'clipboard',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -382,7 +382,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Relationship Building',
       nodeIcon: 'handshake',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -399,7 +399,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Power Question',
       nodeIcon: 'clipboard-question',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -416,7 +416,7 @@ export class FlowFactory {
     const data = {
       nodeText: 'Search Web Leads',
       nodeIcon: 'table-list',
-      component: FlowListComponent.name,
+      component: FlowListComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -446,7 +446,7 @@ export class FlowFactory {
     const data = {
       nodeText: 'Select an Appointment',
       nodeIcon: 'table-list',
-      component: FlowListComponent.name,
+      component: FlowListComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -481,7 +481,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Set Appointment',
       nodeIcon: 'calendar-plus',
-      component: FlowAppointmentComponent.name,
+      component: FlowAppointmentComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -507,7 +507,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Verify',
       nodeIcon: 'calendar-check',
-      component: FlowDataComponent.name,
+      component: FlowDataComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -526,7 +526,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Reason For Call',
       nodeIcon: 'address-book',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -543,7 +543,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Recap',
       nodeIcon: 'address-book',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -559,7 +559,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'End',
       nodeIcon: 'flag-checkered',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
@@ -577,7 +577,7 @@ export class FlowFactory {
     return new FlowStep({
       nodeText: 'Text Notes',
       nodeIcon: 'note-sticky',
-      component: FlowTextComponent.name,
+      component: FlowTextComponent.reference,
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {

@@ -10,7 +10,6 @@ export { FlowDataComponent } from './data/flow-data.component';
 export { FlowListComponent } from './list/flow-list.component';
 export { FlowAppointmentComponent } from './appointment/appointment.component';
 
-
 export const FlowStepClassMap = {
   FlowTextComponent: FlowTextComponent,
   FlowListComponent: FlowListComponent,
