@@ -1,5 +1,5 @@
-<label [for]="item.id" *ngFor="let item of items$ | async; first as isFirst;" [fiizfocus]="isFirst" [ngClass]="{'disabled': item.disabled}" [attr.autofocus]="isFirst || null" tabindex="0" (keyup)="handleKeyup($event)">
-  <input type="radio" [id]="item.id" tabindex="-1" #inputs [disabled]="item.disabled" [checked]="value === item.id" [name]="name" (change)="changed($event)" [value]="item.id">
+<label for="{{name}}_{{item.id}}" *ngFor="let item of items$ | async; first as isFirst;" [fiizfocus]="isFirst" [ngClass]="{'disabled': item.disabled}" [attr.autofocus]="isFirst || null" tabindex="0" (keyup)="handleKeyup($event)">
+  <input type="radio" id="{{name}}_{{item.id}}" tabindex="-1" #inputs [disabled]="item.disabled" [checked]="value === item.id" [name]="name" (change)="changed($event)" [value]="item.id">
   <span class="checkmark"></span>
   {{item.label}}
 </label>

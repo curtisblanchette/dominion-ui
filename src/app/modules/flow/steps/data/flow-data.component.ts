@@ -13,9 +13,11 @@ import { DominionType } from '../../../../common/models';
 @Component({
   selector: 'flow-data',
   template: `
-    <h3 style="">{{data.title}}</h3>
-    <div *ngIf="options.dictation">{{options.dictation}}</div>
-    <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (onSuccess)="onSuccess($event)" (values)="onChange($event)"></fiiz-data>
+    <div class="flex_main_wrapper">
+      <h3 style="text-align: center;">{{data.title}}</h3>
+      <div *ngIf="options.dictation">{{options.dictation}}</div>
+      <fiiz-data #cmp [data]="data" [module]="module" [options]="options" (onSuccess)="onSuccess($event)" (values)="onChange($event)"></fiiz-data>
+    </div>
   `,
   styleUrls: ['../_base.scss', './flow-data.component.scss']
 })

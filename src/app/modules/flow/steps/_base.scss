@@ -4,13 +4,13 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
 
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 15%;
+  bottom: 60px;
   width: 100%;
   margin: 0 auto;
   padding: 0 0 0;
@@ -25,7 +25,7 @@
   .flex_main_wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     height: 100%;
     width: 100%;
 

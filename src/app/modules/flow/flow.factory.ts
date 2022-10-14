@@ -51,7 +51,7 @@ export class FlowFactory {
       state: {
         data: {
           title: 'Outbound Type',
-          body: 'Lookup an Contact or Opportunity from one of the following lists',
+          body: 'Lookup by Contact or Opportunity from one of the following lists',
           template: 'outbound-type'
         }
       }
