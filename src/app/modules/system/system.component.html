@@ -9,9 +9,10 @@
       <h3>Accounts</h3>
     </header>
 
-    <form [formGroup]="accountsForm" *ngIf="accountsForm">
+    <form id="accounts-form" [formGroup]="accountsForm" *ngIf="accountsForm">
       <fiiz-dropdown
         type="search"
+        id="actingFor"
         [items]="workspaces$"
         [formControlName]="'actingFor'"
         [title]="'Select an account'"

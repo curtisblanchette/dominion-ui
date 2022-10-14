@@ -31,7 +31,7 @@ export class FlowBuilder {
     const objection = FlowFactory.objection();
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
-    const notes = FlowFactory.takeNotes(async (flowService: FlowService ) => {
+    const notes = FlowFactory.takeNotes((flowService: FlowService ) => {
       flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(value => {
         flowService.addVariables({ call_outcomeId:  value?.id });
       });

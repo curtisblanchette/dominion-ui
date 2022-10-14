@@ -1,6 +1,6 @@
 <div class="page-heading">
   <h2 class="page-heading__title">Reports/Total Pipeline</h2>
-  <div class="page-heading__filters">
+  <div class="page-heading__date_filter">
       <fiiz-date-picker
         #dateRange
         [selectMode]="'range'"
@@ -17,7 +17,7 @@
   <div class="total-pipeline__reports" *ngIf="(status$ | async) === 'success'">
 
     <nav class="pipeline-nav">
-      <section class="pipeline-nav__section grid-2" style="flex:0.4; margin-right: 20px;">
+      <section class="pipeline-nav__section grid-2">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Qual. Leads</div>
           <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( in$ | async ).leads"></div>
@@ -31,7 +31,7 @@
         </div>
       </section>
 
-      <section class="pipeline-nav__section grid-3" style="flex:0.6">
+      <section class="pipeline-nav__section grid-3">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Total Appts.</div>
           <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( in$ | async ).totalAppointments"></div>
@@ -59,7 +59,7 @@
     <h4>Out of Pipeline</h4>
 
     <nav class="pipeline-nav">
-      <section class="pipeline-nav__section grid-2" style="flex:0.4; margin-right: 20px;">
+      <section class="pipeline-nav__section grid-2">
         <div class="pipeline-nav__item">
           <div class="pipeline-nav__item__title">Answers</div>
           <div class="pipeline-nav__item__metric fluid-heading" [countUp]="( out$ | async ).answers"></div>
