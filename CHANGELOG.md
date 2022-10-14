@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.19.0 (2022-10-14)
+
+
+### Features
+
+* **poc:** Added POC for e2e test case for one inbound call ([#65](https://github.com/4iiz/dominion-ui/issues/65)) ([5e2bf0f](https://github.com/4iiz/dominion-ui/commit/5e2bf0fd498b7146f50f8f17365ef61de5ec0181))
+
 ### 1.18.15 (2022-10-14)
 
 
