@@ -85,7 +85,7 @@
        <p>All information has been captured, thank you!</p>
       </ng-container>
 
-      <fiiz-button *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="(status$ | async) !== 'success'">Finish Call</fiiz-button>
+      <fiiz-button id="finish_call" *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="(status$ | async) !== 'success'">Finish Call</fiiz-button>
     </ng-template>
 
 
