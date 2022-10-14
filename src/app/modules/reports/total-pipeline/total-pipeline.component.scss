@@ -16,6 +16,12 @@
   }
 }
 
+.page-heading {
+	display: grid;
+  justify-content: space-between;
+  grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+}
+
 .total-pipeline {
 
   &__filters {
@@ -28,12 +34,9 @@
   &__reports {
 
     .pipeline-nav {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-content: center;
-      justify-content: space-between;
-      align-items: center;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, auto));
 
       &__section {
         display: grid;
