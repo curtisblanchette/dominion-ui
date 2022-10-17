@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.19.5 (2022-10-17)
+
+
+### Bug Fixes
+
+* **II-2845:** remove required fields from campaign ([#68](https://github.com/4iiz/dominion-ui/issues/68)) ([6dfcdc2](https://github.com/4iiz/dominion-ui/commit/6dfcdc218a6e3fb56b2bfcdd029d482c2721f281))
+
 ### 1.19.4 (2022-10-14)
 
 ### 1.19.3 (2022-10-14)
