@@ -119,9 +119,8 @@
 
         <!-- 1. Answered -->
         <ng-container *ngIf="callStatus.value === '1'">
-          <p class="dictation">{{
-            'Hello how are you, am I speaking with {contact.name}? This is username from {company}. ' +
-            'I called you because the consultant ({consultant.name}) saw that you could not reach the appointment you had set and we wanted to know if everything was okay?' | dictate}}</p>
+          <p class="dictation">{{'Hello how are you, am I speaking with {contact.name}? This is {username} from {company}. ' | dictate }}</p>
+          <p class="dictation">{{'I called you because the consultant ({consultant.name}) saw that you could not reach the appointment you had set and we wanted to know if everything was okay?' | dictate}}</p>
           <p class="dictation">The best way to help you is, if we set you up with another appointment and I will be more than glad to set another one.</p>
           <fiiz-radio [items]="callOutcomes$" formControlName="call_outcomeId" name="call_outcomeId"></fiiz-radio>
         </ng-container>

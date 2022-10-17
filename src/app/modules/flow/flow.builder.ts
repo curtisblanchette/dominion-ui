@@ -270,10 +270,14 @@ export class FlowBuilder {
     // Web List
 
     const oppFollowUpList = FlowFactory.oppFollowUpList();
-    const oppFollowUp = FlowFactory.oppFollowUp(undefined, (flowService: FlowService, vars: any, step: any) => {
+    const oppFollowUp = FlowFactory.oppFollowUp((flowService: FlowService, vars: any, step: any) => {
+      // the text component needs a reference id;
+      step.state.data.id = vars['deal'];
+      return step;
+    }, undefined);
 
-    });
     const toOppFollowUp = FlowFactory.link(oppFollowUpList.id, oppFollowUp.id);
+
 
     const webLeadsList = FlowFactory.webLeadsList((flowService:FlowService, vars: any, step: any, settings: ISetting[]) => {
 
@@ -388,6 +392,7 @@ export class FlowBuilder {
       ]
     );
     const outboundSetCancelRescheduleLink = FlowFactory.link(reasonForCall.id, outboundSetCancelRescheduleRouter.id);
+    const oppFollowUpSetCancelRescheduleLink = FlowFactory.link(oppFollowUp.id, outboundSetCancelRescheduleRouter.id)
 
     // OUTBOUND - APPOINTMENT
     const outboundEventLink = FlowFactory.link(appointmentList.id, setAppointment.id);
@@ -464,6 +469,7 @@ export class FlowBuilder {
       .addStep(webLeadsList)
       .addStep(oppFollowUpList)
       .addLink(toOppFollowUp)
+      .addLink(oppFollowUpSetCancelRescheduleLink)
 
       .addStep(searchContacts)
       .addRouter(searchContactsRouter)

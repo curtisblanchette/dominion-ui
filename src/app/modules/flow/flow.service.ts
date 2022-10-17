@@ -42,7 +42,7 @@ export class FlowService {
   public variables$: Subscription;
   public callTypes$: Observable<DropdownItem[]>;
 
-  public callService: CustomDataService<DominionType>;
+  public callsService: CustomDataService<DominionType>;
 
   private leadService: EntityCollectionService<DominionType>;
   private contactService: EntityCollectionService<DominionType>;
@@ -52,7 +52,7 @@ export class FlowService {
   private campaignService: EntityCollectionService<DominionType>;
   private leadSourceService: EntityCollectionService<DominionType>;
   private officeService: EntityCollectionService<DominionType>;
-  private callsService: EntityCollectionService<DominionType>;
+  private callService: EntityCollectionService<DominionType>;
 
   private renderer: Renderer2;
 
@@ -70,7 +70,7 @@ export class FlowService {
     console.log('FlowService Id: ', this.id);
     this.renderer = rendererFactory.createRenderer(null, null);
 
-    this.callService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
+    this.callsService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
 
     // Use the collection services to clear all entity caches after the call ends.
     this.leadService       = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD);
@@ -81,7 +81,7 @@ export class FlowService {
     this.campaignService   = this.entityCollectionServiceFactory.create(ModuleTypes.CAMPAIGN);
     this.leadSourceService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD_SOURCE);
     this.officeService     = this.entityCollectionServiceFactory.create(ModuleTypes.OFFICE);
-    this.callsService      = this.entityCollectionServiceFactory.create(ModuleTypes.CALL);
+    this.callService      = this.entityCollectionServiceFactory.create(ModuleTypes.CALL);
 
     this.user$ = this.store.select(fromLogin.selectUser);
     this.callTypes$ = this.store.select(fromApp.selectLookupsByKey('callType'));
@@ -125,34 +125,17 @@ export class FlowService {
     this.noteId = undefined;
     this.callId = undefined;
 
-    this.leadService.clearCache();
-    this.leadService.setFilter({});
-
-    this.contactService.clearCache();
-    this.contactService.setFilter({});
-
-    this.dealService.clearCache();
-    this.dealService.setFilter({});
-
-    this.eventService.clearCache();
-    this.eventService.setFilter({});
-
-    this.addressService.clearCache();
-    this.addressService.setFilter({});
-
-    this.campaignService.clearCache();
-    this.campaignService.setFilter({});
-
-    this.leadSourceService.clearCache();
-    this.leadSourceService.setFilter({});
-
-    this.officeService.clearCache();
-    this.officeService.setFilter({});
-
-    this.callsService.clearCache();
-    this.callsService.setFilter({});
+    this.clearEntityCache();
 
     await this.start();
+  }
+
+  public clearEntityCache(){
+    for(const module of Object.values(ModuleTypes)) {
+      // there should be no filter or cached records
+      (<EntityCollectionService<DominionType>>this[`${module}Service`]).clearCache();
+      (<EntityCollectionService<DominionType>>this[`${module}Service`]).setFilter({});
+    }
   }
 
   public async start(resume = false): Promise<any> {
@@ -176,13 +159,7 @@ export class FlowService {
     // the filters must be reset to the Flow selections upon resuming.
     const vars = await lastValueFrom(this.store.select(fromFlow.selectAllVariables).pipe(take(1)));
 
-    for(const module of Object.values(ModuleTypes)) {
-      // there should be no filter or cached records
-      if(vars[`new_${module}`]) {
-        (<any>this[`${module}Service`]).clearCache();
-        (<any>this[`${module}Service`]).setFilter({});
-      }
-    }
+    this.clearEntityCache();
 
     if (vars['lead']) {
       this.leadService.setFilter({id: vars['lead']});
@@ -201,7 +178,7 @@ export class FlowService {
     }
 
     if (vars['call']) {
-      this.callsService.setFilter({id: vars['call']});
+      this.callService.setFilter({id: vars['call']});
       this.callId = <string>vars['call'];
       this.noteId = <string>vars['note'];
     }
@@ -211,7 +188,7 @@ export class FlowService {
 
   public async startCall(direction: string): Promise<void> {
     if (!this.callId) {
-      this.callService.add({
+      this.callsService.add({
         startTime: new Date().toISOString(),
         direction: direction
       }, false).pipe(take(1)).subscribe(async (res) => {
@@ -233,7 +210,7 @@ export class FlowService {
       id: this.callId,
       changes: payload
     }
-    this.callService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
+    this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
   }
 
   public async createNote(content: string): Promise<ICallNote> {

@@ -99,10 +99,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     ]);
 
     this.callReasons$ = of([
-      {id: 'set-appointment', label: 'Set Appointment', disabled: false},
-      {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false,},
-      {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: false},
-      {id: 'take-notes', label: 'Take Notes', disabled: false}
+      { id: 'set-appointment', label: 'Set Appointment', disabled: false },
+      { id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false },
+      { id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: false },
+      { id: 'take-notes', label: 'Take Notes', disabled: false }
     ]);
 
     this.callStatuses$ = this.store.select(fromApp.selectLookupsByKey('callStatus')).pipe(map(statuses => {
