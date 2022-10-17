@@ -61,11 +61,26 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
       // If selected record has relationships...
       // Sometimes they have multiple contacts, but we're only showing the first one.`
       // TODO make multiple contacts/leads work
+
+      // lists are used for deciding the "context" of the call
+      // seems like the right location to set
+      // contextual variables that can be used by [dictation.pipe.ts, HTML Templates]
+
       if (value.record.contactId || (value.record.contacts && value.record.contacts.length)) {
         variables[ModuleTypes.CONTACT] = value.record.contactId || value.record.contacts[0]?.id;
+        if(value.record.contacts.length) {
+          // there's at least 1 contact related to the selected record
+          variables['contact_name'] = value.record.contacts[0]?.firstName + ' ' + value.record.contacts[0]?.lastName
+        }
       }
       if (value.record.leadId || (value.record.leads && value.record.leads.length)) {
+        // there's at leads 1 lead related to the selected record
         variables[ModuleTypes.LEAD] = value.record.leadId || value.record.leads[0]?.id;
+      }
+
+      if(value.record.stage) {
+        // the deal stage can be set to a context variable
+        variables['deal_stage'] = value.record.stage.name;
       }
 
       this.flowService.updateStep(this.flowStepId, {variables, valid: true}, 'merge');

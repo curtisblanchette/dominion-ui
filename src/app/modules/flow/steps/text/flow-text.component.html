@@ -114,25 +114,32 @@
         <p>{{data.body}}</p>
       </header>
 
-      <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio #callStatus [items]="callStatuses$" formControlName="call_statusId" name="call_statusId"></fiiz-radio>
-
+      <fiiz-data [module]="ModuleTypes.DEAL" [data]="{ id: data.id }" [options]="{grid: { minColWidth: '290px'}, state: 'edit', fields: ['stageId'] }"></fiiz-data>
+      <form [formGroup]="form" *ngIf="form" style="width: 100%;">
+        <fiiz-dropdown #callStatus
+                       label="Call Status"
+                       type="search"
+                       [items]="callStatuses$"
+                       [options]="{remote: false}"
+                       [module]="LookupTypes.CALL_STATUS"
+                       formControlName="call_statusId">
+        </fiiz-dropdown>
         <!-- 1. Answered -->
-        <ng-container *ngIf="callStatus.value === '1'">
-          <p class="dictation">{{'Hello how are you, am I speaking with {contact.name}? This is {username} from {company}. ' | dictate }}</p>
-          <p class="dictation">{{'I called you because the consultant ({consultant.name}) saw that you could not reach the appointment you had set and we wanted to know if everything was okay?' | dictate}}</p>
-          <p class="dictation">The best way to help you is, if we set you up with another appointment and I will be more than glad to set another one.</p>
-          <fiiz-radio [items]="callOutcomes$" formControlName="call_outcomeId" name="call_outcomeId"></fiiz-radio>
+        <ng-container *ngIf="callStatus.value == 1">
+          <p class="dictation">{{'Hello, how are you? This is {username} from {company}, am I speaking with {contact_name}?' | dictate }}</p>
+          <p class="dictation">I called you because the consultant saw that you were unable to reach your appointment and we wanted to know if everything was okay?</p>
+          <p class="dictation" *ngIf="(vars$ | async).deal_stage === 'No Set'">The best way to help you is to set you up with another appointment, and I would be more than happy to do that for you.</p>
         </ng-container>
+        <fiiz-dropdown label="Call Outcome" type="search" [items]="callOutcomes$" [module]="LookupTypes.CALL_OUTCOME" formControlName="call_outcomeId"></fiiz-dropdown>
 
         <!-- 2. Bad Number -->
         <!-- 3. Client Hung Up -->
         <!-- 5. Number Disconnected -->
         <!-- 6. Wrong Number -->
-        <ng-container *ngIf="callStatus.value === '2' ||
-          callStatus.value === '3' ||
-          callStatus.value === '5' ||
-          callStatus.value === '6'">
+        <ng-container *ngIf="callStatus.value === 2 ||
+          callStatus.value === 3 ||
+          callStatus.value === 5 ||
+          callStatus.value === 6">
         </ng-container>
 
         <!-- 4. No Answer -->

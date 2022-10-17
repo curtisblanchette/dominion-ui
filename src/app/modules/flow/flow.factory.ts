@@ -372,7 +372,7 @@ export class FlowFactory {
         module: ModuleTypes.DEAL,
         data: {
           title: 'Opportunity Follow Up',
-          // body: '',
+          body: 'Now is the time to review notes previously collected for this opportunity.',
           template: 'opp-follow-up'
         }
       }

@@ -266,7 +266,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public async setTheValue(value: string, label:string ) {
     if( !label ){
-      this.onChange(value);
+
       this.title = '--None--';
     } else {
       this.onTouched();
@@ -279,16 +279,18 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
           this.values.push(value);
         }
         this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
-        if (this.apiData?.length) {            
+        if (this.apiData?.length) {
           this.getValues.emit(this.values);
           return this.onChange(this.values);
         }
       } else {
           this.title = label;
           this.getValues.emit(value);
+          this.value = value;
+        // }
       }
-      this.onChange(value);
-    }    
+    }
+    return this.onChange(value);
   }
 
   // only used for dropdown anchors/links

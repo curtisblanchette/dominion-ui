@@ -13,14 +13,13 @@ import { EntityCollectionComponentBase } from '../../../../data/entity-collectio
 import { FlowService } from '../../flow.service';
 import * as fromFlow from '../../store/flow.reducer';
 import * as fromApp from '../../../../store/app.reducer';
-import { ModuleTypes } from '../../../../data/entity-metadata';
+import { LookupTypes, ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
-import { environment } from '../../../../../environments/environment';
-import { CustomDataService } from '../../../../data/custom.dataservice';
-import { FiizRadioComponent, RadioItem } from '../../../../common/components/ui/forms';
+import { RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
+import { FiizDropDownComponent } from '../../../../common/components/ui/dropdown';
 
 @UntilDestroy()
 @Component({
@@ -44,6 +43,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   public callOutcomes$: Observable<DropdownItem[]>;
   public vars$: Observable<any>;
   public ModuleTypes: any;
+  public LookupTypes: any;
   public contactFields: any = ContactModel;
   public formValidation: { [key: string]: boolean } = {};
   public variables: any;
@@ -69,8 +69,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   @ViewChild('tinymce') tinymce: EditorComponent;
   @ViewChild('botComment') botComment: ElementRef;
-  @ViewChild('callStatusRadio') callStatusRadio: FiizRadioComponent;
-  @ViewChild('callReasonRadio') callReasonRadio: FiizRadioComponent;
+  @ViewChild('callStatusDropdown') callStatusDropdown: FiizDropDownComponent;
+  @ViewChild('callReasonDropdown') callReasonDropdown: FiizDropDownComponent;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -86,6 +86,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   ) {
     super(router, entityCollectionServiceFactory, dataServiceFactory);
     this.ModuleTypes = ModuleTypes;
+    this.LookupTypes = LookupTypes;
     this.FlowStatus = fromFlow.FlowStatus;
     this.BotActionStatus = FlowBotActionStatus;
     this.callDirections$ = of([
@@ -188,7 +189,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         break;
 
       case 'opp-follow-up': {
-        this.callOutcomes$ = this.http.get(environment.dominion_api_url + '/call-outcomes').pipe(take(1), map((res:any) => CustomDataService.toDropdownItems(res)));
+        // get all outcomes from the server
+        this.callOutcomes$ = this.store.select(fromApp.selectLookupsByKey('callOutcome'));
 
         form['call_statusId'] = new FormControl(this.variables['call_statusId'] || null, [Validators.required]);
         form['call_outcomeId'] = new FormControl(this.variables['call_outcomeId'] || null, [Validators.required]);
@@ -269,27 +271,25 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       });
 
       if(this.variables['call_direction'] === 'outbound' && this.form.controls['call_statusId']) {
-        this.callReasons$ = this.form.controls['call_statusId'].valueChanges.pipe(
-          distinctUntilChanged(),
-          map(status => {
+        this.form.controls['call_statusId'].valueChanges.subscribe(status => {
+          // try to filter the available outcomes based on the deal stage and call status
+          let data = [
+            {id: 'set-appointment', label: 'Set Appointment', disabled: false},
+            {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false},
+            {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: false},
+            {id: 'take-notes', label: 'Take Notes', disabled: false}
+          ];
 
-            let data = [
-              {id: 'set-appointment', label: 'Set Appointment', disabled: false},
-              {id: 'cancel-appointment', label: 'Cancel Appointment', disabled: false},
-              {id: 'reschedule-appointment', label: 'Reschedule Appointment', disabled: false},
-              {id: 'take-notes', label: 'Take Notes', disabled: false}
-            ];
+          if (status !== 1) {
+            // No Answer
+            data = data.map(reason => {
+              reason.disabled = reason.id !== 'take-notes';
+              return reason;
+            })
+          }
+          this.callOutcomes$ = of(data);
+        });
 
-            if (status !== 1) {
-              // No Answer
-              data = data.map(reason => {
-                reason.disabled = reason.id !== 'take-notes';
-                return reason;
-              })
-            }
-            return data;
-          })
-        );
       }
     }
 
