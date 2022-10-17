@@ -74,6 +74,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @Input('id') id!: string;
   @Input('default') default: string | number | boolean | undefined;
   @Input('mandatory') mandatory: boolean | undefined = true;
+  @Input('required') required: boolean = false;
   @Input('disabled') disabled: boolean = false;
   @Input('multiselect') multiselect: boolean = false;
 
@@ -283,12 +284,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
           return this.onChange(this.values);
         }
       } else {
-        // if (this.apiData?.length) {
-          // const find = this.apiData.find( c => c.id === value );
-          // console.log('find', find);
           this.title = label;
           this.getValues.emit(value);
-        // }
       }
       this.onChange(value);
     }    

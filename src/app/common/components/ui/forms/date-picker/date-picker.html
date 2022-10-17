@@ -1,4 +1,4 @@
-<label [for]="id" *ngIf="label">{{label}}</label>
+<label [for]="id" *ngIf="label" [ngClass]="{ 'required' : required }" >{{label}}</label>
 <div class="input-wrapper" [ngClass]="{'disabled': isDisabled}">
   <input
     [owlDateTime]="dt1"

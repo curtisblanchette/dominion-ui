@@ -387,6 +387,18 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   }
 
   private getControlData() {
+    this.options.fields.map( field => {
+      let required:boolean = false;
+      if( models[this.module][field]?.validators ){
+        models[this.module][field]?.validators.map( (v: any) => {
+          if( v.name == 'required' ){
+            required = true;
+            return false;
+          }
+        })
+      }
+      models[this.module][field]['required'] = required;
+    });
     return this.options.fields.map(field => ({key: field, ...models[this.module][field], module: this.module}));
   }
 

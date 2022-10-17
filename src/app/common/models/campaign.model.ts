@@ -24,26 +24,19 @@ export const CampaignModel: {[key: string]: IModel} = {
   audience: {
     label: 'Audience',
     type: 'text',
-    defaultValue: null,
-    validators: [
-      Validators.required
-    ]
+    defaultValue: null
   },
   type: {
     label: 'Type',
     type: 'text',
     defaultValue: null,
-    validators: [
-      Validators.required
-    ]
+    validators: []
   },
   trackingNumber: {
     label: 'Tracking Number',
     type: 'text',
     defaultValue: null,
-    validators: [
-      Validators.required
-    ]
+    validators: []
   },
   startDate: {
     label: 'Start Date',
@@ -57,9 +50,7 @@ export const CampaignModel: {[key: string]: IModel} = {
     label: 'End Date',
     type: 'calendar',
     defaultValue: null,
-    validators: [
-      Validators.required
-    ]
+    validators: []
   },
   leadSourceId: {
     label: 'Lead Source Id',
