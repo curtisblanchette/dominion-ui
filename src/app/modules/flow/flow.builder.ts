@@ -273,6 +273,7 @@ export class FlowBuilder {
     const oppFollowUp = FlowFactory.oppFollowUp((flowService: FlowService, vars: any, step: any) => {
       // the text component needs a reference id;
       step.state.data.id = vars['deal'];
+      step.state.data['contactId'] = vars['contact'];
       return step;
     }, undefined);
 
