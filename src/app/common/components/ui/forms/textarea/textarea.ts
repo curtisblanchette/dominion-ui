@@ -20,6 +20,7 @@ export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewIni
   @Input('placeholder') placeholder = '';
   @ViewChild('textarea', { read: ElementRef }) textarea:ElementRef;
 
+  @Input('required') required:boolean = false;
   @Input('height') height = '35px';
   value: string = '';
 

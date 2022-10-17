@@ -66,6 +66,11 @@
     line-height: 1em;
   }
 
+  label.required:after {
+    content: ' *';
+    color: var(--text1-shade25);
+  }
+
   i.fa {
     position: absolute;
     top: 13px;

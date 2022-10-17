@@ -31,7 +31,8 @@ export class FiizDatePickerComponent implements ControlValueAccessor, OnInit {
   @Input('min') min!: Dayjs | string | null;
   @Input('max') max!: Dayjs | string | null;
   @Input() isDisabled!: boolean;
-  @Input('autofocus') autofocus = false;
+  @Input('autofocus') autofocus:boolean = false;
+  @Input('required') required:boolean = false;
 
   @Output('change') change: EventEmitter<any> = new EventEmitter<any>();
 

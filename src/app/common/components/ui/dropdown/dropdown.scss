@@ -175,3 +175,8 @@ label {
   left: 2em;
   line-height: 1em;
 }
+
+label.required:after {
+  content: ' *';
+  color: var(--text1-shade25);
+}

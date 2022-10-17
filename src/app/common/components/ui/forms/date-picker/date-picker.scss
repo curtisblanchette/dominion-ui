@@ -12,8 +12,14 @@
 
 
   &.ng-invalid {
-    input {
-      border-bottom: 2px solid red;
+    &:after {
+      display: block;
+      position: absolute;
+      content: '';
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      background: var(--red);
     }
   }
 
@@ -29,6 +35,11 @@
     position: absolute;
     top: -20px;
     left: 16px;
+  }
+
+  label.required:after {
+    content: ' *';
+    color: var(--text1-shade25);
   }
 
   .input-wrapper {

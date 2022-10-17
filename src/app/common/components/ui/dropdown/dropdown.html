@@ -1,4 +1,4 @@
-<label [for]="id" *ngIf="label">{{label}}</label>
+<label [for]="id" *ngIf="label" [ngClass]="{ 'required' : required }">{{label}}</label>
 <div tabindex="-1" class="fiiz-dropdown-button" [ngClass]="{ 'no-title': !title, 'disabled': disabled }">
 
   <ng-container [ngSwitch]="dropdownType">
@@ -34,7 +34,7 @@
         </ng-template>
 
         <fiiz-button
-          *ngIf="mandatory == false"
+          *ngIf="required == false"
           tabindex="-1"
           class="dropdown"
           (click)="setTheValue(null)"

@@ -25,6 +25,7 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
 
   @Input('max') max = null;
   @Input('min') min = null;
+  @Input('required') required:boolean = false;
 
   @Input('disabled') disabled = false;
 

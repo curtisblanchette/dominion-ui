@@ -1,4 +1,4 @@
-<label [for]="id" *ngIf="label">{{label}}</label>
+<label [for]="id" *ngIf="label" [ngClass]="{ 'required' : required }" >{{label}}</label>
 <ng-container [ngTemplateOutlet]="type === 'textarea' ? textarea : input"></ng-container>
 
 <ng-template #input>

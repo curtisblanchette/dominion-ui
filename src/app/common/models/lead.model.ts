@@ -73,10 +73,7 @@ export const LeadModel: {[key: string]: IModel} = {
     label: 'Lost: Reason',
     type: 'dropdown-search',
     service: 'lostReason',
-    defaultValue: null,
-    validators: [
-      Validators.required
-    ]
+    defaultValue: null
   },
   [Fields.STATE]: {
     label: 'State',
