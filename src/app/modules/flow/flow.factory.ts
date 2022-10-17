@@ -369,6 +369,7 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        module: ModuleTypes.DEAL,
         data: {
           title: 'Opportunity Follow Up',
           // body: '',
