@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.19.7 (2022-10-17)
+
+
+### Bug Fixes
+
+* **opp-follow-up:** upgrade angular -> 14.1.3 ([87d49f3](https://github.com/4iiz/dominion-ui/commit/87d49f306fbf85c74afc68485a1ef3504633dc26))
+
 ### 1.19.6 (2022-10-17)
 
 ### 1.19.5 (2022-10-17)
