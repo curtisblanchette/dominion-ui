@@ -58,6 +58,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     private dialog: Dialog,
     private activatedRoute: ActivatedRoute
   ) {
+    this.flowService.clearEntityCache();
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
     this.objections$ = this.store.select(fromApp.selectCallObjections)
     this.valid$ = this.store.select(fromFlow.selectIsValid);

@@ -125,6 +125,13 @@ export class FlowService {
     this.noteId = undefined;
     this.callId = undefined;
 
+    this.clearEntityCache();
+
+    await this.start();
+  }
+
+  public clearEntityCache(){
+    
     this.leadService.clearCache();
     this.leadService.setFilter({});
 
@@ -151,8 +158,6 @@ export class FlowService {
 
     this.callsService.clearCache();
     this.callsService.setFilter({});
-
-    await this.start();
   }
 
   public async start(resume = false): Promise<any> {
