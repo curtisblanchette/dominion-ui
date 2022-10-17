@@ -114,7 +114,7 @@
         <p>{{data.body}}</p>
       </header>
 
-      <fiiz-data [module]="ModuleTypes.DEAL" [data]="{ id: data.id }" [options]="{grid: { minColWidth: '290px'}, state: 'edit', fields: ['stageId'] }"></fiiz-data>
+      <fiiz-data [module]="ModuleTypes.DEAL" [data]="{ id: data.id }" [options]="{grid: { minColWidth: '290px'}, state: 'edit', fields: ['stageId', 'phone'] }"></fiiz-data>
       <form [formGroup]="form" *ngIf="form" style="width: 100%;">
         <fiiz-dropdown #callStatus
                        label="Call Status"
