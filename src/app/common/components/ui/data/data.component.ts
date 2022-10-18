@@ -26,7 +26,7 @@ import { FlowService } from '../../../../modules/flow/flow.service';
 
 export interface FiizDataComponentOptions {
   controls?: boolean;
-  state: 'edit' | 'create';
+  state: 'view' | 'edit' | 'create';
   dictation?: string;
   fields: Array<string>;
   grid?: {
@@ -46,7 +46,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
   public id: string | null;
   public form: FormGroup;
   public controlData: any;
-  public submitText: string;
+  public submitText: string | undefined;
 
   public ModuleTypes: any;
 
@@ -140,12 +140,16 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
       case 'edit': {
         this.submitText = `Save ${this.module}`;
       }
-        break;
+      break;
+      case 'view': {
+        this.submitText = undefined;
+      }
+      break;
     }
 
     await this.buildForm(this.options.fields);
 
-    if(this.options.state === 'edit') {
+    if(['edit', 'view'].includes(this.options.state)) {
       this.data$.pipe(
         untilDestroyed(this),
         delay(0) // DO NOT REMOVE! -> ensure dropdowns loaded + initial values set
@@ -337,8 +341,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             const options = await dropdown?.items$.pipe(take(1)).toPromise();
             const value = options?.find(opt => opt.label === watch.equals)?.id;
             const result = res === value ? watch.then : watch.else;
-            // @ts-ignore
-            this.form.controls[watch.field][result.fn](...result.args);
+            const control = this.form.get(watch.field);
+            if(control) {
+              //@ts-ignore
+              control[result.fn](...result.args);
+            }
           });
         }
       }
