@@ -178,6 +178,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             this.form.get('leadSourceId')?.disable();
             ///////////////////////////////////////////////
 
+            this.form.get('campaignId')?.valueChanges.pipe(untilDestroyed(this)).subscribe((campaignId: any) => {
+              if(this.dropdowns){
+                const ls = this.dropdowns.find(cmp => cmp.id === 'campaignId')?.apiData.find(x => x.id === campaignId);
+                this.form.get('leadSourceId')?.patchValue(ls?.leadSourceId);
+              }
+            });
+
             of('').pipe(
               untilDestroyed(this),
               delay(200) // workaround issue: https://github.com/angular/angular/issues/14542
