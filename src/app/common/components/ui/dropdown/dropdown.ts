@@ -266,7 +266,6 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public async setTheValue(value: string, label:string ) {
     if( !label ){
-
       this.title = '--None--';
     } else {
       this.onTouched();

@@ -20,10 +20,10 @@ export class DictationPipe implements PipeTransform {
   ) {
 
     this.store.select(fromApp.selectSettings).subscribe((settings: any) => {
-      this.replacements['company'] = settings?.find((s: ISetting) => s.name === 'company_name')?.value;
+      this.replacements['company_name'] = settings?.find((s: ISetting) => s.name === 'company_name')?.value;
     });
     this.store.select(fromLogin.selectUser).subscribe((user: any) => {
-      this.replacements['username'] = user?.firstName;
+      this.replacements['user_name'] = user?.firstName;
     });
     this.store.select(fromFlow.selectAllVariables).subscribe((vars: any) => {
       this.replacements['contact_name'] = vars['contact_name'];

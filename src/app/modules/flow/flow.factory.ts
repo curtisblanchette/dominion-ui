@@ -69,7 +69,7 @@ export class FlowFactory {
         module: ModuleTypes.LEAD,
         data: {
           title: 'Lead Search',
-          dictation: 'Thank you for calling the Law Offices of {company}, this is {username}, how may I assist you today?'
+          dictation: 'Thank you for calling the Law Offices of {company_name}, this is {user_name}, how may I assist you today?'
         },
         options: {
           searchable: true,
