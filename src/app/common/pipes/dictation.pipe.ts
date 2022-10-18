@@ -27,6 +27,9 @@ export class DictationPipe implements PipeTransform {
     });
     this.store.select(fromFlow.selectAllVariables).subscribe((vars: any) => {
       this.replacements['contact_name'] = vars['contact_name'];
+      // we'll want to set these for more intuitive script dictation replacements
+      // this.replacements['last_inbound_call'] = new Date();
+      // this.replacements['last_outbound_call'] = new Date();
     });
 
   }

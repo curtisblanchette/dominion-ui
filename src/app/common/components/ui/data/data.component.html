@@ -39,13 +39,13 @@
           [max]="configuration[control.key].max"
           [placeholder]="control.label">
         </fiiz-date-picker>
-        <fiiz-select 
-          *ngIf="control.type === 'dropdown'" 
-          #dropdown 
-          [module]="control.service" 
-          [options]="{remote: true, query : {}}" 
-          [id]="control.key" 
-          [label]="control.label" 
+        <fiiz-select
+          *ngIf="control.type === 'dropdown'"
+          #dropdown
+          [module]="control.service"
+          [options]="{remote: true, query : {}}"
+          [id]="control.key"
+          [label]="control.label"
           [formControlName]="control.key"
           [required]="control.required"
           >
@@ -54,7 +54,6 @@
           *ngIf="control.type === 'dropdown-search'"
           #dropdown
           [autofocus]="isFirst"
-          (getValues)="getDropdownObjects($event)"
           type="search"
           tabindex="-1"
           [formControlName]="control.key"
@@ -63,7 +62,7 @@
           [title]="control.label"
           [module]="control.service"
           [required]="control.required"
-          [disabled]="control.key === 'leadSourceId' && control.module !== ModuleTypes.CAMPAIGN"
+          [disabled]="form.get(control.key).disabled"
         >{{control.label}}</fiiz-dropdown>
       </ng-container>
     </fiiz-grid>

@@ -171,6 +171,13 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             this.form.addControl('id', new FormControl('', Validators.required));
             this.form.setValue(entity, {emitEvent: true});
 
+            ///////////////////////////////////////////////
+            // Consider turning this into an app setting //
+            // Firms may want to change the leadSourceId //
+            ///////////////////////////////////////////////
+            this.form.get('leadSourceId')?.disable();
+            ///////////////////////////////////////////////
+
             of('').pipe(
               untilDestroyed(this),
               delay(200) // workaround issue: https://github.com/angular/angular/issues/14542
@@ -280,7 +287,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
      * example: `lostReason` is required when status is `lost`
      */
     const watchFields: {
-        [key: string]: { when: LeadFields | DealFields, equals: string, then: any, else: any, field: string }[]
+        [key: string]: { when: LeadFields | DealFields, equals?: string, then: any, else: any, field: string }[]
     } = {
       [ModuleTypes.LEAD]: [
         {
@@ -295,7 +302,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             args: [{emitEvent: false}]
           },
           field: 'lostReasonId'
-        }
+        },
       ],
       [ModuleTypes.DEAL]: [
         {
@@ -408,13 +415,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     this.id = null;
     this._dynamicCollectionService.setFilter({id: this.id}); // clear the filters
     this._dynamicCollectionService.clearCache();
-  }
-
-  public getDropdownObjects(data: any) {
-    if (data && data.leadSource) {
-      const dropdown = this.dropdowns.find(cmp => cmp.id === LeadFields.LEAD_SOURCE_ID);
-      dropdown?.setTheValue(data.leadSource.id, data.leadSource.label);
-    }
   }
 
   public override ngOnDestroy() {

@@ -95,15 +95,6 @@
         border-bottom: 1px solid rgb(255 255 255 / 10%);
       }
 
-      &.disabled {
-        background-color: #dddddd;
-
-        & a {
-          cursor: not-allowed;
-          color: #525252;
-        }
-      }
-
       &:first-child button {
         border-radius: var(--button-border-radius) var(--button-border-radius) 0 0;
       }
@@ -120,9 +111,6 @@
     fiiz-input {
       margin-bottom: 0;
 
-      input:disabled {
-        opacity: 1 !important;
-      }
     }
 
     &__wrapper {
@@ -140,11 +128,6 @@
     }
 
   }
-}
-
-.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .fiiz-dropdown-button-bottom-right {

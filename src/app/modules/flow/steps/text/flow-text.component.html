@@ -125,12 +125,27 @@
                        [module]="LookupTypes.CALL_STATUS"
                        formControlName="call_statusId">
         </fiiz-dropdown>
+
         <!-- 1. Answered -->
         <ng-container *ngIf="callStatus.value == 1">
-          <p class="dictation">{{'Hello, how are you? This is {username} from {company}, am I speaking with {contact_name}?' | dictate }}</p>
-          <p class="dictation">I called you because the consultant saw that you were unable to reach your appointment and we wanted to know if everything was okay?</p>
-          <p class="dictation" *ngIf="(vars$ | async).deal_stage === 'No Set'">The best way to help you is to set you up with another appointment, and I would be more than happy to do that for you.</p>
+          <ng-container>
+            <p class="dictation">{{'Hello am I speaking with {contact_name}? You contacted us the day (read notes) regarding some doubts you had about an immigration case. We saw that you could not schedule your consultation so I called you to see how we can help you and thus schedule your consultation with a legal advisor. Tell me what doubts did you have?' | dictate }}</p>
+            <p class="dictation">{{'Let´s see how we can help you! Allow me to formally introduce myself, my name is {username} and I am a Legal Representative, so I cannot give you legal advice. What I can do is take your information and schedule a consultation for you to meet with the right hand of the lawyer directly in our office.' | dictate}}</p>
+          </ng-container>
+
+          <ng-container *ngIf="(vars$ | async)?.deal_stage === 'No Set'">
+            <p class="dictation">{{'I called you because the consultant saw that you were unable to reach your appointment and we wanted to know if everything was okay?' | dictate}}</p>
+            <p class="dictation" *ngIf="(vars$ | async).deal_stage === 'No Show'">The best way to help you is to set you up with another appointment, and I would be more than happy to do that for you.</p>
+          </ng-container>
         </ng-container>
+
+        <!-- 4. No Answer -->
+        <ng-container *ngIf="callStatus.value == 4">
+            <ng-container *ngIf="(vars$ | async)?.deal_stage === 'No Show'">
+              <p>{{'Hello, this message is for {contact_name}, my name is {username}, and I am calling from {company_name} to follow-up and see if you had time to think about some of the information we discussed on our previous call. I would love to set you up with a free appointment to come in and speak with one of our attorneys. Please return my call at (888)-888-1113 and I will be happy to set you an appointment. Again, my name is {username}, and I look forward to hearing from you!' | dictate}}</p>
+            </ng-container>
+        </ng-container>
+
         <fiiz-dropdown label="Call Outcome" type="search" [items]="callOutcomes$" [module]="LookupTypes.CALL_OUTCOME" formControlName="call_outcomeId"></fiiz-dropdown>
 
         <!-- 2. Bad Number -->
