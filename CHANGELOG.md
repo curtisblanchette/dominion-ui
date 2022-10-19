@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.20.0 (2022-10-18)
+
+
+### Features
+
+* **develop:** add a "view" state for data.component.ts (read only) ([f24378d](https://github.com/4iiz/dominion-ui/commit/f24378d2232dc2bad2a79fff61b3218619b1c2e8))
+
 ### 1.19.11 (2022-10-18)
 
 ### 1.19.10 (2022-10-18)
