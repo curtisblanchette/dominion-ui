@@ -353,6 +353,11 @@ export class FlowService {
       this.cmpReference.instance.data = step.state.data;
       this.cmpReference.instance.options = step.state.options;
 
+      if(component.reference === 'FlowTextComponent') {
+        this.cmpReference.instance.template = step.state.template;
+      }
+
+
       if (this.cmpReference.instance instanceof FlowListComponent) {
         /**
          * Subscribe to:

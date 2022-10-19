@@ -36,7 +36,7 @@ export class FlowBuilder {
         flowService.addVariables({ call_outcomeId:  value?.id });
       });
     });
-    const callDirection = FlowFactory.callDirectionDecision();
+    const callDirection = FlowFactory.callDirection();
     const searchLeads = FlowFactory.searchLeads();
     const outboundType = FlowFactory.outboundType();
     const searchContacts = FlowFactory.searchContacts();

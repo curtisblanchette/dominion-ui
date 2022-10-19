@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef, HostBinding } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map, debounceTime, distinctUntilChanged, delay, mergeMap, tap, take } from 'rxjs';
@@ -25,7 +25,12 @@ import { FiizDropDownComponent } from '../../../../common/components/ui/dropdown
 @Component({
   selector: 'flow-text',
   templateUrl: './flow-text.component.html',
-  styleUrls: ['../_base.scss', './flow-text.component.scss']
+  styleUrls: [
+    '../_base.scss',
+    './flow-text.component.scss',
+    './_recap.scss',
+    './_opp-follow-up.scss',
+  ]
 })
 export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
   public static reference: string = 'FlowTextComponent';
@@ -66,6 +71,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         color: #C6CEED;
       }`
   };
+
+  @HostBinding('attr.data-template') template: string; // set by flowService.renderComponent
 
   @ViewChild('tinymce') tinymce: EditorComponent;
   @ViewChild('botComment') botComment: ElementRef;
@@ -163,7 +170,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     const form: any = {};
     let valid: boolean = false;
 
-    switch (this.data.template) {
+    switch (this.template) {
 
       case 'call-direction': {
         form['call_direction'] = new FormControl(this.variables['call_direction'] || null, [Validators.required]);
@@ -309,7 +316,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
 
   public async onSave(): Promise<any> {
-    switch (this.data.template) {
+    switch (this.template) {
       case 'call-direction': {
         return this.flowService.startCall(this.form.value.call_direction);
       }

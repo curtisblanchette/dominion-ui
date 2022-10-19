@@ -1,7 +1,7 @@
-<div *ngIf="!!data" [ngClass]="data.template" style="margin: auto 0;">
+<div *ngIf="!!data" [ngClass]="template">
 
-  <ng-container [ngSwitch]="data.template">
-    <ng-template [ngSwitchCase]="'call-direction'">
+  <ng-container [ngSwitch]="template">
+    <ng-template ngSwitchCase="call-direction">
       <header>
         <h3>{{data.title}}</h3>
         <p>{{data.body}}</p>
@@ -12,7 +12,7 @@
       </form>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'outbound-type'">
+    <ng-template ngSwitchCase="outbound-type">
       <header>
         <h3>{{data.title}}</h3>
         <p>{{data.body}}</p>
@@ -23,7 +23,7 @@
       </form>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'relationship-building'">
+    <ng-template ngSwitchCase="relationship-building">
       <header>
         <h3>{{data.title}}</h3>
         <p>{{data.body}}</p>
@@ -41,7 +41,7 @@
       <p class="dictation">Do you have a few minutes so that I can ask you some questions to see how we might be able to help you?</p>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'power-question'">
+    <ng-template ngSwitchCase="power-question">
       <header>
         <h3>{{data.title}}</h3>
         <p>{{data.body}}</p>
@@ -52,7 +52,11 @@
       </ol>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'recap'" >
+    <ng-template ngSwitchCase="recap">
+      <header>
+        <h3>{{data.title}}</h3>
+        <p>{{data.body}}</p>
+      </header>
       <div style="display: flex; flex-direction: column;">
         <p class="dictation">We will be sending information before, during the process and at the end of the process, so it is important that we verify the email.</p>
         <fiiz-data [module]="ModuleTypes.LEAD" [data]="{ id: (vars$ | async)?.lead }" [options]="{grid: { minColWidth: '290px'}, state: 'edit', fields: ['email', 'phone'] }"></fiiz-data>
@@ -108,7 +112,7 @@
       </form>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'opp-follow-up'">
+    <ng-template ngSwitchCase="opp-follow-up">
       <header>
         <h3>{{data.title}}</h3>
         <p>{{data.body}}</p>
@@ -180,7 +184,7 @@
       </form>
     </ng-template>
 
-    <ng-template [ngSwitchCase]="'take-notes'">
+    <ng-template ngSwitchCase="take-notes">
       <header>
         <h3>{{data.title}}</h3>
         <p>{{data.body}}</p>
