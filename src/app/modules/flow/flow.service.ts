@@ -235,6 +235,10 @@ export class FlowService {
     return notes ? notes : '';
   }
 
+  public async convertLead(leadId:string){
+    return this.http.post(`${environment.dominion_api_url}/leads/${leadId}/convert-lead`, {}).pipe(take(1)).subscribe() as unknown;
+  }
+
   public async goTo(id: string): Promise<void> {
     this.store.dispatch(flowActions.UpdateFlowAction({currentStepId: id}));
   }

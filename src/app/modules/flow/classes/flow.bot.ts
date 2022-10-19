@@ -172,7 +172,6 @@ export class FlowBot {
 
                       try {
                         await action.execute().then(() => action.message = 'Appointment Rescheduled.');
-
                         callOutcomeId = outcomes.find(o => o.label === 'Set Appointment')?.id;
                       } catch(e : any) {
                         action.status = FlowBotActionStatus.FAILURE;
@@ -240,6 +239,18 @@ export class FlowBot {
         }
         // Update the note record
         flowService.updateNote(await flowService.getNotesFromCache());
+        
+        // Update the Call record for objection
+        const objection = this.store.select(fromFlow.selectVariableByKey('objectionId'));
+        if( objection ){
+          flowService.updateCall({
+            objectionId : objection
+          });
+          // Convert the lead even if objected
+          const modIds = await this.getModuleIds();
+          await flowService.convertLead(modIds.lead);
+
+        }
         this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.SUCCESS}));
 
       } // end status !== 'complete'
@@ -255,5 +266,20 @@ export class FlowBot {
 
   }
 
+  public async getModuleIds(){
+    const moduleIds: any = this.botActions
+      .filter(action => action.operation === 'add')
+      .map(action => {
+          let data:{ [key:string] : any } = {};
+          data[action.module] = action.response.id;
+          if( ModuleTypes.EVENT == action.module ){
+            data['deal'] = action.response.dealId;
+          }
+          return data;
+        }
+      ).reduce((a, b) => ({...a, ...b}), {});
+
+    return moduleIds;
+  }
 
 }
