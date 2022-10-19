@@ -60,7 +60,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
   ) {
     this.flowService.clearEntityCache();
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
-    this.objections$ = this.store.select(fromApp.selectCallObjections)
+    this.objections$ = this.store.select(fromApp.selectCallObjections);
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.isFirstStep$ = this.store.select(fromFlow.selectIsFirstStep);
     this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
@@ -211,8 +211,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
 
   public goToObjections( value:any ){
     const id = this.flowService.builder.process.steps.find( step => step.component === 'FlowObjectionComponent' )?.id as string;
-    this.flowService.addVariables({objectionId: value.id}, id);
-    this.flowService.updateStep(id, {state: { data: { title: value.label }}});
+    this.flowService.addVariables({objectionId: value}, id);
     this.flowService.goTo(id);
   }
 
