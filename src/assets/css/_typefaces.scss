@@ -24,7 +24,9 @@ h3   { font-size: 1.5em; font-weight: 500; }
 h2   { font-size: 2.25em; font-weight: 500; }
 h1   { font-size: 3.375em; }
 
-
+p {
+  margin-bottom: 1em;
+}
 .fluid-heading {
   @include fluid-type(font-size, 320px, 1440px, 22px, 46px);
   @include fluid-type(line-height, 320px, 1440px, 22px, 46px)

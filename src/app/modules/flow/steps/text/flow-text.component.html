@@ -139,10 +139,18 @@
           </ng-container>
 
           <ng-container *ngIf="(vars$ | async)?.deal_stage === 'No Hire'">
-            <p class="dictation">{{ 'Hello, how are you? I\'m looking for {contact_name}. Good morning my name is {user_name} I calling from {company_name}. I\'m making a courtesy and quality call to know how your consultation went and evaluate our service. How did our Consultant treat you?' | dictate}}</p>
-            <p class="dictation">Well, the advisor gave me the notes, and while reviewing with the attorney, you have EXCELLENT options! (Further create urgency and schedule appointment.)</p>
+            <p class="dictation">{{ 'Hello, how are you? I\'m looking for {contact_name}. Good morning my name is {user_name}, I\'m calling from {company_name}. I\'m making a courtesy and quality call to find out how your consultation went and to evaluate our service. How did our Consultant treat you?' | dictate}}</p>
+            <p class="dictation">Well, the advisor gave me the notes, and after reviewing with the attorney, you have EXCELLENT options!</p>
+            <span style="opacity: .8;">Further create urgency and schedule appointment.</span>
             <p class="dictation">From 1 to 10, how high would you rate the Consultants service?</p>
-            <span style="opacity: .8;">IF AN 8 OR HIGHER, START ASKING OPEN ENDED QUESTIONS REGARDING THE CASE BY READING THE NOTES. OFFER OTHER CONSULT. SCHEDULE APPOINTMENT</span>
+            <span style="opacity: .8;">
+              IF AN 8 OR HIGHER:
+              <ul>
+                <li>Start asking open ended questions regarding the case by reading the notes.</li>
+                <li>Offer another consultation.</li>
+                <li>Schedule an appointment.</li>
+              </ul>
+            </span>
           </ng-container>
         </ng-container>
 
