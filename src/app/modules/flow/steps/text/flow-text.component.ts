@@ -213,7 +213,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         this.flowService.updateStep(this.flowStepId, {
           state: {
             module: ModuleTypes.LEAD,
-            data: {lead: {practiceAreaId: null, state: null}}
+            data: {lead: {practiceAreaId: this.variables['practiceAreaId'], state: this.variables['state']}}
           }
         })
       }
