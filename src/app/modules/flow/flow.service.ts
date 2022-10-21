@@ -217,6 +217,10 @@ export class FlowService {
     return this.http.put(`${environment.dominion_api_url}/events/${id}`, payload).pipe(take(1)).subscribe() as unknown as Observable<IEvent>;
   }
 
+  public updateLead(id:string, payload:any){
+    return this.http.put(`${environment.dominion_api_url}/leads/${id}`, payload).pipe(take(1)).subscribe();
+  }
+
   public async createNote(content: string): Promise<ICallNote> {
     const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.callId}/notes`, {
       content
