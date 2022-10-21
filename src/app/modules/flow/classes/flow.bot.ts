@@ -13,7 +13,6 @@ import { FlowBotAction, FlowBotActionStatus } from './flow.botAction';
 
 import { FlowStep } from './flow.step';
 import { v4 as uuidv4 } from "uuid";
-import { DropdownItem } from '../../../common/components/interfaces/dropdownitem.interface';
 
 /**
  * The FlowBot is capable of traversing a flow entirely as it was by a physical user.

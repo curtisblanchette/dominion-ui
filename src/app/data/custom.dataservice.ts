@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, mergeMap, Observable, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Update } from '@ngrx/entity';
+import { LookupTypes, ModuleTypes } from './entity-metadata';
 
 @Injectable()
 export class CustomDataService<T> extends DefaultDataService<T> {
@@ -25,6 +26,21 @@ export class CustomDataService<T> extends DefaultDataService<T> {
       httpUrlGenerator,
       config
     );
+  }
+
+  convertLead(id: string, notify: boolean = true): Observable<ModuleTypes.DEAL> {
+    if(this.entityName !== ModuleTypes.LEAD) {
+      return of('dummy-delay').pipe(
+        // delay(2000),
+        mergeMap(() => super.execute('POST', super.entityUrl + id + '/convertLead')),
+        tap((res: any) => {
+          notify && this.toastr.success(`Lead Converted`);
+
+          // TODO update the entity collection filter with the returned deal/contact.
+        })
+      )
+    }
+    throw new Error('Cannot convert a non-Lead');
   }
 
   override add(entity: Partial<DominionType>, notify: boolean = true) {
@@ -59,8 +75,8 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   }
 
   override getAll(): Observable<T[]> {
-
-    if(['role', 'practiceArea', 'leadStatus', 'callType', 'callStatus', 'callOutcome', 'eventOutcome', 'eventType', 'dealStage', 'office'].includes(this.entityName)) {
+    // transform lookups into DropDownItem's
+    if((<string[]>Object.values(LookupTypes)).includes(this.entityName)) {
       return super.getAll().pipe(map(CustomDataService.toDropdownItems));
     }
     return super.getAll();

@@ -81,7 +81,7 @@ export class FlowService {
     this.campaignService   = this.entityCollectionServiceFactory.create(ModuleTypes.CAMPAIGN);
     this.leadSourceService = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD_SOURCE);
     this.officeService     = this.entityCollectionServiceFactory.create(ModuleTypes.OFFICE);
-    this.callService      = this.entityCollectionServiceFactory.create(ModuleTypes.CALL);
+    this.callService       = this.entityCollectionServiceFactory.create(ModuleTypes.CALL);
 
     this.user$ = this.store.select(fromLogin.selectUser);
     this.callTypes$ = this.store.select(fromApp.selectLookupsByKey('callType'));
