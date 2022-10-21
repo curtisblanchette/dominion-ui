@@ -6,14 +6,13 @@ import * as fromApp from '../../../store/app.reducer';
 import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType } from '../../../common/models';
 import { ModuleTypes } from '../../../data/entity-metadata';
-import { firstValueFrom, take } from 'rxjs';
+import { firstValueFrom, lastValueFrom, take } from 'rxjs';
 import { FlowService } from '../flow.service';
 import { Injectable } from '@angular/core';
 import { FlowBotAction, FlowBotActionStatus } from './flow.botAction';
 
 import { FlowStep } from './flow.step';
 import { v4 as uuidv4 } from "uuid";
-import { DropdownItem } from '../../../common/components/interfaces/dropdownitem.interface';
 
 /**
  * The FlowBot is capable of traversing a flow entirely as it was by a physical user.
@@ -55,7 +54,8 @@ export class FlowBot {
   public run(flowService: FlowService) {
     this.store.select(fromFlow.selectFlowBotContext).pipe(take(1)).subscribe(async (result: any) => {
       let [timeline, status, didObject] = result;
-
+      let objectionId:any = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('objectionId')).pipe(take(1)));
+      
       // contains objection, filter out anything invalid
       timeline = didObject && timeline.filter((step: FlowStep) => step.valid) || timeline;
 
@@ -67,6 +67,18 @@ export class FlowBot {
       if (status !== FlowStatus.SUCCESS) {
 
         this.store.dispatch(flowActions.UpdateFlowAction({ status: FlowStatus.PENDING }));
+        const outcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callOutcome')));
+        const callType = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callType')));
+        const eventOutcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('eventOutcome')));
+        const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callStatus')));
+
+        let eventActions:{ [key:string] : any } = {};
+        const leadId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('lead')).pipe(take(1)));
+        const dealId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('deal')).pipe(take(1)));
+        let callTypeId = callType.find( type => type.label === 'Sales')?.id;
+        if( leadId && dealId ){
+          callTypeId = callType.find( type => type.label === 'Existing Lead')?.id;
+        }
 
         for (let step of timeline) {
           // clone the cached payload data from the step (it's immutable from store)
@@ -127,10 +139,6 @@ export class FlowBot {
               }
                 break;
               case 'FlowAppointmentComponent': {
-                const outcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callOutcome')));
-                const eventOutcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('eventOutcome')));
-                const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callStatus')));
-
                 // TODO outcomeId should be a retrieved value;
                 let callOutcomeId = outcomes.find(o => o.label === 'Cancelled Appointment')?.id;
                 // TODO statusId should be a retrieved value;
@@ -201,6 +209,10 @@ export class FlowBot {
                     this.botActions.push(action);
 
                     await action.execute().then(() => action.message = 'Appointment Created');
+                    eventActions = {
+                      id : action.response?.id,
+                      state : step.state.options.state
+                    };
                     flowService.updateStep(step.id, {state: {data: {id: action.response?.id}}}, 'merge');
                   }
                 }
@@ -222,7 +234,8 @@ export class FlowBot {
                   leadId: moduleIds.lead,
                   dealId: moduleIds.deal,
                   statusId: callStatusId,
-                  outcomeId: callOutcomeId
+                  outcomeId: callOutcomeId,
+                  typeId: callTypeId
                 });
               }
                 break;
@@ -238,9 +251,38 @@ export class FlowBot {
             console.error(e);
           }
         }
+
         // Update the note record
         flowService.updateNote(await flowService.getNotesFromCache());
+        // Update Call record
+        flowService.updateCall({typeId: callTypeId});
+        
         this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.SUCCESS}));
+
+        // Update the Call record if objected
+        if( didObject ){
+          /**
+           * If Call was objected, set the the call outcome to No Set
+           * Doesn't matter if the Appointment was set or not
+           */          
+          
+          flowService.updateCall({
+            outcomeId: outcomes.find(o => o.label === 'No Set')?.id,
+            objectionId : objectionId
+          });
+
+          /**
+           * If the call was objected after setting up of Appointment
+           * Cancel the Event
+           */
+          
+          if( eventActions ){
+            let eventPayload = {
+              outcomeId : eventOutcomes.find(o => o.label === 'Canceled')?.id
+            };
+            flowService.updateEvent( eventActions['id'], eventPayload);
+          }
+        }
 
       } // end status !== 'complete'
 

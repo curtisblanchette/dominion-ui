@@ -211,8 +211,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
 
   public goToObjections( value:any ){
     const id = this.flowService.builder.process.steps.find( step => step.component === 'FlowObjectionComponent' )?.id as string;
-    this.flowService.addVariables({objectionId: value.id}, id);
-    this.flowService.updateStep(id, {state: { data: { title: value.label }}});
+    this.flowService.addVariables({objectionId: value}, id);
     this.flowService.goTo(id);
   }
 

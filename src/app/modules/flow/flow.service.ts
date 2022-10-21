@@ -14,7 +14,7 @@ import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionSer
 import { LookupTypes, ModuleTypes } from '../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ICallNote } from '@4iiz/corev2';
+import { ICallNote, IEvent } from '@4iiz/corev2';
 import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromApp from '../../store/app.reducer';
@@ -211,6 +211,10 @@ export class FlowService {
       changes: payload
     }
     this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
+  }
+
+  public updateEvent(id:string, payload:any):Observable<IEvent>{
+    return this.http.put(`${environment.dominion_api_url}/events/${id}`, payload).pipe(take(1)).subscribe() as unknown as Observable<IEvent>;
   }
 
   public async createNote(content: string): Promise<ICallNote> {
