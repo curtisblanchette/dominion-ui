@@ -71,6 +71,7 @@ export class FlowBot {
         const callType = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callType')));
         const eventOutcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('eventOutcome')));
         const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callStatus')));
+        const leadStatus = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('leadStatus')));
 
         let eventActions:{ [key:string] : any } = {};
         const leadId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('lead')).pipe(take(1)));
@@ -258,8 +259,8 @@ export class FlowBot {
         // Update the note record
         flowService.updateNote(await flowService.getNotesFromCache());
         // Update Call record
-        flowService.updateCall({typeId: callTypeId});
-        
+        flowService.updateCall({typeId: callTypeId});        
+
         this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.SUCCESS}));
 
         // Update the Call record if objected
@@ -277,13 +278,17 @@ export class FlowBot {
           /**
            * If the call was objected after setting up of Appointment
            * Cancel the Event
+           * Update lead status to No Set
            */
           
           if( eventActions ){
             let eventPayload = {
               outcomeId : eventOutcomes.find(o => o.label === 'Canceled')?.id
             };
-            flowService.updateEvent( eventActions['id'], eventPayload);
+            flowService.updateEvent(eventActions['id'], eventPayload);
+            // Update lead status
+            let getLeadId: any = await firstValueFrom(this.services['leadService'].filter$);
+            flowService.updateLead(getLeadId['id'], {statusId : leadStatus.find(ls => ls.label === 'No Set')?.id });
           }
         }
 
