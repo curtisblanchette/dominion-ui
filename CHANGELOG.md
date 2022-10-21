@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.4 (2022-10-21)
+
+
+### Bug Fixes
+
+* **II-2847:** objection script now loading ([#73](https://github.com/4iiz/dominion-ui/issues/73)) ([bf6d49a](https://github.com/4iiz/dominion-ui/commit/bf6d49a55a053cc7cd49c5f69982ddc80c37cba1))
+
 ### 1.20.3 (2022-10-21)
 
 
