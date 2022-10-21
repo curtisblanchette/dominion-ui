@@ -68,7 +68,7 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
 
       if (value.record.contactId || (value.record.contacts && value.record.contacts.length)) {
         variables[ModuleTypes.CONTACT] = value.record.contactId || value.record.contacts[0]?.id;
-        if(value.record.contacts.length) {
+        if(value.record?.contacts?.length) {
           // there's at least 1 contact related to the selected record
           variables['contact_name'] = value.record.contacts[0]?.firstName + ' ' + value.record.contacts[0]?.lastName
         }
