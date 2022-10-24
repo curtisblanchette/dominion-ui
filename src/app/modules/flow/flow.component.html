@@ -1,11 +1,11 @@
 <div class="flow-layout">
 
 
-  <header style="padding-top: 20px;">
+  <header>
     <!--    <fiiz-dropdown type="button" (onClick)="handleFabAction($event)" [items]="menuItems" position="bottom-right"></fiiz-dropdown>-->
     <fiiz-dropdown
       size="small"
-      #objectionDropdown      
+      #objectionDropdown
       id="objection"
       type="search"
       [items]="objections$"
@@ -35,7 +35,7 @@
   </section>
 
   <section [@slide]="animationIndex" class="flow-layout__content">
-    <div style="position: absolute; top: 20px; left: 0; right: 0; bottom: 20px;">
+    <div class="viewport">
       <ng-template flowHost></ng-template>
       <footer *ngIf="(status$ | async) !== 'success'">
         <fiiz-button id="back" (click)="onBack($event)" stroked [disabled]="isFirstStep$ | async">Back</fiiz-button>

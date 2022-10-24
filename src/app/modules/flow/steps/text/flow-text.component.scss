@@ -1,12 +1,13 @@
 @import '../../../../../assets/css/mixins';
 
 :host {
+  text-align: center;
 
   & > div {
     width: 100%;
   }
 
-  text-align: center;
+
 
   @include hideScrollBars();
 

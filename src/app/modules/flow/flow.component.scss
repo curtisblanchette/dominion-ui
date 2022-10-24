@@ -23,11 +23,14 @@ router-outlet {
 
   header {
     display: flex;
-    justify-content: end;
+    justify-content: center;
     gap: .5em;
+
+    padding-top: 20px;
     padding-right: var(--container-padding);
     padding-left: var(--container-padding);
   }
+
   &__content {
     display: flex;
     flex-direction: column;
@@ -35,9 +38,17 @@ router-outlet {
     justify-content: space-around;
     overflow-x: hidden;
     overflow-y: scroll;
-    max-width: 40%;
+    max-width: 100%;
     margin: 0 auto;
     width: 100%;
+
+    .viewport {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+    }
 
     &::-webkit-scrollbar {
       display: none;
@@ -46,10 +57,10 @@ router-outlet {
 
 
   &__left {
+    display: none;
     overflow: hidden;
     height: var(--full-height-minus-navbar);
     position: absolute;
-    display: flex;
     align-items: center;
     left: 0;
     padding: 0;
@@ -74,8 +85,8 @@ router-outlet {
     flex: 0;
     position: absolute;
     bottom: 0;
-    left:0;
-    right:0;
+    left: 0;
+    right: 0;
 
     button {
       margin: 0;
@@ -104,7 +115,7 @@ section ng-component {
 }
 
 
-@media all and (min-width: 1024px ) {
+@media all and (min-width: 1024px) {
   .flow-layout__content {
     max-width: 600px;
   }
@@ -112,4 +123,24 @@ section ng-component {
   .flow-layout footer {
     max-width: 600px;
   }
+}
+
+
+@media all and (min-width: 640px) {
+  .flow-layout header {
+    justify-content: end;
+  }
+
+  .flow-layout__left {
+    display: flex;
+  }
+  .flow-layout__content {
+    max-width: 40%;
+  }
+  .flow-layout__content .viewport {
+    left: 0;
+    right: 0;
+  }
+
+
 }
