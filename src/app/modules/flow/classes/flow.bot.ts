@@ -111,15 +111,18 @@ export class FlowBot {
                 await action.execute().then(response => {
                   if(step.state.module === ModuleTypes.DEAL || step.state.module === ModuleTypes.LEAD) {
                     // update the call with the new lead / deal id
-                    // this.store.dispatch(flowActions.UpdateStepAction({
-                    //   id: step.id,
-                    //   changes: {
-                    //     variables: {
-                    //       [step.state.module]: response.id
-                    //     }
-                    //   },
-                    //   strategy: 'merge'
-                    // }));
+                    if(operation === 'add') {
+                      this.store.dispatch(flowActions.UpdateStepAction({
+                        id: step.id,
+                        changes: {
+                          variables: {
+                            [step.state.module]: response.id
+                          }
+                        },
+                        strategy: 'merge'
+                      }));
+                    }
+
                   }
                 });
 

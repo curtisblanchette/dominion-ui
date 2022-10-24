@@ -1,5 +1,4 @@
 import { EntityMetadataMap } from '@ngrx/data';
-import { SetLookupsAction } from '../store/app.actions';
 
 export enum ModuleTypes {
   ADDRESS = 'address',
