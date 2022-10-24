@@ -84,6 +84,11 @@ export const DealModel: {[key: string]: IModel} = {
       Validators.required
     ]
   },
+  scheduledCallBack: {
+    label: 'Scheduled Call Back',
+    type: 'both',
+    defaultValue: null
+  },
   score: {
     label: 'Score',
     type: 'number',
