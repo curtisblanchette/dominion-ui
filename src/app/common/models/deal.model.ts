@@ -83,5 +83,10 @@ export const DealModel: {[key: string]: IModel} = {
     validators: [
       Validators.required
     ]
-  }
+  },
+  score: {
+    label: 'Score',
+    type: 'number',
+    defaultValue: 100
+  },
 }

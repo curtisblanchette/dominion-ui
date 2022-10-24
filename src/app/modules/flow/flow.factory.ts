@@ -350,6 +350,9 @@ export class FlowFactory {
           columns: [],
           query: {
             stageId: '2,4,5',
+            score: {
+              gt: 1
+            }
           },
           controls: {
             perPage: false,

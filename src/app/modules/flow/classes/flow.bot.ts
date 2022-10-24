@@ -240,6 +240,8 @@ export class FlowBot {
             console.error(e);
           }
         }
+        // update the call record endTime
+        flowService.addVariables({ call_endTime: new Date().toISOString() });
         // Update the note record
         flowService.updateNote(await flowService.getNotesFromCache());
         this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.SUCCESS}));

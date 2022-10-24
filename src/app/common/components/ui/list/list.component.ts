@@ -273,13 +273,25 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       params['sort_by'] = this.sortColumn;
     }
 
+    // TODO needs to be fixed - setting is not explicit
     if( this.sortDirection ){
       params['sort'] = 'DESC';
     } else {
       params['sort'] = 'ASC';
     }
 
-    return {...params, ...this.options.query};
+    for(const param in this.options.query) {
+      if(typeof this.options.query[param] === 'object' && !Array.isArray(this.options.query[param])) {
+        const op = Object.keys(this.options.query[param]).shift();
+        if(op) {
+          params[`${param}[${op}]`] = this.options.query[param][op];
+        }
+      } else {
+          params[param] = this.options.query[param];
+      }
+    }
+
+    return params;
   }
 
   public performAction( value:any ){

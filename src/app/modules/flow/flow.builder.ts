@@ -385,7 +385,7 @@ export class FlowBuilder {
       'Take Notes',
       (vars: any) =>
         vars['call_reason'] === 'take-notes' ||
-        [1, 5, 6, 7, 8, 9, 10].includes(vars['call_outcomeId']),
+        [1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].includes(vars['call_outcomeId']),
       {},
       notes.id
     );

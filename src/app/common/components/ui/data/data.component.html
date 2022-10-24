@@ -6,7 +6,7 @@
         <fiiz-input
           #inputList
           [autofocus]="isFirst"
-          *ngIf="['text','tel','email'].includes(control.type)"
+          *ngIf="['text','tel','email','number'].includes(control.type)"
           [type]="control.type"
           [id]="control.key"
           [label]="control.label"
