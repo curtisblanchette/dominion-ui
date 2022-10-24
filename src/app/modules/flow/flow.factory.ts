@@ -4,6 +4,7 @@ import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
 import { Fields as EventFields } from '../../common/models/event.model';
 import { ModuleTypes } from '../../data/entity-metadata';
+import { environment } from '../../../environments/environment';
 
 export class FlowFactory {
 
@@ -351,7 +352,7 @@ export class FlowFactory {
           query: {
             stageId: '2,4,5',
             score: {
-              gt: 1
+              gt: environment.opp_follow_up_min_score
             }
           },
           controls: {
