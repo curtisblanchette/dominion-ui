@@ -2,6 +2,7 @@ import { Validators } from '@angular/forms';
 import { IModel } from './index';
 import { timestamps } from './_timestamps.model';
 import { ModuleTypes } from '../../data/entity-metadata';
+import dayjs from 'dayjs';
 
 export enum Fields {
   NAME = 'name',
@@ -87,7 +88,7 @@ export const DealModel: {[key: string]: IModel} = {
   scheduledCallBack: {
     label: 'Scheduled Call Back',
     type: 'both',
-    defaultValue: null
+    defaultValue: dayjs().format(),
   },
   score: {
     label: 'Score',

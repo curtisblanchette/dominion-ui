@@ -68,6 +68,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     endDate: {
       min: null,
       max: null
+    },
+    // scheduledCallBack
+    scheduledCallBack: {
+      min: dayjs().format(),
+      max: null
     }
   };
 
