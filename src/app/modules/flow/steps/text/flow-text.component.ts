@@ -198,7 +198,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'opp-follow-up': {
         // get all outcomes from the server
-        this.callOutcomes$ = this.store.select(fromApp.selectLookupsByKey('callOutcome'));
+        this.callOutcomes$ = this.store.select(fromApp.selectLookupsByKey('callOutcome')).pipe(map((o: DropdownItem[]) => {
+          return o.filter((x: any) => ![3,4].includes(x.id));
+        }));
 
         form['call_statusId'] = new FormControl(this.variables['call_statusId'] || null, [Validators.required]);
         form['call_outcomeId'] = new FormControl(this.variables['call_outcomeId'] || null, [Validators.required]);
