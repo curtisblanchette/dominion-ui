@@ -230,7 +230,7 @@ export class FlowBot {
                 break;
               case 'FlowTextComponent': {
                 if (step.state.template === 'opp-follow-up') {
-                   this.services[ModuleTypes.DEAL].update({id: step.data.id, scheduledCallBack: new Date()})
+                   this.services[`${ModuleTypes.DEAL}Service`].update({id: step.state.data.id, scheduledCallBack: new Date()})
                 }
               }
                 break;
