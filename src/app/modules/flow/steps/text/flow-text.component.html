@@ -164,14 +164,18 @@
           <p *ngIf="(vars$ | async)?.deal_stage === 'No Show' || (vars$ | async)?.deal_stage === 'No Hire'">{{'Hello, this message is for {contact_name}, my name is {user_name}, and I am calling from {company_name}. I saw that you were unable to make your appointment. To best help you, we need to get you in here right away. Please return my call at 888-888-1113 and I will be happy to set you another appointment. Again, my name is {user_name} and I look forward to hearing from you!' | dictate}}</p>
         </ng-container>
 
-        <fiiz-dropdown #callOutcome position="top-left" label="Call Outcome" type="search" [items]="callOutcomes$" [module]="LookupTypes.CALL_OUTCOME" formControlName="call_outcomeId"></fiiz-dropdown>
-        <fiiz-date-picker *ngIf="callOutcome.value === 6"
-                          #scheduledCallBack
-                          pickerType="both"
-                          label="Scheduled Call Back"
-                          [required]="callOutcome.value === 6"
-                          placeholder="Scheduled Call Back">
-        </fiiz-date-picker>
+        <div style="display: flex; gap: 1em; flex-wrap: wrap;">
+          <fiiz-dropdown style="flex:1 200px;" #callOutcome position="top-left" label="Call Outcome" type="search" [items]="callOutcomes$" [module]="LookupTypes.CALL_OUTCOME" formControlName="call_outcomeId"></fiiz-dropdown>
+          <fiiz-date-picker *ngIf="callOutcome.value === 6"
+                            style="flex:1 200px;"
+                            #scheduledCallBack
+                            pickerType="both"
+                            label="Scheduled Call Back"
+                            [required]="callOutcome.value === 6"
+                            placeholder="Scheduled Call Back">
+          </fiiz-date-picker>
+        </div>
+
         <!-- 2. Bad Number -->
         <!-- 3. Client Hung Up -->
         <!-- 5. Number Disconnected -->
