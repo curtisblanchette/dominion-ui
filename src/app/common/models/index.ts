@@ -5,7 +5,7 @@ import { DealModel } from './deal.model';
 import { EventModel } from './event.model';
 import { LeadSourceModel } from './leadSource.model';
 import { LeadModel } from './lead.model';
-import { Address, Call, Call_Note, Campaign, Contact, Deal, Event, Event_Note, ICall, ICallDTO, ICallNoteDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, IEventNoteDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, Lead, LeadSource, LK_PracticeArea, Office } from '@4iiz/corev2';
+import { Address, Call, Call_Note, Campaign, Contact, Deal, Event, Event_Note, ICall, ICallDTO, ICallNoteDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, IEventNoteDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, Lead, LeadSource, LK_PracticeArea, Office } from '@4iiz/corev2/dist/models/index';
 import { Validators } from '@angular/forms';
 import { AddressModel } from './address.model';
 import { OfficeModel } from './office.model';
