@@ -15,7 +15,7 @@ import * as fromFlow from '../../store/flow.reducer';
 import * as fromApp from '../../../../store/app.reducer';
 import { LookupTypes, ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
-import { RadioItem } from '../../../../common/components/ui/forms';
+import { FiizDatePickerComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
@@ -78,6 +78,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   @ViewChild('botComment') botComment: ElementRef;
   @ViewChild('callStatusDropdown') callStatusDropdown: FiizDropDownComponent;
   @ViewChild('callReasonDropdown') callReasonDropdown: FiizDropDownComponent;
+  @ViewChild('scheduledCallBack') scheduledCallBack: FiizDatePickerComponent;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -315,6 +316,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   }
 
 
+
   public async onSave(): Promise<any> {
     switch (this.template) {
       case 'call-direction': {
@@ -328,6 +330,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         leadForm?.form.markAsDirty();
         return leadForm?.save(true);
       }
+      case 'opp-follow-up': {
+        this.flowService.addVariables({ deal: { scheduledCallBack: this.scheduledCallBack?.value || null }});
+      }
+      break;
       case 'take-notes' : {
         this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
       }
