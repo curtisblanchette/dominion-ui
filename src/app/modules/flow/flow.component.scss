@@ -115,16 +115,6 @@ section ng-component {
 }
 
 
-@media all and (min-width: 1024px) {
-  .flow-layout__content {
-    max-width: 600px;
-  }
-
-  .flow-layout footer {
-    max-width: 600px;
-  }
-}
-
 
 @media all and (min-width: 640px) {
   .flow-layout header {
@@ -141,6 +131,18 @@ section ng-component {
     left: 0;
     right: 0;
   }
+}
 
+@media all and (min-width: 1024px) {
+  .flow-layout__content {
+    max-width: 600px;
+  }
 
+  .flow-layout__content {
+    max-width: 50%;
+  }
+
+  .flow-layout footer {
+    max-width: 600px;
+  }
 }
