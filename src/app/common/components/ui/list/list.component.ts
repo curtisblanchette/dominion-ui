@@ -89,11 +89,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       label: 'Delete',
       icon: 'fa-solid fa-trash',
       emitterValue : 'delete'
-    },
-    {
-      label: 'Something',
-      icon: 'fa-brands fa-500px',
-      emitterValue : 'so-something'
     }
   ]);
 

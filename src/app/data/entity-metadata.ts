@@ -123,6 +123,8 @@ export const uriOverrides: { [key: string]: string } = {
   [ModuleTypes.CONTACT]: 'contacts',
   [ModuleTypes.LEAD]: 'leads',
   [ModuleTypes.DEAL]: 'deals',
+  [ModuleTypes.CALL]: 'calls',
+  [ModuleTypes.EVENT]: 'events',
   [ModuleTypes.LEAD_SOURCE]: 'lead-sources',
   [LookupTypes.PRACTICE_AREA]: 'practice-areas',
   [LookupTypes.LEAD_STATUS]: 'lead-statuses',
