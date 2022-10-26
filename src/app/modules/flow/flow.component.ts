@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
 import { firstValueFrom, lastValueFrom, Observable, take, withLatestFrom } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FiizDropDownComponent, IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';

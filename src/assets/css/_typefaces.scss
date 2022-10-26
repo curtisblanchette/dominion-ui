@@ -31,3 +31,8 @@ p {
   @include fluid-type(font-size, 320px, 1440px, 22px, 46px);
   @include fluid-type(line-height, 320px, 1440px, 22px, 46px)
 }
+
+pre {
+  background: rgba(0,0,0,.25);
+  padding: .5em;
+}
