@@ -31,9 +31,11 @@ export class FlowBuilder {
     const objection = FlowFactory.objection();
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
-    const notes = FlowFactory.takeNotes(async (flowService: FlowService ) => {
-      flowService.addVariables({
-        call_outcomeId: await flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(value => value?.id)
+    const notes = FlowFactory.takeNotes((flowService: FlowService ) => {
+      flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(o => {
+        flowService.addVariables({
+          call_outcomeId:  o?.id
+        });
       });
     });
     const callDirection = FlowFactory.callDirection();
@@ -41,9 +43,11 @@ export class FlowBuilder {
     const outboundType = FlowFactory.outboundType();
     const searchContacts = FlowFactory.searchContacts();
 
-    const createLead = FlowFactory.createLead(async (flowService: FlowService) => {
-      flowService.addVariables({
-        call_typeId: await flowService.getLookupByLabel('callType', 'Sales').then(value => value?.id)
+    const createLead = FlowFactory.createLead((flowService: FlowService) => {
+      flowService.getLookupByLabel('callType', 'Sales').then(t => {
+        flowService.addVariables({
+          call_typeId: t?.id
+        });
       });
     });
 
@@ -88,16 +92,16 @@ export class FlowBuilder {
       return step;
     });
 
-    const editOpp = FlowFactory.editDeal(async (flowService: FlowService, vars: any, step: any) => {
+    const editOpp = FlowFactory.editDeal((flowService: FlowService, vars: any, step: any) => {
       step.state.data = {
         id: vars.deal,
         leadId: vars.lead
       };
-
-      flowService.addVariables({
-        call_typeId: await flowService.getLookupByLabel('callType', 'Sales').then( value => value?.id)
+      flowService.getLookupByLabel('callType', 'Sales').then(s => {
+        flowService.addVariables({
+          call_typeId: s?.id
+        });
       });
-
       return step;
     });
 
@@ -110,7 +114,7 @@ export class FlowBuilder {
     const powerQuestion = FlowFactory.powerQuestion();
     const toPowerQuestion = FlowFactory.link(relationshipBuilding.id, powerQuestion.id);
 
-    const setAppointment = FlowFactory.setAppointment(async (flowService: FlowService, vars: any, step: any) => {
+    const setAppointment = FlowFactory.setAppointment((flowService: FlowService, vars: any, step: any) => {
       // globals
       step.state.options['payload'] = {
         contactId: vars.contact,
@@ -122,27 +126,39 @@ export class FlowBuilder {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
           step.state.data.resolveId = vars.event;
-          flowService.addVariables({
-            call_typeId: await flowService.getLookupByLabel('callType', 'Matter Related').then(t => t?.id),
-            call_outcomeId: await flowService.getLookupByLabel('callOutcome', 'Canceled').then(o => o?.id)
+          flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+            flowService.getLookupByLabel('callOutcome', 'Canceled').then(o => {
+              flowService.addVariables({
+                call_typeId: t?.id,
+                call_outcomeId: o?.id
+              });
+            });
           });
         }
           break;
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
           step.state.data.resolveId = vars.event;
-          flowService.addVariables({
-            call_typeId: await flowService.getLookupByLabel('callType', 'Matter Related').then(t => t?.id),
-            call_outcomeId: await flowService.getLookupByLabel('callOutcome', 'Rescheduled').then(o => o?.id)
+          flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+            flowService.getLookupByLabel('callOutcome', 'Rescheduled').then(o => {
+              flowService.addVariables({
+                call_typeId: t?.id,
+                call_outcomeId: o?.id
+              });
+            });
           });
         }
           break;
         // no event selected
         case vars.call_reason === 'set-appointment' || !vars.event: {
           step.state.options.state = 'set';
-          flowService.addVariables({
-            call_typeId: await flowService.getLookupByLabel('callType', 'Matter Related').then(t => t?.id),
-            call_outcomeId: await flowService.getLookupByLabel('callOutcome', 'Set Appointment').then(o => o?.id)
+          flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+            flowService.getLookupByLabel('callOutcome', 'Set Appointment').then(o => {
+              flowService.addVariables({
+                call_typeId:  t?.id,
+                call_outcomeId: o?.id
+              });
+            });
           });
         }
           break;
