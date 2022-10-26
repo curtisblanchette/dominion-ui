@@ -134,7 +134,11 @@ export class DataComponent implements OnInit {
 
   public delete(): Promise<any> {
     if(this.componentRef instanceof FiizListComponent && this.componentRef.selected?.id) {
-      return this.componentRef._dynamicCollectionService.delete( this.componentRef.selected.id ).toPromise();
+      return this.componentRef._dynamicCollectionService.delete( this.componentRef.selected.id ).toPromise().then((res) => {
+        // we detach data$ from filteredEntities$ when calling getById or getWithQuery
+        // TODO Fix why a hack to re-connect filteredEntities$ to data$ is necessary
+        this.componentRef.data$ = this.componentRef._dynamicCollectionService.filteredEntities$;
+      });
     }
     return Promise.resolve();
   }
