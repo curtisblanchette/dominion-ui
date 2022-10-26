@@ -314,10 +314,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         mergeMap(async (html) => this.flowService.updateNotesToCache(this.tinymce.editor.getContent()))
       ).subscribe();
     }
-
   }
-
-
 
   public async onSave(): Promise<any> {
     switch (this.template) {
@@ -333,7 +330,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         return leadForm?.save(true);
       }
       case 'opp-follow-up': {
-        this.flowService.addVariables({ deal: { scheduledCallBack: this.scheduledCallBack?.value || null }});
+        this.flowService.updateStep(this.flowStepId, { state: { data: { deal: { scheduledCallBack: this.scheduledCallBack?.value || null }}}}, 'merge');
       }
       break;
       case 'take-notes' : {
