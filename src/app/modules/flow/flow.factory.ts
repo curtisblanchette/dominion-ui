@@ -352,7 +352,7 @@ export class FlowFactory {
           query: {
             stageId: '2,4,5',
             scheduledCallBack: {
-              lt: new Date()
+              lt: new Date() // keep in mind: this only updates when the call resets
             },
             score: {
               gt: environment.opp_follow_up_min_score
