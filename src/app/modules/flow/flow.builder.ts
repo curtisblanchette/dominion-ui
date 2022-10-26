@@ -32,9 +32,12 @@ export class FlowBuilder {
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
     const notes = FlowFactory.takeNotes((flowService: FlowService ) => {
-      flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(o => {
-        flowService.addVariables({
-          call_outcomeId:  o?.id
+      flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+        flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(o => {
+          flowService.addVariables({
+            call_typeId: t?.id,
+            call_outcomeId:  o?.id
+          });
         });
       });
     });
