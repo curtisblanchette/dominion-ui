@@ -351,9 +351,14 @@ export class FlowFactory {
           columns: [],
           query: {
             stageId: '2,4,5',
+            scheduledCallBack: {
+              lt: new Date()
+            },
             score: {
               gt: environment.opp_follow_up_min_score
-            }
+            },
+            sort_by: 'score',
+            sort: 'DESC'
           },
           controls: {
             perPage: false,
