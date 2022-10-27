@@ -75,7 +75,7 @@ export class NavbarComponent implements AfterViewInit {
       roles: ['system']
     }
   ];
-  
+
 
   @HostListener('window:resize', ['$event'])
   onWindowResize() {
@@ -95,7 +95,7 @@ export class NavbarComponent implements AfterViewInit {
 
   @HostListener('document:click')
   clickOutside() {
-    this.menu.map(x =>  x.open = false);
+    this.menu.map(x => x.open = false);
   }
 
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
@@ -150,12 +150,9 @@ export class NavbarComponent implements AfterViewInit {
     }
   }
 
-  overlayOutsideClick( event:any ){
-    const elm:HTMLElement = event.srcElement;
-    console.log(elm);
-    console.log(elm.id);
+  overlayOutsideClick() {
     // We want it to be always be false if clicked outside or on responsive bars
-    this.menuOpen = false;    
+    this.menuOpen = false;
   }
 
 
