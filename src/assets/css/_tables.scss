@@ -2,7 +2,6 @@
 
 
 .flex-table {
-  //margin-bottom: 2em;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -11,12 +10,12 @@
   &__header {
     display: flex;
     flex-direction: row;
-    //justify-content: space-between;
     justify-content: center;
     flex-wrap: nowrap;
     align-content: center;
     align-items: flex-end;
     color: #80CBC2;
+    margin-top: 1.5em;
 
     &__heading {
 
