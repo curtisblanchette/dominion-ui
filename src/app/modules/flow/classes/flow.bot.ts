@@ -295,7 +295,38 @@ export class FlowBot {
             }
           }
 
+          // Update the Call record if objected
+          if( didObject ){
+            /**
+             * If Call was objected, set the the call outcome to No Set
+             * Doesn't matter if the Appointment was set or not
+             */          
+            
+            flowService.updateCall({
+              outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
+              objectionId : objectionId
+            });
+
+            /**
+             * If the call was objected after setting up of Appointment
+             * Cancel the Event
+             * Update lead status to No Set
+             */
+            
+            if( eventActions ){
+              let eventPayload = {
+                outcomeId : eventOutcomes.find((o:any) => o.label === 'Canceled')?.id
+              };
+              flowService.updateEvent(eventActions['id'], eventPayload);
+              // Update lead status
+              let getLeadId: any = await firstValueFrom(this.services['leadService'].filter$);
+              flowService.updateLead(getLeadId['id'], {statusId : leadStatuses.find((ls:any) => ls.label === 'No Set')?.id });
+            }
+          }
+
         })
+
+        
 
       } // end status !== 'complete'
 
