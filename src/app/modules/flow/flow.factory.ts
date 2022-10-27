@@ -75,16 +75,16 @@ export class FlowFactory {
         options: {
           searchable: true,
           editable: false,
-          loadInitial: false,
-          perPage: 25,
+          loadInitial: true,
+          perPage: 7,
           columns: [],
           query: {
-            limit: 7
+            // limit: 7
           },
           controls: {
-            perPage: false,
-            pagination: false,
-            createNew:true,
+            perPage: true,
+            pagination: true,
+            createNew: true,
           }
         }
       }
