@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.29 (2022-10-27)
+
+
+### Bug Fixes
+
+* **II-2859:** Fix mobile menu closing ([#76](https://github.com/4iiz/dominion-ui/issues/76)) ([61e85d1](https://github.com/4iiz/dominion-ui/commit/61e85d12f77a20b517ea5bcf4e2fbc3e5b152c1c))
+
 ### 1.20.28 (2022-10-26)
 
 ### 1.20.27 (2022-10-26)
