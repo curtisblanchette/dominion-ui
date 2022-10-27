@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.31 (2022-10-27)
+
+
+### Bug Fixes
+
+* **II-2836:** pagination control styles ([1cb6a21](https://github.com/4iiz/dominion-ui/commit/1cb6a21c05459e94a018c1bfe5dfa57541dc7054))
+
 ### 1.20.30 (2022-10-27)
 
 ### 1.20.29 (2022-10-27)
