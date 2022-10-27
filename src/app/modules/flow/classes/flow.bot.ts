@@ -67,230 +67,235 @@ export class FlowBot {
       if (status !== FlowStatus.SUCCESS) {
 
         this.store.dispatch(flowActions.UpdateFlowAction({ status: FlowStatus.PENDING }));
-        const outcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callOutcome')));
-        const callType = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callType')));
-        const eventOutcomes = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('eventOutcome')));
-        const statuses = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('callStatus')));
-        const leadStatus = await firstValueFrom(this.appStore.select(fromApp.selectLookupsByKey('leadStatus')));
+        this.store.select(fromApp.selectLookups).pipe(take(1)).subscribe( async(lookups:any) => {
 
-        let eventActions:{ [key:string] : any } = {};
-        const leadId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('lead')).pipe(take(1)));
-        const dealId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('deal')).pipe(take(1)));
-        let callTypeId = callType.find( type => type.label === 'Sales')?.id;
-        if( leadId && dealId ){
-          callTypeId = callType.find( type => type.label === 'Existing Lead')?.id;
-        }
+          const callOutcomes = lookups.callOutcome;
+          const callTypes = lookups.callType;
+          const eventOutcomes = lookups.eventOutcome;
+          const callStatuses = lookups.callStatus;
+          const leadStatuses = lookups.leadStatus;
 
-        for (let step of timeline) {
-          // clone the cached payload data from the step (it's immutable from store)
-          let payload = {...step.state.data[step.state.module]};
+          let eventActions:{ [key:string] : any } = {};
 
-          try {
-            switch (step.component) {
-              case 'FlowDataComponent': {
-                const service = this.services[`${step.state.module}Service`];
-                const operation = step.state.options.state === 'create' ? 'add' : 'update';
+          const leadId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('lead')).pipe(take(1)));
+          const dealId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('deal')).pipe(take(1)));
+          let callTypeId = callTypes.find( (type:any) => type.label === 'Sales')?.id;
+          if( leadId && dealId ){
+            callTypeId = callTypes.find( (type:any) => type.label === 'Existing Lead')?.id;
+          }
 
-                // some FlowTextComponents need to perform updates on entities
-                // we'll capture the extra entity payloads now
-                const additions = timeline
-                  .filter((step: FlowStep) => step.component === "FlowTextComponent" && step.state.data[step.state.module])
-                  .map((x: FlowStep) => x.state.data[step.state.module])
-                  .reduce((a: any, b: any) => {
-                    return { ...a, ...b };
-                  }, {});
+          for (let step of timeline) {
+            // clone the cached payload data from the step (it's immutable from store)
+            let payload = {...step.state.data[step.state.module]};
 
-                if(Object.keys(additions).length) {
-                  payload = {...payload, ...additions};
-                }
+            try {
+              switch (step.component) {
+                case 'FlowDataComponent': {
+                  const service = this.services[`${step.state.module}Service`];
+                  const operation = step.state.options.state === 'create' ? 'add' : 'update';
 
-                let filter: any = await firstValueFrom(service.filter$);
-                if (filter['id']) {
-                  payload['id'] = filter['id'];
-                }
+                  // some FlowTextComponents need to perform updates on entities
+                  // we'll capture the extra entity payloads now
+                  const additions = timeline
+                    .filter((step: FlowStep) => step.component === "FlowTextComponent" && step.state.data[step.state.module])
+                    .map((x: FlowStep) => x.state.data[step.state.module])
+                    .reduce((a: any, b: any) => {
+                      return { ...a, ...b };
+                    }, {});
 
-                if(step.state.data.payload) {
-                  payload = { ...payload, ...step.state.data.payload };
-                }
+                  if(Object.keys(additions).length) {
+                    payload = {...payload, ...additions};
+                  }
 
-                const action = new FlowBotAction(this.entityCollectionServiceFactory,{
-                  name: operation + '-' + step.state.module,
-                  icon: 'fa-user',
-                  module: step.state.module,
-                  operation,
-                  payload
-                });
-                this.botActions.push(action);
+                  let filter: any = await firstValueFrom(service.filter$);
+                  if (filter['id']) {
+                    payload['id'] = filter['id'];
+                  }
 
-                await action.execute().then(response => {
-                  if(step.state.module === ModuleTypes.DEAL || step.state.module === ModuleTypes.LEAD) {
-                    // update the call with the new lead / deal id
-                    if(operation === 'add') {
-                      this.store.dispatch(flowActions.UpdateStepAction({
-                        id: step.id,
-                        changes: {
-                          variables: {
-                            [step.state.module]: response.id
-                          }
-                        },
-                        strategy: 'merge'
-                      }));
+                  if(step.state.data.payload) {
+                    payload = { ...payload, ...step.state.data.payload };
+                  }
+
+                  const action = new FlowBotAction(this.entityCollectionServiceFactory,{
+                    name: operation + '-' + step.state.module,
+                    icon: 'fa-user',
+                    module: step.state.module,
+                    operation,
+                    payload
+                  });
+                  this.botActions.push(action);
+
+                  await action.execute().then(response => {
+                    if(step.state.module === ModuleTypes.DEAL || step.state.module === ModuleTypes.LEAD) {
+                      // update the call with the new lead / deal id
+                      if(operation === 'add') {
+                        this.store.dispatch(flowActions.UpdateStepAction({
+                          id: step.id,
+                          changes: {
+                            variables: {
+                              [step.state.module]: response.id
+                            }
+                          },
+                          strategy: 'merge'
+                        }));
+                      }
+
                     }
+                  });
 
-                  }
-                });
-
-              }
-                break;
-              case 'FlowAppointmentComponent': {
-                // TODO outcomeId should be a retrieved value;
-                let callOutcomeId = outcomes.find(o => o.label === 'Cancelled Appointment')?.id;
-                // TODO statusId should be a retrieved value;
-                let callStatusId = statuses.find(o => o.label === 'Answered')?.id;
-
-                switch (step.state.options.state) {
-                  case 'cancel': {
-                    const action = new FlowBotAction(this.entityCollectionServiceFactory, {
-                      name: 'cancel-event',
-                      icon: 'fa-calendar',
-                      module: ModuleTypes.EVENT,
-                      operation: 'update',
-                      payload: {
-                        id: step.state.data.toCancel,
-                        outcomeId: eventOutcomes.find(o => o.label === 'Canceled')?.id
-                      },
-                      message: 'Cancel Event',
-                    });
-                    this.botActions.push(action);
-                    await action.execute().then(() => action.message = 'Appointment Canceled.');
-                  }
+                }
                   break;
+                case 'FlowAppointmentComponent': {
+                  // TODO outcomeId should be a retrieved value;
+                  let callOutcomeId = callOutcomes.find((o:any) => o.label === 'Cancelled Appointment')?.id;
+                  // TODO statusId should be a retrieved value;
+                  let callStatusId = callStatuses.find((o:any) => o.label === 'Answered')?.id;
 
-                  case 'reschedule':
-                  case 'set': {
-                    if (step.state.options.state === 'reschedule') {
+                  switch (step.state.options.state) {
+                    case 'cancel': {
                       const action = new FlowBotAction(this.entityCollectionServiceFactory, {
-                        name: 'reschedule-event',
+                        name: 'cancel-event',
                         icon: 'fa-calendar',
-                        message: 'Reschedule Event',
                         module: ModuleTypes.EVENT,
                         operation: 'update',
                         payload: {
-                          id: step.state.data.toReschedule,
-                          outcomeId: eventOutcomes.find(o => o.label === 'Rescheduled')?.id
+                          id: step.state.data.toCancel,
+                          outcomeId: eventOutcomes.find((o:any) => o.label === 'Canceled')?.id
+                        },
+                        message: 'Cancel Event',
+                      });
+                      this.botActions.push(action);
+                      await action.execute().then(() => action.message = 'Appointment Canceled.');
+                    }
+                    break;
+
+                    case 'reschedule':
+                    case 'set': {
+                      if (step.state.options.state === 'reschedule') {
+                        const action = new FlowBotAction(this.entityCollectionServiceFactory, {
+                          name: 'reschedule-event',
+                          icon: 'fa-calendar',
+                          message: 'Reschedule Event',
+                          module: ModuleTypes.EVENT,
+                          operation: 'update',
+                          payload: {
+                            id: step.state.data.toReschedule,
+                            outcomeId: eventOutcomes.find((o:any) => o.label === 'Rescheduled')?.id
+                          }
+                        });
+                        this.botActions.push(action);
+
+                        try {
+                          await action.execute().then(() => action.message = 'Appointment Rescheduled.');
+
+                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
+                        } catch(e : any) {
+                          action.status = FlowBotActionStatus.FAILURE;
+                          action.errorMessage = e.message;
                         }
+                      } else {
+                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;
+                      }
+
+                      // Set Appointment
+                      // depends on leadId
+                      let leadFilter: any = await firstValueFrom(this.services['leadService'].filter$);
+                      let contactFilter: any = await firstValueFrom(this.services['contactService'].filter$);
+
+                      payload['leadId'] = leadFilter['id'];
+                      payload['contactId'] = contactFilter['id'];
+
+                      const action = new FlowBotAction(this.entityCollectionServiceFactory, {
+                        name: 'add-event',
+                        icon: 'fa-calendar',
+                        module: ModuleTypes.EVENT,
+                        operation: 'add',
+                        payload,
+                        message: 'Creating Appointment'
                       });
                       this.botActions.push(action);
 
-                      try {
-                        await action.execute().then(() => action.message = 'Appointment Rescheduled.');
-
-                        callOutcomeId = outcomes.find(o => o.label === 'Set Appointment')?.id;
-                      } catch(e : any) {
-                        action.status = FlowBotActionStatus.FAILURE;
-                        action.errorMessage = e.message;
-                      }
-                    } else {
-                      callOutcomeId = outcomes.find(o => o.label === 'Rescheduled Appointment')?.id;
+                      await action.execute().then(() => action.message = 'Appointment Created');
+                      eventActions = {
+                        id : action.response?.id,
+                        state : step.state.options.state
+                      };
+                      flowService.updateStep(step.id, {state: {data: {id: action.response?.id}}}, 'merge');
                     }
+                  }
 
-                    // Set Appointment
-                    // depends on leadId
-                    let leadFilter: any = await firstValueFrom(this.services['leadService'].filter$);
-                    let contactFilter: any = await firstValueFrom(this.services['contactService'].filter$);
+                  const moduleIds: any = this.botActions
+                    .filter(action => action.operation === 'add') // anything newly created
+                    .map(action => {
+                          let data:{ [key:string] : any } = {};
+                          data[action.module] = action.response.id;
+                          if( ModuleTypes.EVENT == action.module ){
+                            data['deal'] = action.response.dealId;
+                          }
+                          return data;
+                        }
+                      ) // return a key/value pair
+                    .reduce((a, b) => ({...a, ...b}), {}); // merge results into singular object
 
-                    payload['leadId'] = leadFilter['id'];
-                    payload['contactId'] = contactFilter['id'];
-
-                    const action = new FlowBotAction(this.entityCollectionServiceFactory, {
-                      name: 'add-event',
-                      icon: 'fa-calendar',
-                      module: ModuleTypes.EVENT,
-                      operation: 'add',
-                      payload,
-                      message: 'Creating Appointment'
-                    });
-                    this.botActions.push(action);
-
-                    await action.execute().then(() => action.message = 'Appointment Created');
-                    eventActions = {
-                      id : action.response?.id,
-                      state : step.state.options.state
-                    };
-                    flowService.updateStep(step.id, {state: {data: {id: action.response?.id}}}, 'merge');
+                  flowService.updateCall({
+                    leadId: moduleIds.lead,
+                    dealId: moduleIds.deal,
+                    statusId: callStatusId,
+                    outcomeId: callOutcomeId,
+                    typeId: callTypeId
+                  });
+                }
+                  break;
+                case 'FlowTextComponent': {
+                  if (step.state.template === 'opp-follow-up') {
+                    this.services[`${ModuleTypes.DEAL}Service`].update({id: step.state.data.id, scheduledCallBack: step.state.data.deal.scheduledCallBack })
                   }
                 }
-
-                const moduleIds: any = this.botActions
-                  .filter(action => action.operation === 'add') // anything newly created
-                  .map(action => {
-                        let data:{ [key:string] : any } = {};
-                        data[action.module] = action.response.id;
-                        if( ModuleTypes.EVENT == action.module ){
-                          data['deal'] = action.response.dealId;
-                        }
-                        return data;
-                      }
-                    ) // return a key/value pair
-                  .reduce((a, b) => ({...a, ...b}), {}); // merge results into singular object
-
-                flowService.updateCall({
-                  leadId: moduleIds.lead,
-                  dealId: moduleIds.deal,
-                  statusId: callStatusId,
-                  outcomeId: callOutcomeId,
-                  typeId: callTypeId
-                });
+                  break;
               }
-                break;
-              case 'FlowTextComponent': {
-                if (step.state.template === 'opp-follow-up') {
-                   this.services[`${ModuleTypes.DEAL}Service`].update({id: step.state.data.id, scheduledCallBack: step.state.data.deal.scheduledCallBack })
-                }
-              }
-                break;
+
+            } catch (e) {
+              this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.FAILURE}));
+              console.error(e);
             }
-
-          } catch (e) {
-            this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.FAILURE}));
-            console.error(e);
           }
-        }
-        // Update the note record
-        flowService.updateNote(await flowService.getNotesFromCache());
-        // Update Call record
-        flowService.updateCall({typeId: callTypeId});        
+          // Update the note record
+          flowService.updateNote(await flowService.getNotesFromCache());
+          // Update Call record
+          flowService.updateCall({typeId: callTypeId});        
 
-        this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.SUCCESS}));
+          this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.SUCCESS}));
 
-        // Update the Call record if objected
-        if( didObject ){
-          /**
-           * If Call was objected, set the the call outcome to No Set
-           * Doesn't matter if the Appointment was set or not
-           */          
-          
-          flowService.updateCall({
-            outcomeId: outcomes.find(o => o.label === 'No Set')?.id,
-            objectionId : objectionId
-          });
+          // Update the Call record if objected
+          if( didObject ){
+            /**
+             * If Call was objected, set the the call outcome to No Set
+             * Doesn't matter if the Appointment was set or not
+             */          
+            
+            flowService.updateCall({
+              outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
+              objectionId : objectionId
+            });
 
-          /**
-           * If the call was objected after setting up of Appointment
-           * Cancel the Event
-           * Update lead status to No Set
-           */
-          
-          if( eventActions ){
-            let eventPayload = {
-              outcomeId : eventOutcomes.find(o => o.label === 'Canceled')?.id
-            };
-            flowService.updateEvent(eventActions['id'], eventPayload);
-            // Update lead status
-            let getLeadId: any = await firstValueFrom(this.services['leadService'].filter$);
-            flowService.updateLead(getLeadId['id'], {statusId : leadStatus.find(ls => ls.label === 'No Set')?.id });
+            /**
+             * If the call was objected after setting up of Appointment
+             * Cancel the Event
+             * Update lead status to No Set
+             */
+            
+            if( eventActions ){
+              let eventPayload = {
+                outcomeId : eventOutcomes.find((o:any) => o.label === 'Canceled')?.id
+              };
+              flowService.updateEvent(eventActions['id'], eventPayload);
+              // Update lead status
+              let getLeadId: any = await firstValueFrom(this.services['leadService'].filter$);
+              flowService.updateLead(getLeadId['id'], {statusId : leadStatuses.find((ls:any) => ls.label === 'No Set')?.id });
+            }
           }
-        }
+
+        })
 
       } // end status !== 'complete'
 

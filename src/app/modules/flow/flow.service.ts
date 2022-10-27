@@ -43,6 +43,8 @@ export class FlowService {
   public callTypes$: Observable<DropdownItem[]>;
 
   public callsService: CustomDataService<DominionType>;
+  public eventsService: CustomDataService<DominionType>;
+  public leadsService: CustomDataService<DominionType>;
 
   private leadService: EntityCollectionService<DominionType>;
   private contactService: EntityCollectionService<DominionType>;
@@ -71,6 +73,8 @@ export class FlowService {
     this.renderer = rendererFactory.createRenderer(null, null);
 
     this.callsService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
+    this.eventsService = this.dataServiceFactory.create(ModuleTypes.EVENT) as CustomDataService<DominionType>;
+    this.leadsService = this.dataServiceFactory.create(ModuleTypes.LEAD) as CustomDataService<DominionType>;
 
     // Use the collection services to clear all entity caches after the call ends.
     this.leadService       = this.entityCollectionServiceFactory.create(ModuleTypes.LEAD);
@@ -100,7 +104,7 @@ export class FlowService {
       }),
       map((vars: any) => {
         if (this.callId) {
-          let payload: { [key: string]: any } = {}
+          let payload: { [key: string]: any } = {};
           payload['leadId'] = vars.lead;
           payload['dealId'] = vars.deal;
           payload['typeId'] = vars.call_typeId;
@@ -215,12 +219,20 @@ export class FlowService {
     this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
   }
 
-  public updateEvent(id:string, payload:any):Observable<IEvent>{
-    return this.http.put(`${environment.dominion_api_url}/events/${id}`, payload).pipe(take(1)).subscribe() as unknown as Observable<IEvent>;
+  public updateEvent(id:string, payload:any):void{
+    const data = {
+      id : id,
+      changes : payload
+    };
+    this.eventsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
   }
 
-  public updateLead(id:string, payload:any){
-    return this.http.put(`${environment.dominion_api_url}/leads/${id}`, payload).pipe(take(1)).subscribe();
+  public updateLead(id:string, payload:any):void{
+    const data = {
+      id : id,
+      changes : payload
+    };
+    this.leadsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
   }
 
   public async createNote(content: string): Promise<ICallNote> {
