@@ -8,16 +8,31 @@ import * as fromSystem from '../../../../modules/system/store/system.reducer';
 import * as fromLogin from '../../../../modules/login/store/login.reducer';
 import { Observable, of } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { animate, style, transition, trigger, state } from '@angular/animations';
 
 const mobileThreshold = 1024;
 
-export interface NavbarItem { name: string; path?: string; roles: string[], children?: any[], open?: boolean; }[]
+export interface NavbarItem { name: string; path?: string; roles: string[], children?: any[], close?: boolean; }[]
 
 @UntilDestroy()
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
+  animations : [
+    trigger('nav-slider', [
+      state('false', style({height: 'auto'})),
+      state('true', style({height: '0px'})),
+      transition( 'false => true',[
+        style({height: '*'}),
+        animate('250ms ease-out', style({height: 0}))
+      ]),
+      transition('true => false', [
+        style({height: 0}),
+        animate('250ms ease-out', style({height: '*'}))
+      ])
+    ])
+  ]
 })
 export class NavbarComponent implements AfterViewInit {
 
@@ -93,9 +108,9 @@ export class NavbarComponent implements AfterViewInit {
     $event.stopPropagation();
   }
 
-  @HostListener('document:click')
-  clickOutside() {
-    this.menu.map(x => x.open = false);
+  @HostListener('document:click',['$event.target'])
+  clickOutside($target:any) {
+    // this.menu.map(x =>  x.close = true);
   }
 
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
@@ -154,6 +169,11 @@ export class NavbarComponent implements AfterViewInit {
     // We want it to be always be false if clicked outside or on responsive bars
     this.menuOpen = false;
   }
+  
+  toggleSubMenu( index:number ){
+    this.menu[index].close = !this.menu[index].close;
+  }
+
 
 
 }

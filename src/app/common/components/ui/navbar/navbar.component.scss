@@ -154,7 +154,7 @@ nav.mobile-nav-container {
     font-size: 14px;
 
     &:not(:last-child) {
-      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      // border-bottom: 1px solid rgba(255, 255, 255, .05);
     }
 
     &.active {
@@ -164,4 +164,28 @@ nav.mobile-nav-container {
     }
 
   }
+
+  ul {
+    list-style : none;
+    padding-left : 0;
+    overflow: hidden;
+
+    li:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+    }
+  }
+
+  ul.sub-menu{
+    li {
+      padding-left: 15px;
+      border-bottom: 0px;
+    }
+  }
+
+  .btn-icon {
+    padding-top: 10px;
+    font-size:18px;
+    float:right;
+  }
+
 }
