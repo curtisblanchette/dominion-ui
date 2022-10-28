@@ -14,14 +14,13 @@ import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionSer
 import { LookupTypes, ModuleTypes } from '../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ICallNote, IEvent } from '@4iiz/corev2';
-import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromApp from '../../store/app.reducer';
 import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
+import { Call, Contact, Deal, ICallNote, Lead, Address, Event, Campaign, LeadSource, Office } from '@4iiz/corev2/dist/models/index';
 
 export interface IHistory {
   prevStepId: string;
@@ -46,15 +45,15 @@ export class FlowService {
   public eventsService: CustomDataService<DominionType>;
   public leadsService: CustomDataService<DominionType>;
 
-  private leadService: EntityCollectionService<DominionType>;
-  private contactService: EntityCollectionService<DominionType>;
-  private dealService: EntityCollectionService<DominionType>;
-  private eventService: EntityCollectionService<DominionType>;
-  private addressService: EntityCollectionService<DominionType>;
-  private campaignService: EntityCollectionService<DominionType>;
-  private leadSourceService: EntityCollectionService<DominionType>;
-  private officeService: EntityCollectionService<DominionType>;
-  private callService: EntityCollectionService<DominionType>;
+  public leadService: EntityCollectionService<Lead>;
+  public contactService: EntityCollectionService<Contact>;
+  public dealService: EntityCollectionService<Deal>;
+  public eventService: EntityCollectionService<Event>;
+  public addressService: EntityCollectionService<Address>;
+  public campaignService: EntityCollectionService<Campaign>;
+  public leadSourceService: EntityCollectionService<LeadSource>;
+  public officeService: EntityCollectionService<Office>;
+  public callService: EntityCollectionService<Call>;
 
   private renderer: Renderer2;
 
@@ -105,6 +104,7 @@ export class FlowService {
       map((vars: any) => {
         if (this.callId) {
           let payload: { [key: string]: any } = {};
+          payload['id'] = this.callId;
           payload['leadId'] = vars.lead;
           payload['dealId'] = vars.deal;
           payload['typeId'] = vars.call_typeId;
@@ -119,11 +119,15 @@ export class FlowService {
             }
           });
 
-          this.updateCall(payload)
+          this.callService.update(payload)
         }
       })
     ).subscribe();
 
+  }
+
+  public getService(module: ModuleTypes | LookupTypes): EntityCollectionService<DominionType> {
+    return this.entityCollectionServiceFactory.create(module);
   }
 
   public async restart(): Promise<any> {
@@ -204,36 +208,37 @@ export class FlowService {
         await this.createNote('');
       });
     } else {
-      this.updateCall({
+      this.callService.update({
+        id: this.callId,
         direction: direction
       });
     }
 
   }
 
-  public updateCall(payload: any): void {
-    let data = {
-      id: this.callId,
-      changes: payload
-    }
-    this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  }
-
-  public updateEvent(id:string, payload:any):void{
-    const data = {
-      id : id,
-      changes : payload
-    };
-    this.eventsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  }
-
-  public updateLead(id:string, payload:any):void{
-    const data = {
-      id : id,
-      changes : payload
-    };
-    this.leadsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  }
+  // public updateCall(payload: any): void {
+  //   let data = {
+  //     id: this.callId,
+  //     changes: payload
+  //   }
+  //   this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
+  // }
+  //
+  // public updateEvent(id:string, payload:any):void{
+  //   const data = {
+  //     id : id,
+  //     changes : payload
+  //   };
+  //   this.eventsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
+  // }
+  //
+  // public updateLead(id:string, payload:any):void{
+  //   const data = {
+  //     id : id,
+  //     changes : payload
+  //   };
+  //   this.leadsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
+  // }
 
   public async createNote(content: string): Promise<ICallNote> {
     const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.callId}/notes`, {

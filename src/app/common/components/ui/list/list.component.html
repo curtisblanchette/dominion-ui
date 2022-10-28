@@ -15,8 +15,6 @@
       ></fiiz-dropdown>
       <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()" [disabled]="!selected">Edit</fiiz-button>
     </div>
-
-
   </div>
 </form>
 
@@ -28,22 +26,26 @@
   <div class="flex-table__footer" *ngIf="options.controls.perPage || options.controls.pagination">
     <div class="per-page" *ngIf="options.controls.perPage">
       Per Page:
-      <fiiz-select size="small" [items]="perPageOptions$" (change)="onPerPageChange($event)"
-                   [ngModel]="perPage$ | async"></fiiz-select>
+      <fiiz-dropdown size="small"
+                     type="basic"
+                     position="top"
+                     [items]="perPageOptions$"
+                     (getValues)="onPerPageChange($event)"
+                     [ngModel]="perPage$ | async">
+      </fiiz-dropdown>
     </div>
 
-    <pagination-controls
-      previousLabel="Prev"
-      nextLabel="Next"
-      responsive="true"
-      directionLinks="true"
-      autoHide="true"
-      screenReaderPaginationLabel="Pagination"
-      screenReaderPageLabel="page"
-      screenReaderCurrentLabel="You're on page"
-      maxSize="5"
-      *ngIf="options.controls.pagination"
-      (pageChange)="handlePageChange($event)">
+    <pagination-controls previousLabel="Prev"
+                         nextLabel="Next"
+                         responsive="true"
+                         directionLinks="true"
+                         autoHide="true"
+                         screenReaderPaginationLabel="Pagination"
+                         screenReaderPageLabel="page"
+                         screenReaderCurrentLabel="You're on page"
+                         maxSize="5"
+                         *ngIf="options.controls.pagination"
+                         (pageChange)="handlePageChange($event)">
     </pagination-controls>
   </div>
 </div>

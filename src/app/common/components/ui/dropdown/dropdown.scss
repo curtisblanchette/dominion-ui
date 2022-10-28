@@ -8,8 +8,20 @@
   border-radius: var(--input-border-radius);
   height: fit-content;
 
-  .no-title {
-    width: 50px;
+  label {
+    color: rgba(198, 203, 237, 0.62);
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-bottom: 0;
+    position: absolute;
+    top: -15px;
+    left: 2em;
+    line-height: 1em;
+  }
+
+  label.required:after {
+    content: ' *';
+    color: var(--text1-shade25);
   }
 
   &.has-label {
@@ -21,30 +33,12 @@
     margin: 0;
   }
 
-
   &.small button {
     height: 32px !important;
     line-height: 32px !important;
-
   }
 
-
-}
-
-.fiiz-dropdown-button {
-  z-index: 1;
-  width: 100%;
-
-  &__dropdown {
-
-
-    i {
-      flex: 1;
-      text-align: right;
-    }
-  }
-
-  &__content {
+  .dropdown-menu {
     display: table;
     position: absolute;
     list-style: none;
@@ -66,6 +60,11 @@
     &__wrapper {
       background: var(--slate1);
       //@include elevate(2);
+    }
+
+    &__items {
+      max-height: 200px;
+      overflow-y: auto;
     }
 
     div {
@@ -102,6 +101,18 @@
       &:last-child button {
         border-radius: 0 0 var(--button-border-radius) var(--button-border-radius);
       }
+  }
+
+
+
+}
+
+.fiiz-dropdown__wrapper {
+  z-index: 1;
+  width: 100%;
+
+  &__menu {
+
     }
 
     &__item {
@@ -113,10 +124,6 @@
 
     }
 
-    &__wrapper {
-      max-height: 200px;
-      overflow-y: auto;
-    }
 
     fiiz-button.selected {
       i {
@@ -140,26 +147,11 @@
 
 .fiiz-dropdown-button-top-right {
   right: 0;
-  bottom: 100%;
+  //bottom: 100%;
 }
 
 .fiiz-dropdown-button-top-left {
   left: 0;
-  bottom: 100%;
+  //bottom: 100%;
 }
 
-label {
-  color: rgba(198, 203, 237, 0.62);
-  text-transform: uppercase;
-  font-size: 10px;
-  margin-bottom: 0;
-  position: absolute;
-  top: -15px;
-  left: 2em;
-  line-height: 1em;
-}
-
-label.required:after {
-  content: ' *';
-  color: var(--text1-shade25);
-}

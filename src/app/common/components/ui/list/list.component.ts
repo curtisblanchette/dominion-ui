@@ -192,9 +192,9 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     this.values.emit( { module: this.module, record: record });
   }
 
-  public onPerPageChange($event: any) {
+  public onPerPageChange(perPage: number) {
     this.page = 1;
-    this.store.dispatch(dataActions.SetPerPageAction({payload: parseInt($event.target.value, 0)}));
+    this.store.dispatch(dataActions.SetPerPageAction({payload: perPage}));
   }
 
   public onKeyUp($event: any, record: any) {
