@@ -2,6 +2,97 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.33 (2022-10-28)
+
+
+### Bug Fixes
+
+* **develop:** fix knock-ons from merge ([1258bf8](https://github.com/4iiz/dominion-ui/commit/1258bf8108fbb28e315974302fbb39fcd92c9697))
+
+### 1.20.32 (2022-10-27)
+
+### 1.20.31 (2022-10-27)
+
+
+### Bug Fixes
+
+* **II-2836:** pagination control styles ([1cb6a21](https://github.com/4iiz/dominion-ui/commit/1cb6a21c05459e94a018c1bfe5dfa57541dc7054))
+
+### 1.20.30 (2022-10-27)
+
+### 1.20.29 (2022-10-27)
+
+
+### Bug Fixes
+
+* **II-2859:** Fix mobile menu closing ([#76](https://github.com/4iiz/dominion-ui/issues/76)) ([61e85d1](https://github.com/4iiz/dominion-ui/commit/61e85d12f77a20b517ea5bcf4e2fbc3e5b152c1c))
+
+### 1.20.28 (2022-10-26)
+
+### 1.20.27 (2022-10-26)
+
+### 1.20.26 (2022-10-26)
+
+### 1.20.25 (2022-10-26)
+
+### 1.20.24 (2022-10-26)
+
+### 1.20.23 (2022-10-26)
+
+### 1.20.22 (2022-10-26)
+
+### 1.20.21 (2022-10-25)
+
+### 1.20.20 (2022-10-25)
+
+### 1.20.19 (2022-10-25)
+
+### 1.20.18 (2022-10-25)
+
+### 1.20.17 (2022-10-25)
+
+### 1.20.16 (2022-10-25)
+
+### 1.20.15 (2022-10-25)
+
+### 1.20.14 (2022-10-25)
+
+### 1.20.13 (2022-10-25)
+
+### 1.20.12 (2022-10-25)
+
+### 1.20.11 (2022-10-24)
+
+### 1.20.10 (2022-10-24)
+
+### 1.20.9 (2022-10-24)
+
+### 1.20.8 (2022-10-24)
+
+### 1.20.7 (2022-10-24)
+
+### 1.20.6 (2022-10-24)
+
+### 1.20.5 (2022-10-21)
+
+### 1.20.4 (2022-10-21)
+
+
+### Bug Fixes
+
+* **II-2847:** objection script now loading ([#73](https://github.com/4iiz/dominion-ui/issues/73)) ([bf6d49a](https://github.com/4iiz/dominion-ui/commit/bf6d49a55a053cc7cd49c5f69982ddc80c37cba1))
+
+### 1.20.3 (2022-10-21)
+
+
+### Bug Fixes
+
+* **II-2834:** Auto populate data on back step ([#74](https://github.com/4iiz/dominion-ui/issues/74)) ([ff7388b](https://github.com/4iiz/dominion-ui/commit/ff7388b1c5e609b0902602c9ab958ac89c581c7c))
+
+### 1.20.2 (2022-10-19)
+
+### 1.20.1 (2022-10-19)
+
 ## 1.20.0 (2022-10-18)
 
 

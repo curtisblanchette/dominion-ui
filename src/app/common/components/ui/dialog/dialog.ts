@@ -12,7 +12,7 @@ interface IDialogButton {
   label: string,
   type: 'submit' | 'cancel' | 'custom' | 'default'
   class?: string;
-  fn(...args: any[]): Promise<any | void>
+  fn(...args: any[]): any
 }
 
 interface IDialogData {
@@ -122,9 +122,15 @@ export class FiizDialogComponent implements AfterViewInit {
 
     if (submitBtn.fn) {
       if(this.tinymce?.editor) {
-        return submitBtn.fn(this.tinymce.editor.getContent()).then(() => this.dialog.close(1));
+        return (<any>submitBtn.fn(this.tinymce.editor.getContent())).then(() => this.dialog.close(1));
       } else {
-        return submitBtn.fn().then(() => this.dialog.close(1));
+
+        if(Object(submitBtn.fn).hasOwnProperty('then')) {
+          return (<any>submitBtn.fn()).then(() => this.dialog.close(1));
+        }
+
+        return submitBtn.fn() && this.dialog.close(1);
+
       }
     }
   }

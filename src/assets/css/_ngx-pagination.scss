@@ -2,4 +2,14 @@
   .current {
     border-radius: var(--button-border-radius);
   }
+  a:hover,
+  button:hover {
+    background: none!important;
+    span {
+      color: var(--primary)!important;
+    }
+
+  }
+
 }
+

@@ -32,18 +32,25 @@ export class FlowBuilder {
     const recap = FlowFactory.recap();
     const end = FlowFactory.end();
     const notes = FlowFactory.takeNotes((flowService: FlowService ) => {
-      flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(value => {
-        flowService.addVariables({ call_outcomeId:  value?.id });
+      flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+        flowService.getLookupByLabel('callOutcome', 'Left Note/Took Message').then(o => {
+          flowService.addVariables({
+            call_typeId: t?.id,
+            call_outcomeId:  o?.id
+          });
+        });
       });
     });
-    const callDirection = FlowFactory.callDirectionDecision();
+    const callDirection = FlowFactory.callDirection();
     const searchLeads = FlowFactory.searchLeads();
     const outboundType = FlowFactory.outboundType();
     const searchContacts = FlowFactory.searchContacts();
 
     const createLead = FlowFactory.createLead((flowService: FlowService) => {
-      flowService.getLookupByLabel('callType', 'Sales').then( value => {
-        flowService.addVariables({ call_typeId: value?.id });
+      flowService.getLookupByLabel('callType', 'Sales').then(t => {
+        flowService.addVariables({
+          call_typeId: t?.id
+        });
       });
     });
 
@@ -93,11 +100,11 @@ export class FlowBuilder {
         id: vars.deal,
         leadId: vars.lead
       };
-
-      flowService.getLookupByLabel('callType', 'Sales').then( value => {
-        flowService.addVariables({ call_typeId: value?.id });
+      flowService.getLookupByLabel('callType', 'Sales').then(s => {
+        flowService.addVariables({
+          call_typeId: s?.id
+        });
       });
-
       return step;
     });
 
@@ -109,7 +116,6 @@ export class FlowBuilder {
 
     const powerQuestion = FlowFactory.powerQuestion();
     const toPowerQuestion = FlowFactory.link(relationshipBuilding.id, powerQuestion.id);
-
 
     const setAppointment = FlowFactory.setAppointment((flowService: FlowService, vars: any, step: any) => {
       // globals
@@ -123,29 +129,40 @@ export class FlowBuilder {
         case vars.call_reason === 'cancel-appointment' : {
           step.state.options.state = 'cancel';
           step.state.data.resolveId = vars.event;
-          flowService.getLookupByLabel('callOutcome', 'Canceled').then( value => {
-            flowService.addVariables({ call_outcomeId: value?.id });
+          flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+            flowService.getLookupByLabel('callOutcome', 'Canceled').then(o => {
+              flowService.addVariables({
+                call_typeId: t?.id,
+                call_outcomeId: o?.id
+              });
+            });
           });
-          // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Canceled')?.id });
-
         }
           break;
         case vars.call_reason === 'reschedule-appointment': {
           step.state.options.state = 'reschedule';
           step.state.data.resolveId = vars.event;
-          flowService.getLookupByLabel('callOutcome', 'Rescheduled').then( value => {
-            flowService.addVariables({ call_outcomeId: value?.id });
+          flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+            flowService.getLookupByLabel('callOutcome', 'Rescheduled').then(o => {
+              flowService.addVariables({
+                call_typeId: t?.id,
+                call_outcomeId: o?.id
+              });
+            });
           });
-          // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Rescheduled')?.id });
         }
           break;
         // no event selected
         case vars.call_reason === 'set-appointment' || !vars.event: {
           step.state.options.state = 'set';
-          flowService.getLookupByLabel('callOutcome', 'Set Appointment').then( value => {
-            flowService.addVariables({ call_outcomeId: value?.id });
+          flowService.getLookupByLabel('callType', 'Matter Related').then(t => {
+            flowService.getLookupByLabel('callOutcome', 'Set Appointment').then(o => {
+              flowService.addVariables({
+                call_typeId:  t?.id,
+                call_outcomeId: o?.id
+              });
+            });
           });
-          // flowService.addVariables({ call_outcomeId: callOutcomes.find(o => o.label == 'Set Appointment')?.id });
         }
           break;
         default: {
@@ -385,7 +402,7 @@ export class FlowBuilder {
       'Take Notes',
       (vars: any) =>
         vars['call_reason'] === 'take-notes' ||
-        [1, 5, 6, 7, 8, 9, 10].includes(vars['call_outcomeId']),
+        [1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].includes(vars['call_outcomeId']),
       {},
       notes.id
     );

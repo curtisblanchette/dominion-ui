@@ -4,6 +4,7 @@ import { Fields as DealFields } from '../../common/models/deal.model';
 import { Fields as ContactFields } from '../../common/models/contact.model';
 import { Fields as EventFields } from '../../common/models/event.model';
 import { ModuleTypes } from '../../data/entity-metadata';
+import { environment } from '../../../environments/environment';
 
 export class FlowFactory {
 
@@ -15,16 +16,16 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'call-type',
         data: {
           title: 'Objection',
           body: '',
-          template: 'call-type'
         }
       }
     });
   }
 
-  public static callDirectionDecision(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
+  public static callDirection(beforeRoutingTrigger: any = undefined, afterRoutingTrigger: any = undefined): FlowStep {
     return new FlowStep({
       nodeText: 'Call Direction',
       nodeIcon: 'phone-volume',
@@ -32,10 +33,10 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'call-direction',
         data: {
           title: 'Call Direction',
           body: 'Select a call direction.',
-          template: 'call-direction'
         }
       }
     });
@@ -49,10 +50,10 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'outbound-type',
         data: {
           title: 'Outbound Type',
           body: 'Lookup by Contact or Opportunity from one of the following lists',
-          template: 'outbound-type'
         }
       }
     });
@@ -74,16 +75,16 @@ export class FlowFactory {
         options: {
           searchable: true,
           editable: false,
-          loadInitial: false,
-          perPage: 25,
+          loadInitial: true,
+          perPage: 7,
           columns: [],
           query: {
-            limit: 7
+            // limit: 7
           },
           controls: {
-            perPage: false,
-            pagination: false,
-            createNew:true,
+            perPage: true,
+            pagination: true,
+            createNew: true,
           }
         }
       }
@@ -350,6 +351,14 @@ export class FlowFactory {
           columns: [],
           query: {
             stageId: '2,4,5',
+            scheduledCallBack: {
+              lt: new Date() // keep in mind: this only updates when the call resets
+            },
+            score: {
+              gt: environment.opp_follow_up_min_score
+            },
+            sort_by: 'score',
+            sort: 'DESC'
           },
           controls: {
             perPage: false,
@@ -370,10 +379,10 @@ export class FlowFactory {
       afterRoutingTrigger,
       state: {
         module: ModuleTypes.DEAL,
+        template: 'opp-follow-up',
         data: {
           title: 'Opportunity Follow Up',
           body: 'Now is the time to review notes previously collected for this opportunity.',
-          template: 'opp-follow-up'
         }
       }
     });
@@ -387,10 +396,10 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'relationship-building',
         data: {
           title: 'Relationship Building',
           // body: '',
-          template: 'relationship-building'
         }
       }
     })
@@ -404,10 +413,10 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'power-question',
         data: {
           title: 'Power Question',
           body: 'Be sure to use a power question. We want to create a sense of urgency so the PC shows up to their consultation ready to hire.',
-          template: 'power-question'
         }
       }
     })
@@ -531,9 +540,9 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'reason-for-call',
         data: {
           title: 'Reason for Call',
-          template: 'reason-for-call'
         }
       }
     });
@@ -548,9 +557,9 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'recap',
         data: {
-          title: 'Recap Process / Verify Contact ',
-          template: 'recap'
+          title: 'Recap',
         }
       }
     });
@@ -564,9 +573,9 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'end',
         data: {
           title: 'End',
-          template: 'end',
           lastStep : true
         }
       },
@@ -582,9 +591,9 @@ export class FlowFactory {
       beforeRoutingTrigger,
       afterRoutingTrigger,
       state: {
+        template: 'take-notes',
         data: {
           title: 'Notes',
-          template: 'take-notes'
         }
       }
     });

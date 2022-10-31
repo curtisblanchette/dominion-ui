@@ -12,7 +12,7 @@
 
       <ng-container *ngIf="showSlots">
 
-        <div style="display:flex; justify-content:center; gap: 1em; width: 100%;">
+        <div style="display:flex; justify-content:center; gap: 1em; width: 100%; margin-top: 2em;">
           <div style="flex: 2;">
             <div class="flex_main_wrapper__slots__day dictation" style="text-align: center; line-height: 44px;">We have availability as soon as...</div>
             <fiiz-time-slots [active]="regularSlot" [default]="selectedBtnId" (getValue)="getValue($event, 'regular')"></fiiz-time-slots>

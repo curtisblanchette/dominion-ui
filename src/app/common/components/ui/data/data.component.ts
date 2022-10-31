@@ -68,6 +68,11 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
     endDate: {
       min: null,
       max: null
+    },
+    // scheduledCallBack
+    scheduledCallBack: {
+      min: dayjs().format(),
+      max: null
     }
   };
 
@@ -182,12 +187,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
             this.form.get('leadSourceId')?.disable();
             ///////////////////////////////////////////////
 
-            this.form.get('campaignId')?.valueChanges.pipe(untilDestroyed(this)).subscribe((campaignId: any) => {
-              if(this.dropdowns){
-                const ls = this.dropdowns.find(cmp => cmp.id === 'campaignId')?.apiData.find(x => x.id === campaignId);
-                this.form.get('leadSourceId')?.patchValue(ls?.leadSourceId);
-              }
-            });
 
             of('').pipe(
               untilDestroyed(this),
@@ -201,7 +200,16 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
           }
         } else {
           await this.dateValidation();
+
         }
+
+        this.form.get('campaignId')?.valueChanges.pipe(untilDestroyed(this)).subscribe((campaignId: any) => {
+          if(this.dropdowns){
+            const ls = this.dropdowns.find(cmp => cmp.id === 'campaignId')?.apiData.find(x => x.id === campaignId);
+            this.form.get('leadSourceId')?.patchValue(ls?.leadSourceId);
+          }
+        });
+
       });
     } else {
       await this.dateValidation();

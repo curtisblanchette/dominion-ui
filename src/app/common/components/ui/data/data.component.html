@@ -1,79 +1,77 @@
 <div style="margin: auto 0;">
   <!--<h3>{{data.title}}</h3>-->
-  <form [formGroup]="form" (ngSubmit)="save()" >
-    <fiiz-grid [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : 'initial'}">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <fiiz-grid
+      [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : 'initial'}">
       <ng-container *ngFor="let control of controlData; first as isFirst;">
-        <fiiz-input
-          #inputList
-          [autofocus]="isFirst"
-          *ngIf="['text','tel','email'].includes(control.type)"
-          [type]="control.type"
-          [id]="control.key"
-          [label]="control.label"
-          [disabled]="form.get(control.key).disabled || options.state === 'view'"
-          [placeholder]="control.label"
-          [required]="control.required"
-          (blur)="form.updateValueAndValidity()"
-          [formControlName]="control.key">
+        <fiiz-input #inputList
+                    [autofocus]="isFirst"
+                    *ngIf="['text','tel','email','number'].includes(control.type)"
+                    [type]="control.type"
+                    [id]="control.key"
+                    [label]="control.label"
+                    [disabled]="form.get(control.key).disabled || options.state === 'view'"
+                    [placeholder]="control.label"
+                    [required]="control.required"
+                    (blur)="form.updateValueAndValidity()"
+                    [formControlName]="control.key">
         </fiiz-input>
-        <fiiz-textarea
-          class="span-3"
-          *ngIf="control.type === 'textarea'"
-          [autofocus]="isFirst"
-          [required]="control.required"
-          [formControlName]="control.key"
-          [id]="control.key"
-          [label]="control.key"
-          [disabled]="form.get(control.key).disabled || options.state === 'view'"
-          [placeholder]="control.label"
-          [height]="'100px'">
+        <fiiz-textarea class="span-3"
+                       *ngIf="control.type === 'textarea'"
+                       [autofocus]="isFirst"
+                       [required]="control.required"
+                       [formControlName]="control.key"
+                       [id]="control.key"
+                       [label]="control.key"
+                       [disabled]="form.get(control.key).disabled || options.state === 'view'"
+                       [placeholder]="control.label"
+                       [height]="'100px'">
         </fiiz-textarea>
-        <fiiz-date-picker
-          *ngIf="['calendar', 'timer', 'both'].includes(control.type)"
-          #picker
-          [pickerType]="control.type"
-          [autofocus]="isFirst"
-          [id]="control.key"
-          [label]="control.label"
-          [disabled]="form.get(control.key).disabled || options.state === 'view'"
-          [formControlName]="control.key"
-          [required]="control.required"
-          [min]="configuration[control.key].min"
-          [max]="configuration[control.key].max"
-          [placeholder]="control.label">
+        <fiiz-date-picker *ngIf="['calendar', 'timer', 'both'].includes(control.type)"
+                          #picker
+                          [pickerType]="control.type"
+                          [autofocus]="isFirst"
+                          [id]="control.key"
+                          [label]="control.label"
+                          [disabled]="form.get(control.key).disabled || options.state === 'view'"
+                          [formControlName]="control.key"
+                          [required]="control.required"
+                          [min]="configuration[control.key].min"
+                          [max]="configuration[control.key].max"
+                          [placeholder]="control.label">
         </fiiz-date-picker>
-        <fiiz-select
-          *ngIf="control.type === 'dropdown'"
-          #dropdown
-          [module]="control.service"
-          [options]="{remote: true, query : {}}"
-          [id]="control.key"
-          [label]="control.label"
-          [disabled]="form.get(control.key).disabled || options.state === 'view'"
-          [formControlName]="control.key"
-          [required]="control.required"
-          >
-        </fiiz-select>
-        <fiiz-dropdown
-          *ngIf="control.type === 'dropdown-search'"
-          #dropdown
-          [autofocus]="isFirst"
-          type="search"
-          tabindex="-1"
-          [formControlName]="control.key"
-          [id]="control.key"
-          [label]="control.label"
-          [title]="control.label"
-          [module]="control.service"
-          [required]="control.required"
-          [disabled]="form.get(control.key).disabled || options.state === 'view'"
-        >{{control.label}}</fiiz-dropdown>
+        <!--        <fiiz-select-->
+        <!--          *ngIf="control.type === 'dropdown'"-->
+        <!--          #dropdown-->
+        <!--          [module]="control.service"-->
+        <!--          [options]="{remote: true, query : {}}"-->
+        <!--          [id]="control.key"-->
+        <!--          [label]="control.label"-->
+        <!--          [disabled]="form.get(control.key).disabled || options.state === 'view'"-->
+        <!--          [formControlName]="control.key"-->
+        <!--          [required]="control.required"-->
+        <!--          >-->
+        <!--        </fiiz-select>-->
+        <fiiz-dropdown *ngIf="control.type === 'dropdown-search'"
+                       [disabled]="form.get(control.key).disabled || options.state === 'view'"
+                       #dropdown
+                       [autofocus]="isFirst"
+                       type="search"
+                       [formControlName]="control.key"
+                       [id]="control.key"
+                       [label]="control.label"
+                       [title]="control.label"
+                       [module]="control.service"
+                       [required]="control.required">
+          {{control.label}}
+        </fiiz-dropdown>
       </ng-container>
     </fiiz-grid>
 
     <div class="form-controls" *ngIf="options.controls">
       <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>
-      <fiiz-button #submit type="submit" primary [loading]="loadingSubject$" [disabled]="(loadingSubject$ | async) || form.invalid">{{submitText}}</fiiz-button>
+      <fiiz-button #submit type="submit" primary [loading]="loadingSubject$"
+                   [disabled]="(loadingSubject$ | async) || form.invalid">{{submitText}}</fiiz-button>
     </div>
 
   </form>

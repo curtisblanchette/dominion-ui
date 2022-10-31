@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import * as fromFlow from './store/flow.reducer';
 import * as fromApp from '../../store/app.reducer';
 import { firstValueFrom, lastValueFrom, Observable, take, withLatestFrom } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FiizDropDownComponent, IDropDownMenuItem } from '../../common/components/ui/dropdown';
 import { FiizDialogComponent } from '../../common/components/ui/dialog/dialog';
 import { Dialog } from '@angular/cdk/dialog';
@@ -55,12 +55,11 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
     private store: Store<fromFlow.FlowState>,
     public flowService: FlowService,
     private router: Router,
-    private dialog: Dialog,
-    private activatedRoute: ActivatedRoute
+    private dialog: Dialog
   ) {
     this.flowService.clearEntityCache();
     this.status$ = this.store.select(fromFlow.selectFlowStatus);
-    this.objections$ = this.store.select(fromApp.selectCallObjections)
+    this.objections$ = this.store.select(fromApp.selectCallObjections);
     this.valid$ = this.store.select(fromFlow.selectIsValid);
     this.isFirstStep$ = this.store.select(fromFlow.selectIsFirstStep);
     this.isLastStep$ = this.store.select(fromFlow.selectIsLastStep);
@@ -211,8 +210,7 @@ export class FlowComponent implements AfterContentInit, AfterViewInit, OnDestroy
 
   public goToObjections( value:any ){
     const id = this.flowService.builder.process.steps.find( step => step.component === 'FlowObjectionComponent' )?.id as string;
-    this.flowService.addVariables({objectionId: value.id}, id);
-    this.flowService.updateStep(id, {state: { data: { title: value.label }}});
+    this.flowService.addVariables({objectionId: value}, id);
     this.flowService.goTo(id);
   }
 

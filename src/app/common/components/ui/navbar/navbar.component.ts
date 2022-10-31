@@ -25,6 +25,7 @@ export class NavbarComponent implements AfterViewInit {
   public actingFor$: Observable<any>;
   public workspace$: Observable<any>;
   public _isMobile: boolean;
+  public menuOpen: boolean = false;
 
   public menu: NavbarItem[] = [
     {
@@ -74,7 +75,7 @@ export class NavbarComponent implements AfterViewInit {
       roles: ['system']
     }
   ];
-  public menuOpen: boolean;
+
 
   @HostListener('window:resize', ['$event'])
   onWindowResize() {
@@ -86,12 +87,15 @@ export class NavbarComponent implements AfterViewInit {
   }
   @HostListener('click', ['$event'])
   clickInside($event: any) {
+    if( this.menuOpen && !['btn-mobile-bars','icon-bars'].includes($event.srcElement.id) ){
+      this.menuOpen = false;
+    }
     $event.stopPropagation();
   }
 
   @HostListener('document:click')
   clickOutside() {
-    this.menu.map(x =>  x.open = false);
+    this.menu.map(x => x.open = false);
   }
 
   @ViewChild('activeUnderline', {static: false}) activeUnderline: ElementRef;
@@ -146,6 +150,10 @@ export class NavbarComponent implements AfterViewInit {
     }
   }
 
+  overlayOutsideClick() {
+    // We want it to be always be false if clicked outside or on responsive bars
+    this.menuOpen = false;
+  }
 
 
 }

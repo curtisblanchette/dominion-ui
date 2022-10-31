@@ -16,7 +16,7 @@ export class FiizButtonComponent implements AfterViewInit, AfterViewInit {
   @Input('class') class: string = '';
   @Input('loading') loading$: Observable<boolean | null> = of(false);
 
-
+  @Input('autofocus') autofocus = false;
   @ViewChild('el') el: ElementRef;
   @HostBinding('class.disabled') get disabled() { return this.isDisabled };
 

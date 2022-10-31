@@ -17,6 +17,8 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
   public valid?: boolean;
   public variables?: {[key: string]: any};
 
+  public template?: string;
+
   public _constructedAt?: number;
   public _destroyedAt?: number;
 

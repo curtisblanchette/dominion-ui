@@ -15,6 +15,7 @@ const columns = new Map([
   ]],
   [ModuleTypes.DEAL, [
     {id: 'name', label: 'Name'},
+    {id: 'score', label: 'Score'},
     {id: 'stage', label: 'Stage'},
     {id: 'createdAt', label: 'Created'},
   ]],

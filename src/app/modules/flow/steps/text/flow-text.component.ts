@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, QueryList, ViewChildren, AfterViewInit, ViewChild, ElementRef, HostBinding } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map, debounceTime, distinctUntilChanged, delay, mergeMap, tap, take } from 'rxjs';
@@ -15,7 +15,7 @@ import * as fromFlow from '../../store/flow.reducer';
 import * as fromApp from '../../../../store/app.reducer';
 import { LookupTypes, ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
-import { RadioItem } from '../../../../common/components/ui/forms';
+import { FiizDatePickerComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
@@ -25,7 +25,12 @@ import { FiizDropDownComponent } from '../../../../common/components/ui/dropdown
 @Component({
   selector: 'flow-text',
   templateUrl: './flow-text.component.html',
-  styleUrls: ['../_base.scss', './flow-text.component.scss']
+  styleUrls: [
+    '../_base.scss',
+    './flow-text.component.scss',
+    './_recap.scss',
+    './_opp-follow-up.scss',
+  ]
 })
 export class FlowTextComponent extends EntityCollectionComponentBase implements OnInit, AfterViewInit, OnDestroy {
   public static reference: string = 'FlowTextComponent';
@@ -67,10 +72,13 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
       }`
   };
 
+  @HostBinding('attr.data-template') template: string; // set by flowService.renderComponent
+
   @ViewChild('tinymce') tinymce: EditorComponent;
   @ViewChild('botComment') botComment: ElementRef;
   @ViewChild('callStatusDropdown') callStatusDropdown: FiizDropDownComponent;
   @ViewChild('callReasonDropdown') callReasonDropdown: FiizDropDownComponent;
+  @ViewChild('scheduledCallBack') scheduledCallBack: FiizDatePickerComponent;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -163,7 +171,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
     const form: any = {};
     let valid: boolean = false;
 
-    switch (this.data.template) {
+    switch (this.template) {
 
       case 'call-direction': {
         form['call_direction'] = new FormControl(this.variables['call_direction'] || null, [Validators.required]);
@@ -190,7 +198,9 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
       case 'opp-follow-up': {
         // get all outcomes from the server
-        this.callOutcomes$ = this.store.select(fromApp.selectLookupsByKey('callOutcome'));
+        this.callOutcomes$ = this.store.select(fromApp.selectLookupsByKey('callOutcome')).pipe(map((o: DropdownItem[]) => {
+          return o.filter((x: any) => ![3,4].includes(x.id));
+        }));
 
         form['call_statusId'] = new FormControl(this.variables['call_statusId'] || null, [Validators.required]);
         form['call_outcomeId'] = new FormControl(this.variables['call_outcomeId'] || null, [Validators.required]);
@@ -206,7 +216,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         this.flowService.updateStep(this.flowStepId, {
           state: {
             module: ModuleTypes.LEAD,
-            data: {lead: {practiceAreaId: null, state: null}}
+            data: {lead: {practiceAreaId: this.variables['practiceAreaId'], state: this.variables['state']}}
           }
         })
       }
@@ -304,12 +314,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         mergeMap(async (html) => this.flowService.updateNotesToCache(this.tinymce.editor.getContent()))
       ).subscribe();
     }
-
   }
 
-
   public async onSave(): Promise<any> {
-    switch (this.data.template) {
+    switch (this.template) {
       case 'call-direction': {
         return this.flowService.startCall(this.form.value.call_direction);
       }
@@ -321,6 +329,10 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         leadForm?.form.markAsDirty();
         return leadForm?.save(true);
       }
+      case 'opp-follow-up': {
+        this.flowService.updateStep(this.flowStepId, { state: { data: { deal: { scheduledCallBack: this.scheduledCallBack?.value || null }}}}, 'merge');
+      }
+      break;
       case 'take-notes' : {
         this.flowService.updateNotesToCache(this.tinymce.editor.getContent());
       }

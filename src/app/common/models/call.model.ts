@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 
 export enum Fields {
   START_TIME = 'startTime',
+  END_TIME = 'endTime',
   DIRECTION = 'direction',
   OUTCOME_ID = 'outcomeId',
   TYPE_ID = 'typeId',
@@ -28,6 +29,11 @@ export const CallModel: {[key: string]: IModel} = {
     validators: [
       Validators.required
     ]
+  },
+  [Fields.END_TIME]: {
+    label: 'End Time',
+    type: 'both',
+    defaultValue: dayjs().format()
   },
   [Fields.DIRECTION]: {
     label: 'Direction',
