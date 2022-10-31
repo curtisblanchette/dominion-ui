@@ -88,7 +88,7 @@ export const DealModel: {[key: string]: IModel} = {
   scheduledCallBack: {
     label: 'Scheduled Call Back',
     type: 'both',
-    defaultValue: dayjs().format(),
+    // defaultValue: dayjs().format(),
   },
   score: {
     label: 'Score',
