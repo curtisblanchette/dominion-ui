@@ -216,30 +216,6 @@ export class FlowService {
 
   }
 
-  // public updateCall(payload: any): void {
-  //   let data = {
-  //     id: this.callId,
-  //     changes: payload
-  //   }
-  //   this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  // }
-  //
-  // public updateEvent(id:string, payload:any):void{
-  //   const data = {
-  //     id : id,
-  //     changes : payload
-  //   };
-  //   this.eventsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  // }
-  //
-  // public updateLead(id:string, payload:any):void{
-  //   const data = {
-  //     id : id,
-  //     changes : payload
-  //   };
-  //   this.leadsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  // }
-
   public async createNote(content: string): Promise<ICallNote> {
     const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.callId}/notes`, {
       content
