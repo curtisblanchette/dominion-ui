@@ -1,19 +1,20 @@
-import { first } from "cypress/types/lodash"
-
-describe('Inbound Call Flow', () => {
+describe('Inbound Call Flow - New Lead', () => {
 
     it('Login to Application', () => {
         cy.visit('/')
-        cy.get('#username').type('')
-        cy.get('#password').type('')
-        cy.get('#login-form').submit()
+        cy.get('#username').type('4iiz.system@4iiz.com')
+        cy.get('#password').type('$BeBetter911')
+        cy.get('#login-form').submit().then( (res) => {
+            console.log('Login Completed');
+        });
+        cy.wait(2000)
     })
 
     it('set Demo Account and start call flow', () => {
         // Set Demo Account
-        cy.wait(5000)
+        cy.wait(2000)
         cy.get('#actingFor').click()
-        cy.get('.fiiz-dropdown-button__content__wrapper').first().click()
+        cy.get('.dropdown-menu__items').eq(0).click()
         cy.get('#accounts-form').submit()
         cy.wait(5000)
 
@@ -21,7 +22,7 @@ describe('Inbound Call Flow', () => {
         cy.visit('/flow')
 
         // Select Inbound and proceed
-        cy.get('label[for="inbound"]').click()
+        cy.get('label[for="call_direction_inbound"]').click()
         cy.get('#next').click()
 
         // Create new lead
@@ -36,15 +37,15 @@ describe('Inbound Call Flow', () => {
 
         // Select Campaign
         cy.get('form fiiz-dropdown').first().click()
-        cy.get('.fiiz-dropdown-button__content__wrapper').click()
+        cy.get('.dropdown-menu__items').first().click()
         cy.get('#next').click()
 
         // relationship building
         cy.get('.relationship-building fiiz-data').first().click()
-        cy.get('.fiiz-dropdown-button__content__wrapper').first().click()
+        cy.get('.dropdown-menu__items').first().click()
 
         cy.get('.relationship-building fiiz-data').eq(1).click()
-        cy.get('.fiiz-dropdown-button__content__wrapper').first().click()
+        cy.get('.dropdown-menu__items').first().click()
         cy.get('#next').click()
 
         // Power question
@@ -54,10 +55,10 @@ describe('Inbound Call Flow', () => {
         cy.get('#title').type('Test Event')
 
         cy.get('section.flow-layout__content fiiz-dropdown').eq(0).click()
-        cy.get('section.flow-layout__content .fiiz-dropdown-button__content__wrapper').first().click()
+        cy.get('section.flow-layout__content .dropdown-menu__items').first().click()
 
         cy.get('section.flow-layout__content fiiz-dropdown').eq(1).click()
-        cy.get('section.flow-layout__content .fiiz-dropdown-button__content__wrapper').eq(0).click()
+        cy.get('section.flow-layout__content .dropdown-menu__items').eq(0).click()
 
         cy.get('fiiz-textarea textarea').type('Test Description for event')
 
@@ -76,3 +77,4 @@ describe('Inbound Call Flow', () => {
     })
 
 })
+  

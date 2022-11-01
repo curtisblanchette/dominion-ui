@@ -1,7 +1,6 @@
 <form [formGroup]="searchForm" class="list-actions">
   <div class="list-actions__controls">
-    <fiiz-input #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true"
-                placeholder="Search {{pluralModuleName}}..."></fiiz-input>
+    <fiiz-input id="search_module" #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
     <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
       New {{moduleName}}</fiiz-button>
     <div class="button-group">
