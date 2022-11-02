@@ -152,6 +152,11 @@ export class FlowBot {
                   // TODO statusId should be a retrieved value;
                   let callStatusId = callStatuses.find((o:any) => o.label === 'Answered')?.id;
 
+                  // Set Appointment
+                  // depends on leadId
+                  let leadFilter: any = await firstValueFrom(flowService.getService(ModuleTypes.LEAD).filter$);
+                  let contactFilter: any = await firstValueFrom(flowService.getService(ModuleTypes.CONTACT).filter$);
+
                   switch (step.state.options.state) {
                     case 'cancel': {
                       const action = new FlowBotAction(this.entityCollectionServiceFactory, {
@@ -188,20 +193,18 @@ export class FlowBot {
 
                         try {
                           await action.execute().then(() => action.message = 'Appointment Rescheduled.');
-
-                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
+                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;                          
                         } catch(e : any) {
                           action.status = FlowBotActionStatus.FAILURE;
                           action.errorMessage = e.message;
                         }
                       } else {
-                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;
+                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
+                        if( !contactFilter['id'] ){
+                          // No contact means a Lead has not been converted yet, so convert it
+                          flowService.convertLead(leadFilter['id']);
+                        }
                       }
-
-                      // Set Appointment
-                      // depends on leadId
-                      let leadFilter: any = await firstValueFrom(flowService.getService(ModuleTypes.LEAD).filter$);
-                      let contactFilter: any = await firstValueFrom(flowService.getService(ModuleTypes.CONTACT).filter$);
 
                       payload['leadId'] = leadFilter['id'];
                       payload['contactId'] = contactFilter['id'];
@@ -266,15 +269,12 @@ export class FlowBot {
           flowService.updateNote(await flowService.getNotesFromCache());
 
           // Update the Call record for objection
-          const objection = this.store.select(fromFlow.selectVariableByKey('objectionId'));
-          if( objection ){
-            flowService.updateCall({
-              objectionId : objection
-            });
+          if( objectionId ){
+            // Update call record
+            flowService.addVariables({ objectionId:  objectionId });
             // Convert the lead even if objected
             const modIds = await this.getModuleIds();
             await flowService.convertLead(modIds.lead);
-
           }
 
           // update the call record endTime
