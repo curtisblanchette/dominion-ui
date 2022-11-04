@@ -1,7 +1,7 @@
 <label [for]="id" tabindex="-1" *ngIf="label" [ngClass]="{ 'required' : required }">{{label}}</label>
 <div [ngClass]="{ 'no-title': !title, 'disabled': disabled }">
 
-  <fiiz-button class="full-width dropdown" [autofocus]="autofocus   " [disabled]="disabled" size="{{size ? size : null}}" tabindex="-1">
+  <fiiz-button class="full-width dropdown" [autofocus]="autofocus" [disabled]="disabled" size="{{size ? size : null}}" tabindex="-1">
     {{getDisplayValue()}}
     <i class="fa-solid fa-caret-down" style="margin-left: auto;"></i>
   </fiiz-button>
@@ -24,7 +24,7 @@
           id="search-dropdown"
         ></fiiz-input>
       </form>
-      <div class="dropdown-menu__items">
+      <div class="dropdown-menu__items" >
         <ng-template *ngIf="!(loadingSubject$ | async)">
           <fiiz-loading type="ripple"></fiiz-loading>
         </ng-template>
@@ -37,11 +37,12 @@
           style="border-radius: 0;">
         --None--
         </fiiz-button>
-        <fiiz-button tabindex="-1"
+        <fiiz-button tabindex="-1" 
            *ngFor="let item of items$ | async; let i = index; let last = last; "
            [ngClass]="{'selected': multiselect ? isPreselected(item.id) : currentIndex === i, 'dropdown': true, 'divider':!last}"
            (click)="setTheValue(item.id, item.label)"
            [disabled]="disabled"
+           data-qa="dropdown-items"
            style="border-radius: 0;">
           <i class="fa" [ngClass]="{'fa-square': multiselect, 'fa-square-check': multiselect && isPreselected(item.id) }" *ngIf="multiselect"></i>
           {{ item.label }}

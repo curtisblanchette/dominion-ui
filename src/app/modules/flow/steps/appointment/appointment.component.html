@@ -7,7 +7,7 @@
       </header>
 
       <ng-container *ngIf="showSlots">
-        <fiiz-data #eventData [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="{controls: false, state: 'create', fields: ['title', 'officeId', 'typeId', 'description']}" (values)="form.patchValue($event)"></fiiz-data>
+        <fiiz-data #eventData data-qa="event-form" [module]="ModuleTypes.EVENT" [data]="{id: id}" [options]="{controls: false, state: 'create', fields: ['title', 'officeId', 'typeId', 'description']}" (values)="form.patchValue($event)"></fiiz-data>
       </ng-container>
 
       <ng-container *ngIf="showSlots">
@@ -15,7 +15,7 @@
         <div style="display:flex; justify-content:center; gap: 1em; width: 100%; margin-top: 2em;">
           <div style="flex: 2;">
             <div class="flex_main_wrapper__slots__day dictation" style="text-align: center; line-height: 44px;">We have availability as soon as...</div>
-            <fiiz-time-slots [active]="regularSlot" [default]="selectedBtnId" (getValue)="getValue($event, 'regular')"></fiiz-time-slots>
+            <fiiz-time-slots data-qa="regular-slots" [active]="regularSlot" [default]="selectedBtnId" (getValue)="getValue($event, 'regular')"></fiiz-time-slots>
           </div>
 
           <div style="align-self: start; line-height: 44px;">Or</div>
@@ -29,7 +29,7 @@
               (change)="getCustomSlot($event)"
               [min]="minDate"
             ></fiiz-date-picker>
-            <fiiz-time-slots (getValue)="getValue($event, 'custom')" *ngIf="customSlotDate" [active]="customSlot" [date]="customSlotDate" [default]="selectedBtnId" ></fiiz-time-slots>
+            <fiiz-time-slots data-qa="custom-slots" (getValue)="getValue($event, 'custom')" *ngIf="customSlotDate" [active]="customSlot" [date]="customSlotDate" [default]="selectedBtnId" ></fiiz-time-slots>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 <ng-container [ngTemplateOutlet]="getTemplate() || loadingTemplate" [ngTemplateOutletContext]="{loadingText: loadingMessage}"></ng-container>
 
 <ng-template #loginTemplate>
-  <form [formGroup]="loginForm" (ngSubmit)="login()" id="login-form" >
+  <form [formGroup]="loginForm" (ngSubmit)="login()" data-qa="login-form" id="login-form" >
     <svg width="140" viewBox="0 0 168 75" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="4iiz-brand-guidelines" transform="translate(-215.000000, -443.000000)" fill="#FFFFFF">
@@ -22,6 +22,7 @@
       #username
       id="username"
       formControlName="username"
+      data-qa="username"
       type="text"
       required
       [autofocus]="true"
@@ -30,6 +31,7 @@
 
     <fiiz-input
       id="password"
+      data-qa="password"
       formControlName="password"
       placeholder="Password"
       type="password"

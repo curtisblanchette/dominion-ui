@@ -1,6 +1,6 @@
 <div style="margin: auto 0;">
   <!--<h3>{{data.title}}</h3>-->
-  <form [formGroup]="form" (ngSubmit)="save()">
+  <form data-qa="new-module-form" [formGroup]="form" (ngSubmit)="save()">
     <fiiz-grid
       [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : 'initial'}">
       <ng-container *ngFor="let control of controlData; first as isFirst;">
@@ -70,8 +70,7 @@
 
     <div class="form-controls" *ngIf="options.controls">
       <fiiz-button (click)="navigation.back()" type="button" class="stroked">Back</fiiz-button>
-      <fiiz-button #submit type="submit" primary [loading]="loadingSubject$"
-                   [disabled]="(loadingSubject$ | async) || form.invalid">{{submitText}}</fiiz-button>
+      <fiiz-button #submit type="submit" primary [loading]="loadingSubject$" [disabled]="(loadingSubject$ | async) || form.invalid">{{submitText}}</fiiz-button>
     </div>
 
   </form>

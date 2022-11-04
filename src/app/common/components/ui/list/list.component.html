@@ -1,7 +1,7 @@
 <form [formGroup]="searchForm" class="list-actions">
   <div class="list-actions__controls">
-    <fiiz-input id="search_module" #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
-    <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
+    <fiiz-input data-qa="search_module" id="search_module" #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
+    <fiiz-button data-qa="new-module" *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
       New {{moduleName}}</fiiz-button>
     <div class="button-group">
       <fiiz-dropdown
@@ -65,8 +65,7 @@
         <span>Try another search term or create a new {{moduleName}}.</span>
       </div>
       <div class="message-block" style="padding-top: 4%;">
-        <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
-          New {{moduleName}}</fiiz-button>
+        <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
       </div>
     </div>
   </div>
@@ -99,6 +98,7 @@
     </div>
   </div>
   <div class="flex-table__row"
+       data-qa="table-row"
        [ngClass]="{'active' : selected?.id === item?.id}"
        [attr.data-id]="item.id"
        tabindex="0" #row
