@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.36 (2022-11-10)
+
+
+### Bug Fixes
+
+* **II-2858:** Fix Submenu on mobile ([#77](https://github.com/4iiz/dominion-ui/issues/77)) ([51f9d9d](https://github.com/4iiz/dominion-ui/commit/51f9d9dc91ef51ab134adf4459190e3971a405fb))
+
 ### 1.20.35 (2022-11-10)
 
 
