@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.38 (2022-11-10)
+
+
+### Bug Fixes
+
+* **II-2864:** remove default callback field value ([#79](https://github.com/4iiz/dominion-ui/issues/79)) ([86f8de4](https://github.com/4iiz/dominion-ui/commit/86f8de47b6dc7f89bde005dafbeca85bc6180096))
+
 ### 1.20.37 (2022-11-10)
 
 
