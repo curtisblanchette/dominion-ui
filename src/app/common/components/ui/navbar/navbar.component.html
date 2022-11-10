@@ -48,10 +48,20 @@
 
       <ng-template cdkConnectedOverlay cdkConnectedOverlayPanelClass="mobile-menu"  [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="menuOpen" class="test">
         <nav class="mobile-nav-container">
-          <ng-container *ngFor="let item of menu">
-            <button routerLinkActive="active" (click)="menuOpen = false" [routerLink]="item.path" #link >{{item.name}}</button>
+          <ng-container *ngFor="let item of menu; let i = index">
+            <button *ngIf="!item.children?.length" routerLinkActive="active" (click)="menuOpen = false" [routerLink]="item.path" #link >
+              {{item.name}}
+            </button>
+            <button *ngIf="item.children?.length > 0" (click)="toggleSubMenu(i)" #link >
+              {{item.name}}
+              <i class="fa fa-caret-down btn-icon"></i>
+            </button>
+            <ng-container *ngIf="item.children?.length > 0" >
+              <div [@nav-slider]="item.close" class="sub-menu">
+                <button class="full-width" *ngFor="let child of item.children" [routerLink]="child.path" routerLinkActive="active" (click)="menuOpen = false" >{{child.name}} {{item.open}}</button>
+              </div>
+            </ng-container>
           </ng-container>
-
         </nav>
       </ng-template>
     </ng-container>
