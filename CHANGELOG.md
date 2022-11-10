@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.35 (2022-11-10)
+
+
+### Bug Fixes
+
+* **II-2846:** Add lead conversion on call objection ([#72](https://github.com/4iiz/dominion-ui/issues/72)) ([6ddfa79](https://github.com/4iiz/dominion-ui/commit/6ddfa79cb5ac3aac85ecb87be4ed4a51743fb999))
+
 ### 1.20.34 (2022-10-31)
 
 
