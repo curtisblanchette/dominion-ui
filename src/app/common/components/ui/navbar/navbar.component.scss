@@ -20,6 +20,7 @@
   box-shadow: 0 15px 15px 5px rgb(0 0 0 / 25%);
   border-radius: 0 0 var(--button-border-radius) var(--button-border-radius);
   display: none;
+  margin: 0;
 
   &.open {
     display: flex;
@@ -131,13 +132,15 @@ header {
 }
 
 nav.mobile-nav-container {
-  //height: 0;
   width: 100%;
-  //overflow:hidden;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   transition: height .25s ease-in-out;
+  border: {
+    top: 1px solid rgba(255, 255, 255, .05);
+    bottom: 1px solid rgba(255, 255, 255, .05);
+  }
 
   &.open {
     //height: fit-content;
@@ -152,10 +155,7 @@ nav.mobile-nav-container {
     background: none;
     color: var(--text1);
     font-size: 14px;
-
-    &:not(:last-child) {
-      // border-bottom: 1px solid rgba(255, 255, 255, .05);
-    }
+    border-bottom: 1px solid rgba(255, 255, 255, .05);
 
     &.active {
       background: var(--primary);
@@ -165,20 +165,16 @@ nav.mobile-nav-container {
 
   }
 
-  ul {
-    list-style : none;
-    padding-left : 0;
+
+  .sub-menu {
     overflow: hidden;
+    button {
+      padding-left: 30px;
 
-    li:not(:last-child) {
-      border-bottom: 1px solid rgba(255, 255, 255, .05);
-    }
-  }
+      &:not(:first-child) {
+        border-bottom: 1px solid rgba(255, 255, 255, .05);
+      }
 
-  ul.sub-menu{
-    li {
-      padding-left: 15px;
-      border-bottom: 0px;
     }
   }
 
