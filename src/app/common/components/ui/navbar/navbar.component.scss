@@ -168,6 +168,8 @@ nav.mobile-nav-container {
 
   .sub-menu {
     overflow: hidden;
+    z-index: 1;
+
     button {
       padding-left: 30px;
 
