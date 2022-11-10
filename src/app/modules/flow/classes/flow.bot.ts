@@ -1,10 +1,9 @@
 import { Store } from '@ngrx/store';
 import * as fromFlow from '../store/flow.reducer';
-import * as flowActions from '../store/flow.actions';
 import { FlowStatus } from '../store/flow.reducer';
+import * as flowActions from '../store/flow.actions';
 import * as fromApp from '../../../store/app.reducer';
 import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
-import { DominionType } from '../../../common/models';
 import { ModuleTypes } from '../../../data/entity-metadata';
 import { firstValueFrom, lastValueFrom, take } from 'rxjs';
 import { FlowService } from '../flow.service';
@@ -12,7 +11,8 @@ import { Injectable } from '@angular/core';
 import { FlowBotAction, FlowBotActionStatus } from './flow.botAction';
 
 import { FlowStep } from './flow.step';
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
+import { DominionType } from '../../../common/models';
 
 /**
  * The FlowBot is capable of traversing a flow entirely as it was by a physical user.
@@ -47,6 +47,7 @@ export class FlowBot {
       callsService: this.entityCollectionServiceFactory.create(ModuleTypes.CALL)
     }
   }
+
   public reset() {
     this.botActions = [];
   }
@@ -54,13 +55,13 @@ export class FlowBot {
   public run(flowService: FlowService) {
     this.store.select(fromFlow.selectFlowBotContext).pipe(take(1)).subscribe(async (result: any) => {
       let [timeline, status, didObject] = result;
-      let objectionId:any = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('objectionId')).pipe(take(1)));
-      
+      let objectionId: any = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('objectionId')).pipe(take(1)));
+
       // contains objection, filter out anything invalid
       timeline = didObject && timeline.filter((step: FlowStep) => step.valid) || timeline;
 
       if(!timeline.every((step: FlowStep) => step.valid)) {
-        // TODO Should highlight the invalid steps in the sidemenu
+        // TODO Should highlight the invalid steps in the side-menu
         return;
       }
 
@@ -80,7 +81,7 @@ export class FlowBot {
           const leadId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('lead')).pipe(take(1)));
           const dealId = await lastValueFrom(this.store.select(fromFlow.selectVariableByKey('deal')).pipe(take(1)));
           let callTypeId = callTypes.find( (type:any) => type.label === 'Sales')?.id;
-          if( leadId && dealId ){
+          if (leadId && dealId) {
             callTypeId = callTypes.find( (type:any) => type.label === 'Existing Lead')?.id;
           }
 
@@ -91,7 +92,7 @@ export class FlowBot {
             try {
               switch (step.component) {
                 case 'FlowDataComponent': {
-                  const service = this.services[`${step.state.module}Service`];
+                  const service = flowService.getService(step.state.module);
                   const operation = step.state.options.state === 'create' ? 'add' : 'update';
 
                   // some FlowTextComponents need to perform updates on entities
@@ -151,6 +152,11 @@ export class FlowBot {
                   // TODO statusId should be a retrieved value;
                   let callStatusId = callStatuses.find((o:any) => o.label === 'Answered')?.id;
 
+                  // Set Appointment
+                  // depends on leadId
+                  let leadFilter: any = await firstValueFrom(flowService.getService(ModuleTypes.LEAD).filter$);
+                  let contactFilter: any = await firstValueFrom(flowService.getService(ModuleTypes.CONTACT).filter$);
+
                   switch (step.state.options.state) {
                     case 'cancel': {
                       const action = new FlowBotAction(this.entityCollectionServiceFactory, {
@@ -187,20 +193,18 @@ export class FlowBot {
 
                         try {
                           await action.execute().then(() => action.message = 'Appointment Rescheduled.');
-
-                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
+                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;                          
                         } catch(e : any) {
                           action.status = FlowBotActionStatus.FAILURE;
                           action.errorMessage = e.message;
                         }
                       } else {
-                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;
+                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
+                        if( !contactFilter['id'] ){
+                          // No contact means a Lead has not been converted yet, so convert it
+                          flowService.convertLead(leadFilter['id']);
+                        }
                       }
-
-                      // Set Appointment
-                      // depends on leadId
-                      let leadFilter: any = await firstValueFrom(this.services['leadService'].filter$);
-                      let contactFilter: any = await firstValueFrom(this.services['contactService'].filter$);
 
                       payload['leadId'] = leadFilter['id'];
                       payload['contactId'] = contactFilter['id'];
@@ -215,11 +219,10 @@ export class FlowBot {
                       });
                       this.botActions.push(action);
 
-                      await action.execute().then(() => action.message = 'Appointment Created');
-                      eventActions = {
-                        id : action.response?.id,
-                        state : step.state.options.state
-                      };
+                      await action.execute().then(() => {
+                        action.message = 'Appointment Created';
+                      });
+
                       flowService.updateStep(step.id, {state: {data: {id: action.response?.id}}}, 'merge');
                     }
                   }
@@ -237,18 +240,21 @@ export class FlowBot {
                       ) // return a key/value pair
                     .reduce((a, b) => ({...a, ...b}), {}); // merge results into singular object
 
-                  flowService.updateCall({
+                  // update the call record endTime
+                  flowService.addVariables({
                     leadId: moduleIds.lead,
                     dealId: moduleIds.deal,
                     statusId: callStatusId,
                     outcomeId: callOutcomeId,
-                    typeId: callTypeId
+                    typeId: callTypeId,
+                    endTime: new Date().toISOString()
                   });
+
                 }
                   break;
                 case 'FlowTextComponent': {
                   if (step.state.template === 'opp-follow-up') {
-                    this.services[`${ModuleTypes.DEAL}Service`].update({id: step.state.data.id, scheduledCallBack: step.state.data.deal.scheduledCallBack })
+                    flowService[`${ModuleTypes.DEAL}Service`].update({id: step.state.data.id, scheduledCallBack: step.state.data.deal.scheduledCallBack })
                   }
                 }
                   break;
@@ -261,19 +267,30 @@ export class FlowBot {
           }
           // Update the note record
           flowService.updateNote(await flowService.getNotesFromCache());
-          // Update Call record
-          flowService.updateCall({typeId: callTypeId});        
+
+          // Update the Call record for objection
+          if( objectionId ){
+            // Update call record
+            flowService.addVariables({ objectionId:  objectionId });
+            // Convert the lead even if objected
+            const modIds = await this.getModuleIds();
+            await flowService.convertLead(modIds.lead);
+          }
+
+          // update the call record endTime
+          flowService.addVariables({ call_endTime: new Date().toISOString() });
 
           this.store.dispatch(flowActions.UpdateFlowAction({status: FlowStatus.SUCCESS}));
 
           // Update the Call record if objected
           if( didObject ){
             /**
-             * If Call was objected, set the the call outcome to No Set
+             * If Call was objected, set the call outcome to No Set
              * Doesn't matter if the Appointment was set or not
-             */          
-            
-            flowService.updateCall({
+             */
+
+            // update the call record endTime
+            flowService.addVariables({
               outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
               objectionId : objectionId
             });
@@ -283,15 +300,19 @@ export class FlowBot {
              * Cancel the Event
              * Update lead status to No Set
              */
-            
-            if( eventActions ){
+
+            // check if the bot has an appointment action
+            const eventAction = this.botActions.find(x=> x.name === 'add-event' && x.response?.id);
+
+            if( eventAction?.response?.id ){
               let eventPayload = {
+                id: eventAction.response.id,
                 outcomeId : eventOutcomes.find((o:any) => o.label === 'Canceled')?.id
               };
-              flowService.updateEvent(eventActions['id'], eventPayload);
+              flowService.eventService.update(eventPayload);
               // Update lead status
-              let getLeadId: any = await firstValueFrom(this.services['leadService'].filter$);
-              flowService.updateLead(getLeadId['id'], {statusId : leadStatuses.find((ls:any) => ls.label === 'No Set')?.id });
+              let leadFilter: any = await firstValueFrom(flowService.getService(ModuleTypes.LEAD).filter$);
+              (<any>flowService.leadService).update(leadFilter['id'], {statusId : leadStatuses.find((ls:any) => ls.label === 'No Set')?.id });
             }
           }
 
@@ -300,9 +321,10 @@ export class FlowBot {
             /**
              * If Call was objected, set the the call outcome to No Set
              * Doesn't matter if the Appointment was set or not
-             */          
-            
-            flowService.updateCall({
+             */
+
+            flowService.callService.update({
+              id: flowService.callId,
               outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
               objectionId : objectionId
             });
@@ -312,21 +334,25 @@ export class FlowBot {
              * Cancel the Event
              * Update lead status to No Set
              */
-            
+
             if( eventActions ){
               let eventPayload = {
+                id: eventActions['id'],
                 outcomeId : eventOutcomes.find((o:any) => o.label === 'Canceled')?.id
               };
-              flowService.updateEvent(eventActions['id'], eventPayload);
+              flowService.eventService.update(eventPayload);
               // Update lead status
-              let getLeadId: any = await firstValueFrom(this.services['leadService'].filter$);
-              flowService.updateLead(getLeadId['id'], {statusId : leadStatuses.find((ls:any) => ls.label === 'No Set')?.id });
+              let getLeadId: any = await firstValueFrom(flowService.getService(ModuleTypes.LEAD).filter$);
+              flowService.leadService.update({
+                id: getLeadId['id'],
+                statusId: leadStatuses.find((ls:any) => ls.label === 'No Set')?.id
+              });
             }
           }
 
         })
 
-        
+
 
       } // end status !== 'complete'
 
@@ -341,5 +367,20 @@ export class FlowBot {
 
   }
 
+  public async getModuleIds(){
+    const moduleIds: any = this.botActions
+      .filter(action => action.operation === 'add')
+      .map(action => {
+          let data:{ [key:string] : any } = {};
+          data[action.module] = action.response.id;
+          if( ModuleTypes.EVENT == action.module ){
+            data['deal'] = action.response.dealId;
+          }
+          return data;
+        }
+      ).reduce((a, b) => ({...a, ...b}), {});
+
+    return moduleIds;
+  }
 
 }

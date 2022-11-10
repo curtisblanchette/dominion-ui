@@ -4,8 +4,8 @@ describe('Inbound Call Flow', () => {
 
     it('Login to Application', () => {
         cy.visit('/')
-        cy.get('#username').type('4iiz.system@4iiz.com')
-        cy.get('#password').type('$BeBetter911')
+        cy.get('#username').type('')
+        cy.get('#password').type('')
         cy.get('#login-form').submit()
     })
 
@@ -39,7 +39,7 @@ describe('Inbound Call Flow', () => {
         cy.get('.fiiz-dropdown-button__content__wrapper').click()
         cy.get('#next').click()
 
-        // relationship building        
+        // relationship building
         cy.get('.relationship-building fiiz-data').first().click()
         cy.get('.fiiz-dropdown-button__content__wrapper').first().click()
 
@@ -51,7 +51,7 @@ describe('Inbound Call Flow', () => {
         cy.get('#next').click()
 
         // Set Appt
-        cy.get('#title').type('Test Event')        
+        cy.get('#title').type('Test Event')
 
         cy.get('section.flow-layout__content fiiz-dropdown').eq(0).click()
         cy.get('section.flow-layout__content .fiiz-dropdown-button__content__wrapper').first().click()
@@ -76,4 +76,3 @@ describe('Inbound Call Flow', () => {
     })
 
 })
-  

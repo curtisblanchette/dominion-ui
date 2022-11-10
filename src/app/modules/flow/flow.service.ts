@@ -14,14 +14,13 @@ import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionSer
 import { LookupTypes, ModuleTypes } from '../../data/entity-metadata';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ICallNote, IEvent } from '@4iiz/corev2';
-import { UpdateStr } from '@ngrx/entity/src/models';
 import { User } from '../login/models/user';
 import * as fromApp from '../../store/app.reducer';
 import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
+import { Call, Contact, Deal, ICallNote, Lead, Address, Event, Campaign, LeadSource, Office } from '@4iiz/corev2/dist/models/index';
 
 export interface IHistory {
   prevStepId: string;
@@ -46,15 +45,15 @@ export class FlowService {
   public eventsService: CustomDataService<DominionType>;
   public leadsService: CustomDataService<DominionType>;
 
-  private leadService: EntityCollectionService<DominionType>;
-  private contactService: EntityCollectionService<DominionType>;
-  private dealService: EntityCollectionService<DominionType>;
-  private eventService: EntityCollectionService<DominionType>;
-  private addressService: EntityCollectionService<DominionType>;
-  private campaignService: EntityCollectionService<DominionType>;
-  private leadSourceService: EntityCollectionService<DominionType>;
-  private officeService: EntityCollectionService<DominionType>;
-  private callService: EntityCollectionService<DominionType>;
+  public leadService: EntityCollectionService<Lead>;
+  public contactService: EntityCollectionService<Contact>;
+  public dealService: EntityCollectionService<Deal>;
+  public eventService: EntityCollectionService<Event>;
+  public addressService: EntityCollectionService<Address>;
+  public campaignService: EntityCollectionService<Campaign>;
+  public leadSourceService: EntityCollectionService<LeadSource>;
+  public officeService: EntityCollectionService<Office>;
+  public callService: EntityCollectionService<Call>;
 
   private renderer: Renderer2;
 
@@ -69,7 +68,7 @@ export class FlowService {
     public builder: FlowBuilder,
     private appStore: Store<fromApp.AppState>,
   ) {
-    console.log('FlowService Id: ', this.id);
+    
     this.renderer = rendererFactory.createRenderer(null, null);
 
     this.callsService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
@@ -91,7 +90,7 @@ export class FlowService {
     this.callTypes$ = this.store.select(fromApp.selectLookupsByKey('callType'));
 
     // update the Call IMMEDIATELY after specific variables are set.
-    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId', 'call_statusId', 'call_outcomeId', 'call_endTime'])).pipe(
+    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId', 'call_statusId', 'call_outcomeId', 'call_endTime', 'objectionId'])).pipe(
       distinctUntilChanged((prev, curr) => {
         return (
           prev['lead'] === curr['lead'] &&
@@ -99,18 +98,21 @@ export class FlowService {
           prev['call_typeId'] === curr['call_typeId'] &&
           prev['call_statusId'] === curr['call_statusId'] &&
           prev['call_outcomeId'] === curr['call_outcomeId'] &&
-          prev['call_endTime'] === curr['call_endTime']
+          prev['call_endTime'] === curr['call_endTime'] &&
+          prev['objectionId'] === curr['objectionId']
         );
       }),
       map((vars: any) => {
         if (this.callId) {
           let payload: { [key: string]: any } = {};
+          payload['id'] = this.callId;
           payload['leadId'] = vars.lead;
           payload['dealId'] = vars.deal;
           payload['typeId'] = vars.call_typeId;
           payload['outcomeId'] = vars.call_outcomeId;
           payload['statusId'] = vars.call_statusId;
           payload['endTime'] = vars.call_endTime;
+          payload['objectionId'] = vars.objectionId;
 
           // removing anything undefined from the payload
           Object.entries(payload).map((elm) => {
@@ -119,11 +121,15 @@ export class FlowService {
             }
           });
 
-          this.updateCall(payload)
+          this.callService.update(payload)
         }
       })
     ).subscribe();
 
+  }
+
+  public getService(module: ModuleTypes | LookupTypes): EntityCollectionService<DominionType> {
+    return this.entityCollectionServiceFactory.create(module);
   }
 
   public async restart(): Promise<any> {
@@ -204,35 +210,12 @@ export class FlowService {
         await this.createNote('');
       });
     } else {
-      this.updateCall({
+      this.callService.update({
+        id: this.callId,
         direction: direction
       });
     }
 
-  }
-
-  public updateCall(payload: any): void {
-    let data = {
-      id: this.callId,
-      changes: payload
-    }
-    this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  }
-
-  public updateEvent(id:string, payload:any):void{
-    const data = {
-      id : id,
-      changes : payload
-    };
-    this.eventsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  }
-
-  public updateLead(id:string, payload:any):void{
-    const data = {
-      id : id,
-      changes : payload
-    };
-    this.leadsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
   }
 
   public async createNote(content: string): Promise<ICallNote> {
@@ -255,6 +238,10 @@ export class FlowService {
   public async getNotesFromCache() {
     const notes = await firstValueFrom(this.store.select(fromFlow.selectNotes));
     return notes ? notes : '';
+  }
+
+  public async convertLead(leadId:string){
+    this.leadsService.convertLead(leadId);
   }
 
   public async goTo(id: string): Promise<void> {

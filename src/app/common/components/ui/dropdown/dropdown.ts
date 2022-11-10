@@ -77,8 +77,9 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @Input('required') required: boolean = false;
   @Input('disabled') disabled: boolean = false;
   @Input('multiselect') multiselect: boolean = false;
+  @Input('autofocus') autofocus = false;
 
-  @Input('type') dropdownType!: 'anchor' | 'button' | 'search';
+  @Input('type') dropdownType: 'anchor' | 'button' | 'search' | 'basic' = 'basic';
   @Input('module') moduleName: ModuleTypes | LookupTypes;
 
   @Output('onClick') onClick: EventEmitter<any> = new EventEmitter();
