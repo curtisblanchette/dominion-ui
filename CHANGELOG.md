@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.37 (2022-11-10)
+
+
+### Bug Fixes
+
+* **develop:** navbar submenus should overlay most things ([3635e5a](https://github.com/4iiz/dominion-ui/commit/3635e5adfddb9c66caddb5a7aacd5b61ae6c0f75))
+
 ### 1.20.36 (2022-11-10)
 
 
