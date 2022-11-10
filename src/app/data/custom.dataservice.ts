@@ -29,13 +29,12 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   }
 
   convertLead(id: string, notify: boolean = true): Observable<ModuleTypes.DEAL> {
-    if(this.entityName !== ModuleTypes.LEAD) {
-      return of('dummy-delay').pipe(
+    if(this.entityName == ModuleTypes.LEAD) {
+      of('dummy-delay').pipe(
         // delay(2000),
         mergeMap(() => super.execute('POST', super.entityUrl + id + '/convertLead')),
         tap((res: any) => {
           notify && this.toastr.success(`Lead Converted`);
-
           // TODO update the entity collection filter with the returned deal/contact.
         })
       )

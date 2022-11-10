@@ -68,7 +68,7 @@ export class FlowService {
     public builder: FlowBuilder,
     private appStore: Store<fromApp.AppState>,
   ) {
-    console.log('FlowService Id: ', this.id);
+    
     this.renderer = rendererFactory.createRenderer(null, null);
 
     this.callsService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
@@ -90,7 +90,7 @@ export class FlowService {
     this.callTypes$ = this.store.select(fromApp.selectLookupsByKey('callType'));
 
     // update the Call IMMEDIATELY after specific variables are set.
-    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId', 'call_statusId', 'call_outcomeId', 'call_endTime'])).pipe(
+    this.store.select(fromFlow.selectVariablesByKeys(['lead', 'deal', 'call_typeId', 'call_statusId', 'call_outcomeId', 'call_endTime', 'objectionId'])).pipe(
       distinctUntilChanged((prev, curr) => {
         return (
           prev['lead'] === curr['lead'] &&
@@ -98,7 +98,8 @@ export class FlowService {
           prev['call_typeId'] === curr['call_typeId'] &&
           prev['call_statusId'] === curr['call_statusId'] &&
           prev['call_outcomeId'] === curr['call_outcomeId'] &&
-          prev['call_endTime'] === curr['call_endTime']
+          prev['call_endTime'] === curr['call_endTime'] &&
+          prev['objectionId'] === curr['objectionId']
         );
       }),
       map((vars: any) => {
@@ -111,6 +112,7 @@ export class FlowService {
           payload['outcomeId'] = vars.call_outcomeId;
           payload['statusId'] = vars.call_statusId;
           payload['endTime'] = vars.call_endTime;
+          payload['objectionId'] = vars.objectionId;
 
           // removing anything undefined from the payload
           Object.entries(payload).map((elm) => {
@@ -216,30 +218,6 @@ export class FlowService {
 
   }
 
-  // public updateCall(payload: any): void {
-  //   let data = {
-  //     id: this.callId,
-  //     changes: payload
-  //   }
-  //   this.callsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  // }
-  //
-  // public updateEvent(id:string, payload:any):void{
-  //   const data = {
-  //     id : id,
-  //     changes : payload
-  //   };
-  //   this.eventsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  // }
-  //
-  // public updateLead(id:string, payload:any):void{
-  //   const data = {
-  //     id : id,
-  //     changes : payload
-  //   };
-  //   this.leadsService.update(<UpdateStr<any>>data, false).pipe(take(1)).subscribe();
-  // }
-
   public async createNote(content: string): Promise<ICallNote> {
     const note = await firstValueFrom(this.http.post(`${environment.dominion_api_url}/calls/${this.callId}/notes`, {
       content
@@ -260,6 +238,10 @@ export class FlowService {
   public async getNotesFromCache() {
     const notes = await firstValueFrom(this.store.select(fromFlow.selectNotes));
     return notes ? notes : '';
+  }
+
+  public async convertLead(leadId:string){
+    this.leadsService.convertLead(leadId);
   }
 
   public async goTo(id: string): Promise<void> {
