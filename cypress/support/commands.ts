@@ -74,7 +74,7 @@ function SetAccount(name:string = 'demo'){
 // Select Call Type
 function callType(type:string){
     cy.get('[data-qa="call_direction"]').within(() => {
-        cy.get('label').contains(type).click()
+        cy.get('label').contains(type, { matchCase: false }).click()
     })    
 }
 

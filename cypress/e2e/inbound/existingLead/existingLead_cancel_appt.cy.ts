@@ -1,16 +1,5 @@
 describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
-
-    it('Login to Application', () => {
-        cy.visit('/')
-        cy.login()
-        cy.wait(5000)
-    })
     
-    it('set Demo Account and start call flow', () => {
-        cy.account()
-        cy.wait(5000)
-    })
-
     it('Start Inbound - Existing Lead Cancel Appt Call Flow', () => {
 
         // Go to Flow Page
@@ -22,7 +11,11 @@ describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
 
         // Search For a Lead
         cy.get('[data-qa="search_module"]').type('Raj kumar')
-        cy.wait(2000)
+        cy.intercept({
+            method: "GET",
+            url: "**/api/v1/leads/?**",
+        }).as("searchLeads")
+        cy.wait("@searchLeads")
         cy.get('[data-qa="table-row"]').first().click()
         cy.nextstep()
 
