@@ -15,26 +15,20 @@
 
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
 import './commands';
-import "cypress-localstorage-commands";
+import 'cypress-localstorage-commands';
 
 // This will run before each spec
 before(() => {
-    it('Login to Application', () => {
-        cy.visit('/')
-        cy.login()
-        cy.intercept({
-            method: "GET",
-            url: "**/api/v1/system/workspaces",
-        }).as("getWorkspace")
-        cy.wait("@getWorkspace")
-    })
-    
-    it('set Demo Account', () => {
-        cy.account()
-        cy.intercept({
-            method: "GET",
-            url: "**/api/v1/**",
-        }).as("lookups")
-        cy.wait(['@lookups'])
-    })
+
+  it('Clears local storage', () => {
+    localStorage.clear();
+  });
+
+  it('Login to Application', () => {
+    cy.appLogin();
+  });
+
+  it('set Demo Account', () => {
+    cy.setAccount();
+  });
 })

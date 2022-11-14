@@ -1,84 +1,84 @@
 describe('Inbound Call Flow - Existing Lead - Set Appt', () => {
 
     it('Login to Application', () => {
-        cy.visit('/')
-        cy.login()
-        cy.wait(5000)
-    })
+        cy.visit('/');
+        cy.appLogin();
+        cy.wait(5000);
+    });
 
     it('set Demo Account', () => {
         // Set Demo Account
-        cy.account()
-        cy.wait(5000)
-    })
+        cy.setAccount();
+        cy.wait(5000);
+    });
 
     it('Start Inbound - Existing Lead Set Appt Call Flow', () => {
 
         // Go to Flow Page
-        cy.visit('/flow')
+        cy.visit('/flow');
 
         // Select Inbound and proceed
-        cy.calltype('Inbound')
-        cy.nextstep()
+        cy.callType('Inbound');
+        cy.nextStep();
 
         // Search For a Lead
-        cy.get('[data-qa="search_module"]').type('Raj kumar')
-        cy.wait(2000)
-        cy.get('[data-qa="table-row"]').first().click()
-        cy.nextstep()
+        cy.get('[data-qa="search_module"]').type('Raj kumar');
+        cy.wait(2000);
+        cy.get('[data-qa="table-row"]').first().click();
+        cy.nextStep();
 
         // Review Lead Info
-        cy.nextstep()
+        cy.nextStep();
 
         // Select Deal
-        cy.get('[data-qa="table-row"]').first().click()
-        cy.nextstep()
+        cy.get('[data-qa="table-row"]').first().click();
+        cy.nextStep();
 
         // Review Opportunity
-        cy.nextstep()
+        cy.nextStep();
 
         // Reason For Call
         cy.get('[data-qa="reason-for-call"]').within(($form) => {
-            cy.get('label').contains('Set Appointment').click()
-        })
-        cy.nextstep()
+            cy.get('label').contains('Set Appointment').click();
+        });
+        cy.nextStep();
 
         // Power question
-        cy.nextstep()
+        cy.nextStep();
 
         // Set Appointment
         cy.get('[data-qa="event-form"]').within(($form) => {
-            cy.get('label[for="title"]').next().type('Test Event')
+            cy.get('label[for="title"]').next().type('Test Event');
 
-            cy.get('label[for="officeId"]').next().click()
+            cy.get('label[for="officeId"]').next().click();
             cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
                 cy.wrap($buttons).each(($el, $index, $list) => {
                     if( $el.find('button').text().trim() == 'Charleston' ){
-                        cy.wrap($el).click()
+                        cy.wrap($el).click();
                     }
-                })
-            })
+                });
+            });
 
-            cy.get('label[for="typeId"]').next().click()
+            cy.get('label[for="typeId"]').next().click();
             cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
                 cy.wrap($buttons).each(($el, $index, $list) => {
                     if( $el.find('button').text().trim() == 'Sales Consultation' ){
-                        cy.wrap($el).click()
+                        cy.wrap($el).click();
                     }
-                })
-            })
-            cy.get('label[for="description"]').next().type('Test Description for event')
-        })
+                });
+            });
+            cy.get('label[for="description"]').next().type('Test Description for event');
+        });
 
-        cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click()
-        cy.nextstep()
+        cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
+        cy.nextStep();
 
         // Recap
-        cy.nextstep()
+        cy.nextStep();
 
         // Finish Call
-        cy.finish()
+        cy.finish();
 
-    })
+    });
 
-})
+});

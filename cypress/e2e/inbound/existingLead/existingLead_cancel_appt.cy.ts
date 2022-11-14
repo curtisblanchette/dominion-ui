@@ -1,13 +1,13 @@
 describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
-    
+
     it('Start Inbound - Existing Lead Cancel Appt Call Flow', () => {
 
         // Go to Flow Page
-        cy.visit('/flow')
+        cy.visit('/flow');
 
         // Select Inbound and proceed
-        cy.calltype('Inbound')
-        cy.nextstep()
+        cy.callType('Inbound');
+        cy.nextStep();
 
         // Search For a Lead
         cy.get('[data-qa="search_module"]').type('Raj kumar')
@@ -16,35 +16,35 @@ describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
             url: "**/api/v1/leads/?**",
         }).as("searchLeads")
         cy.wait("@searchLeads")
-        cy.get('[data-qa="table-row"]').first().click()
-        cy.nextstep()
+        cy.get('[data-qa="table-row"]').first().click();
+        cy.nextStep();
 
         // Review Lead Info
-        cy.nextstep()
+        cy.nextStep();
 
         // Select Deal
-        cy.get('[data-qa="table-row"]').first().click()
-        cy.nextstep()
+        cy.get('[data-qa="table-row"]').first().click();
+        cy.nextStep();
 
         // Review Opportunity
-        cy.nextstep()
+        cy.nextStep();
 
         // Reason For Call
         cy.get('[data-qa="reason-for-call"]').within(($form) => {
-            cy.get('label').contains('Cancel Appointment').click()
+            cy.get('label').contains('Cancel Appointment').click();
         })
-        cy.nextstep()
+        cy.nextStep();
 
         // Select Appointment to cancel
-        cy.get('[data-qa="table-row"]').first().click()
-        cy.nextstep()
+        cy.get('[data-qa="table-row"]').first().click();
+        cy.nextStep();
 
         // Cancel Appointment
-        cy.get('#next').click()
+        cy.get('#next').click();
 
         // Finish Call
-        cy.finish()
+        cy.finish();
 
-    })
+    });
 
-})
+});
