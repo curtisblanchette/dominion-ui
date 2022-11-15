@@ -68,7 +68,7 @@ export class FlowService {
     public builder: FlowBuilder,
     private appStore: Store<fromApp.AppState>,
   ) {
-    
+
     this.renderer = rendererFactory.createRenderer(null, null);
 
     this.callsService = this.dataServiceFactory.create(ModuleTypes.CALL) as CustomDataService<DominionType>;
@@ -240,8 +240,8 @@ export class FlowService {
     return notes ? notes : '';
   }
 
-  public async convertLead(leadId:string){
-    return await this.leadsService.convertLead({id : leadId});
+  public async convertLead(id: string){
+    return await this.leadsService.convertLead({id});
   }
 
   public async goTo(id: string): Promise<void> {
