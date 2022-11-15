@@ -200,10 +200,10 @@ export class FlowBot {
                         }
                       } else {
                         callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
-                        if( !contactFilter['id'] ){
-                          // No contact means a Lead has not been converted yet, so convert it
-                          flowService.convertLead(leadFilter['id']);
-                        }
+                        
+                        const convertResponse:any = await flowService.convertLead(leadFilter['id']);
+                        flowService.addVariables({deal : convertResponse.deal});
+                        
                       }
 
                       payload['leadId'] = leadFilter['id'];
@@ -270,11 +270,14 @@ export class FlowBot {
 
           // Update the Call record for objection
           if( objectionId ){
-            // Update call record
-            flowService.addVariables({ objectionId:  objectionId });
-            // Convert the lead even if objected
+
             const modIds = await this.getModuleIds();
-            await flowService.convertLead(modIds.lead);
+
+            // Convert the lead even if objected            
+            const convertedResponse:any = await flowService.convertLead(modIds.lead);
+
+            // Update call record
+            flowService.addVariables({ objectionId:  objectionId, deal:convertedResponse.deal });
           }
 
           // update the call record endTime

@@ -2,7 +2,7 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { DefaultDataService, DefaultDataServiceConfig, DefaultDataServiceFactory, HttpUrlGenerator, QueryParams } from '@ngrx/data';
 import { DominionType } from '../common/models';
 import { HttpClient } from '@angular/common/http';
-import { map, mergeMap, Observable, of, tap } from 'rxjs';
+import { firstValueFrom, map, mergeMap, Observable, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Update } from '@ngrx/entity';
 import { LookupTypes, ModuleTypes } from './entity-metadata';
@@ -12,6 +12,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
 
   public data$: Observable<DominionType[]>;
   public count$: Observable<number>;
+  public url:string | undefined;
 
   constructor(
     @Inject('entityName') entityName: string,
@@ -26,18 +27,12 @@ export class CustomDataService<T> extends DefaultDataService<T> {
       httpUrlGenerator,
       config
     );
+    this.url = config?.root;
   }
 
-  convertLead(id: string, notify: boolean = true): Observable<ModuleTypes.DEAL> {
+  async convertLead(entity: Partial<DominionType>, notify: boolean = true) {
     if(this.entityName == ModuleTypes.LEAD) {
-      of('dummy-delay').pipe(
-        // delay(2000),
-        mergeMap(() => super.execute('POST', super.entityUrl + id + '/convertLead')),
-        tap((res: any) => {
-          notify && this.toastr.success(`Lead Converted`);
-          // TODO update the entity collection filter with the returned deal/contact.
-        })
-      )
+      return firstValueFrom( super.execute('POST', `${this.url}/leads/${entity.id}/convert-lead`) );
     }
     throw new Error('Cannot convert a non-Lead');
   }

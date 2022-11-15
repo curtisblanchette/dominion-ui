@@ -241,7 +241,7 @@ export class FlowService {
   }
 
   public async convertLead(leadId:string){
-    this.leadsService.convertLead(leadId);
+    return await this.leadsService.convertLead({id : leadId});
   }
 
   public async goTo(id: string): Promise<void> {
