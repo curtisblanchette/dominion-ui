@@ -12,7 +12,6 @@ export class CustomDataService<T> extends DefaultDataService<T> {
 
   public data$: Observable<DominionType[]>;
   public count$: Observable<number>;
-  public url:string | undefined;
 
   constructor(
     @Inject('entityName') entityName: string,
@@ -27,14 +26,13 @@ export class CustomDataService<T> extends DefaultDataService<T> {
       httpUrlGenerator,
       config
     );
-    this.url = config?.root;
   }
 
   async convertLead(entity: Partial<DominionType>, notify: boolean = true) {
-    if(this.entityName == ModuleTypes.LEAD) {
-      return firstValueFrom( super.execute('POST', `${this.url}/leads/${entity.id}/convert-lead`) );
+    if(this.entityName !== ModuleTypes.LEAD) {
+      throw new Error('Cannot convert a non-Lead');
     }
-    throw new Error('Cannot convert a non-Lead');
+    return firstValueFrom( super.execute('POST', `${super.entityUrl}${entity.id}/convert-lead`) );
   }
 
   override add(entity: Partial<DominionType>, notify: boolean = true) {
