@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.41 (2022-11-15)
+
+### 1.20.40 (2022-11-15)
+
+
+### Bug Fixes
+
+* **radio:** get rid of those nbsp; surrounding the text element ([f6ed000](https://github.com/4iiz/dominion-ui/commit/f6ed000dee5683ff59ceb7e18750924806dcd1c2))
+
+### 1.20.39 (2022-11-15)
+
 ### 1.20.38 (2022-11-10)
 
 

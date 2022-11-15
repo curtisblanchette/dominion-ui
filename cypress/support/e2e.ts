@@ -14,5 +14,17 @@
 // ***********************************************************
 
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
-// import './commands';
-import "cypress-localstorage-commands";
+import './commands';
+import 'cypress-localstorage-commands';
+
+// This will run before each spec
+before(() => {
+
+  it('Login to Application', () => {
+    cy.appLogin();
+  });
+
+  it('set Demo Account', () => {
+    cy.setAccount();
+  });
+})
