@@ -32,7 +32,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     if(this.entityName !== ModuleTypes.LEAD) {
       throw new Error('Cannot convert a non-Lead');
     }
-    return firstValueFrom( super.execute('POST', `${super.entityUrl}${entity.id}/convert-lead`) );
+    return firstValueFrom( super.execute('POST', `${this.entityUrl}${entity.id}/convert-lead`) );
   }
 
   override add(entity: Partial<DominionType>, notify: boolean = true) {
