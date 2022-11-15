@@ -188,6 +188,10 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
             checked: false
           } as DropdownItem;
         });
+        if( !this.required && this.dropdownType == 'search' ){
+          data.unshift( {label : '--None--', id: null, checked : false} );
+        }
+        
       }
 
       if (this.isLookup()) {
@@ -198,11 +202,17 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
                 return items.filter((item: DropdownItem) => item.label.toLowerCase().includes(value.toLowerCase()));
               })
             )
-        )
+        );
+        if( !this.required && this.dropdownType == 'search' ){
+          data.unshift( {label : '--None--', id: null, checked : false} );
+        }        
       }
 
       if (data) {
         this.totalRecords = data.count || 0;
+        // if( !this.required ){
+          // data = {...{}, ...data};
+        // }
         this.items$ = of(data);
       }
     } else {

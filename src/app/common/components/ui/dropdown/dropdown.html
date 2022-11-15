@@ -24,7 +24,7 @@
           id="search-dropdown"
         ></fiiz-input>
       </form>
-      <div class="dropdown-menu__items" >
+      <div class="dropdown-menu__items">
         <ng-template *ngIf="!(loadingSubject$ | async)">
           <fiiz-loading type="ripple"></fiiz-loading>
         </ng-template>
@@ -37,7 +37,7 @@
           style="border-radius: 0;">
         --None--
         </fiiz-button>
-        <fiiz-button tabindex="-1" 
+        <fiiz-button tabindex="-1"
            *ngFor="let item of items$ | async; let i = index; let last = last; "
            [ngClass]="{'selected': multiselect ? isPreselected(item.id) : currentIndex === i, 'dropdown': true, 'divider':!last}"
            (click)="setTheValue(item.id, item.label)"
