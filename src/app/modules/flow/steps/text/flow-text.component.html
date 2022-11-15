@@ -8,7 +8,7 @@
       </header>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="callDirections$" formControlName="call_direction" name="call_direction"></fiiz-radio>
+        <fiiz-radio data-qa="call_direction" [items]="callDirections$" formControlName="call_direction" name="call_direction"></fiiz-radio>
       </form>
     </ng-template>
 
@@ -89,7 +89,7 @@
        <p>All information has been captured, thank you!</p>
       </ng-container>
 
-      <fiiz-button id="finish_call" *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="(status$ | async) !== 'success'">Finish Call</fiiz-button>
+      <fiiz-button data-qa="finish-call" id="finish_call" *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="(status$ | async) !== 'success'">Finish Call</fiiz-button>
     </ng-template>
 
 
@@ -100,7 +100,7 @@
 <!--      </header>-->
 
 
-      <form [formGroup]="form" *ngIf="form" style="display:flex; justify-content: start; gap: 2em;">
+      <form data-qa="reason-for-call" [formGroup]="form" *ngIf="form" style="display:flex; justify-content: start; gap: 2em;">
         <div *ngIf="(vars$ | async).call_direction === 'outbound'">
           <h3>Call Status</h3>
           <fiiz-radio [items]="callStatuses$" formControlName="call_statusId" name="call_statusId" #callStatusRadio></fiiz-radio>

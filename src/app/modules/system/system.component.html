@@ -9,7 +9,7 @@
       <h3>Accounts</h3>
     </header>
 
-    <form id="accounts-form" [formGroup]="accountsForm" *ngIf="accountsForm">
+    <form data-qa="accounts-form" id="accounts-form" [formGroup]="accountsForm" *ngIf="accountsForm">
       <fiiz-dropdown
         type="search"
         id="actingFor"
@@ -33,7 +33,7 @@
     <h3>Invite Users</h3>
   </header>
 
-  <form (ngSubmit)="submitUserInvite()" [formGroup]="userInviteForm" *ngIf="userInviteForm?.controls">
+  <form data-qa="invite-form" (ngSubmit)="submitUserInvite()" [formGroup]="userInviteForm" *ngIf="userInviteForm?.controls">
     <fiiz-input type="email" label="Email" placeholder="Email Address" [formControlName]="'email'"></fiiz-input>
     <fiiz-dropdown
       type="search"
