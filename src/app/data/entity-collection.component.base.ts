@@ -77,10 +77,11 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
         this.parentContext.items$ = this._dynamicService.getWithQuery({}).pipe(
           map((res: any) => {
-            return res.map((res: any)=> {
+            return res.map((res: any) => {
               return {id: res.id, label: res.name };
             });
-          }));
+          })
+        );
       }
     }
   }

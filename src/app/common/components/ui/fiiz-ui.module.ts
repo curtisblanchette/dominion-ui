@@ -38,6 +38,7 @@ import { FiizGridColsDirective } from './grid/cols.directive';
 import { FiizCountUpDirective } from '../../directives/countUp.directive';
 import { FiizButtonSizeDirective } from '../../directives/buttonSize.directive';
 import { FiizTimeSlotComponent } from './time-slots';
+import { FiizNoteComponent } from './note/note.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { FiizTimeSlotComponent } from './time-slots';
     FiizDialogComponent,
     FiizGridComponent,
     FiizGridColsDirective,
-    FiizTimeSlotComponent
+    FiizTimeSlotComponent,
+    FiizNoteComponent
   ],
   providers: [
     Dialog,
@@ -121,7 +123,8 @@ import { FiizTimeSlotComponent } from './time-slots';
     FiizDialogComponent,
     FiizGridComponent,
     FiizGridColsDirective,
-    FiizTimeSlotComponent
+    FiizTimeSlotComponent,
+    FiizNoteComponent
   ]
 })
 export class FiizUIModule {

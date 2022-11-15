@@ -1,0 +1,13 @@
+
+<header style="display: flex;">
+  <i class="fa" [ngClass]="{'fa-phone' : data.noteFor == 'call', 'fa-calendar' : data.noteFor == 'event' }"></i>
+
+  <div style="display: flex; flex-direction: column; align-items: start;">
+    <h5 class="title" *ngIf="data.noteFor == 'call'" >{{data.direction | titlecase}} Call</h5>
+    <h5 class="title" *ngIf="data.noteFor == 'event'" >{{data.type}}</h5>
+    <time [dateTime]="data.createdAt">{{ data.createdAt | date:'medium'}}</time>
+  </div>
+</header>
+
+<div class="content" [innerHTML]="data.content"></div>
+
