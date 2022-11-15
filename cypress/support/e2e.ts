@@ -20,10 +20,6 @@ import 'cypress-localstorage-commands';
 // This will run before each spec
 before(() => {
 
-  it('Clears local storage', () => {
-    localStorage.clear();
-  });
-
   it('Login to Application', () => {
     cy.appLogin();
   });
