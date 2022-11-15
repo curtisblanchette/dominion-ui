@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.20.42 (2022-11-15)
+
+
+### Bug Fixes
+
+* **II-2833:** Arrow navigation fix ([#83](https://github.com/4iiz/dominion-ui/issues/83)) ([05fc6fd](https://github.com/4iiz/dominion-ui/commit/05fc6fdfeebe4be4be5afe9d25f76a487e3b3cfb))
+
 ### 1.20.41 (2022-11-15)
 
 ### 1.20.40 (2022-11-15)
