@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.21.5 (2022-11-16)
+
+
+### Bug Fixes
+
+* **ci:** .gitignore cypress asset folders ([cfe3046](https://github.com/4iiz/dominion-ui/commit/cfe30462432c0196dd19fb7b6092679ba5b47caa))
+
 ### 1.21.4 (2022-11-16)
 
 ### 1.21.3 (2022-11-16)
