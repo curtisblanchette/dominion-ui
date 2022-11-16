@@ -19,6 +19,7 @@ jobs:
           build: npm run build:dev
           start: npm run start:dev
   deploy:
+    needs: cypress-run
     runs-on: ubuntu-20.04
     strategy:
       matrix:
