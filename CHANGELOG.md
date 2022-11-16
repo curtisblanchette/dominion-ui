@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.21.0 (2022-11-15)
+
+
+### Features
+
+* **outcome-form:** add note component ([7f0093d](https://github.com/4iiz/dominion-ui/commit/7f0093d0526a1d72f987433dd31c627ee7fea13e))
+
 ### 1.20.42 (2022-11-15)
 
 
