@@ -16,8 +16,8 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
-          build: npm run build
-          start: npm start
+          build: npm run build:dev
+          start: npm run start:dev
   deploy:
     runs-on: ubuntu-20.04
     strategy:
