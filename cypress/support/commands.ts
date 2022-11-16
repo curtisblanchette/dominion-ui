@@ -53,13 +53,10 @@ class CypressCustomCommands {
     cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
       cy.wrap($buttons).each(($el, $index, $list) => {
         if( $el.find('button').text().trim() == name ){
-          cy.wrap($el).click();
+          cy.wrap($el).click().wait(['@lookups']).wait(100);
         }
       });
     });
-
-    cy.wait(['@lookups']);
-
   }
 
 

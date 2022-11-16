@@ -5,12 +5,12 @@
   gap: 2em;
   min-height: 0;
 
-  > div {
-    flex: 2;
+  .fields {
+    flex: 1 420px;
   }
 
-  .fields {
-    flex: 1
+  .notes {
+    flex: 2 500px;
   }
 
 }
@@ -26,4 +26,8 @@ fiiz-data {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+}
+
+@media all and (min-width: 868px){
+
 }
