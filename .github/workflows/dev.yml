@@ -5,6 +5,17 @@ on:
     branches: [ develop ]
 
 jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v4.2.0
+        with:
+          build: npm run build
+          start: npm start
   deploy:
     runs-on: ubuntu-20.04
     strategy:
