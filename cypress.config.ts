@@ -3,7 +3,15 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   projectId: 'khcsw1',
   e2e: {
-    'baseUrl': 'http://localhost:4200',
+    baseUrl: 'http://localhost:4200',
+    setupNodeEvents(on, config) {
+      require("cypress-localstorage-commands/plugin")(on, config);
+      return config;
+    },
+    specPattern: [
+      'cypress/e2e/auth/app.login.cy.ts',
+      'cypress/e2e/auth/app.logout.cy.ts'
+    ]
   },
   requestTimeout: 180000,
   responseTimeout: 180000,
@@ -14,7 +22,7 @@ export default defineConfig({
   component: {
     devServer: {
       framework: 'angular',
-      bundler: 'webpack',
+      bundler: 'webpack'
     },
     specPattern: '**/*.cy.ts'
   }

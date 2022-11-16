@@ -181,6 +181,9 @@
             "headless": false
           },
           "configurations": {
+            "development": {
+              "devServerTarget": "dominion-ui:serve:development"
+            },
             "production": {
               "devServerTarget": "dominion-ui:serve:production"
             }

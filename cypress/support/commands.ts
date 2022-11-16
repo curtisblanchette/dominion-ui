@@ -12,14 +12,15 @@ class CypressCustomCommands {
 
   constructor() {
     // Add Custom Commands
-    Cypress.Commands.add("appLogin", this.appLogin);
+    Cypress.Commands.add("appSystemLogin", this.appSystemLogin);
+    Cypress.Commands.add("appLogout", this.appLogout);
     Cypress.Commands.add("setAccount", this.setAccount);
     Cypress.Commands.add("callType", this.callType);
     Cypress.Commands.add("nextStep", this.nextStep);
     Cypress.Commands.add("finish", this.finish);
   }
 
-  public appLogin() {
+  public appSystemLogin() {
 
     // Arrange
     cy.visit('/login');
@@ -37,6 +38,22 @@ class CypressCustomCommands {
 
     // Assert
     cy.wait("@getWorkspace");
+    cy.getLocalStorage('state').then(state => {
+      console.log(state);
+      expect(state).to.be.not.null;
+    });
+
+  }
+
+  public appLogout() {
+    // Arrange
+    cy.visit('/dashboard');
+
+    // Act
+    cy.get('[data-qa="logout"]').within(($logout) => {
+      cy.wrap($logout).click();
+
+    });
   }
 
   // Set Account
@@ -53,7 +70,10 @@ class CypressCustomCommands {
     cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
       cy.wrap($buttons).each(($el, $index, $list) => {
         if( $el.find('button').text().trim() == name ){
-          cy.wrap($el).click().wait(['@lookups']).wait(100);
+          cy.wrap($el)
+            .click()
+            .wait(['@lookups'])
+            .wait(100); // give app .1s to store api responses to State
         }
       });
     });

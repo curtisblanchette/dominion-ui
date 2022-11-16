@@ -19,12 +19,12 @@ import 'cypress-localstorage-commands';
 
 // This will run before each spec
 before(() => {
-
-  it('Login to Application', () => {
-    cy.appLogin();
-  });
-
-  it('set Demo Account', () => {
-    cy.setAccount();
-  });
-})
+  // having these here was causing issues, can you have `it` inside a before
+  // it('Login to Application', () => {
+  //   cy.appLogin();
+  // });
+  //
+  // it('set Demo Account', () => {
+  //   cy.setAccount();
+  // });
+});

@@ -13,8 +13,9 @@
     "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}}\"",
     "test": "ng test",
     "e2e": "ng e2e",
+    "ci": "ng ci",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run --record --key dda6a0e7-e2a9-4755-9695-299b5bf96c14"
+    "cypress:run": "cypress run --record --key dda6a0e7-e2a9-4755-9695-299b5bf96c14 --browser chrome"
   },
   "browser": {
     "fs": false,
