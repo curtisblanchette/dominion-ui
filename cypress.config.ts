@@ -8,8 +8,9 @@ export default defineConfig({
       require("cypress-localstorage-commands/plugin")(on, config);
       return config;
     },
+    experimentalSessionAndOrigin: true,
     specPattern: [
-      'cypress/e2e/flow/flow.cy.ts'
+      'cypress/e2e/flow/**/*.cy.ts',
     ]
   },
   requestTimeout: 180000,

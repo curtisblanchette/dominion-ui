@@ -18,9 +18,12 @@ jobs:
         uses: cypress-io/github-action@v4.2.0
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
+          CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
         with:
           build: npm run build:dev
           start: npm run start:dev
+          spec: 'cypress/**/newLead.cy.ts'
   deploy:
     needs: cypress-run
     runs-on: ubuntu-20.04

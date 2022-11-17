@@ -58,7 +58,7 @@ describe('Inbound Call Flow - New Lead', () => {
           }
         });
       });
-      cy.get('label[for="description"]').next().type('Test Description for event');
+      cy.get('label[for="description"]').next().type('Test Description for event', {force: true});
     });
 
     cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
@@ -69,8 +69,6 @@ describe('Inbound Call Flow - New Lead', () => {
 
     // Finish Call
     cy.finish();
-
-
   });
 
 });

@@ -18,13 +18,7 @@ import './commands';
 import 'cypress-localstorage-commands';
 
 // This will run before each spec
-before(() => {
-  // having these here was causing issues, can you have `it` inside a before
-  // it('Login to Application', () => {
-  //   cy.appLogin();
-  // });
-  //
-  // it('set Demo Account', () => {
-  //   cy.setAccount();
-  // });
+beforeEach(() => {
+  cy.login(Cypress.env('USERNAME'), Cypress.env('PASSWORD'), {cacheSession: true});
+  cy.setAccount();
 });
