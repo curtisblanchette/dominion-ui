@@ -5,7 +5,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  cypress-run:
+  install:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -14,18 +14,55 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cypress run
+      - name: Cypress install
+        uses: cypress-io/github-action@v4.2.0
+        with:
+          runTests: false
+          build: npm run build:dev
+
+      - name: Save build folder
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          if-no-files-found: error
+          path: build
+
+  e2e-chrome-test:
+    runs-on: ubuntu-20.04
+    needs: install
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ 16.x ]
+        containers: [ 1, 2, 3, 4, 5 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download the build folders
+          uses: actions/download-artifact@v2
+          with:
+            name: build
+            path: build
+
+      - name: Run Tests
         uses: cypress-io/github-action@v4.2.0
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
           CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
         with:
-          build: npm run build:dev
           start: npm run start:dev
+          wait-on: 'http://localhost:4200'
+          browser: chrome,
+          record: false
+          parallel: true,
+          group: 'UI - Chrome'
           spec: 'cypress/**/newLead.cy.ts'
+
+
   deploy:
-    needs: cypress-run
+    needs: e2e-chrome-test
     runs-on: ubuntu-20.04
     strategy:
       matrix:
