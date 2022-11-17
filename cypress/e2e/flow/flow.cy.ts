@@ -16,7 +16,7 @@ describe('Flow', () => {
   });
 
   it('Renders the first step', () => {
-    cy.get('flow-text[data-template="call-direction"]').then($cmp => {
+    cy.get('.call-direction').then($cmp => {
       $cmp.is(':visible');
       // continue initially disabled
     });
