@@ -54,7 +54,7 @@ jobs:
         with:
           start: npm run start:dev
           wait-on: 'http://localhost:4200'
-          browser: chrome,
+          browser: chrome
           record: false
           parallel: true,
           group: 'UI - Chrome'
