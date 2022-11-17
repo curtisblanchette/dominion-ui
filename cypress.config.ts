@@ -9,8 +9,7 @@ export default defineConfig({
       return config;
     },
     specPattern: [
-      'cypress/e2e/auth/app.login.cy.ts',
-      'cypress/e2e/auth/app.logout.cy.ts'
+      'cypress/e2e/flow/flow.cy.ts'
     ]
   },
   requestTimeout: 180000,

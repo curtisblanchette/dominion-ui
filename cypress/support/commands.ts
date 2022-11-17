@@ -12,7 +12,7 @@ class CypressCustomCommands {
 
   constructor() {
     // Add Custom Commands
-    Cypress.Commands.add("appSystemLogin", this.appSystemLogin);
+    Cypress.Commands.add("appLogin", this.appLogin);
     Cypress.Commands.add("appLogout", this.appLogout);
     Cypress.Commands.add("setAccount", this.setAccount);
     Cypress.Commands.add("callType", this.callType);
@@ -20,8 +20,7 @@ class CypressCustomCommands {
     Cypress.Commands.add("finish", this.finish);
   }
 
-  public appSystemLogin() {
-
+  public appLogin() {
     // Arrange
     cy.visit('/login');
     cy.intercept({
@@ -30,7 +29,7 @@ class CypressCustomCommands {
     }).as("getWorkspace");
 
     // Act
-    cy.get('form[data-qa="login-form"]').within(($form) => {
+    cy.get('[data-qa="login-form"]').within(($form) => {
       cy.get('[data-qa="username"]').type('4iiz.system@4iiz.com')
       cy.get('[data-qa="password"]').type('$BeBetter911')
       cy.wrap($form).submit();
@@ -52,7 +51,6 @@ class CypressCustomCommands {
     // Act
     cy.get('[data-qa="logout"]').within(($logout) => {
       cy.wrap($logout).click();
-
     });
   }
 

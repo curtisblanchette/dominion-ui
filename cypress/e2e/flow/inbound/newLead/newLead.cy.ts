@@ -1,6 +1,5 @@
 describe('Inbound Call Flow - New Lead', () => {
 
-
   it('Start Inbound - Create New Lead', () => {
 
     cy.visit('/flow');
