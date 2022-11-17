@@ -172,6 +172,7 @@ export class FlowBot {
                       });
                       this.botActions.push(action);
                       await action.execute().then(() => action.message = 'Appointment Canceled.');
+                      (<any>flowService.leadService).update(leadFilter['id'], {statusId : leadStatuses.find((ls:any) => ls.label === 'No Set')?.id });
                     }
                     break;
 
@@ -199,12 +200,13 @@ export class FlowBot {
                           action.errorMessage = e.message;
                         }
                       } else {
-                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
-                        
+                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;                        
                         const convertResponse:any = await flowService.convertLead(leadFilter['id']);
                         flowService.addVariables({deal : convertResponse.deal});
-                        
+
                       }
+                      // In case of Set Appointment OR Reschedule Appointment, the Lead status should be Set Appointment
+                      (<any>flowService.leadService).update({ id : leadFilter['id'], statusId : leadStatuses.find((ls:any) => ls.label === 'Set Appointment')?.id });
 
                       payload['leadId'] = leadFilter['id'];
                       payload['contactId'] = contactFilter['id'];
@@ -242,12 +244,12 @@ export class FlowBot {
 
                   // update the call record endTime
                   flowService.addVariables({
-                    leadId: moduleIds.lead,
-                    dealId: moduleIds.deal,
-                    statusId: callStatusId,
-                    outcomeId: callOutcomeId,
-                    typeId: callTypeId,
-                    endTime: new Date().toISOString()
+                    lead: moduleIds.lead,
+                    deal: moduleIds.deal,
+                    call_statusId: callStatusId,
+                    call_outcomeId: callOutcomeId,
+                    call_typeId: callTypeId,
+                    call_endTime: new Date().toISOString()
                   });
 
                 }
