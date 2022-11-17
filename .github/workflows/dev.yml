@@ -23,9 +23,9 @@ jobs:
       - name: Save build folder
         uses: actions/upload-artifact@v2
         with:
-          name: build
+          name: dist
           if-no-files-found: error
-          path: build
+          path: dist
 
   e2e-chrome-test:
     runs-on: ubuntu-20.04
@@ -42,8 +42,8 @@ jobs:
       - name: Download the build folders
         uses: actions/download-artifact@v2
         with:
-          name: build
-          path: build
+          name: dist
+          path: dist
 
       - name: Run Tests
         uses: cypress-io/github-action@v4.2.0
