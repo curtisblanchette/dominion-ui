@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [ 16.x ]
-        containers: [ 1, 2, 3, 4, 5 ]
+#        containers: [ 1, 2, 3, 4, 5 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -56,7 +56,7 @@ jobs:
           wait-on: 'http://localhost:4200'
           browser: chrome
           record: false
-          parallel: true,
+          parallel: false
           group: 'UI - Chrome'
           spec: 'cypress/**/newLead.cy.ts'
 
