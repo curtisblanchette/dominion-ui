@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.21.8 (2022-11-18)
+
+
+### Bug Fixes
+
+* **cypress:** hmm ([da36182](https://github.com/4iiz/dominion-ui/commit/da36182af5d6853cb1c9de60d33618bb78137320))
+
 ### 1.21.7 (2022-11-18)
 
 
