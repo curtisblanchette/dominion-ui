@@ -57,6 +57,7 @@ jobs:
           CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
           CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
         with:
+          project: dist
           start: npm run start:dev
           wait-on: 'http://localhost:4200'
           browser: chrome
