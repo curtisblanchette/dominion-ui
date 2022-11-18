@@ -61,7 +61,6 @@ jobs:
           wait-on: 'http://localhost:4200'
           browser: chrome
           record: true
-          video: false
 #          parallel: false
 #          group: 'UI - Chrome'
           spec: 'cypress/**/newLead.cy.ts'
