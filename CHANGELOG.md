@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.21.7 (2022-11-18)
+
+
+### Bug Fixes
+
+* **cypress:** looks like the job cached this before ([8894249](https://github.com/4iiz/dominion-ui/commit/8894249ed521ba5e4e65cc916a460a54852e2d45))
+
 ### 1.21.6 (2022-11-17)
 
 
