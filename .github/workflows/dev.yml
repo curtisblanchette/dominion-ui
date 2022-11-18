@@ -5,49 +5,39 @@ on:
     branches: [ develop ]
 
 jobs:
-  install:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+#  install:
+#    runs-on: ubuntu-20.04
+#    strategy:
+#      matrix:
+#        node-version: [ 16.x ]
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install Dependencies
+#        run: npm install
+#        env:
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#
+#      - name: Cypress install
+#        uses: cypress-io/github-action@v4.2.0
+#        with:
+#          runTests: false
+#          build: npm run build:dev
+#        env:
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#
 
-      - name: Install Dependencies
-        run: npm install
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Cypress install
-        uses: cypress-io/github-action@v4.2.0
-        with:
-          runTests: false
-          build: npm run build:dev
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Save build folder
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          if-no-files-found: error
-          path: dist
 
   e2e-chrome-test:
     runs-on: ubuntu-20.04
-    needs: install
+
     strategy:
       fail-fast: false
       matrix:
         node-version: [ 16.x ]
 #        containers: [ 1, 2, 3, 4, 5 ]
     steps:
-
-      - name: Download the build folders
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
 
       - name: Run Tests
         uses: cypress-io/github-action@v4.2.0
@@ -56,7 +46,7 @@ jobs:
           CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
           CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
         with:
-          working-directory: dist
+          build: npm run build:dev
           start: npm run start:dev
           wait-on: 'http://localhost:4200'
           browser: chrome
@@ -66,6 +56,13 @@ jobs:
 #          group: 'UI - Chrome'
           spec: 'cypress/**/newLead.cy.ts'
 
+      - name: Save build folder
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          if-no-files-found: error
+          path: dist
+
   deploy:
     needs: e2e-chrome-test
     runs-on: ubuntu-20.04
@@ -73,11 +70,6 @@ jobs:
       matrix:
         node-version: [ 16.x ]
     steps:
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
 
       - name: Download the build folders
         uses: actions/download-artifact@v2
@@ -98,10 +90,10 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Build Application
-        run: npm run build:dev
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#      - name: Build Application
+#        run: npm run build:dev
+#        env:
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Upload to S3
         env:
