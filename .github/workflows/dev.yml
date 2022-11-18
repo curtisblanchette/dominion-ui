@@ -57,7 +57,8 @@ jobs:
           start: npm run start:dev
           wait-on: 'http://localhost:4200'
           browser: chrome
-          record: false
+          record: true
+          video: false
 #          parallel: false
 #          group: 'UI - Chrome'
           spec: 'cypress/**/newLead.cy.ts'
