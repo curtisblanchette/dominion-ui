@@ -14,6 +14,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install Dependencies
+        run: npm install
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Cypress install
         uses: cypress-io/github-action@v4.2.0
         with:
@@ -38,14 +43,12 @@ jobs:
         node-version: [ 16.x ]
 #        containers: [ 1, 2, 3, 4, 5 ]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
       - name: Download the build folders
         uses: actions/download-artifact@v2
         with:
           name: dist
-          path: dist
+#          path: dist
 
       - name: Run Tests
         uses: cypress-io/github-action@v4.2.0
@@ -63,7 +66,6 @@ jobs:
 #          group: 'UI - Chrome'
           spec: 'cypress/**/newLead.cy.ts'
 
-
   deploy:
     needs: e2e-chrome-test
     runs-on: ubuntu-20.04
@@ -72,17 +74,15 @@ jobs:
         node-version: [ 16.x ]
     steps:
 
-      - uses: actions/checkout@v3
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Dependencies
-        run: npm install
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Download the build folders
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
 
       - name: Configure committer
         run: |
