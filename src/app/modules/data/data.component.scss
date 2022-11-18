@@ -4,17 +4,10 @@
   height: var(--full-height-minus-navbar);
 
   display: flex;
-  flex-direction: row;
-  gap: 2em;
-}
-
-.flow-layout {
-  flex: 1;
   flex-direction: column;
-  height: 100%;
+  gap: 2em;
 
-
-  &__sidebar {
+  section.sidebar {
     padding: {
       top: 40px;
     }
@@ -26,13 +19,7 @@
     }
   }
 
-  &__main {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-  }
-
-  &__content {
+  section.content {
     padding: {
       top: 40px;
     }
@@ -46,14 +33,9 @@
     position: relative;
   }
 
-  // &__controls {
-  //   display: flex;
-  //   justify-content: space-between;
-  //   width: 100%;
-  //   margin: 0 auto 20px auto;
-
-  //   button {
-  //     margin: 0;
-  //   }
-  // }
+  @media all and (min-width: 620px) {
+    flex-direction: row;
+  }
 }
+
+
