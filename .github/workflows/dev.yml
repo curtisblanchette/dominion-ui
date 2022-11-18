@@ -19,6 +19,8 @@ jobs:
         with:
           runTests: false
           build: npm run build:dev
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Save build folder
         uses: actions/upload-artifact@v2
