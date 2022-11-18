@@ -5,33 +5,9 @@ on:
     branches: [ develop ]
 
 jobs:
-  install:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cypress install
-        uses: cypress-io/github-action@v4.2.0
-        with:
-          runTests: false
-          build: npm run build:dev
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Save build folder
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          if-no-files-found: error
-          path: dist
 
   e2e-chrome-test:
     runs-on: ubuntu-20.04
-    needs: install
     strategy:
       fail-fast: false
       matrix:
@@ -41,12 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Download the build folders
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: dist
-
       - name: Run Tests
         uses: cypress-io/github-action@v4.2.0
         env:
@@ -54,7 +24,8 @@ jobs:
           CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
           CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
         with:
-          start: npm run start:dev
+          build: npm run build:dev
+          start: npm run start
           wait-on: 'http://localhost:4200'
           browser: chrome
           record: true
@@ -70,7 +41,8 @@ jobs:
         node-version: [ 16.x ]
     steps:
 
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -82,7 +54,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Configure committer
+      - name: Configure Committer
         run: |
           git config user.name "curtisblanchette"
           git config user.email "<curtis@4iiz.com>"
