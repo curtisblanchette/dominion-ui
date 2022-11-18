@@ -24,15 +24,19 @@ describe('Outbound Call Flow - Answered - No Set', () => {
       });
     });
 
+    cy.nextStep();
+
     // Opp Follow up
     cy.get('[data-qa="call-status"]').within(($form) => {
-      cy.get('fiiz-dropdown').first().click();
+      cy.root().click();
       cy.get('[data-qa="dropdown-items"] button').contains('Answered').click()
-
-      cy.get('fiiz-dropdown').eq(1).click();
+    });
+    cy.get('[data-qa="call-outcome"]').within(($form) => {
+      cy.root().click();
       cy.get('[data-qa="dropdown-items"] button').contains('No Set').click()
     });
-    cy.get('[data-qa="next"]').click();
+
+    cy.nextStep();
 
     // Takes Notes
     cy.get('iframe').its('0.contentDocument.body').then(cy.wrap).type('This is a test note');

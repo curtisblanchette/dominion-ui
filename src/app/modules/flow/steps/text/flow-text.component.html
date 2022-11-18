@@ -124,6 +124,7 @@
         <fiiz-dropdown #callStatus
                        label="Call Status"
                        type="search"
+                       data-qa="call-status"
                        [items]="callStatuses$"
                        [options]="{remote: false}"
                        [module]="LookupTypes.CALL_STATUS"
@@ -165,7 +166,15 @@
         </ng-container>
 
         <div style="display: flex; gap: 1em; flex-wrap: wrap;">
-          <fiiz-dropdown style="flex:1 200px;" #callOutcome position="top-left" label="Call Outcome" type="search"  [items]="callOutcomes$" formControlName="call_outcomeId"></fiiz-dropdown>
+          <fiiz-dropdown style="flex:1 200px;"
+                         #callOutcome
+                         data-qa="call-outcome"
+                         position="top-left"
+                         label="Call Outcome"
+                         type="search"
+                         [items]="callOutcomes$"
+                         formControlName="call_outcomeId">
+          </fiiz-dropdown>
           <fiiz-date-picker *ngIf="callOutcome.value === 6"
                             style="flex:1 200px;"
                             #scheduledCallBack
