@@ -1,7 +1,9 @@
-import { Component, OnInit, Output, EventEmitter, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ElementRef, ViewChildren, QueryList, Renderer2 } from '@angular/core';
 import { menuAnimation, arrowAnimation } from './sidebar.animation';
 import { sidebarRoutes } from '../../data.routing';
 import { Router } from '@angular/router';
+import { IDropDownMenuItem } from '../../../../common/components/ui/dropdown';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,6 +20,7 @@ export class SidebarComponent implements OnInit {
   @ViewChildren('menuGroup') menuGroup: QueryList<ElementRef>;
 
   public menu:Array<any> = sidebarRoutes;
+  public mobileMenu: Observable<IDropDownMenuItem[]> = of([]);
 
   constructor(
     private router: Router
@@ -33,6 +36,18 @@ export class SidebarComponent implements OnInit {
       item.state = false;
       return item;
     });
+    const menu:Array<IDropDownMenuItem> = [];
+    this.menu.map((item) => {
+      item.children.map((child:any) => {
+        menu.push({
+          id: child.label,
+          label: child.label,
+          emitterValue: child.path,
+          icon: ''
+        });
+      });
+    });
+    this.mobileMenu = of(menu);
   }
 
   /**
@@ -40,14 +55,28 @@ export class SidebarComponent implements OnInit {
    * The aux edit routes are not children of the parent list
    * makes matching on path unusable.
    */
-  get parseModuleFromPath(): string {
+  get parseModuleFromPath(): { [key:string] : string } {
+    let module:{ [key:string] : string } = {
+      path : '',
+      label : ''
+    };
+
     let re = /(aux:\w+)/g;
     let str = this.router.routerState.snapshot.url;
     let match = str.match(re);
     if(match) {
-      return match[0].split(':')[1];
+      const path = match[0].split(':')[1];
+      module['path'] = path;
+      this.menu.map((menu) => {
+        menu.children.map((child:any) => {
+          if( child.path == path ){
+            module['label'] = child.label;
+          }
+        })
+      })
     }
-    return '';
+
+    return module;
   }
 
   public toggleMenu( index:number ){
@@ -59,6 +88,11 @@ export class SidebarComponent implements OnInit {
     if( state ){
       this.menu[index].state = state;
     }
+  }
+
+  public goTo(event:any){
+    const item = {'path': event};
+    this.onSelect.next(item);
   }
 
   public onClick(item:string) {

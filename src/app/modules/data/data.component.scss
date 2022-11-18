@@ -5,17 +5,19 @@
 
   display: flex;
   flex-direction: column;
-  gap: 2em;
+  gap: 0;
 
   section.sidebar {
+    flex: 0;
     padding: {
       top: 40px;
     }
     background: #{var(--background-color)};
-    flex: 1;
-
     fiiz-tab-nav {
       margin: 16px 0;
+    }
+    fiiz-dropdown {
+      display:block;
     }
   }
 
@@ -32,10 +34,16 @@
     align-content: stretch;
     position: relative;
   }
-
-  @media all and (min-width: 620px) {
-    flex-direction: row;
-  }
 }
 
+@media all and (min-width: $mobile-threshold) {
+  :host {
+    gap: 2em;
+    flex-direction: row;
+
+    section.sidebar {
+      flex: 1;
+    }
+  }
+}
 
