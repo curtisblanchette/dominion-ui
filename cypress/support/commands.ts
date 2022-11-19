@@ -3,7 +3,6 @@
 // with Intellisense and code completion in your
 // IDE or Text Editor.
 // ***********************************************
-
 declare namespace Cypress {
   interface Chainable<Subject = any> extends CypressCustomCommands { }
 }
@@ -23,7 +22,7 @@ class CypressCustomCommands {
   }
 
   public login(username: string, password: string, { cacheSession = true } = {}) {
-    const login = () => {
+    const _login = () => {
       cy.visit('/login');
       cy.intercept({
         method: "GET",
@@ -44,12 +43,54 @@ class CypressCustomCommands {
         expect(state.login.user).to.be.not.null; // this is an e2e test assertion
         expect(state.login.user.roles).to.include('system'); // this is an integration test assertion
       });
+
+      cy.visit('/system');
+
+      cy.intercept({
+        method: "GET",
+        url: "**/api/v1/**",
+      }).as("lookups");
+
+      // Set Demo Account By Default
+      cy.get('[data-qa="accounts-dropdown"]').within(($el) => {
+        cy.wrap($el).click().then(() => {
+          cy.get('.dropdown-menu').should('be.visible');
+        });
+      });
+      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+        cy.wrap($buttons).each(($el, $index, $list) => {
+          // TODO fix this condition
+          // if( $el.find('button').text().trim() === name ){
+            cy.wrap($el)
+              .click()
+              .wait(['@lookups'])
+              .wait(100); // give app .1s to store api responses to State
+          // }
+        });
+      });
     };
 
-    if(cacheSession) {
-      cy.session([username, password], login);
+    if (cacheSession) {
+      cy.session([username, password], _login, {
+        cacheAcrossSpecs: true,
+        validate: () => {
+          cy.getLocalStorage('state').then(res => {
+            let state = JSON.parse(res || '');
+
+            cy.request({
+              url: 'http://localhost:3000/api/v1/users/me',
+              method: 'GET',
+              headers: {
+                'x-access-token': state.login.user.access_token,
+                'x-id-token': state.login.user.id_token,
+                'x-acting-for': state.system.actingFor.id
+              }
+            }).its('status').should('eq', 200);
+          });
+        }
+      });
     } else {
-      login();
+      _login();
     }
 }
 
