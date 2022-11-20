@@ -1,12 +1,11 @@
 import { defineConfig } from 'cypress'
-import { environment } from './src/environments/environment';
 
 export default defineConfig({
   projectId: 'khcsw1',
   e2e: {
     baseUrl: 'http://localhost:4200',
     env: {
-      API_URL: environment.dominion_api_url
+      API_URL: 'http://localhost:3000/api/v1'
     },
     setupNodeEvents(on, config) {
       require("cypress-localstorage-commands/plugin")(on, config);
