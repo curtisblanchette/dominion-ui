@@ -78,7 +78,7 @@ class CypressCustomCommands {
             let state = JSON.parse(res || '');
 
             cy.request({
-              url: 'http://localhost:3000/api/v1/users/me',
+              url: Cypress.env('API_URL') + '/users/me',
               method: 'GET',
               headers: {
                 'x-access-token': state.login.user.access_token,
