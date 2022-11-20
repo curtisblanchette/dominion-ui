@@ -21,6 +21,7 @@ jobs:
         uses: cypress-io/github-action@v4.2.0
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
           CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
