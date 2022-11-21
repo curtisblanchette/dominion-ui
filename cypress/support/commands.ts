@@ -59,13 +59,12 @@ class CypressCustomCommands {
       });
       cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
-          // TODO fix this condition
-          // if( $el.find('button').text().trim() === name ){
+          if( $el.find('button').text().trim() == name ){
             cy.wrap($el)
               .click()
               .wait(['@lookups'])
-              .wait(100); // give app .1s to store api responses to State
-          // }
+              .wait(1000); // give app .1s to store api responses to State
+          }
         });
       });
     };
