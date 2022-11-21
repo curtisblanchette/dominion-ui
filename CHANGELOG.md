@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.21.9 (2022-11-21)
+
+
+### Bug Fixes
+
+* **cypress:** require a short wait for localstorage ([67d57dc](https://github.com/4iiz/dominion-ui/commit/67d57dc391dc9b662d0569a6892034b46b905080))
+
 ### 1.21.8 (2022-11-18)
 
 
