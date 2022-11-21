@@ -6,12 +6,6 @@ on:
 
 env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-  CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
-  CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
-  AWS_REGION: "us-east-1"
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   e2e-chrome-test:
@@ -36,6 +30,9 @@ jobs:
         uses: cypress-io/github-action@v4.2.0
         env:
           CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
+          CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
         with:
           #          build: npm run build:dev
           start: npm run start:dev
@@ -79,6 +76,10 @@ jobs:
         run: npm run build:dev
 
       - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "us-east-1"
         run: aws s3 sync ./dist/ s3://dominion-ui-dev --delete --region ${AWS_REGION}
 
       - name: Create CloudFront Cache Invalidation
@@ -86,3 +87,6 @@ jobs:
         env:
           DISTRIBUTION: ${{ secrets.CLOUDFRONT_DEV_ID }}
           PATHS: "/*"
+          AWS_REGION: "us-east-1"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
