@@ -19,6 +19,8 @@ class CypressCustomCommands {
     Cypress.Commands.add("callType", this.callType);
     Cypress.Commands.add("nextStep", this.nextStep);
     Cypress.Commands.add("finish", this.finish);
+    Cypress.Commands.add("isNextEnabled", this.isNextEnabled);
+    Cypress.Commands.add("isNextDisabled", this.isNextDisabled);
   }
 
   public login(username: string, password: string, { cacheSession = true } = {}) {
@@ -30,9 +32,11 @@ class CypressCustomCommands {
       }).as("getWorkspace");
 
       // Act
+      cy.get('[data-qa="login-form"]').should('be.visible').find('button').should('be.disabled');
       cy.get('[data-qa="login-form"]').within(($form) => {
         cy.get('[data-qa="username"]').type(username);
         cy.get('[data-qa="password"]').type(password);
+        cy.get('button').should('be.enabled');
         cy.root().submit();
       });
 
@@ -52,19 +56,19 @@ class CypressCustomCommands {
       }).as("lookups");
 
       // Set Demo Account By Default
-      cy.get('[data-qa="accounts-dropdown"]').within(($el) => {
+      cy.get('[data-qa="accounts-dropdown"]').should('be.visible').within(($el) => {
         cy.wrap($el).click().then(() => {
           cy.get('.dropdown-menu').should('be.visible');
         });
       });
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-items"]').should('have.length.above', 0).within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           // TODO fix this condition
           // if( $el.find('button').text().trim() === name ){
             cy.wrap($el)
               .click()
               .wait(['@lookups'])
-              .wait(100); // give app .1s to store api responses to State
+              .wait(1000); // give app .1s to store api responses to State
           // }
         });
       });
@@ -139,12 +143,22 @@ class CypressCustomCommands {
   }
 
   public nextStep(){
+    cy.isNextEnabled();
     cy.get('[data-qa="next"]').click();
   }
 
   public finish(){
     cy.get('[data-qa="finish-call"]').click();
   }
+
+  public isNextEnabled(){
+    cy.get('[data-qa="next"]').find('button').should('be.enabled');
+  }
+
+  public isNextDisabled(){
+    cy.get('[data-qa="next"]').find('button').should('be.disabled');
+  }
+
 }
 
 new CypressCustomCommands();

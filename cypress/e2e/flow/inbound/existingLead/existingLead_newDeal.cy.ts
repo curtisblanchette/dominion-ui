@@ -5,15 +5,22 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
     cy.visit('/flow');
 
     // Select Inbound and proceed
+    cy.isNextDisabled();
     cy.callType('Inbound');
     cy.nextStep();
 
     // Search For a Lead
     // we can't search for this text here, it has to be something we know exists.
-    cy.get('[data-qa="search_module"]').type('Raj kumar');
-    // we want to intercept the search request
-    cy.wait(2000);
+    cy.get('[data-qa="search_module"]').should('be.visible').type('Raj kumar');
+    cy.intercept({
+      method: "GET",
+      url: "**/api/v1/leads?**",
+    }).as("search");
+    cy.wait('@search');
 
+    cy.get('[data-qa="table-row"]').should('be.visible').should('be.at.least', 1);
+    // Get the lead Name
+    cy.get('[data-qa="table-row"]').first().find('.fullName').find('div').invoke('text').as('leadName')
     cy.get('[data-qa="table-row"]').first().click();
     cy.nextStep();
 
@@ -21,16 +28,17 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
     cy.nextStep();
 
     // create New Deal
-    cy.get('[data-qa="new-module"]').click();
+    cy.isNextDisabled();
+    cy.get('[data-qa="new-module"]').should('be.visible').click();
     cy.get('[data-qa="new-module-form"]').within(($form) => {
-      cy.get('input').type('Test Deal');
-    });
+      cy.get('input').type(`@leadName Deal`);
+    });    
     cy.nextStep();
 
     // Relationship building
     cy.get('[data-qa="new-module-form"]').within(($form) => {
       cy.get('label[for="practiceAreaId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').first().click();
+      cy.get('[data-qa="dropdown-items"]').should('be.visible').should('be.at.least',1).first().click();
     });
     cy.nextStep();
 
@@ -38,7 +46,7 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
     cy.nextStep();
 
     // Set Appointment
-    cy.get('[data-qa="event-form"]').within(($form) => {
+    cy.get('[data-qa="event-form"]').should('be.visible').within(($form) => {
       cy.get('label[for="title"]').next().type('Test Event');
 
       cy.get('label[for="officeId"]').next().click();

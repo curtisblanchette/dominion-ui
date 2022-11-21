@@ -1,33 +1,53 @@
-describe('Inbound Call Flow - New Lead', () => {
+import { faker } from '@faker-js/faker';
 
-  it('Start Inbound - Create New Lead', () => {
+describe('Inbound Call Flow - New Lead', function()  {
+
+  beforeEach(() => {
+    // Declare variables to be used
+    const fname:string = faker.name.firstName('male');
+    const lname:string = faker.name.lastName('male');
+    const emails:string = faker.internet.email(fname, lname);
+    const phone:string = faker.phone.phoneNumber('2244######');
+    
+    cy.wrap(fname).as('fname');
+    cy.wrap(lname).as('lname');
+    cy.wrap(emails).as('email');
+    cy.wrap(phone).as('phone');
+
+  })
+  
+  it('Start Inbound - Create New Lead', function() {    
 
     cy.visit('/flow');
-
     // Select Inbound and proceed
+    cy.isNextDisabled();
     cy.get('[data-qa="call_direction"]').within(() => {
       cy.get('label').contains('Inbound').click();
-    });
+    });    
     cy.nextStep();
 
     // Create new lead
-    cy.get('[data-qa="new-module"]').click();
+    cy.isNextDisabled();
+    cy.get('[data-qa="new-module"]').should('be.visible').click();
 
     // Enter lead info and proceed
-    cy.get('[data-qa="new-module-form"]').within(($form) => {
-      cy.get('label[for="firstName"]').next().type('Raj kumar');
-      cy.get('label[for="lastName"]').next().type('Patel');
-      cy.get('label[for="phone"]').next().type('4423898290');
-      cy.get('label[for="email"]').next().type('raj@test.com');
+    cy.isNextDisabled();
+    cy.get('[data-qa="new-module-form"]').should('be.visible').within(($form) => {
+      cy.get('label[for="firstName"]').next().type(this['fname']);
+      cy.get('label[for="lastName"]').next().type(this['lname']);
+      cy.get('label[for="phone"]').next().type(this['phone']);
+      cy.get('label[for="email"]').next().type(this['email']);
     });
     cy.nextStep();
 
     // Select Campaign
+    cy.isNextDisabled();
     cy.get('label[for="campaignId"]').next().click();
     cy.get('[data-qa="dropdown-items"]').first().click();
     cy.nextStep();
 
     // relationship building
+    cy.isNextDisabled();
     cy.get('[data-qa="new-module-form"]').within(($form) => {
       cy.get('label[for="practiceAreaId"]').next().click();
       cy.get('[data-qa="dropdown-items"]').first().click();
@@ -38,7 +58,8 @@ describe('Inbound Call Flow - New Lead', () => {
     cy.nextStep();
 
     // Set Appt
-    cy.get('[data-qa="event-form"]').within(($form) => {
+    cy.isNextDisabled();
+    cy.get('[data-qa="event-form"]').should('be.visible').within(($form) => {
       cy.get('label[for="title"]').next().type('Test Event');
 
       cy.get('label[for="officeId"]').next().click();

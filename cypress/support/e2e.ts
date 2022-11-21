@@ -19,5 +19,5 @@ import 'cypress-localstorage-commands';
 
 // This will run before each spec
 beforeEach(() => {
-  cy.login(Cypress.env('USERNAME'), Cypress.env('PASSWORD'), {cacheSession: true});
+  cy.login(Cypress.env('USERNAME'), Cypress.env('PASSWORD'), {cacheSession: false});
 });
