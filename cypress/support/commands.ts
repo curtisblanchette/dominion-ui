@@ -92,7 +92,7 @@ class CypressCustomCommands {
     } else {
       _login();
     }
-}
+  }
 
   public logout() {
     // Arrange

@@ -13,7 +13,7 @@
     "release": "standard-version --releaseCommitMessageFormat \"chore(release): {{currentTag}}\"",
     "test": "ng test",
     "e2e": "ng e2e",
-    "ci": "ng ci",
+    "ci": "ng run dominion-ui:cypress-run",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --record --key dda6a0e7-e2a9-4755-9695-299b5bf96c14 --browser chrome"
   },
