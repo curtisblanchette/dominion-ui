@@ -16,6 +16,8 @@ jobs:
         node-version: [ 16.x ]
     steps:
       - name: Echo Variables
+        env:
+          CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
         run: echo env
 
   e2e-chrome-test:
