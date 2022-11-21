@@ -6,6 +6,7 @@ on:
 
 env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  CYPRESS_API_URL: ${{ env.CYPRESS_API_URL }}
 
 jobs:
   environment:
@@ -16,8 +17,6 @@ jobs:
         node-version: [ 16.x ]
     steps:
       - name: Echo Variables
-        env:
-          CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
         run: echo env
 
   e2e-chrome-test:
@@ -36,7 +35,6 @@ jobs:
       - name: Run Tests
         uses: cypress-io/github-action@v4.2.0
         env:
-          CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
           CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
