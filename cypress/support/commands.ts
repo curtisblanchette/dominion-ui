@@ -59,12 +59,10 @@ class CypressCustomCommands {
       });
       cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
-          if( $el.find('button').text().trim() == name ){
-            cy.wrap($el)
-              .click()
-              .wait(['@lookups'])
-              .wait(1000); // give app .1s to store api responses to State
-          }
+          cy.wrap($el)
+            .click()
+            .wait(['@lookups'])
+            .wait(100); // give app .1s to store api responses to State
         });
       });
     };
@@ -129,6 +127,9 @@ class CypressCustomCommands {
     });
   }
 
+  public expectFlowVariable(key: string) {
+
+  }
 
   // Select Call Type
   public callType(type: string) {
@@ -137,7 +138,7 @@ class CypressCustomCommands {
     });
   }
 
-  public nextStep(){
+  public nextStep() {
     cy.get('[data-qa="next"]').click();
   }
 

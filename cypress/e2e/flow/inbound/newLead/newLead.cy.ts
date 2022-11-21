@@ -7,7 +7,20 @@ describe('Inbound Call Flow - New Lead', () => {
     // Select Inbound and proceed
     cy.get('[data-qa="call_direction"]').within(() => {
       cy.get('label').contains('Inbound').click();
+
+      /**
+       * Cypress doesn't know to wait for variables/validation
+       *  - add assertion on step variable(s)
+       *  - subsequent assertions will be blocked correctly
+       */
+      cy.getLocalStorage('state').then(res => {
+        let state = JSON.parse(res || '');
+        let step = state.flow.steps.find((s: any) => s.nodeText === 'Call Direction');
+
+        expect(step?.variables['call_direction'], 'Variable should be set:').to.equal('inbound');
+      });
     });
+
     cy.nextStep();
 
     // Create new lead
