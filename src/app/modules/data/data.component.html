@@ -1,6 +1,6 @@
-<section class="flow-layout__sidebar">
+<section class="sidebar">
     <app-sidebar (onSelect)="renderComponent($event.path)"></app-sidebar>
 </section>
-<section class="flow-layout__content">
+<section class="content">
     <router-outlet name="aux" (activate)="onActivate($event)"></router-outlet>
 </section>

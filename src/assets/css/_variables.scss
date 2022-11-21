@@ -4,7 +4,7 @@
 $text1-shade25: shade(#C6CEED, 25%);
 $green0-shade25: shade(#1A936F, 25%);
 $green0-shade95: shade(#1A936F, 95%);
-
+$mobile-threshold: 768px;
 // css variables can be manipulated by javascript
 // these should be used in all templates.
 :root {
@@ -132,6 +132,7 @@ $green0-shade95: shade(#1A936F, 95%);
   --button-border-radius: 8px;
   --button-padding-lr: 1.5em;
   --container-width: 1440px;
+  --mobile-threshold: $mobile-threshold;
   --container-padding: 40px;
   --navbar-height: 64px;
   --full-height-minus-navbar: calc(100% - #{var(--navbar-height)});

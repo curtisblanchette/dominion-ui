@@ -18,13 +18,6 @@ import './commands';
 import 'cypress-localstorage-commands';
 
 // This will run before each spec
-before(() => {
-
-  it('Login to Application', () => {
-    cy.appLogin();
-  });
-
-  it('set Demo Account', () => {
-    cy.setAccount();
-  });
-})
+beforeEach(() => {
+  cy.login(Cypress.env('USERNAME'), Cypress.env('PASSWORD'));
+});

@@ -58,7 +58,7 @@ export const reducer = createReducer(
   on(appActions.FetchLookupsAction, (state) => ({...state})),
   on(appActions.SetLookupsAction, (state, {payload}) => ({...state, lookups: payload})),
 
-  on(appActions.ClearAction, (state) => ({...state, settings: null, workspace: null, initialized: false, loading: false})),
+  on(appActions.ClearAction, (state) => ({...state, settings: null, lookups: null, workspace: null, initialized: false, loading: false})),
   on(appActions.AppInitializedAction, (state) => ({...state, loading: false, initialized: true}))
 );
 

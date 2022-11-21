@@ -4,35 +4,24 @@
   height: var(--full-height-minus-navbar);
 
   display: flex;
-  flex-direction: row;
-  gap: 2em;
-}
-
-.flow-layout {
-  flex: 1;
   flex-direction: column;
-  height: 100%;
+  gap: 0;
 
-
-  &__sidebar {
+  section.sidebar {
+    flex: 0;
     padding: {
       top: 40px;
     }
     background: #{var(--background-color)};
-    flex: 1;
-
     fiiz-tab-nav {
       margin: 16px 0;
     }
+    fiiz-dropdown {
+      display:block;
+    }
   }
 
-  &__main {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-  }
-
-  &__content {
+  section.content {
     padding: {
       top: 40px;
     }
@@ -45,15 +34,16 @@
     align-content: stretch;
     position: relative;
   }
-
-  // &__controls {
-  //   display: flex;
-  //   justify-content: space-between;
-  //   width: 100%;
-  //   margin: 0 auto 20px auto;
-
-  //   button {
-  //     margin: 0;
-  //   }
-  // }
 }
+
+@media all and (min-width: $mobile-threshold) {
+  :host {
+    gap: 2em;
+    flex-direction: row;
+
+    section.sidebar {
+      flex: 1;
+    }
+  }
+}
+
