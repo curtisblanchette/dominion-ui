@@ -8,6 +8,11 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
+  environemnt:
+    steps:
+      - name: Echo Variables
+        run: echo env
+
   e2e-chrome-test:
     runs-on: ubuntu-20.04
     strategy:
