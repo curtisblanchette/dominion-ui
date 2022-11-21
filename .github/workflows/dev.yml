@@ -35,6 +35,8 @@ jobs:
 
       - name: Run Tests
         uses: cypress-io/github-action@v4.2.0
+        env:
+          CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
         with:
           #          build: npm run build:dev
           start: npm run start:dev
