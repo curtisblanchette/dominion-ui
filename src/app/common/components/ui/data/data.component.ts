@@ -441,6 +441,5 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override ngOnDestroy() {
     console.log('data component destroyed');
-    this._dynamicCollectionService.setFilter({});
   }
 }

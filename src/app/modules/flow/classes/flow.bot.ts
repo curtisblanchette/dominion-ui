@@ -319,45 +319,12 @@ export class FlowBot {
             }
           }
 
-          // Update the Call record if objected
-          if( didObject ){
-            /**
-             * If Call was objected, set the the call outcome to No Set
-             * Doesn't matter if the Appointment was set or not
-             */
-            flowService.addVariables({
-              call_outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
-              call_objectionId : objectionId
-            });
-            // flowService.callService.update({
-            //   id: flowService.callId,
-            //   outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
-            //   objectionId : objectionId
-            // });
-
-            /**
-             * If the call was objected after setting up of Appointment
-             * Cancel the Event
-             * Update lead status to No Set
-             */
-
-            if( eventActions ){
-              let eventPayload = {
-                id: eventActions['id'],
-                outcomeId : eventOutcomes.find((o:any) => o.label === 'Canceled')?.id
-              };
-              flowService.eventService.update(eventPayload);
-              // Update lead status
-              let getLeadId: any = await firstValueFrom(flowService.getService(ModuleTypes.LEAD).filter$);
-              flowService.leadService.update({
-                id: getLeadId['id'],
-                statusId: leadStatuses.find((ls:any) => ls.label === 'No Set')?.id
-              });
-            }
+          for (const key of Object.keys(this.services)) {
+            this.services[key].clearCache();
+            this.services[key].setFilter({});
           }
 
-        })
-
+        });
 
 
       } // end status !== 'complete'
@@ -365,10 +332,6 @@ export class FlowBot {
       // this.actions.push('All information for this call has been captured. Thank you!');
     });
 
-    for (const key of Object.keys(this.services)) {
-      this.services[key].clearCache();
-      this.services[key].setFilter({});
-    }
 
 
   }
