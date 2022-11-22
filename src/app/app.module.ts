@@ -15,7 +15,7 @@ import { CustomHttpInterceptor } from './common/interceptors/CustomHttpIntercept
 import { FlowModule } from './modules/flow/flow.module';
 import { SystemModule } from './modules/system/system.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-import { environment } from '../environments/environment';
+
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NavbarComponent } from './common/components/ui/navbar/navbar.component';
 import { PageNotFoundComponent } from './common/components/page-not-found/page-not-found.component';

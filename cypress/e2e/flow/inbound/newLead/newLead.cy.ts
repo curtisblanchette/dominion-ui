@@ -7,7 +7,7 @@ describe('Inbound Call Flow - New Lead', () => {
     // Select Inbound and proceed
     cy.get('[data-qa="call_direction"]').within(() => {
       cy.get('label').contains('Inbound').click();
-
+      cy.wait(100);
       /**
        * Cypress doesn't know to wait for variables/validation
        *  - add assertion on step variable(s)
@@ -17,7 +17,7 @@ describe('Inbound Call Flow - New Lead', () => {
         let state = JSON.parse(res || '');
         let step = state.flow.steps.find((s: any) => s.nodeText === 'Call Direction');
 
-        expect(step?.variables['call_direction'], 'Variable should be set:').to.equal('inbound');
+        expect(step?.variables['call_direction'], 'Variable should be set.').to.equal('inbound');
       });
     });
 

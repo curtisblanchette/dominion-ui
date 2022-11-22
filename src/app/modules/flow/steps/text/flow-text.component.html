@@ -8,7 +8,8 @@
       </header>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio data-qa="call_direction" [items]="callDirections$" formControlName="call_direction" name="call_direction"></fiiz-radio>
+        <fiiz-radio [items]="callDirections$" data-qa="call_direction" formControlName="call_direction"
+                    name="call_direction"></fiiz-radio>
       </form>
     </ng-template>
 
@@ -31,14 +32,17 @@
 
       <p class="dictation">Excellent, so you were telling me your case is regarding...</p>
 
-      <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead', practiceAreaId: 1}" [options]="{state: 'edit', fields: ['practiceAreaId']}"></fiiz-data>
+      <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead', practiceAreaId: 1}"
+                 [options]="{state: 'edit', fields: ['practiceAreaId']}"></fiiz-data>
       <p class="dictation">Fantastic, and which state are you calling from today?</p>
-      <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead'}" [options]="{state: 'edit', fields: ['state']}"></fiiz-data>
+      <fiiz-data [module]="ModuleTypes.LEAD" [data]="{resolveId: 'lead'}"
+                 [options]="{state: 'edit', fields: ['state']}"></fiiz-data>
       <!-- <fiiz-data [module]="ModuleTypes.ADDRESS" [data]="{id: undefined}" [options]="{state: 'edit', fields: ['stateCode']}"></fiiz-data> -->
 
       <!--      <p style="text-align: center;">Remember to respond appropriately after they share their story in order to build a relationship based on the information that they share!</p>-->
 
-      <p class="dictation">Do you have a few minutes so that I can ask you some questions to see how we might be able to help you?</p>
+      <p class="dictation">Do you have a few minutes so that I can ask you some questions to see how we might be able to
+        help you?</p>
     </ng-template>
 
     <ng-template ngSwitchCase="power-question">
@@ -58,56 +62,73 @@
         <p>{{data.body}}</p>
       </header>
       <div style="display: flex; flex-direction: column;">
-        <p class="dictation">We will be sending information before, during the process and at the end of the process, so it is important that we verify the email.</p>
-        <fiiz-data [module]="ModuleTypes.LEAD" [data]="{ id: (vars$ | async)?.lead }" [options]="{grid: { minColWidth: '290px'}, state: 'edit', fields: ['email', 'phone'] }"></fiiz-data>
+        <p class="dictation">We will be sending information before, during the process and at the end of the process, so
+          it is important that we verify the email.</p>
+        <fiiz-data [module]="ModuleTypes.LEAD" [data]="{ id: (vars$ | async)?.lead }"
+                   [options]="{grid: { minColWidth: '290px'}, state: 'edit', fields: ['email', 'phone'] }"></fiiz-data>
 
         <div class="appointment-time" id="appt-time">
           <label for="appt-time">Appointment Time</label>
           <div class="appointment-time__body">
             <i class="fa fa-calendar-alt"></i>
-            <div>{{ (eventPayload$ | async)?.startTime | date : 'longDate' }} at {{ (eventPayload$ | async)?.startTime | date : 'shortTime' }}</div>
+            <div>{{ (eventPayload$ | async)?.startTime | date : 'longDate' }}
+              at {{ (eventPayload$ | async)?.startTime | date : 'shortTime' }}</div>
           </div>
         </div>
 
 
-        <p class="dictation">Here's the deal. At your consult, you will need to make a decision. Either you will decide to do nothing and keep your life the same as it is today, or you will choose one of the paths we identify to make your life better</p>
-        <p class="dictation">We always suggest that you bring some money to start the process; whatever is in your possibilities. Are there any family members or friends who must be involved to help you decide on how you are going to make your life better?</p>
+        <p class="dictation">Here's the deal. At your consult, you will need to make a decision. Either you will decide
+          to do nothing and keep your life the same as it is today, or you will choose one of the paths we identify to
+          make your life better</p>
+        <p class="dictation">We always suggest that you bring some money to start the process; whatever is in your
+          possibilities. Are there any family members or friends who must be involved to help you decide on how you are
+          going to make your life better?</p>
       </div>
     </ng-template>
 
     <ng-template [ngSwitchCase]="'end'">
       <ng-container *ngIf="(status$ | async) === (FlowStatus.SUCCESS || FlowStatus.PENDING)">
         <div style="display: flex; justify-content: space-around; gap: 2em; margin-bottom: 2em;">
-          <div class="bot-message" *ngFor="let action of botActions" style="display:flex; flex-direction: column; align-items: center; justify-content: space-around;">
-            <i class="fa {{action.status === BotActionStatus.SUCCESS ? 'fa-check' : action.icon }}" style="font-size:32px;"></i>
+          <div class="bot-message" *ngFor="let action of botActions"
+               style="display:flex; flex-direction: column; align-items: center; justify-content: space-around;">
+            <i class="fa {{action.status === BotActionStatus.SUCCESS ? 'fa-check' : action.icon }}"
+               style="font-size:32px;"></i>
             {{action.message}}
           </div>
         </div>
       </ng-container>
 
       <ng-container *ngIf="(status$ | async) === FlowStatus.SUCCESS">
-       <p>All information has been captured, thank you!</p>
+        <p>All information has been captured, thank you!</p>
       </ng-container>
 
-      <fiiz-button data-qa="finish-call" id="finish_call" *ngIf="(status$ | async) === FlowStatus.SUCCESS" primary (click)="endCall()" [disabled]="(status$ | async) !== 'success'">Finish Call</fiiz-button>
+      <fiiz-button id="finish_call"
+                   data-qa="finish-call"
+                   *ngIf="(status$ | async) === FlowStatus.SUCCESS"
+                   primary
+                   (click)="endCall()"
+                   [disabled]="(status$ | async) !== 'success'">Finish Call
+      </fiiz-button>
     </ng-template>
 
 
     <ng-template [ngSwitchCase]="'reason-for-call'">
-<!--      <header>-->
-<!--        <h3>{{data.title}}</h3>-->
-<!--        <p *ngIf="(vars$ | async).call_direction === 'inbound'">What is the reason for them calling today?</p>-->
-<!--      </header>-->
+      <!--      <header>-->
+      <!--        <h3>{{data.title}}</h3>-->
+      <!--        <p *ngIf="(vars$ | async).call_direction === 'inbound'">What is the reason for them calling today?</p>-->
+      <!--      </header>-->
 
 
-      <form data-qa="reason-for-call" [formGroup]="form" *ngIf="form" style="display:flex; justify-content: start; gap: 2em;">
+      <form [formGroup]="form" *ngIf="form" style="display:flex; justify-content: start; gap: 2em;">
         <div *ngIf="(vars$ | async).call_direction === 'outbound'">
           <h3>Call Status</h3>
-          <fiiz-radio [items]="callStatuses$" formControlName="call_statusId" name="call_statusId" #callStatusRadio></fiiz-radio>
+          <fiiz-radio [items]="callStatuses$" formControlName="call_statusId" name="call_statusId"
+                      #callStatusRadio></fiiz-radio>
         </div>
         <div>
           <h3>Reason for Call</h3>
-          <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason" #callReasonRadio></fiiz-radio>
+          <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason"
+                      #callReasonRadio></fiiz-radio>
         </div>
       </form>
     </ng-template>
@@ -118,8 +139,10 @@
         <p>{{data.body}}</p>
       </header>
 
-      <fiiz-data [module]="ModuleTypes.DEAL" [data]="{ id: data.id }" [options]="{grid: { minColWidth: '290px'}, state: 'view', fields: ['name', 'stageId'] }"></fiiz-data>
-      <fiiz-data [module]="ModuleTypes.CONTACT" [data]="{ id: data.contactId }" [options]="{grid: { minColWidth: '290px'}, state: 'view', fields: ['phone'] }"></fiiz-data>
+      <fiiz-data [module]="ModuleTypes.DEAL" [data]="{ id: data.id }"
+                 [options]="{grid: { minColWidth: '290px'}, state: 'view', fields: ['name', 'stageId'] }"></fiiz-data>
+      <fiiz-data [module]="ModuleTypes.CONTACT" [data]="{ id: data.contactId }"
+                 [options]="{grid: { minColWidth: '290px'}, state: 'view', fields: ['phone'] }"></fiiz-data>
       <form [formGroup]="form" *ngIf="form" style="width: 100%;">
         <fiiz-dropdown #callStatus
                        label="Call Status"
@@ -134,18 +157,24 @@
         <!-- 1. Answered -->
         <ng-container *ngIf="callStatus.value == 1">
           <ng-container *ngIf="(vars$ | async)?.deal_stage === 'No Set'">
-            <p class="dictation">{{'Hello am I speaking with {contact_name}? You contacted us the day (read notes) regarding some doubts you had about an immigration case. We saw that you could not schedule your consultation so I called you to see how we can help you and thus schedule your consultation with a legal advisor. Tell me, what doubts did you have?' | dictate }}</p>
-            <p class="dictation">{{'Let´s see how we can help you! Allow me to formally introduce myself, my name is {user_name} and I am a Legal Representative, so I cannot give you legal advice. What I can do is take your information and schedule a consultation for you to meet with the right hand of the lawyer directly in our office.' | dictate}}</p>
+            <p
+              class="dictation">{{'Hello am I speaking with {contact_name}? You contacted us the day (read notes) regarding some doubts you had about an immigration case. We saw that you could not schedule your consultation so I called you to see how we can help you and thus schedule your consultation with a legal advisor. Tell me, what doubts did you have?' | dictate }}</p>
+            <p
+              class="dictation">{{'Let´s see how we can help you! Allow me to formally introduce myself, my name is {user_name} and I am a Legal Representative, so I cannot give you legal advice. What I can do is take your information and schedule a consultation for you to meet with the right hand of the lawyer directly in our office.' | dictate}}</p>
           </ng-container>
 
           <ng-container *ngIf="(vars$ | async)?.deal_stage === 'No Show'">
-            <p class="dictation">{{'`Hello how are you? Am I speaking with {contact_name}? This is {user_name} from {company_name}. I called you because the consultant {consultant_name} saw that you were unable to reach the appointment that you had set and we wanted to know if everything was okay?' | dictate}}</p>
-            <p class="dictation">The best way to help you is to set you up with another appointment, and I would be more than happy to do that for you.</p>
+            <p
+              class="dictation">{{'`Hello how are you? Am I speaking with {contact_name}? This is {user_name} from {company_name}. I called you because the consultant {consultant_name} saw that you were unable to reach the appointment that you had set and we wanted to know if everything was okay?' | dictate}}</p>
+            <p class="dictation">The best way to help you is to set you up with another appointment, and I would be more
+              than happy to do that for you.</p>
           </ng-container>
 
           <ng-container *ngIf="(vars$ | async)?.deal_stage === 'No Hire'">
-            <p class="dictation">{{ 'Hello, how are you? I\'m looking for {contact_name}. Good morning my name is {user_name}, I\'m calling from {company_name}. I\'m making a courtesy and quality call to find out how your consultation went and to evaluate our service. How did our Consultant treat you?' | dictate}}</p>
-            <p class="dictation">Well, the advisor gave me the notes, and after reviewing with the attorney, you have EXCELLENT options!</p>
+            <p
+              class="dictation">{{ 'Hello, how are you? I\'m looking for {contact_name}. Good morning my name is {user_name}, I\'m calling from {company_name}. I\'m making a courtesy and quality call to find out how your consultation went and to evaluate our service. How did our Consultant treat you?' | dictate}}</p>
+            <p class="dictation">Well, the advisor gave me the notes, and after reviewing with the attorney, you have
+              EXCELLENT options!</p>
             <span style="opacity: .8;">Further create urgency and schedule appointment.</span>
             <p class="dictation">From 1 to 10, how high would you rate the Consultants service?</p>
             <span style="opacity: .8;">
@@ -161,8 +190,10 @@
 
         <!-- 4. No Answer -->
         <ng-container *ngIf="callStatus.value == 4">
-          <p *ngIf="(vars$ | async)?.deal_stage === 'No Set'">{{'Hello, this message is for {contact_name}, my name is {user_name}, and I am calling from {company_name} to follow-up and see if you had time to think about some of the information we discussed on our previous call. I would love to set you up with a free appointment to come in and speak with one of our attorneys. Please return my call at (888)-888-1113 and I will be happy to set you an appointment. Again, my name is {user_name}, and I look forward to hearing from you!' | dictate}}</p>
-          <p *ngIf="(vars$ | async)?.deal_stage === 'No Show' || (vars$ | async)?.deal_stage === 'No Hire'">{{'Hello, this message is for {contact_name}, my name is {user_name}, and I am calling from {company_name}. I saw that you were unable to make your appointment. To best help you, we need to get you in here right away. Please return my call at 888-888-1113 and I will be happy to set you another appointment. Again, my name is {user_name} and I look forward to hearing from you!' | dictate}}</p>
+          <p
+            *ngIf="(vars$ | async)?.deal_stage === 'No Set'">{{'Hello, this message is for {contact_name}, my name is {user_name}, and I am calling from {company_name} to follow-up and see if you had time to think about some of the information we discussed on our previous call. I would love to set you up with a free appointment to come in and speak with one of our attorneys. Please return my call at (888)-888-1113 and I will be happy to set you an appointment. Again, my name is {user_name}, and I look forward to hearing from you!' | dictate}}</p>
+          <p
+            *ngIf="(vars$ | async)?.deal_stage === 'No Show' || (vars$ | async)?.deal_stage === 'No Hire'">{{'Hello, this message is for {contact_name}, my name is {user_name}, and I am calling from {company_name}. I saw that you were unable to make your appointment. To best help you, we need to get you in here right away. Please return my call at 888-888-1113 and I will be happy to set you another appointment. Again, my name is {user_name} and I look forward to hearing from you!' | dictate}}</p>
         </ng-container>
 
         <div style="display: flex; gap: 1em; flex-wrap: wrap;">
