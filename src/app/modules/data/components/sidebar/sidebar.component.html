@@ -18,3 +18,11 @@
     </li>
   </ul>
 </nav>
+
+<fiiz-dropdown
+  type="button"
+  [items]="mobileMenu"
+  class="mobile-menu"
+  [required]="true"
+  (onClick)="goTo($event)"
+  [title]="parseModuleFromPath['label']"></fiiz-dropdown>

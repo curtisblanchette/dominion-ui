@@ -43,26 +43,26 @@
   align-items: flex-start;
   width: 100%;
   align-content: center;
+  gap: 1em;
 
-
-  &__controls {
-    display: flex;
+  fiiz-input {
     width: 100%;
-    gap: 10px;
-
-    fiiz-input {
-      width: 100%;
-    }
-
-    * {
-      margin-bottom: 0!important;
-      min-width: fit-content;
-    }
-
-    button {
-      text-transform: capitalize;
-    }
+    flex: 3
   }
+
+  fiiz-button,
+  .button-group {
+    flex: min-content 100%;
+  }
+
+  * {
+    margin-bottom: 0!important;
+  }
+
+  button {
+    text-transform: capitalize;
+  }
+
 }
 
 .flex-table {

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import * as fromLogin from './modules/login/store/login.reducer';
 import { Store } from '@ngrx/store';
 import { LoginState } from './modules/login/store/login.reducer';
-
+declare const window: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,5 +18,8 @@ export class AppComponent {
     public store: Store<LoginState>
   ) {
     this.loggedUser$ = this.store.select(fromLogin.selectUser);
+    if(window.Cypress) {
+      window.store = this.store;
+    }
   }
 }

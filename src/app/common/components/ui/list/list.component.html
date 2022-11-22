@@ -1,8 +1,6 @@
 <form [formGroup]="searchForm" class="list-actions">
-  <div class="list-actions__controls">
-    <fiiz-input data-qa="search_module" id="search_module" #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
-    <fiiz-button data-qa="new-module" *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create
-      New {{moduleName}}</fiiz-button>
+  <fiiz-input data-qa="search_module" id="search_module" #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
+  <fiiz-button data-qa="new-module" *ngIf="options.controls.createNew" stroked (click)="onCreateNew()" icon="fa-plus">New {{moduleName}}</fiiz-button>
     <div class="button-group">
       <fiiz-dropdown
         type="button"
@@ -12,9 +10,8 @@
         title="Actions"
         (onClick)="getActionItemValue($event)"
       ></fiiz-dropdown>
-      <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()" [disabled]="!selected">Edit</fiiz-button>
+      <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()" [disabled]="!selected" icon="fa-pencil">Edit</fiiz-button>
     </div>
-  </div>
 </form>
 
 <div class="flex-table">

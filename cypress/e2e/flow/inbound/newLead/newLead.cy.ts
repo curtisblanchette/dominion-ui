@@ -7,7 +7,20 @@ describe('Inbound Call Flow - New Lead', () => {
     // Select Inbound and proceed
     cy.get('[data-qa="call_direction"]').within(() => {
       cy.get('label').contains('Inbound').click();
+      cy.wait(100);
+      /**
+       * Cypress doesn't know to wait for variables/validation
+       *  - add assertion on step variable(s)
+       *  - subsequent assertions will be blocked correctly
+       */
+      cy.getLocalStorage('state').then(res => {
+        let state = JSON.parse(res || '');
+        let step = state.flow.steps.find((s: any) => s.nodeText === 'Call Direction');
+
+        expect(step?.variables['call_direction'], 'Variable should be set.').to.equal('inbound');
+      });
     });
+
     cy.nextStep();
 
     // Create new lead
@@ -58,7 +71,7 @@ describe('Inbound Call Flow - New Lead', () => {
           }
         });
       });
-      cy.get('label[for="description"]').next().type('Test Description for event');
+      cy.get('label[for="description"]').next().type('Test Description for event', {force: true});
     });
 
     cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
@@ -69,8 +82,6 @@ describe('Inbound Call Flow - New Lead', () => {
 
     // Finish Call
     cy.finish();
-
-
   });
 
 });

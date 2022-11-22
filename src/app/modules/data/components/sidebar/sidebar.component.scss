@@ -3,11 +3,11 @@
 @import '../../../../../assets/css/functions';
 
 :host {
-  .sidebar {
 
+  .sidebar {
     flex: 1;
     height: 100%;
-    display: flex;
+    display: none;
     flex-direction: column;
 
     &__parent {
@@ -60,6 +60,21 @@
         color: #{var(--text1)};
       }
 
+    }
+  }
+  .mobile-menu {
+    display: block;
+  }
+}
+
+@media all and (min-width: $mobile-threshold) {
+  :host {
+    nav {
+      display: flex!important;
+    }
+
+    .mobile-menu {
+      display: none;
     }
   }
 }
