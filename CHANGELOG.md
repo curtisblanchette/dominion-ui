@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.21.12 (2022-11-22)
+
+
+### Bug Fixes
+
+* **II-2831:** Update lead status ([#85](https://github.com/4iiz/dominion-ui/issues/85)) ([e9fe019](https://github.com/4iiz/dominion-ui/commit/e9fe019278884f00d097f47e05e18b8ffd693bc6))
+
 ### 1.21.11 (2022-11-22)
 
 ### 1.21.10 (2022-11-22)
