@@ -193,17 +193,17 @@ export class FlowBot {
 
                         try {
                           await action.execute().then(() => action.message = 'Appointment Rescheduled.');
-                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;                          
+                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;
                         } catch(e : any) {
                           action.status = FlowBotActionStatus.FAILURE;
                           action.errorMessage = e.message;
                         }
                       } else {
                         callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
-                        
+
                         const convertResponse:any = await flowService.convertLead(leadFilter['id']);
                         flowService.addVariables({deal : convertResponse.deal});
-                        
+
                       }
 
                       payload['leadId'] = leadFilter['id'];
@@ -273,7 +273,7 @@ export class FlowBot {
 
             const modIds = await this.getModuleIds();
 
-            // Convert the lead even if objected            
+            // Convert the lead even if objected
             const convertedResponse:any = await flowService.convertLead(modIds.lead);
 
             // Update call record
@@ -294,8 +294,8 @@ export class FlowBot {
 
             // update the call record endTime
             flowService.addVariables({
-              outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
-              objectionId : objectionId
+              call_outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
+              call_objectionId : objectionId
             });
 
             /**
@@ -325,12 +325,15 @@ export class FlowBot {
              * If Call was objected, set the the call outcome to No Set
              * Doesn't matter if the Appointment was set or not
              */
-
-            flowService.callService.update({
-              id: flowService.callId,
-              outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
-              objectionId : objectionId
+            flowService.addVariables({
+              call_outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
+              call_objectionId : objectionId
             });
+            // flowService.callService.update({
+            //   id: flowService.callId,
+            //   outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
+            //   objectionId : objectionId
+            // });
 
             /**
              * If the call was objected after setting up of Appointment
