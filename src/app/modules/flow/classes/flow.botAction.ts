@@ -2,6 +2,7 @@ import { FlowBaseModel } from './flow.baseModel';
 import { ModuleTypes } from '../../../data/entity-metadata';
 import { EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
 import { DominionType } from '../../../common/models';
+import { firstValueFrom } from 'rxjs';
 
 export class FlowBotAction extends FlowBaseModel{
   public name: string;
@@ -10,12 +11,11 @@ export class FlowBotAction extends FlowBaseModel{
   public operation: 'add' | 'update';
   public status: FlowBotActionStatus;
   public message: string;
+  public payload: any;
   public response?: any;
   public errorMessage?: string;
 
   private service: EntityCollectionService<DominionType>;
-
-  payload: any;
 
   constructor(
     private entityCollectionServiceFactory: EntityCollectionServiceFactory,
@@ -34,7 +34,7 @@ export class FlowBotAction extends FlowBaseModel{
   async execute(): Promise<any | void> {
     this.status = FlowBotActionStatus.PENDING;
     // @ts-ignore
-    return this.service[this.operation](this.payload, false).toPromise().then((res: any) => {
+    return firstValueFrom(this.service[this.operation](this.payload)).then((res: any) => {
       delete this.errorMessage;
       this.response = res;
       this.status = FlowBotActionStatus.SUCCESS;
