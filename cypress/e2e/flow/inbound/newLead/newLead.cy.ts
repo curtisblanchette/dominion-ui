@@ -14,9 +14,9 @@ describe('Inbound Call Flow - New Lead', function()  {
     cy.wrap(emails).as('email');
     cy.wrap(phone).as('phone');
 
-  })
+  });
 
-  it('Start Inbound - Create New Lead', function() {
+  it('Start Inbound - Create New Lead', () => {
 
     cy.visit('/flow');
 

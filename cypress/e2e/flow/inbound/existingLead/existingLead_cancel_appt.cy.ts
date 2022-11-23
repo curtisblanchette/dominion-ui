@@ -6,12 +6,9 @@ describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
         cy.visit('/flow');
 
         // Select Inbound and proceed
-        cy.isNextDisabled();
         cy.callType('Inbound');
-        cy.nextStep();
 
         // Search For a Lead
-        cy.isNextDisabled();
         cy.get('[data-qa="search_module"]').should('be.visible').type('Raj kumar')
         cy.intercept({
             method: "GET",
@@ -24,8 +21,7 @@ describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
         // Review Lead Info
         cy.nextStep();
 
-        // Select Deal
-        cy.isNextDisabled();
+        // Select Deal;
         cy.get('[data-qa="table-row"]').should('be.visible').should('be.at.least',1).first().click();
         cy.nextStep();
 
@@ -33,7 +29,6 @@ describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
         cy.nextStep();
 
         // Reason For Call
-        cy.isNextDisabled();
         cy.get('[data-qa="reason-for-call"]').should('be.visible').within(($form) => {
             cy.get('label').contains('Cancel Appointment').click();
         });

@@ -27,7 +27,6 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
     cy.nextStep();
 
     // create New Deal
-    cy.isNextDisabled();
     cy.get('[data-qa="new-module"]').should('be.visible').click();
     cy.get('[data-qa="new-module-form"]').within(($form) => {
       cy.get('input').type(`@leadName Deal`);

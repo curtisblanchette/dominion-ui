@@ -19,8 +19,6 @@ class CypressCustomCommands {
     Cypress.Commands.add("callType", this.callType);
     Cypress.Commands.add("nextStep", this.nextStep);
     Cypress.Commands.add("finish", this.finish);
-    Cypress.Commands.add("isNextEnabled", this.isNextEnabled);
-    Cypress.Commands.add("isNextDisabled", this.isNextDisabled);
   }
 
   public login(username: string, password: string, { cacheSession = true } = {}) {
@@ -153,14 +151,6 @@ class CypressCustomCommands {
 
   public finish() {
     cy.get('[data-qa="finish-call"]').should('be.visible').click();
-  }
-
-  public isNextEnabled(){
-    cy.get('[data-qa="next"]').find('button').should('be.enabled');
-  }
-
-  public isNextDisabled(){
-    cy.get('[data-qa="next"]').find('button').should('be.disabled');
   }
 
 }
