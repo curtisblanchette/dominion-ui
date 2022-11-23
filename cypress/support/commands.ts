@@ -19,6 +19,45 @@ class CypressCustomCommands {
     Cypress.Commands.add("callType", this.callType);
     Cypress.Commands.add("nextStep", this.nextStep);
     Cypress.Commands.add("finish", this.finish);
+    Cypress.Commands.add("createEvent", this.createEvent);
+
+    Cypress.Commands.add("searchLeads", this.searchLeads);
+
+    Cypress.Commands.overwrite('request', (originalFn, ...args:Array<any>) => {
+      
+      const localStorageData:any = localStorage.getItem('state');
+      const parsed = JSON.parse(localStorageData);
+
+      if( parsed?.login?.user ){        
+        let headers:{ [key:string] : string} = { 
+          'x-access-token' : parsed.login.user.access_token,
+          'x-id-token' : parsed.login.user.id_token
+        }
+
+        if( parsed?.system?.actingFor?.id ){
+          headers['x-acting-for'] = parsed?.system?.actingFor?.id; 
+        }
+
+        const defaults = { headers };
+        // console.log('args',args);
+        // let options:any;        
+        // if (typeof args[0] === 'object' && args[0] !== null) {
+        //   [options] = args[0];
+        // } else if (args.length === 1) {
+        //   [options["url"]] = args;
+        // } else if (args.length === 2) {
+        //   [options["method"], options["url"]] = args;
+        // } else if (args.length === 3) {
+        //   [options["method"], options["url"], options["body"]] = args;
+        // }
+        // console.log('options',options);
+        // console.log({...defaults, ...args[0], ...{headers:defaults.headers}});
+        return originalFn({...defaults, ...args[0], ...{headers:defaults.headers}});
+
+      }
+      
+    });
+
   }
 
   public login(username: string, password: string, { cacheSession = true } = {}) {
@@ -61,9 +100,10 @@ class CypressCustomCommands {
             cy.wrap($el).click()
             cy.wait(['@lookups']).then((res) => {
               // hack to allow javascript a second to process the request into localStorage
-              cy.wait(500);
-              cy.getLocalStorage('state').then(res => {
+              cy.wait(5000);
+              cy.getLocalStorage('state').then(res => {                
                 let state = JSON.parse(res || '');
+                console.log(state);
                 expect(state.app.lookups, 'Lookups should not be null.').to.be.not.null;
               });
             });
@@ -151,6 +191,42 @@ class CypressCustomCommands {
 
   public finish() {
     cy.get('[data-qa="finish-call"]').should('be.visible').click();
+  }
+
+  public createEvent( title='Test Event', desc='Test Description for event', office='Charleston', type='Sales Consultation'){
+    cy.get('flow-appointment').within(($form) => {
+      cy.get('label[for="title"]').next().type(title);
+
+      cy.get('label[for="officeId"]').next().click();
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
+        cy.wrap($buttons).each(($el, $index, $list) => {
+          if ($el.find('button').text().trim() == office) {
+            cy.wrap($el).click();
+          }
+        });
+      });
+
+      cy.get('label[for="typeId"]').next().click();
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
+        cy.wrap($buttons).each(($el, $index, $list) => {
+          if ($el.find('button').text().trim() == type) {
+            cy.wrap($el).click();
+          }
+        });
+      });
+      cy.get('label[for="description"]').next().type(desc, {force: true});
+      cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
+    });
+  }
+
+  public searchLeads(name:string){
+    cy.get('[data-qa="search_module"]').type(name);
+    cy.intercept({
+      method: "GET",
+      url: "**/api/v1/leads/?**",
+    }).as("searchLeads")
+    cy.wait("@searchLeads")
+    cy.get('[data-qa="table-row"]').should('be.visible').should('have.length.at.least',1).first().click();
   }
 
 }

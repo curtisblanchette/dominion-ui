@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  dominion_api_url: 'http://localhost:3000/api/v1',
+  dominion_api_url: 'http://0.0.0.0:3000/api/v1',
   support_url: 'https://desk.zoho.com/portal/4iizportal/home',
   cognito_userPoolId : 'us-east-1_vdnTDARJY',
   cognito_clientId : '39o4fsufibd00thi5c2a60o2bg',

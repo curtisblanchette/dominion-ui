@@ -3,56 +3,67 @@ describe('Inbound Call Flow - Existing Lead - Resc Appt', () => {
     // Go to Flow Page
     cy.visit('/flow');
 
-    // Select Inbound and proceed
-    cy.callType('Inbound');
-    cy.nextStep();
+    cy.getLocalStorage('state').then((res:any) => {
+      const parsed:{[key:string] : any} = JSON.parse(res);
+      const setAppId = parsed["app"].lookups.leadStatus.find((stage:any) => stage.label == 'Set Appointment')?.id;
+      
+      cy.request({
+          url : `${Cypress.env('API_URL')}/leads?statusId=${setAppId}`,
+          method : 'get'
+      }).then((response) => {
+        expect(response.status).to.eq(200)
+        expect(response.body).to.have.property('count').to.be.greaterThan(0)
+        expect(response.body).to.have.property('rows').length.greaterThan(0)
+        
+        const name:string = response.body.rows[0].fullName;
 
-    // Search For a Lead
-    cy.get('[data-qa="search_module"]').type('new lead 1');
-    cy.wait(2000);
-    cy.get('[data-qa="table-row"]').first().click();
-    cy.nextStep();
+        // Select Inbound and proceed
+        cy.callType('Inbound');
+        cy.nextStep();
 
-    // Review Lead Info
-    cy.nextStep();
+        // Search For a Lead
+        cy.get('[data-qa="search_module"]').should('be.visible').type(name)
+        cy.intercept({
+            method: "GET",
+            url: "**/api/v1/leads/?**",
+        }).as("searchLeads")
+        cy.wait("@searchLeads")
+        cy.get('[data-qa="table-row"]').should('be.visible').should('have.length.at.least',1).first().click();
+        cy.nextStep();
 
-    // Select Deal
-    cy.get('[data-qa="table-row"]').first().click();
-    cy.nextStep();
+        // Review Lead Info
+        cy.nextStep();
 
-    // Review Opportunity
-    cy.nextStep();
+        // Select Deal
+        cy.get('[data-qa="table-row"]').should('be.visible').should('have.length.at.least',1).first().click();
+        cy.nextStep();
 
-    // Reason For Call
-    cy.get('[data-qa="reason-for-call"]').within(($form) => {
-      cy.get('label').contains('Reschedule Appointment').click();
+        // Review Opportunity
+        cy.nextStep();
+
+        // Reason For Call
+        cy.get('[data-template="reason-for-call"]').should('be.visible').within(($form) => {
+          cy.get('label').contains('Reschedule Appointment').click();
+        });
+        cy.nextStep();
+
+        // Select Appointment
+        cy.get('.flex-table__row').should('be.visible').should('have.length.at.least',1).first().click();
+        cy.nextStep();
+
+        // Set Appointment
+        cy.createEvent();
+        cy.nextStep();
+
+        // Recap
+        cy.nextStep();
+
+        // Finish Call
+        cy.finish();
+
+      });
     });
-    cy.nextStep();
-
-    // Select Appointment
-    cy.get('.flex-table__row').first().click();
-    cy.nextStep();
-
-    // Set Appointment
-    cy.get('#title').type('New Event - Resc');
-
-    cy.get('section.flow-layout__content fiiz-dropdown').eq(0).click();
-    cy.get('section.flow-layout__content .dropdown-menu__items').first().click();
-
-    cy.get('section.flow-layout__content fiiz-dropdown').eq(1).click();
-    cy.get('section.flow-layout__content .dropdown-menu__items').eq(0).click();
-
-    cy.get('fiiz-textarea textarea').type('Test Description for event');
-
-    cy.get('div.slots__times').first().click();
-
-    cy.nextStep();
-
-    // Recap
-    cy.nextStep();
-
-    // Finish Call
-    cy.finish();
 
   });
+
 });
