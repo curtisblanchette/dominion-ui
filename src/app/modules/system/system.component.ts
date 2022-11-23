@@ -18,7 +18,6 @@ import { DropdownItem } from '../../common/components/interfaces/dropdownitem.in
 })
 export class SystemComponent implements OnDestroy, OnInit {
 
-  // public workspaces$: Observable<DropdownItem[]>;
   public actingFor$: Observable<DropdownItem | undefined>;
   public accountsForm: FormGroup;
   public userInviteForm: FormGroup;
@@ -36,7 +35,6 @@ export class SystemComponent implements OnDestroy, OnInit {
     private fb: FormBuilder
   ) {
     this.lookupTypes = LookupTypes;
-    // this.workspaces$ = this.store.select(fromSystem.selectWorkspaces);
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
     this.roles$ = this.store.select(fromApp.selectRoles);
     this.loading$ = this.store.select(fromSystem.loading);
@@ -46,7 +44,6 @@ export class SystemComponent implements OnDestroy, OnInit {
       this._initialized = val;
       if(this._initialized) {
         this.userInviteForm = this.createUserInviteForm();
-
       }
     });
     this.ModuleTypes = ModuleTypes;
