@@ -1,6 +1,19 @@
 <form [formGroup]="searchForm" class="list-actions">
-  <fiiz-input data-qa="search_module" id="search_module" #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
-  <fiiz-button data-qa="new-module-button" *ngIf="options.controls.createNew" stroked (click)="onCreateNew()" icon="fa-plus">New {{moduleName}}</fiiz-button>
+  <fiiz-input data-qa="search_module"
+              id="search_module"
+              #SearchInput
+              icon="fa-search"
+              formControlName="search"
+              type="text"
+              [autofocus]="true"
+              placeholder="Search {{pluralModuleName}}..."></fiiz-input>
+
+  <fiiz-button data-qa="new-module-button"
+               *ngIf="options.controls.createNew"
+               stroked
+               (click)="onCreateNew()"
+               icon="fa-plus">New {{moduleName}}</fiiz-button>
+
     <div class="button-group">
       <fiiz-dropdown
         type="button"

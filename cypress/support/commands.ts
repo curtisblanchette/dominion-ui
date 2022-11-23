@@ -32,8 +32,8 @@ class CypressCustomCommands {
       // Act
       cy.get('[data-qa="login-form"]').should('be.visible').find('button').should('be.disabled');
       cy.get('[data-qa="login-form"]').within(($form) => {
-        cy.get('[data-qa="username"]').type(username);
-        cy.get('[data-qa="password"]').type(password);
+        cy.get('[data-qa="input:username"]').type(username);
+        cy.get('[data-qa="input:password"]').type(password);
         cy.get('button').should('be.enabled');
         cy.root().submit();
       });
@@ -54,7 +54,7 @@ class CypressCustomCommands {
       }).as("lookups");
 
       // Set Demo Account By Default
-      cy.get('[data-qa="workspace-dropdown"]').within(($el) => {
+      cy.get('[data-qa="dropdown:workspace"]').within(($el) => {
         cy.root().click();
         cy.get('[data-qa="dropdown-item"]').contains('demo').click().then(($buttons) => {
 

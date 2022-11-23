@@ -1,4 +1,4 @@
-import { Component, Renderer2, AfterViewInit, AfterContentInit, Input, ViewChild } from '@angular/core';
+import { Component, Renderer2, AfterViewInit, AfterContentInit, Input, ViewChild, HostBinding } from '@angular/core';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
 import { Store } from '@ngrx/store';
 import { ManipulateType } from 'dayjs';
@@ -62,6 +62,7 @@ export class FlowAppointmentComponent extends EntityCollectionComponentBase impl
 
   @ViewChild('eventData', {static : false}) eventData:FiizDataComponent;
   @ViewChild('datePicker') datePicker:FiizDatePickerComponent;
+  @HostBinding('attr.data-qa') qaAttribute: string;
 
   constructor(
     private router: Router,

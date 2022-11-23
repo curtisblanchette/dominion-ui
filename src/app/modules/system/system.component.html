@@ -12,8 +12,7 @@
     <form data-qa="accounts-form" id="accounts-form" [formGroup]="accountsForm" *ngIf="accountsForm">
       <fiiz-dropdown
         type="search"
-        id="actingFor"
-        data-qa="accounts-dropdown"
+        id="workspace"
         [module]="ModuleTypes.WORKSPACE"
         [formControlName]="'actingFor'"
         [title]="'Select an account'"

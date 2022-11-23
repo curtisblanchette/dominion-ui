@@ -138,7 +138,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public override async ngAfterContentInit(): Promise<void> {
     super.ngAfterContentInit();
-    this.qaAttribute = `${this.moduleName}-dropdown`;
+    this.qaAttribute = `dropdown:${this.id}`;
   }
 
   public async ngAfterViewInit() {

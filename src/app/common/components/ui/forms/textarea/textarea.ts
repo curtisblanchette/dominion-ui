@@ -24,13 +24,15 @@ export class FiizTextAreaComponent implements ControlValueAccessor, AfterViewIni
   @Input('height') height = '35px';
   value: string = '';
 
+  @HostBinding('attr.data-qa') qaAttribute: string;
+
   onChange: (value: any) => void = () => {};
   onTouched: Function = () => {};
 
   constructor(private renderer: Renderer2) {}
 
   public ngAfterViewInit() {
-
+    this.qaAttribute = `textarea:${this.id}`;
   }
 
   writeValue(value: any): void {

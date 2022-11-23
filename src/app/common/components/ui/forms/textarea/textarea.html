@@ -1,10 +1,10 @@
 <label [for]="id" *ngIf="label" [ngClass]="{ 'required' : required }">{{label}}</label>
 <textarea #textarea
-    [id]="id"
-	[autofocus]="autofocus"
-	[placeholder]="placeholder"
-	[style.height]="height"
-    [value]="value"
-	(input)="change($event)">
+          [id]="id"
+          [autofocus]="autofocus"
+          [placeholder]="placeholder"
+          [style.height]="height"
+          [value]="value"
+          (input)="change($event)">
 </textarea>
 
