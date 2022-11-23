@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   projectId: 'khcsw1',
   e2e: {
-    baseUrl: 'http://0.0.0.0:4200',
+    baseUrl: 'http://localhost:4200',
     env: {
       API_URL: 'http://localhost:3000/api/v1'
     },
