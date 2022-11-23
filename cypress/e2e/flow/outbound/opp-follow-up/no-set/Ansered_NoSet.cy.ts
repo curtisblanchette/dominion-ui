@@ -29,11 +29,11 @@ describe('Outbound Call Flow - Answered - No Set', () => {
     // Opp Follow up
     cy.get('[data-qa="call-status"]').within(($form) => {
       cy.root().click();
-      cy.get('[data-qa="dropdown-items"] button').contains('Answered').click()
+      cy.get('[data-qa="dropdown-item"] button').contains('Answered').click()
     });
     cy.get('[data-qa="call-outcome"]').within(($form) => {
       cy.root().click();
-      cy.get('[data-qa="dropdown-items"] button').contains('No Set').click()
+      cy.get('[data-qa="dropdown-item"] button').contains('No Set').click()
     });
 
     cy.nextStep();

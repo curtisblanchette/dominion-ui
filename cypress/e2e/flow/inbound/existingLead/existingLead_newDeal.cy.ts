@@ -30,7 +30,7 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
     // Relationship building
     cy.get('[data-qa="new-module-form"]').within(($form) => {
       cy.get('label[for="practiceAreaId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').first().click();
+      cy.get('[data-qa="dropdown-item"]').first().click();
     });
     cy.nextStep();
 
@@ -42,7 +42,7 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
       cy.get('label[for="title"]').next().type('Test Event');
 
       cy.get('label[for="officeId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Charleston') {
             cy.wrap($el).click();
@@ -51,7 +51,7 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
       });
 
       cy.get('label[for="typeId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Sales Consultation') {
             cy.wrap($el).click();

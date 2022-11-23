@@ -13,7 +13,7 @@ export default defineConfig({
     },
     experimentalSessionAndOrigin: true,
     specPattern: [
-      'cypress/e2e/flow/**/*.cy.ts',
+      'cypress/e2e/flow/**/newLead.cy.ts',
     ]
   },
   requestTimeout: 180000,

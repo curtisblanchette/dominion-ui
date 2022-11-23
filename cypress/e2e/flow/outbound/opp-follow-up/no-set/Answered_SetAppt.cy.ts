@@ -27,10 +27,10 @@ describe('Outbound Call Flow - Answered - Set Appt', () => {
     // Opp Follow up
     cy.get('[data-qa="call-status"]').within(($form) => {
       cy.get('fiiz-dropdown').first().click()
-      cy.get('[data-qa="dropdown-items"] button').contains('Answered').click()
+      cy.get('[data-qa="dropdown-item"] button').contains('Answered').click()
 
       cy.get('fiiz-dropdown').eq(1).click()
-      cy.get('[data-qa="dropdown-items"] button').contains('Set Appointment').click()
+      cy.get('[data-qa="dropdown-item"] button').contains('Set Appointment').click()
     })
     cy.get('[data-qa="next"]').click()
 
@@ -42,7 +42,7 @@ describe('Outbound Call Flow - Answered - Set Appt', () => {
       cy.get('label[for="title"]').next().type('Test Event')
 
       cy.get('label[for="officeId"]').next().click()
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Charleston') {
             cy.wrap($el).click()
@@ -51,7 +51,7 @@ describe('Outbound Call Flow - Answered - Set Appt', () => {
       })
 
       cy.get('label[for="typeId"]').next().click()
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Sales Consultation') {
             cy.wrap($el).click()

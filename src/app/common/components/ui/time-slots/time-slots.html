@@ -3,9 +3,10 @@
     <div class="slots__day">
       {{ item.key | fiizDate : 'ddd, MMMM Do'}}
     </div>
-    <div class="slots__times" data-qa="slot-time">
+    <div class="slots__times" >
       <button *ngFor="let time of item.value;" [id]="time.format()"
               [ngClass]="{'active': selectedDate === time.format()}"
+              data-qa="slot-time"
               class="btn_time_slots"
               (click)="setEventTime($event)">{{ time.format('hh:mm A') }}</button>
     </div>

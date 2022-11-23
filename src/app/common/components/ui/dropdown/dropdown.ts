@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable, of } from 'rxjs';
@@ -52,7 +52,7 @@ export interface IDropDownMenuItem {
     '(document:keydown)': 'navigationByKeys($event)'
   }
 })
-export class FiizDropDownComponent extends EntityCollectionComponentBase implements ControlValueAccessor, AfterViewInit, OnInit {
+export class FiizDropDownComponent extends EntityCollectionComponentBase implements ControlValueAccessor, AfterViewInit, AfterContentInit, OnInit {
 
   public searchForm: FormGroup;
   public showDropDowns: boolean = false;
@@ -90,6 +90,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   @HostBinding('attr.size')
   @Input('size') public size: ButtonSizes;
+
+  @HostBinding('attr.data-qa') qaAttribute: string;
 
   @HostListener('click', ['$event'])
   clickInside($event: any) {
@@ -132,7 +134,11 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public ngOnInit() {
+  }
 
+  public override async ngAfterContentInit(): Promise<void> {
+    super.ngAfterContentInit();
+    this.qaAttribute = `${this.moduleName}-dropdown`;
   }
 
   public async ngAfterViewInit() {
@@ -141,6 +147,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     // this.items$.pipe(untilDestroyed(this), map(items => {
     //   this.apiData = items;
     // })).subscribe();
+
 
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
@@ -190,7 +197,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         if( !this.required && this.dropdownType == 'search' ){
           data.unshift( {label : '--None--', id: null, checked : false} );
         }
-        
+
       }
 
       if (this.isLookup()) {
@@ -204,7 +211,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         );
         if( !this.required && this.dropdownType == 'search' ){
           data.unshift( {label : '--None--', id: null, checked : false} );
-        }        
+        }
       }
 
       if (data) {

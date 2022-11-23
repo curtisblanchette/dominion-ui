@@ -3,8 +3,8 @@ import { User } from './modules/login/models/user';
 import { Observable } from 'rxjs';
 import * as fromLogin from './modules/login/store/login.reducer';
 import { Store } from '@ngrx/store';
-import { LoginState } from './modules/login/store/login.reducer';
-declare const window: any;
+import { AppState } from './store/app.reducer';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,11 +15,8 @@ export class AppComponent {
   public loggedUser$: Observable<User | null>;
 
   constructor(
-    public store: Store<LoginState>
+    public store: Store<AppState>
   ) {
     this.loggedUser$ = this.store.select(fromLogin.selectUser);
-    if(window.Cypress) {
-      window.store = this.store;
-    }
   }
 }

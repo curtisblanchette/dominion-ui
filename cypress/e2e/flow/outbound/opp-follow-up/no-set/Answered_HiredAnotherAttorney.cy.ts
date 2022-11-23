@@ -28,10 +28,10 @@ describe('Outbound Call Flow - Answered - Hired Another Attorney', () => {
     // Opp Follow up
     cy.get('[data-qa="call-status"]').within(($form) => {
       cy.get('fiiz-dropdown').first().click();
-      cy.get('[data-qa="dropdown-items"] button').contains('Answered').click();
+      cy.get('[data-qa="dropdown-item"] button').contains('Answered').click();
 
       cy.get('fiiz-dropdown').eq(1).click();
-      cy.get('[data-qa="dropdown-items"] button').contains('Hired Another Attorney').click();
+      cy.get('[data-qa="dropdown-item"] button').contains('Hired Another Attorney').click();
     });
     cy.get('[data-qa="next"]').click();
 

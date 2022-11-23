@@ -1,6 +1,6 @@
 <div style="margin: auto 0;">
   <!--<h3>{{data.title}}</h3>-->
-  <form data-qa="new-module-form" [formGroup]="form" (ngSubmit)="save()">
+  <form [formGroup]="form" (ngSubmit)="save()">
     <fiiz-grid
       [ngStyle]="{'grid-template-columns': options.grid?.minColWidth ? 'repeat(auto-fit, minmax(' + options.grid?.minColWidth + 'px, 1fr))' : 'initial'}">
       <ng-container *ngFor="let control of controlData; first as isFirst;">

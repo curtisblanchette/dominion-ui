@@ -42,7 +42,7 @@
            [ngClass]="{'selected': multiselect ? isPreselected(item.id) : currentIndex === i, 'dropdown': true, 'divider':!last}"
            (click)="setTheValue(item.id, item.label)"
            [disabled]="disabled"
-           data-qa="dropdown-items"
+           data-qa="dropdown-item"
            style="border-radius: 0;">
           <i class="fa" [ngClass]="{'fa-square': multiselect, 'fa-square-check': multiselect && isPreselected(item.id) }" *ngIf="multiselect"></i>
           {{ item.label }}

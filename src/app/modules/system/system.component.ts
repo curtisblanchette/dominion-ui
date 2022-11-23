@@ -7,7 +7,7 @@ import * as fromApp from '../../store/app.reducer';
 import * as systemActions from './store/system.actions';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { LookupTypes } from '../../data/entity-metadata';
+import { LookupTypes, ModuleTypes } from '../../data/entity-metadata';
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
 
 @UntilDestroy()
@@ -18,13 +18,15 @@ import { DropdownItem } from '../../common/components/interfaces/dropdownitem.in
 })
 export class SystemComponent implements OnDestroy, OnInit {
 
-  public workspaces$: Observable<DropdownItem[]>;
+  // public workspaces$: Observable<DropdownItem[]>;
   public actingFor$: Observable<DropdownItem | undefined>;
   public accountsForm: FormGroup;
   public userInviteForm: FormGroup;
   public roles$: Observable<DropdownItem[]>;
   public initialized$: Subscription;
   public _initialized = false;
+
+  public ModuleTypes: any;
 
   public loading$: Observable<boolean>;
   public lookupTypes: any;
@@ -34,7 +36,7 @@ export class SystemComponent implements OnDestroy, OnInit {
     private fb: FormBuilder
   ) {
     this.lookupTypes = LookupTypes;
-    this.workspaces$ = this.store.select(fromSystem.selectWorkspaces);
+    // this.workspaces$ = this.store.select(fromSystem.selectWorkspaces);
     this.actingFor$ = this.store.select(fromSystem.selectActingFor);
     this.roles$ = this.store.select(fromApp.selectRoles);
     this.loading$ = this.store.select(fromSystem.loading);
@@ -47,7 +49,7 @@ export class SystemComponent implements OnDestroy, OnInit {
 
       }
     });
-
+    this.ModuleTypes = ModuleTypes;
   }
 
   public async ngOnInit(): Promise<void> {

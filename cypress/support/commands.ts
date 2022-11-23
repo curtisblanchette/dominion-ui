@@ -52,25 +52,23 @@ class CypressCustomCommands {
       }).as("lookups");
 
       // Set Demo Account By Default
-      cy.get('[data-qa="accounts-dropdown"]').within(($el) => {
-        cy.wrap($el).click().then(() => {
-          cy.get('.dropdown-menu').should('be.visible'); // TODO move this unit test assertion
-        });
-      });
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
-        cy.wrap($buttons).each(($el, $index, $list) => {
-          cy.wrap($el).click()
-          cy.wait(['@lookups']);
+      cy.get('[data-qa="workspace-dropdown"]').within(($el) => {
+        cy.root().click();
+        cy.get('[data-qa="dropdown-item"]').contains('demo').click().then(($buttons) => {
 
-          // hack to allow javascript a second to process the request into localStorage
-          cy.wait(500);
-          cy.getLocalStorage('state').then(res => {
-            let state = JSON.parse(res || '');
-            expect(state.app.lookups, 'Lookups should not be null.').to.be.not.null;
-          });
+            cy.wrap($el).click()
+            cy.wait(['@lookups']).then((res) => {
+              // hack to allow javascript a second to process the request into localStorage
+              cy.wait(500);
+              cy.getLocalStorage('state').then(res => {
+                let state = JSON.parse(res || '');
+                expect(state.app.lookups, 'Lookups should not be null.').to.be.not.null;
+              });
+            });
 
         });
       });
+
     };
 
     if (cacheSession) {
@@ -145,11 +143,13 @@ class CypressCustomCommands {
   }
 
   public nextStep() {
-    cy.get('[data-qa="next"]').click();
+    cy.get('[data-qa="next"]').within($fiizButton => {
+      cy.get('button').should('not.be.disabled').click();
+    });
   }
 
-  public finish(){
-    cy.get('[data-qa="finish-call"]').click();
+  public finish() {
+    cy.get('[data-qa="finish-call"]').should('be.visible').click();
   }
 }
 
