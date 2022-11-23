@@ -39,7 +39,7 @@
   }
 
   .dropdown-menu {
-    display: table;
+    // display: table;
     position: absolute;
     list-style: none;
     background-color: var(--slate);
@@ -51,6 +51,9 @@
     white-space: nowrap;
     min-width: 100%;
     z-index: 10;
+    height: auto;
+    max-height: 200px;
+    overflow-y: auto;
     @include elevate(2);
 
     form {
