@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.22.0 (2022-11-23)
+
+
+### Features
+
+* **data-qa:** make data-qa attributes dynamic ([847e5d6](https://github.com/4iiz/dominion-ui/commit/847e5d61fe58bfdff2351cde3fec696d4e2275ee))
+
 ### 1.21.12 (2022-11-22)
 
 
