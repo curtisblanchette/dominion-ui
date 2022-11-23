@@ -106,9 +106,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
+              "watch": false,
               "browserTarget": "dominion-ui:build:production"
             },
             "development": {
+              "watch": false,
               "browserTarget": "dominion-ui:build:development"
             },
             "local": {
@@ -126,9 +128,14 @@
         "cypress-run": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "dominion-ui:serve"
+            "devServerTarget": "dominion-ui:serve",
+            "watch": false,
+            "record": true
           },
           "configurations": {
+            "development": {
+              "devServerTarget": "dominion-ui:serve:development"
+            },
             "production": {
               "devServerTarget": "dominion-ui:serve:production"
             }

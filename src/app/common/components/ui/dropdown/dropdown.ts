@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, forwardRef, HostBinding, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom, Observable, of } from 'rxjs';
@@ -52,7 +52,7 @@ export interface IDropDownMenuItem {
     '(document:keydown)': 'navigationByKeys($event)'
   }
 })
-export class FiizDropDownComponent extends EntityCollectionComponentBase implements ControlValueAccessor, AfterViewInit, OnInit {
+export class FiizDropDownComponent extends EntityCollectionComponentBase implements ControlValueAccessor, AfterViewInit, AfterContentInit, OnInit {
 
   public searchForm: FormGroup;
   public showDropDowns: boolean = false;
@@ -90,6 +90,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   @HostBinding('attr.size')
   @Input('size') public size: ButtonSizes;
+
+  @HostBinding('attr.data-qa') qaAttribute: string;
 
   @HostListener('click', ['$event'])
   clickInside($event: any) {
@@ -132,15 +134,19 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public ngOnInit() {
+  }
 
+  public override async ngAfterContentInit(): Promise<void> {
+    super.ngAfterContentInit();
+    this.qaAttribute = `${this.moduleName}-dropdown`;
   }
 
   public async ngAfterViewInit() {
     // TODO remove the need for this.apiData. observable streams can filter the results automatically while keeping the source intact.
     // keeps the source data updated, filtering mutates this.items$
-    this.items$.pipe(untilDestroyed(this), map(items => {
-      this.apiData = items;
-    })).subscribe();
+    // this.items$.pipe(untilDestroyed(this), map(items => {
+    //   this.apiData = items;
+    // })).subscribe();
 
 
     // @ts-ignore
@@ -191,7 +197,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         if( !this.required && this.dropdownType == 'search' ){
           data.unshift( {label : '--None--', id: null, checked : false} );
         }
-        
+
       }
 
       if (this.isLookup()) {
@@ -205,7 +211,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         );
         if( !this.required && this.dropdownType == 'search' ){
           data.unshift( {label : '--None--', id: null, checked : false} );
-        }        
+        }
       }
 
       if (data) {
@@ -216,10 +222,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         this.items$ = of(data);
       }
     } else {
-      const data = this.apiData.filter(item => item.label.toLowerCase().includes(value.toLowerCase()));
-      if (data) {
-        this.totalRecords = data.length || 0;
-        this.items$ = of(data);
+      if( this.apiData ){
+        const data = this.apiData.filter(item => item.label.toLowerCase().includes(value.toLowerCase()));
+        if (data) {
+          this.totalRecords = data.length || 0;
+          this.items$ = of(data);
+        }
       }
     }
   }
@@ -255,8 +263,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       }
     } else {
       // the data source was statically provided (aka. its not a module or lookup)
-      const data = [...(await firstValueFrom(this.items$))].find((item: any) => item.id === value) as any;
-      this.title = data?.label ? data?.label : this.title;
+      // const data = [...(await firstValueFrom(this.items$))].find((item: any) => item.id === value) as any;
+      // this.title = data?.label ? data?.label : this.title;
     }
   }
 

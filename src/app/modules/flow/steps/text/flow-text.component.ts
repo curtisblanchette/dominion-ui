@@ -76,7 +76,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
 
   @ViewChild('tinymce') tinymce: EditorComponent;
   @ViewChild('botComment') botComment: ElementRef;
-  @ViewChild('callStatusDropdown') callStatusDropdown: FiizDropDownComponent;
+  @ViewChild('callStatus', {static : false}) callStatusDropdown: FiizDropDownComponent;
+  @ViewChild('callOutcome', {static : false}) callOutcomeDropdown: FiizDropDownComponent;
   @ViewChild('callReasonDropdown') callReasonDropdown: FiizDropDownComponent;
   @ViewChild('scheduledCallBack') scheduledCallBack: FiizDatePickerComponent;
 
@@ -163,6 +164,24 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         });
       });
     });
+
+    if(this.template == 'opp-follow-up'){
+      this.callStatusDropdown.getValues.subscribe( id => {
+        this.callStatuses$.forEach((values:any) => {
+          if( values.find( (item:any) => item.id === id ).label != "Answered" ){
+            let newDropDownVals:any = [];
+            this.callOutcomes$.forEach((values:DropdownItem[]) => {
+              newDropDownVals = values.filter((item: any) => { return ['Left Note/Took Message'].includes(item.label) });
+            });
+            this.callOutcomes$ = of(newDropDownVals);
+          } else {
+            this.callOutcomes$ = this.store.select(fromApp.selectLookupsByKey('callOutcome')).pipe(map((o: DropdownItem[]) => {
+              return o.filter((x: any) => ![3,4].includes(x.id));
+            }));
+          }
+        })        
+      })
+    }
 
 
   }
@@ -280,7 +299,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
         ).subscribe();
       });
 
-      if(this.variables['call_direction'] === 'outbound' && this.form.controls['call_statusId']) {
+      if( this.template != 'opp-follow-up' && this.variables['call_direction'] === 'outbound' && this.form.controls['call_statusId']) {
         this.form.controls['call_statusId'].valueChanges.subscribe(status => {
           // try to filter the available outcomes based on the deal stage and call status
           let data = [

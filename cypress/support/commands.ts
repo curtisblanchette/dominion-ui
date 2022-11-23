@@ -56,20 +56,20 @@ class CypressCustomCommands {
       }).as("lookups");
 
       // Set Demo Account By Default
-      cy.get('[data-qa="accounts-dropdown"]').should('be.visible').within(($el) => {
-        cy.wrap($el).click().then(() => {
-          cy.get('.dropdown-menu').should('be.visible');
-        });
-      });
-      cy.get('[data-qa="dropdown-items"]').should('have.length.above', 0).within(($buttons) => {
-        cy.wrap($buttons).each(($el, $index, $list) => {
-          // TODO fix this condition
-          // if( $el.find('button').text().trim() === name ){
-            cy.wrap($el)
-              .click()
-              .wait(['@lookups'])
-              .wait(1000); // give app .1s to store api responses to State
-          // }
+      cy.get('[data-qa="workspace-dropdown"]').within(($el) => {
+        cy.root().click();
+        cy.get('[data-qa="dropdown-item"]').contains('demo').click().then(($buttons) => {
+
+            cy.wrap($el).click()
+            cy.wait(['@lookups']).then((res) => {
+              // hack to allow javascript a second to process the request into localStorage
+              cy.wait(500);
+              cy.getLocalStorage('state').then(res => {
+                let state = JSON.parse(res || '');
+                expect(state.app.lookups, 'Lookups should not be null.').to.be.not.null;
+              });
+            });
+
         });
       });
     };
@@ -96,7 +96,7 @@ class CypressCustomCommands {
     } else {
       _login();
     }
-}
+  }
 
   public logout() {
     // Arrange
@@ -134,6 +134,9 @@ class CypressCustomCommands {
     });
   }
 
+  public expectFlowVariable(key: string) {
+
+  }
 
   // Select Call Type
   public callType(type: string) {
@@ -142,13 +145,14 @@ class CypressCustomCommands {
     });
   }
 
-  public nextStep(){
-    cy.isNextEnabled();
-    cy.get('[data-qa="next"]').click();
+  public nextStep() {
+    cy.get('[data-qa="next"]').within($fiizButton => {
+      cy.get('button').should('not.be.disabled').click();
+    });
   }
 
-  public finish(){
-    cy.get('[data-qa="finish-call"]').click();
+  public finish() {
+    cy.get('[data-qa="finish-call"]').should('be.visible').click();
   }
 
   public isNextEnabled(){

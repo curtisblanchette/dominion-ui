@@ -8,62 +8,68 @@ describe('Inbound Call Flow - New Lead', function()  {
     const lname:string = faker.name.lastName('male');
     const emails:string = faker.internet.email(fname, lname);
     const phone:string = faker.phone.phoneNumber('2244######');
-    
+
     cy.wrap(fname).as('fname');
     cy.wrap(lname).as('lname');
     cy.wrap(emails).as('email');
     cy.wrap(phone).as('phone');
 
   })
-  
-  it('Start Inbound - Create New Lead', function() {    
+
+  it('Start Inbound - Create New Lead', function() {
 
     cy.visit('/flow');
+
     // Select Inbound and proceed
-    cy.isNextDisabled();
-    cy.get('[data-qa="call_direction"]').within(() => {
-      cy.get('label').contains('Inbound').click();
-    });    
-    cy.nextStep();
-
-    // Create new lead
-    cy.isNextDisabled();
-    cy.get('[data-qa="new-module"]').should('be.visible').click();
-
-    // Enter lead info and proceed
-    cy.isNextDisabled();
-    cy.get('[data-qa="new-module-form"]').should('be.visible').within(($form) => {
-      cy.get('label[for="firstName"]').next().type(this['fname']);
-      cy.get('label[for="lastName"]').next().type(this['lname']);
-      cy.get('label[for="phone"]').next().type(this['phone']);
-      cy.get('label[for="email"]').next().type(this['email']);
+    cy.get('[data-template="call-direction"]').within(($step) => {
+      cy.contains('Inbound').click();
     });
+
     cy.nextStep();
 
-    // Select Campaign
-    cy.isNextDisabled();
-    cy.get('label[for="campaignId"]').next().click();
-    cy.get('[data-qa="dropdown-items"]').first().click();
+    cy.get('[data-qa="lead-list"]').within(($step) => {
+      cy.get('[data-qa="new-module-button"]').click();
+    });
+
+    // nextStep is performed automatically
+
+    cy.get('[data-qa="create-lead"]').within(($step) => {
+      // Enter lead info and proceed
+      cy.get('label[for="firstName"]').next().type('Raj kumar');
+      cy.get('label[for="lastName"]').next().type('Patel');
+      cy.get('label[for="phone"]').next().type('4423898290');
+      cy.get('label[for="email"]').next().type('raj@test.com');
+    });
+
+    cy.nextStep();
+
+    cy.get('[data-qa="edit-lead"]').within(($step) => {
+      // Select Campaign
+      cy.get('label[for="campaignId"]').next().click();
+      cy.get('[data-qa="dropdown-item"]').first().click();
+    });
+
     cy.nextStep();
 
     // relationship building
-    cy.isNextDisabled();
-    cy.get('[data-qa="new-module-form"]').within(($form) => {
-      cy.get('label[for="practiceAreaId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').first().click();
+    cy.get('[data-template="relationship-building"]').within(($step) => {
+      cy.get('[data-qa="edit-lead"]').first().within(() => {
+        cy.get('[data-qa="practiceArea-dropdown"]').click();
+        cy.get('[data-qa="dropdown-item"]').first().click();
+      });
     });
+
     cy.nextStep();
 
     // Power question
     cy.nextStep();
 
     // Set Appt
-    cy.isNextDisabled();
-    cy.get('[data-qa="event-form"]').should('be.visible').within(($form) => {
+    cy.get('flow-appointment').within(($form) => {
       cy.get('label[for="title"]').next().type('Test Event');
 
       cy.get('label[for="officeId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Charleston') {
             cy.wrap($el).click();
@@ -72,7 +78,7 @@ describe('Inbound Call Flow - New Lead', function()  {
       });
 
       cy.get('label[for="typeId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Sales Consultation') {
             cy.wrap($el).click();
@@ -80,9 +86,13 @@ describe('Inbound Call Flow - New Lead', function()  {
         });
       });
       cy.get('label[for="description"]').next().type('Test Description for event', {force: true});
+
+      cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
     });
 
-    cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
+
+    cy.wait(100);
+
     cy.nextStep();
 
     // Recap

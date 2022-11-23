@@ -142,11 +142,14 @@ export class FlowService {
     await this.start();
   }
 
+  // there should be no filter or cached records
   public clearEntityCache(){
     for(const module of Object.values(ModuleTypes)) {
-      // there should be no filter or cached records
-      (<EntityCollectionService<DominionType>>this[`${module}Service`]).clearCache();
-      (<EntityCollectionService<DominionType>>this[`${module}Service`]).setFilter({});
+      // TODO move SystemType modules into their own namespace>?
+      if (module !== ModuleTypes.WORKSPACE) {
+        (<EntityCollectionService<DominionType>>this[`${module}Service`]).clearCache();
+        (<EntityCollectionService<DominionType>>this[`${module}Service`]).setFilter({});
+      }
     }
   }
 

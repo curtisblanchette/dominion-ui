@@ -172,6 +172,7 @@ export class FlowBot {
                       });
                       this.botActions.push(action);
                       await action.execute().then(() => action.message = 'Appointment Canceled.');
+                      (<any>flowService.leadService).update(leadFilter['id'], {statusId : leadStatuses.find((ls:any) => ls.label === 'No Set')?.id });
                     }
                     break;
 
@@ -193,18 +194,21 @@ export class FlowBot {
 
                         try {
                           await action.execute().then(() => action.message = 'Appointment Rescheduled.');
-                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;                          
+                          callOutcomeId = callOutcomes.find((o:any) => o.label === 'Rescheduled Appointment')?.id;
                         } catch(e : any) {
                           action.status = FlowBotActionStatus.FAILURE;
                           action.errorMessage = e.message;
                         }
                       } else {
-                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;
-                        
+
+                        callOutcomeId = callOutcomes.find((o:any) => o.label === 'Set Appointment')?.id;                        
+
                         const convertResponse:any = await flowService.convertLead(leadFilter['id']);
                         flowService.addVariables({deal : convertResponse.deal});
-                        
+
                       }
+                      // In case of Set Appointment OR Reschedule Appointment, the Lead status should be Set Appointment
+                      (<any>flowService.leadService).update({ id : leadFilter['id'], statusId : leadStatuses.find((ls:any) => ls.label === 'Set Appointment')?.id });
 
                       payload['leadId'] = leadFilter['id'];
                       payload['contactId'] = contactFilter['id'];
@@ -242,12 +246,12 @@ export class FlowBot {
 
                   // update the call record endTime
                   flowService.addVariables({
-                    leadId: moduleIds.lead,
-                    dealId: moduleIds.deal,
-                    statusId: callStatusId,
-                    outcomeId: callOutcomeId,
-                    typeId: callTypeId,
-                    endTime: new Date().toISOString()
+                    lead: moduleIds.lead,
+                    deal: moduleIds.deal,
+                    call_statusId: callStatusId,
+                    call_outcomeId: callOutcomeId,
+                    call_typeId: callTypeId,
+                    call_endTime: new Date().toISOString()
                   });
 
                 }
@@ -273,7 +277,7 @@ export class FlowBot {
 
             const modIds = await this.getModuleIds();
 
-            // Convert the lead even if objected            
+            // Convert the lead even if objected
             const convertedResponse:any = await flowService.convertLead(modIds.lead);
 
             // Update call record
@@ -294,8 +298,8 @@ export class FlowBot {
 
             // update the call record endTime
             flowService.addVariables({
-              outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
-              objectionId : objectionId
+              call_outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
+              call_objectionId : objectionId
             });
 
             /**
@@ -319,42 +323,12 @@ export class FlowBot {
             }
           }
 
-          // Update the Call record if objected
-          if( didObject ){
-            /**
-             * If Call was objected, set the the call outcome to No Set
-             * Doesn't matter if the Appointment was set or not
-             */
-
-            flowService.callService.update({
-              id: flowService.callId,
-              outcomeId: callOutcomes.find((o:any) => o.label === 'No Set')?.id,
-              objectionId : objectionId
-            });
-
-            /**
-             * If the call was objected after setting up of Appointment
-             * Cancel the Event
-             * Update lead status to No Set
-             */
-
-            if( eventActions ){
-              let eventPayload = {
-                id: eventActions['id'],
-                outcomeId : eventOutcomes.find((o:any) => o.label === 'Canceled')?.id
-              };
-              flowService.eventService.update(eventPayload);
-              // Update lead status
-              let getLeadId: any = await firstValueFrom(flowService.getService(ModuleTypes.LEAD).filter$);
-              flowService.leadService.update({
-                id: getLeadId['id'],
-                statusId: leadStatuses.find((ls:any) => ls.label === 'No Set')?.id
-              });
-            }
+          for (const key of Object.keys(this.services)) {
+            this.services[key].clearCache();
+            this.services[key].setFilter({});
           }
 
-        })
-
+        });
 
 
       } // end status !== 'complete'
@@ -362,10 +336,6 @@ export class FlowBot {
       // this.actions.push('All information for this call has been captured. Thank you!');
     });
 
-    for (const key of Object.keys(this.services)) {
-      this.services[key].clearCache();
-      this.services[key].setFilter({});
-    }
 
 
   }

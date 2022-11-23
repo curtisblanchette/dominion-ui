@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, HostBinding, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromFlow from '../../store/flow.reducer';
 import { FiizDataComponent, FiizDataComponentOptions } from '../../../../common/components/ui/data/data.component';
@@ -31,6 +31,8 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
 
   @ViewChild(FiizDataComponent, { static: true }) cmp: FiizDataComponent;
 
+  @HostBinding('attr.data-qa') qaAttribute: string;
+
   constructor(
     private store: Store<fromFlow.FlowState>,
     private flowService: FlowService
@@ -47,6 +49,8 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
   }
 
   ngAfterContentInit() {
+    this.qaAttribute = `${this.options.state}-${this.module}`;
+
     if(this.data[this.module]) {
       // Set the <fiiz-data> component's form value;
       this.cmp.form.setValue(this.data[this.module], {emitEvent: true});

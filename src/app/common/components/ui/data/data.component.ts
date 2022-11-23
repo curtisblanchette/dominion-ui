@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -99,6 +99,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @ViewChildren('inputList') inputList: QueryList<FiizInputComponent>
 
+  @HostBinding('attr.data-qa') qaAttribute: string;
+
   constructor(
     private store: Store<fromApp.AppState>,
     private route: ActivatedRoute,
@@ -132,6 +134,8 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
+
+    this.qaAttribute = `${this.options.state}-${this.module}`;
 
     if (!this.id) {
       this.id = this.data.id
@@ -441,6 +445,5 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override ngOnDestroy() {
     console.log('data component destroyed');
-    this._dynamicCollectionService.setFilter({});
   }
 }

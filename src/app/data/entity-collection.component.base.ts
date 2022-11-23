@@ -1,13 +1,12 @@
 import { Router } from '@angular/router';
 import { DefaultDataServiceFactory, EntityCollectionService, EntityCollectionServiceFactory } from '@ngrx/data';
-import { map, Observable, of, Subject, take } from 'rxjs';
-import { DominionType, types } from '../common/models';
+import { map, Observable, of, Subject } from 'rxjs';
+import { DominionType } from '../common/models';
 import { EntityCollectionDataService } from '@ngrx/data/src/dataservices/interfaces';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { AfterContentInit, Inject, Input, OnDestroy } from '@angular/core';
-import { ModuleTypes } from './entity-metadata';
+import { LookupTypes, ModuleTypes } from './entity-metadata';
 import { FiizSelectComponent } from '../common/components/ui/forms';
-import { delay } from 'rxjs/operators';
 
 
 @UntilDestroy()
@@ -32,7 +31,7 @@ export class EntityCollectionComponentBase implements AfterContentInit, OnDestro
 
   @Input('data') public data: any;
   @Input('options') public options: any;
-  @Input('module') public module: ModuleTypes;
+  @Input('module') public module: ModuleTypes | LookupTypes;
 
   constructor(
     router: Router,

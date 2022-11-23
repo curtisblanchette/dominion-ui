@@ -10,7 +10,8 @@ export enum ModuleTypes {
   CAMPAIGN = 'campaign',
   LEAD_SOURCE = 'leadSource',
 
-  OFFICE = 'office'
+  OFFICE = 'office',
+  WORKSPACE = 'workspace'
 }
 
 export enum LookupTypes {
@@ -31,6 +32,7 @@ export enum LookupTypes {
 }
 
 const entityMetadata: EntityMetadataMap = {
+  [ModuleTypes.WORKSPACE]: {},
   [ModuleTypes.ADDRESS]: {},
   [ModuleTypes.CONTACT]: {},
   [ModuleTypes.LEAD]: {
@@ -89,6 +91,7 @@ export const pluralNames = {
   [ModuleTypes.CAMPAIGN]: 'campaigns',
   [ModuleTypes.LEAD_SOURCE]: 'leadSources',
   [ModuleTypes.OFFICE]: 'offices',
+  [ModuleTypes.WORKSPACE]: 'workspaces',
 
 
   [LookupTypes.LEAD_STATUS]: 'leadStatuses',
@@ -117,6 +120,7 @@ export const entityConfig = {
 }
 
 export const uriOverrides: { [key: string]: string } = {
+  [ModuleTypes.WORKSPACE]: 'system/workspaces',
   [ModuleTypes.ADDRESS]: 'addresses',
   [ModuleTypes.OFFICE]: 'offices',
   [ModuleTypes.CAMPAIGN]: 'campaigns',

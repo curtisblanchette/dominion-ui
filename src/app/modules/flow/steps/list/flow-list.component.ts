@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FlowService } from '../../flow.service';
 import { Store } from '@ngrx/store';
 import { FiizListComponent } from '../../../../common/components/ui/list/list.component';
@@ -23,6 +23,8 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
 
   @ViewChild(FiizListComponent, {static: true}) cmp: FiizListComponent;
 
+  @HostBinding('attr.data-qa') qaAttribute: string = 'undetermined-list';
+
   constructor(
     public store: Store<fromFlow.FlowState>,
     public flowService: FlowService
@@ -41,7 +43,7 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
   }
 
   public async ngOnInit() {
-
+    this.qaAttribute = this.module + '-list';
   }
 
   public ngOnDestroy(): void {

@@ -5,7 +5,6 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
     cy.visit('/flow');
 
     // Select Inbound and proceed
-    cy.isNextDisabled();
     cy.callType('Inbound');
     cy.nextStep();
 
@@ -32,13 +31,13 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
     cy.get('[data-qa="new-module"]').should('be.visible').click();
     cy.get('[data-qa="new-module-form"]').within(($form) => {
       cy.get('input').type(`@leadName Deal`);
-    });    
+    });
     cy.nextStep();
 
     // Relationship building
     cy.get('[data-qa="new-module-form"]').within(($form) => {
       cy.get('label[for="practiceAreaId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').should('be.visible').should('be.at.least',1).first().click();
+      cy.get('[data-qa="dropdown-item"]').should('be.visible').should('be.at.least',1).first().click();
     });
     cy.nextStep();
 
@@ -50,7 +49,7 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
       cy.get('label[for="title"]').next().type('Test Event');
 
       cy.get('label[for="officeId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Charleston') {
             cy.wrap($el).click();
@@ -59,7 +58,7 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
       });
 
       cy.get('label[for="typeId"]').next().click();
-      cy.get('[data-qa="dropdown-items"]').within(($buttons) => {
+      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
         cy.wrap($buttons).each(($el, $index, $list) => {
           if ($el.find('button').text().trim() == 'Sales Consultation') {
             cy.wrap($el).click();

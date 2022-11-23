@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.21.12 (2022-11-22)
+
+
+### Bug Fixes
+
+* **II-2831:** Update lead status ([#85](https://github.com/4iiz/dominion-ui/issues/85)) ([e9fe019](https://github.com/4iiz/dominion-ui/commit/e9fe019278884f00d097f47e05e18b8ffd693bc6))
+
+### 1.21.11 (2022-11-22)
+
+### 1.21.10 (2022-11-22)
+
+
+### Bug Fixes
+
+* **cypress:** .gitignore cypress.env.json ([f2d4270](https://github.com/4iiz/dominion-ui/commit/f2d4270bb7b4d89b307bc677ee89c25e1da0a144))
+
+### 1.21.9 (2022-11-21)
+
+
+### Bug Fixes
+
+* **cypress:** require a short wait for localstorage ([67d57dc](https://github.com/4iiz/dominion-ui/commit/67d57dc391dc9b662d0569a6892034b46b905080))
+
 ### 1.21.8 (2022-11-18)
 
 
