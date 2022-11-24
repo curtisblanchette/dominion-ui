@@ -23,7 +23,7 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
 
   @ViewChild(FiizListComponent, {static: true}) cmp: FiizListComponent;
 
-  @HostBinding('attr.data-qa') qaAttribute: string = 'undetermined-list';
+  @HostBinding('attr.data-qa') qaAttribute: string;
 
   constructor(
     public store: Store<fromFlow.FlowState>,
@@ -43,7 +43,7 @@ export class FlowListComponent implements OnDestroy, AfterContentInit, OnInit {
   }
 
   public async ngOnInit() {
-    this.qaAttribute = this.module + '-list';
+
   }
 
   public ngOnDestroy(): void {

@@ -1,0 +1,6 @@
+{
+  "title": "Test Event",
+  "description": "Test Description for event",
+  "type" : "Sales Consultation",
+  "office" : "Charleston"
+}

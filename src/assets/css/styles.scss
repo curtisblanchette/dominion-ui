@@ -30,6 +30,7 @@ textarea:focus,
 a:focus,
 button:active,
 input:active,
+textarea:focus,
 textarea:active,
 a:active,
 button:visited:focus,
@@ -41,6 +42,7 @@ button:active:focus, {
 label:focus,           // captures our custom fiiz-radio's
 button:focus,          // all buttons
 input:focus,           // all inputs
+textarea:focus,
 *[tabindex="0"]:focus, // any element with a positive tabindex
 //:link:focus,           // unvisited links
 //:visited:focus         // visited links

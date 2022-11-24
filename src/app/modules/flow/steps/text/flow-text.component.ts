@@ -73,6 +73,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   };
 
   @HostBinding('attr.data-template') template: string; // set by flowService.renderComponent
+  @HostBinding('attr.data-qa') qaAttribute: string;
 
   @ViewChild('tinymce') tinymce: EditorComponent;
   @ViewChild('botComment') botComment: ElementRef;
@@ -179,7 +180,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
               return o.filter((x: any) => ![3,4].includes(x.id));
             }));
           }
-        })        
+        });
         this.callOutcomeDropdown.setTheValue(null, null);
       })
     }

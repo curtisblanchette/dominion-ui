@@ -99,8 +99,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   @ViewChildren('inputList') inputList: QueryList<FiizInputComponent>
 
-  @HostBinding('attr.data-qa') qaAttribute: string;
-
   constructor(
     private store: Store<fromApp.AppState>,
     private route: ActivatedRoute,
@@ -134,8 +132,6 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
-
-    this.qaAttribute = `${this.options.state}-${this.module}`;
 
     if (!this.id) {
       this.id = this.data.id

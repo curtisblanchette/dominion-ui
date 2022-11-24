@@ -36,6 +36,8 @@ export class FiizRadioComponent implements ControlValueAccessor, AfterViewInit {
 
   @ViewChild('inputs') inputs: QueryList<ElementRef>;
 
+  @HostBinding('attr.data-qa') qaAttribute: string;
+
   // @HostBinding('attr.disabled')
   // isDisabled = false;
 
@@ -52,6 +54,7 @@ export class FiizRadioComponent implements ControlValueAccessor, AfterViewInit {
   }
 
   public ngAfterViewInit() {
+    this.qaAttribute = 'radio:' + this.id;
   }
 
 

@@ -23,6 +23,8 @@ export class FiizDatePickerComponent implements ControlValueAccessor, OnInit {
   @HostBinding('class.has-label')
   @Input('label') public label: string | number | boolean | undefined;
 
+  @HostBinding('attr.data-qa') qaAttribute: string;
+
   @Input('id') id!: string;
   @Input('pickerType') pickerType: "calendar"|"timer"|"both";
   @Input('placeholder') placeholder: string = "Select Date";
@@ -51,7 +53,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit(): void {
-    
+    this.qaAttribute = 'date-picker:' + this.id;
   }
 
   writeValue( value:any ) {
@@ -89,7 +91,7 @@ export class FiizDatePickerComponent implements ControlValueAccessor, OnInit {
         from : dayjs(value[0]).format(format),
         to : dayjs(value[1]).format(format)
       };
-      
+
       this.change.emit(range);
     } else if (value && dayjs(value).isValid()){
       this.value = dayjs(value).format();
