@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.1 (2022-11-24)
+
+
+### Bug Fixes
+
+* **II-2875:** update dropdown lists in opp follow up ([#88](https://github.com/4iiz/dominion-ui/issues/88)) ([e8056f0](https://github.com/4iiz/dominion-ui/commit/e8056f0040fff21e521a71f1aa72e9ee2d7439a3))
+
 ## 1.23.0 (2022-11-24)
 
 
