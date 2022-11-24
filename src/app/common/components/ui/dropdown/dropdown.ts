@@ -283,7 +283,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onTouched = fn;
   }
 
-  public async setTheValue(value: string, label:string ) {
+  public async setTheValue(value: string | null, label:string | null ) {
     if( !label ){
       this.title = '--None--';
     } else {
@@ -294,7 +294,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         if(found) {
           this.values = this.values.filter((id) => id !== value);
         } else {
-          this.values.push(value);
+          this.values.push(value as string);
         }
         this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
         if (this.apiData?.length) {
@@ -304,8 +304,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       } else {
           this.title = label;
           this.getValues.emit(value);
-          this.value = value;
-        // }
+          this.value = value as string;
       }
     }
     return this.onChange(value);
