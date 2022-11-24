@@ -19,7 +19,7 @@ class CypressCustomCommands {
     Cypress.Commands.add("callType", this.callType);
     Cypress.Commands.add("nextStep", this.nextStep);
     Cypress.Commands.add("finish", this.finish);
-    Cypress.Commands.add("createEvent", this.createEvent);
+    Cypress.Commands.add("fillFlowAppointmentStep", this.fillFlowAppointmentStep);
 
     Cypress.Commands.add("searchLeads", this.searchLeads);
 
@@ -103,7 +103,6 @@ class CypressCustomCommands {
               cy.wait(5000);
               cy.getLocalStorage('state').then(res => {                
                 let state = JSON.parse(res || '');
-                console.log(state);
                 expect(state.app.lookups, 'Lookups should not be null.').to.be.not.null;
               });
             });
@@ -178,7 +177,7 @@ class CypressCustomCommands {
 
   // Select Call Type
   public callType(type: string) {
-    cy.get('[data-qa="call_direction"]').within(() => {
+    cy.get('[data-template="call-direction"]').within(() => {
       cy.get('label').contains(type, { matchCase: false }).click();
     });
   }
@@ -193,34 +192,37 @@ class CypressCustomCommands {
     cy.get('[data-qa="finish-call"]').should('be.visible').click();
   }
 
-  public createEvent( title='Test Event', desc='Test Description for event', office='Charleston', type='Sales Consultation'){
-    cy.get('flow-appointment').within(($form) => {
-      cy.get('label[for="title"]').next().type(title);
+  public fillFlowAppointmentStep(){
+    cy.get('[data-qa="step:set-appointment"]').within(($form) => {
+      cy.fixture('initial-consultation').then(event => {
+        cy.get('[data-qa="input:title"]').type(event.title);
 
-      cy.get('label[for="officeId"]').next().click();
-      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
-        cy.wrap($buttons).each(($el, $index, $list) => {
-          if ($el.find('button').text().trim() == office) {
-            cy.wrap($el).click();
-          }
+        cy.get('[data-qa="dropdown:officeId"]').click();
+        cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
+          cy.wrap($buttons).each(($el, $index, $list) => {
+            if ($el.find('button').text().trim() == event.office) {
+              cy.wrap($el).click();
+            }
+          });
         });
-      });
 
-      cy.get('label[for="typeId"]').next().click();
-      cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
-        cy.wrap($buttons).each(($el, $index, $list) => {
-          if ($el.find('button').text().trim() == type) {
-            cy.wrap($el).click();
-          }
+        cy.get('[data-qa="dropdown:typeId"]').click();
+        cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
+          cy.wrap($buttons).each(($el, $index, $list) => {
+            if ($el.find('button').text().trim() == event.type) {
+              cy.wrap($el).click();
+            }
+          });
         });
+        cy.get('[data-qa="textarea:description"]').find('textarea').type(event.description, {force: true});
+
+        cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
       });
-      cy.get('label[for="description"]').next().type(desc, {force: true});
-      cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
     });
   }
 
   public searchLeads(name:string){
-    cy.get('[data-qa="search_module"]').type(name);
+    cy.get('[data-qa="step:lead-search"]').should('exist').find('form input#search_module').type(name);
     cy.intercept({
       method: "GET",
       url: "**/api/v1/leads/?**",

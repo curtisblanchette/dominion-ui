@@ -56,33 +56,7 @@ describe('Inbound Call Flow - New Lead', function()  {
     cy.nextStep();
 
     // Set Appt
-    cy.get('[data-qa="step:set-appointment"]').within(($form) => {
-      cy.fixture('initial-consultation').then(event => {
-        cy.get('[data-qa="input:title"]').type(event.title);
-
-        cy.get('[data-qa="dropdown:officeId"]').click();
-        cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
-          cy.wrap($buttons).each(($el, $index, $list) => {
-            if ($el.find('button').text().trim() == 'Charleston') {
-              cy.wrap($el).click();
-            }
-          });
-        });
-
-        cy.get('[data-qa="dropdown:typeId"]').click();
-        cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
-          cy.wrap($buttons).each(($el, $index, $list) => {
-            if ($el.find('button').text().trim() == 'Sales Consultation') {
-              cy.wrap($el).click();
-            }
-          });
-        });
-        cy.get('[data-qa="textarea:description"]').find('textarea').type(event.description, {force: true});
-
-        cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
-      });
-    });
-
+    cy.fillFlowAppointmentStep();
 
     cy.wait(100);
 

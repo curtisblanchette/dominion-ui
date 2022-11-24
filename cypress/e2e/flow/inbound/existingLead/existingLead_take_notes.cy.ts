@@ -38,7 +38,7 @@ describe('Inbound Call Flow - Existing Lead - Take Notes', () => {
       cy.nextStep();
 
       // Take Notes
-      cy.get('iframe').should('exist').its('0.contentDocument.body').then(cy.wrap).type('This is a test note');
+      cy.get('[data-template="take-notes"]').should('exist').find('iframe').its('0.contentDocument.body').then(cy.wrap).type('this is a test');
       cy.nextStep();
 
       // Finish Call

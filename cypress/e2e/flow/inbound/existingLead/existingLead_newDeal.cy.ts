@@ -47,7 +47,7 @@ describe('Inbound Call Flow - Existing Lead - new Deal', () => {
       // Relationship building
       cy.get('[data-qa="new-module-form"]').within(($form) => {
         cy.get('label[for="practiceAreaId"]').next().click();
-        cy.get('[data-qa="dropdown-items"]').should('be.visible').should('be.at.least',1).first().click();
+        cy.get('[data-qa="dropdown-item"]').should('be.visible').should('be.at.least',1).first().click();
       });
       cy.nextStep();
 
