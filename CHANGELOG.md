@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.23.0 (2022-11-24)
+
+
+### Features
+
+* **II-2874:** Flow UI assertions ([#86](https://github.com/4iiz/dominion-ui/issues/86)) ([34c3777](https://github.com/4iiz/dominion-ui/commit/34c37777866ba414088f385f488798be28b149f5))
+
 ## 1.22.0 (2022-11-23)
 
 
