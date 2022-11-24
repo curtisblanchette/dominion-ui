@@ -24,23 +24,23 @@ class CypressCustomCommands {
     Cypress.Commands.add("searchLeads", this.searchLeads);
 
     Cypress.Commands.overwrite('request', (originalFn, ...args:Array<any>) => {
-      
+
       const localStorageData:any = localStorage.getItem('state');
       const parsed = JSON.parse(localStorageData);
 
-      if( parsed?.login?.user ){        
-        let headers:{ [key:string] : string} = { 
+      if( parsed?.login?.user ){
+        let headers:{ [key:string] : string} = {
           'x-access-token' : parsed.login.user.access_token,
           'x-id-token' : parsed.login.user.id_token
         }
 
         if( parsed?.system?.actingFor?.id ){
-          headers['x-acting-for'] = parsed?.system?.actingFor?.id; 
+          headers['x-acting-for'] = parsed?.system?.actingFor?.id;
         }
 
         const defaults = { headers };
         // console.log('args',args);
-        // let options:any;        
+        // let options:any;
         // if (typeof args[0] === 'object' && args[0] !== null) {
         //   [options] = args[0];
         // } else if (args.length === 1) {
@@ -55,7 +55,7 @@ class CypressCustomCommands {
         return originalFn({...defaults, ...args[0], ...{headers:defaults.headers}});
 
       }
-      
+
     });
 
   }
@@ -101,7 +101,7 @@ class CypressCustomCommands {
             cy.wait(['@lookups']).then((res) => {
               // hack to allow javascript a second to process the request into localStorage
               cy.wait(5000);
-              cy.getLocalStorage('state').then(res => {                
+              cy.getLocalStorage('state').then(res => {
                 let state = JSON.parse(res || '');
                 expect(state.app.lookups, 'Lookups should not be null.').to.be.not.null;
               });
@@ -198,23 +198,13 @@ class CypressCustomCommands {
         cy.get('[data-qa="input:title"]').type(event.title);
 
         cy.get('[data-qa="dropdown:officeId"]').click();
-        cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
-          cy.wrap($buttons).each(($el, $index, $list) => {
-            if ($el.find('button').text().trim() == event.office) {
-              cy.wrap($el).click();
-            }
-          });
-        });
+        cy.get('[data-qa="dropdown-item"]').first().next().click();
 
         cy.get('[data-qa="dropdown:typeId"]').click();
-        cy.get('[data-qa="dropdown-item"]').within(($buttons) => {
-          cy.wrap($buttons).each(($el, $index, $list) => {
-            if ($el.find('button').text().trim() == event.type) {
-              cy.wrap($el).click();
-            }
-          });
-        });
-        cy.get('[data-qa="textarea:description"]').find('textarea').type(event.description, {force: true});
+        cy.get('[data-qa="dropdown-item"]').first().click();
+
+        //.find('textarea')
+        cy.get('[data-qa="textarea:description"]').type(event.description);
 
         cy.get('[data-qa="regular-slots"]').find('[data-qa="slot-time"]').first().click();
       });

@@ -95,12 +95,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   @HostListener('click', ['$event'])
   clickInside($event: any) {
-    $event.stopPropagation();
     if ($event.target.id !== 'search-dropdown') { // This is to enter input search params
       if (!this.disabled || !this.multiselect) {
         this.toggle();
       }
     }
+    $event.stopPropagation();
   }
 
   @HostListener('document:click', ['$event'])

@@ -1,6 +1,8 @@
 <label [for]="id" *ngIf="label" [ngClass]="{ 'required' : required }">{{label}}</label>
 <textarea #textarea
           [id]="id"
+          contenteditable="true"
+          aria-multiline="true"
           [autofocus]="autofocus"
           [placeholder]="placeholder"
           [style.height]="height"

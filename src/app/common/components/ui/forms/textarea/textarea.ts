@@ -7,7 +7,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   styleUrls: ['./textarea.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => FiizTextAreaComponent),
+    useExisting: FiizTextAreaComponent,
     multi: true
   }]
 })
