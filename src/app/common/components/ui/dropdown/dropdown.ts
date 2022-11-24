@@ -95,12 +95,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   @HostListener('click', ['$event'])
   clickInside($event: any) {
-    $event.stopPropagation();
     if ($event.target.id !== 'search-dropdown') { // This is to enter input search params
       if (!this.disabled || !this.multiselect) {
         this.toggle();
       }
     }
+    $event.stopPropagation();
   }
 
   @HostListener('document:click', ['$event'])
@@ -138,7 +138,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public override async ngAfterContentInit(): Promise<void> {
     super.ngAfterContentInit();
-    this.qaAttribute = `${this.moduleName}-dropdown`;
+    this.qaAttribute = `dropdown:${this.id}`;
   }
 
   public async ngAfterViewInit() {

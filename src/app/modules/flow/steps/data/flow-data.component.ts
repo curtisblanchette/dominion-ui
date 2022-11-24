@@ -49,8 +49,6 @@ export class FlowDataComponent implements AfterContentInit, OnDestroy, OnSave, O
   }
 
   ngAfterContentInit() {
-    this.qaAttribute = `${this.options.state}-${this.module}`;
-
     if(this.data[this.module]) {
       // Set the <fiiz-data> component's form value;
       this.cmp.form.setValue(this.data[this.module], {emitEvent: true});
