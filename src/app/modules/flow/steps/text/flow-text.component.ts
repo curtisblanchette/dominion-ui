@@ -180,7 +180,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
               return o.filter((x: any) => ![3,4].includes(x.id));
             }));
           }
-        })
+        });
+        this.callOutcomeDropdown.setTheValue(null, null);
       })
     }
 
