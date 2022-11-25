@@ -1,4 +1,5 @@
 @import '../../../../../assets/css/mixins';
+@import '../../../../../assets/css/variables';
 
 :host {
   display: flex;
@@ -166,4 +167,15 @@
      }
   }
 
+}
+.mobile-buttons {
+  display:none;
+}
+.desktop-buttons{
+  display: block;
+}
+@media only screen and (max-width:$mobile-threshold) {
+  fiiz-button label {
+    display: none;
+  }
 }

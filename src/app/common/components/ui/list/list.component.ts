@@ -94,11 +94,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
 
   public buttonLabels:{[key:string] : string };
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event:any) {
-    this.getButtonLabels();
-  }
-
   constructor(
     private store: Store<fromApp.AppState>,
     private fb: FormBuilder,
@@ -228,18 +223,10 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public getButtonLabels(){
-    if( window.innerWidth >= 800 ){
-      this.buttonLabels = {
-        'action' : 'Action',
-        'add' : `New ${this.getModuleName()}`,
-        'edit' : 'Edit'
-      }
-    } else {
-      this.buttonLabels = {
-        'action' : '',
-        'add' : '',
-        'edit' : ''
-      }
+    this.buttonLabels = {
+      'action' : '',
+      'add' : `New ${this.getModuleName()}`,
+      'edit' : 'Edit'
     }
   }
 

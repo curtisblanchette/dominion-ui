@@ -45,7 +45,7 @@
     background-color: var(--slate);
     padding: 0;
     margin: 0;
-    top: 54px;
+    // top: 54px;
     border-radius: var(--button-border-radius);
     overflow: hidden;
     white-space: nowrap;
@@ -142,19 +142,21 @@
 
 .fiiz-dropdown-button-bottom-right {
   right: 0;
+  top: 50px;
 }
 
 .fiiz-dropdown-button-bottom-left {
   left: 0;
+  top: 50px;
 }
 
 .fiiz-dropdown-button-top-right {
   right: 0;
-  //bottom: 100%;
+  bottom: 110%;
 }
 
 .fiiz-dropdown-button-top-left {
   left: 0;
-  //bottom: 100%;
+  bottom: 110%;
 }
 
