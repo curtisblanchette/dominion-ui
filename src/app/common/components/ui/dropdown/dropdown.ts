@@ -97,6 +97,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   clickInside($event: any) {
     if ($event.target.id !== 'search-dropdown') { // This is to enter input search params
       if (!this.disabled || !this.multiselect) {
+        const elements = document.getElementsByClassName('dropdown-menu');
+        if( elements.length > 0 ){
+          for( let element of elements ){
+            element.remove();
+          }
+        }
         this.toggle();
       }
     }
