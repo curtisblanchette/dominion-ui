@@ -33,13 +33,20 @@
     align-items: stretch;
     align-content: stretch;
     position: relative;
+    overflow-y: auto;
   }
 }
 
+@media (max-width: 600px) {
+  :host {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
 @media all and (min-width: $mobile-threshold) {
   :host {
     gap: 2em;
-    flex-direction: row;
+    flex-direction: row;    
 
     section.sidebar {
       flex: 1;
