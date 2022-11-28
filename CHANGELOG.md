@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.2 (2022-11-28)
+
+
+### Bug Fixes
+
+* **responsive:** Quick fix for data module ([#87](https://github.com/4iiz/dominion-ui/issues/87)) ([8eacd07](https://github.com/4iiz/dominion-ui/commit/8eacd072b469c7f660e404d9a647d3febc022e77))
+
 ### 1.23.1 (2022-11-24)
 
 
