@@ -69,7 +69,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   public lookupTypes: any;
 
   @Input('items') items$: Observable<(IDropDownMenuItemAnchor | IDropDownMenuItem | DropdownItem)[]> = of([]);
-  @Input('position') position: 'top-right' | 'top-left' | 'botton-right' | 'bottom-left' = 'top-right';
+  @Input('position') position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'bottom-right';
   @Input('title') title!: string | number | boolean | undefined;
   @Input('id') id!: string;
   @Input('default') default: string | number | boolean | undefined;

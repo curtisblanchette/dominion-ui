@@ -39,13 +39,11 @@
   }
 
   .dropdown-menu {
-    // display: table;
     position: absolute;
     list-style: none;
     background-color: var(--slate);
     padding: 0;
     margin: 0;
-    // top: 54px;
     border-radius: var(--button-border-radius);
     overflow: hidden;
     white-space: nowrap;
@@ -55,6 +53,7 @@
     max-height: 200px;
     overflow-y: auto;
     @include elevate(2);
+    @include hideScrollBars();
 
     form {
       margin-bottom: 0;
@@ -62,7 +61,6 @@
 
     &__wrapper {
       background: var(--slate1);
-      //@include elevate(2);
     }
 
     &__items {
@@ -104,59 +102,30 @@
       &:last-child button {
         border-radius: 0 0 var(--button-border-radius) var(--button-border-radius);
       }
+    }
+
+
   }
 
-
-
 }
 
-.fiiz-dropdown__wrapper {
-  z-index: 1;
-  width: 100%;
-
-  &__menu {
-
-    }
-
-    &__item {
-      text-decoration: none;
-    }
-
-    fiiz-input {
-      margin-bottom: 0;
-
-    }
-
-
-    fiiz-button.selected {
-      i {
-        color: var(--primary);
-      }
-      button {
-        background-color: #525252;
-      }
-    }
-
-  }
+[class*="fiiz-dropdown-button-bottom-"] {
+  top: calc(100% + 10px);
 }
 
-.fiiz-dropdown-button-bottom-right {
+[class*="fiiz-dropdown-button-top-"] {
+  bottom: calc(100% + 10px);
+}
+
+[class*="-right"] {
   right: 0;
-  top: 50px;
 }
 
-.fiiz-dropdown-button-bottom-left {
+[class*="-left"] {
   left: 0;
-  top: 50px;
 }
 
-.fiiz-dropdown-button-top-right {
-  right: 0;
-  bottom: 110%;
-}
 
-.fiiz-dropdown-button-top-left {
-  left: 0;
-  bottom: 110%;
+.search input {
+  border-radius: var(--input-border-radius) var(--input-border-radius) 0 0!important;
 }
-

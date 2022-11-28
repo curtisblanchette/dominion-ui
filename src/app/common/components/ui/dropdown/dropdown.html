@@ -13,7 +13,6 @@
       <form [formGroup]="searchForm" *ngIf="dropdownType === 'search'">
         <fiiz-input
           #searchInput
-          name="search-dropdown"
           formControlName="search"
           autocomplete="off"
           [disabled]="disabled"
