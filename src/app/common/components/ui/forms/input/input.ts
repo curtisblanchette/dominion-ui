@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import intlTelInput from 'intl-tel-input';
 
 @Component({
@@ -15,6 +15,7 @@ import intlTelInput from 'intl-tel-input';
 export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
 
   @HostBinding('class.has-label')
+
   @Input('label') public label: string | undefined;
   @Input('icon') icon: string | undefined;
   @Input('id') id!: string;
@@ -36,6 +37,8 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
   @HostBinding('attr.disabled')
   isDisabled = false;
 
+  @HostBinding('attr.data-qa') qaAttribute: string;
+
   value: number | string;
 
   intlTelInput?: any;
@@ -51,6 +54,8 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
   }
 
   public ngAfterViewInit() {
+    this.qaAttribute = 'input:' + this.id;
+
     if(this.type === 'tel') {
       this.inputElement.nativeElement.setAttribute('type', 'tel');
       this.inputElement.nativeElement.setAttribute('pattern', '^[- +()]*[0-9][- +()0-9]*$');

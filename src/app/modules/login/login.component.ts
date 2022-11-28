@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public loginForm!: FormGroup;
   public newUserForm!: FormGroup;
   public invitationCode: { id: string; workspaceId: string; email: string;};
-  public isLoading$: Observable<boolean>;
+  public isLoading$: Observable<boolean | null>;
   public error$: Observable<any>;
   public errorMessage!: string;
   public loadingMessage!: string;

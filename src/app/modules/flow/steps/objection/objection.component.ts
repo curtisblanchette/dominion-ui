@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, Renderer2, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, Renderer2, OnChanges, SimpleChanges, HostBinding } from '@angular/core';
 import { Router } from "@angular/router";
 import { FlowService } from "../../flow.service";
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx/data';
@@ -25,6 +25,7 @@ export class FlowObjectionComponent extends EntityCollectionComponentBase implem
   @Input('options') public override options: any;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
+  @HostBinding('attr.data-qa') qaAttribute: string;
 
   public static reference: string = 'FlowObjectionComponent';
   private flowStepId: string;

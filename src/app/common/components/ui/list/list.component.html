@@ -1,21 +1,32 @@
 <form [formGroup]="searchForm" class="list-actions">
-  <fiiz-input data-qa="search_module" id="search_module" #SearchInput icon="fa-search" formControlName="search" type="text" [autofocus]="true" placeholder="Search {{pluralModuleName}}..."></fiiz-input>
-  <fiiz-button data-qa="new-module-button" *ngIf="options.controls.createNew" stroked (click)="onCreateNew()" icon="fa-plus">
-    <label>{{buttonLabels.add}}</label>
-  </fiiz-button>
-  <div class="button-group">
-    <fiiz-dropdown
-      type="button"
-      *ngIf="options.editable"
-      [items]="actionItems$"
-      position="bottom-right"
-      [title]="buttonLabels.action"
-      (onClick)="getActionItemValue($event)"
-    ></fiiz-dropdown>
-    <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()" [disabled]="!selected" icon="fa-pencil">
-      <label>{{buttonLabels.edit}}</label>
-    </fiiz-button>
-  </div>
+  <fiiz-input data-qa="search_module"
+              id="search_module"
+              #SearchInput
+              icon="fa-search"
+              formControlName="search"
+              type="text"
+              [autofocus]="true"
+              placeholder="Search {{pluralModuleName}}..."></fiiz-input>
+
+  <fiiz-button data-qa="new-module-button"
+               *ngIf="options.controls.createNew"
+               stroked
+               (click)="onCreateNew()"
+               icon="fa-plus">{{buttonLabels.add}}</fiiz-button>
+
+    <div class="button-group">
+      <fiiz-dropdown
+        type="button"
+        *ngIf="options.editable"
+        [items]="actionItems$"
+        position="bottom-right"
+        [title]="buttonLabels.action"
+        (onClick)="getActionItemValue($event)"
+      ></fiiz-dropdown>
+      <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()" [disabled]="!selected" icon="fa-pencil">
+        <label>{{buttonLabels.edit}}</label>
+      </fiiz-button>
+    </div>
 </form>
 
 <div class="flex-table">

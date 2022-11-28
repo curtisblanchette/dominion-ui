@@ -1,50 +1,72 @@
 describe('Inbound Call Flow - Existing Lead - Cancel Appt', () => {
 
-    it('Start Inbound - Existing Lead Cancel Appt Call Flow', () => {
+    it('Start Inbound - Existing Lead Cancel Appt Call Flow', function() {            
 
         // Go to Flow Page
-        cy.visit('/flow');
+        cy.visit('/flow');                
 
-        // Select Inbound and proceed
-        cy.callType('Inbound');
-        cy.nextStep();
+        cy.getLocalStorage('state').then((res:any) => {
+            const parsed:{[key:string] : any} = JSON.parse(res);
+            const setAppId = parsed["app"].lookups.leadStatus.find((stage:any) => stage.label == 'Set Appointment')?.id;
+            
+            cy.request({
+                url : `${Cypress.env('API_URL')}/leads?statusId=${setAppId}`,
+                method : 'get'
+            }).then((response) => {
+                expect(response.status).to.eq(200)
+                expect(response.body).to.have.property('count').to.be.greaterThan(0)
+                expect(response.body).to.have.property('rows').length.greaterThan(0)
+                
+                const name:string = response.body.rows[0].fullName;
+                            
+                // Select Inbound and proceed
+                cy.callType('Inbound');
+                cy.nextStep();
+                    
+                // Search For a Lead
+                cy.get('[data-qa="search_module"]').should('be.visible').type(name)
+                cy.intercept({
+                    method: "GET",
+                    url: "**/api/v1/leads/?**",
+                }).as("searchLeads")
+                cy.wait("@searchLeads")
+                cy.get('[data-qa="table-row"]').should('be.visible').should('have.length.at.least',1).first().click();
+                cy.nextStep();
 
-        // Search For a Lead
-        cy.get('[data-qa="search_module"]').type('Raj kumar')
-        cy.intercept({
-            method: "GET",
-            url: "**/api/v1/leads/?**",
-        }).as("searchLeads")
-        cy.wait("@searchLeads")
-        cy.get('[data-qa="table-row"]').first().click();
-        cy.nextStep();
+                // Review Lead Info
+                cy.nextStep();
 
-        // Review Lead Info
-        cy.nextStep();
+                // Select Deal
+                cy.get('[data-qa="table-row"]').should('be.visible').should('have.length.at.least',1).first().click();
+                cy.nextStep();
 
-        // Select Deal
-        cy.get('[data-qa="table-row"]').first().click();
-        cy.nextStep();
+                // Review Opportunity
+                cy.nextStep();
 
-        // Review Opportunity
-        cy.nextStep();
+                // Reason For Call
+                cy.get('[data-template="reason-for-call"]').should('be.visible').within(($form) => {
+                    cy.get('label').contains('Cancel Appointment').click();
+                });
+                cy.nextStep();
 
-        // Reason For Call
-        cy.get('[data-qa="reason-for-call"]').within(($form) => {
-            cy.get('label').contains('Cancel Appointment').click();
-        })
-        cy.nextStep();
+                // Select Deal            
+                cy.get('[data-qa="table-row"]').should('be.visible').should('have.length.at.least',1).first().click();
+                cy.nextStep();
 
-        // Select Appointment to cancel
-        cy.get('[data-qa="table-row"]').first().click();
-        cy.nextStep();
+                // Review Opportunity
+                cy.nextStep();
 
-        // Cancel Appointment
-        cy.get('#next').click();
+                // Select Appointment to cancel
+                cy.get('[data-qa="table-row"]').should('be.visible').should('be.at.least',1).first().click();
+                cy.nextStep();
 
-        // Finish Call
-        cy.finish();
+                // Cancel Appointment
+                cy.nextStep();
 
+                // Finish Call
+                cy.finish();    
+
+            });
+        });
     });
-
 });

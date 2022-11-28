@@ -22,7 +22,6 @@
       #username
       id="username"
       formControlName="username"
-      data-qa="username"
       type="text"
       required
       [autofocus]="true"
@@ -31,7 +30,6 @@
 
     <fiiz-input
       id="password"
-      data-qa="password"
       formControlName="password"
       placeholder="Password"
       type="password"
@@ -56,6 +54,7 @@
       <h2>New User</h2>
 
       <fiiz-input
+        id="email"
         formControlName="email"
         type="text"
         label="Email"
@@ -63,6 +62,7 @@
       </fiiz-input>
 
       <fiiz-input
+        id="firstName"
         formControlName="firstName"
         type="text"
         label="First Name"
@@ -70,6 +70,7 @@
       </fiiz-input>
 
       <fiiz-input
+        id="lastName"
         formControlName="lastName"
         type="text"
         label="Last Name"
@@ -77,6 +78,7 @@
       </fiiz-input>
 
       <fiiz-input
+        id="password"
         formControlName="password"
         type="password"
         label="Password"
@@ -86,6 +88,7 @@
       </fiiz-input>
 
       <fiiz-input
+        id="confirmPassword"
         formControlName="confirmPassword"
         type="password"
         label="Confirm Password"
@@ -94,7 +97,7 @@
         minlength="12">
       </fiiz-input>
 
-      <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$ | async" [disabled]="(isLoading$ | async) || newUserForm.invalid">Complete Registration</fiiz-button>
+      <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$" [disabled]="(isLoading$ | async) || newUserForm.invalid">Complete Registration</fiiz-button>
 
     </ng-template>
 

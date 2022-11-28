@@ -8,7 +8,7 @@
       </header>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="callDirections$" data-qa="call_direction" formControlName="call_direction"
+        <fiiz-radio [items]="callDirections$" id="call_direction" formControlName="call_direction"
                     name="call_direction"></fiiz-radio>
       </form>
     </ng-template>
@@ -20,7 +20,7 @@
       </header>
 
       <form [formGroup]="form" *ngIf="form">
-        <fiiz-radio [items]="outboundTypes$" formControlName="outbound_type" name="outbound_type"></fiiz-radio>
+        <fiiz-radio [items]="outboundTypes$" id="outbound_type" formControlName="outbound_type" name="outbound_type"></fiiz-radio>
       </form>
     </ng-template>
 
@@ -122,12 +122,12 @@
       <form [formGroup]="form" *ngIf="form" style="display:flex; justify-content: start; gap: 2em;">
         <div *ngIf="(vars$ | async).call_direction === 'outbound'">
           <h3>Call Status</h3>
-          <fiiz-radio [items]="callStatuses$" formControlName="call_statusId" name="call_statusId"
+          <fiiz-radio [items]="callStatuses$" id="call_statusId" formControlName="call_statusId" name="call_statusId"
                       #callStatusRadio></fiiz-radio>
         </div>
         <div>
           <h3>Reason for Call</h3>
-          <fiiz-radio [items]="callReasons$" formControlName="call_reason" name="call_reason"
+          <fiiz-radio [items]="callReasons$" id="call_reason" formControlName="call_reason" name="call_reason"
                       #callReasonRadio></fiiz-radio>
         </div>
       </form>
@@ -198,7 +198,7 @@
         <div style="display: flex; gap: 1em; flex-wrap: wrap;">
           <fiiz-dropdown style="flex:1 200px;"
                          #callOutcome
-                         data-qa="call-outcome"
+                         id="call_outcome"
                          position="top-left"
                          label="Call Outcome"
                          type="search"
@@ -208,6 +208,7 @@
           <fiiz-date-picker *ngIf="callOutcome.value === 6"
                             style="flex:1 200px;"
                             #scheduledCallBack
+                            id="call_scheduledCallBack"
                             pickerType="both"
                             label="Call Back Date"
                             [required]="callOutcome.value === 6"

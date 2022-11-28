@@ -361,14 +361,16 @@ export class FlowService {
       const step = this.builder.process.steps.find(step => step.id === stepId) as FlowStep;
       const component = (<any>FlowStepClassMap)[step.component];
       this.cmpReference = viewContainerRef.createComponent(component);
+
+      /** Assign FlowStep Attributes to NgComponent */
       this.cmpReference.instance.module = step.state.module;
       this.cmpReference.instance.data = step.state.data;
       this.cmpReference.instance.options = step.state.options;
+      this.cmpReference.instance.qaAttribute = 'step:' + step.nodeText.toLowerCase().replace(/ /g, '-');
 
       if(component.reference === 'FlowTextComponent') {
         this.cmpReference.instance.template = step.state.template;
       }
-
 
       if (this.cmpReference.instance instanceof FlowListComponent) {
         /**
