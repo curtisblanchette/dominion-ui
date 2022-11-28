@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewChildren, HostListener } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, startWith, take } from 'rxjs';
@@ -92,6 +92,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     }
   ]);
 
+  public buttonLabels:{[key:string] : string };
+
   constructor(
     private store: Store<fromApp.AppState>,
     private fb: FormBuilder,
@@ -119,6 +121,8 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.searchInModule();
       return value;
     }));
+
+    this.getButtonLabels();
 
   }
 
@@ -218,7 +222,15 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
     return '';
   }
 
-  get moduleName() {
+  public getButtonLabels(){
+    this.buttonLabels = {
+      'action' : '',
+      'add' : `New ${this.getModuleName()}`,
+      'edit' : 'Edit'
+    }
+  }
+
+  public getModuleName(){
     const module = this.options.createModule || this.module
     if(module) {
       return module[0].toUpperCase() + module.substring(1, module.length);
