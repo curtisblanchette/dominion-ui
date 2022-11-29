@@ -48,7 +48,12 @@ describe('Opp Follow Up Call Flow Test', () => {
           // Finish Call
           cy.finish();
 
-          cy.wait(5000);
+          // Let all call flow processing finish first
+          cy.intercept({
+            method: "GET",
+            url: "**/api/v1/**",
+          }).as("processing")
+          cy.wait("@processing")
         
         });
       });

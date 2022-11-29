@@ -53,6 +53,13 @@ describe('Opp Follow Up - Answered - Schedule Callback', () => {
 				// Finish Call
 				cy.finish();
 
+				// Let all call flow processing finish first
+				cy.intercept({
+					method: "GET",
+					url: "**/api/v1/**",
+				}).as("processing")
+				cy.wait("@processing")
+
 			});
 		});
 	});
