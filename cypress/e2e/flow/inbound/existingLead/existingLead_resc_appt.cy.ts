@@ -52,7 +52,7 @@ describe('Inbound Call Flow - Existing Lead - Resc Appt', () => {
         cy.nextStep();
 
         // Set Appointment
-        cy.createEvent();
+        cy.fillFlowAppointmentStep();
         cy.nextStep();
 
         // Recap

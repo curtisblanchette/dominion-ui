@@ -9,7 +9,7 @@
     <li *ngFor="let item of items.children">
 
       <a tabindex="0" class="sidebar__item"
-         [ngClass]="{'active': parseModuleFromPath === item.path}"
+         [ngClass]="{'active': parseModuleFromPath['path'] === item.path}"
          (click)="onClick(item)">
         <!--            <i class="sidebar__item__icon {{item.icon}}"></i>-->
         {{item.label}}

@@ -1,0 +1,5 @@
+{
+    "stages" : ["No Set","No Show","No Hire"],
+    "statuses" : ["Answered"],
+    "outcomes" : ["No Set","Hired Another Attorney","Not Interested","Not Qualified","Ineligible For Relief","Invalid Case Type","Close Case/Refund Request","Left Note/Took Message","Busy (Will Call Back)","Do Not Call","Referred Out"]
+}

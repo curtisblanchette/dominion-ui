@@ -1,0 +1,5 @@
+{
+    "stages" : ["No Set","No Show","No Hire"],
+    "statuses" : ["Bad Number","Client Hung Up","No Answer","Number Disconnected","Wrong Number"],
+    "outcomes" : ["Left Note/Took Message"]
+}
