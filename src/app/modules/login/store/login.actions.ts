@@ -4,6 +4,8 @@ import { User } from '../models/user';
 export const ActionTypes = {
   LOGIN: '[Login] Login',
   LOGIN_SUCCESSFUL: '[Login] Login Successful',
+  MFA_REQUIRED: '[Login] MFA Required',
+  SEND_MFA_CODE: '[Login] Send MFA Code',
   GET_USER: '[Login] Get User',
   LOGIN_ERROR: '[Login] Login Error',
   UPDATE_RECORD: '[Login] Update User',
@@ -17,7 +19,6 @@ export const ActionTypes = {
 export interface ILoginCredentials {
   username: string,
   password: string,
-  remember_me: string
 }
 
 export interface ISignup {
@@ -35,15 +36,24 @@ export interface IInvitationCode {
   email: string
 }
 
-
 export const LoginAction = createAction(
   ActionTypes.LOGIN,
   props<{ payload: ILoginCredentials }>()
 );
 
+export const SendMFACodeAction = createAction(
+  ActionTypes.LOGIN,
+  props<{ payload: { mfaCode: string } }>()
+);
+
 export const LoginSuccessfulAction = createAction(
   ActionTypes.LOGIN_SUCCESSFUL,
   props<{ payload: User | any }>()
+);
+
+export const LoginMFARequiredAction = createAction(
+  ActionTypes.MFA_REQUIRED,
+  props<{ payload: boolean }>()
 );
 
 export const GetUserAction = createAction(

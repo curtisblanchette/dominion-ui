@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, OnInit, TemplateRef, ViewChild, R
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { LoginService } from './services/login.service';
 import * as fromLogin from './store/login.reducer';
 import * as loginActions from './store/login.actions';
 import { ActivatedRoute } from '@angular/router';
@@ -36,12 +35,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   public showForm: string = 'login';
   public loginForm!: FormGroup;
+  public mfaForm!: FormGroup;
   public newUserForm!: FormGroup;
   public invitationCode: { id: string; workspaceId: string; email: string;};
   public isLoading$: Observable<boolean | null>;
   public error$: Observable<any>;
   public errorMessage!: string;
   public loadingMessage!: string;
+  public mfaRequired$: Observable<boolean>;
 
   @ViewChild('loadingTemplate') loadingTemplate: TemplateRef<any>;
   @ViewChild('loginTemplate') loginTemplate: TemplateRef<any>;
@@ -61,7 +62,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   constructor(
-    private loginService: LoginService,
     private fb: FormBuilder,
     private http: HttpClient,
     private httpBackend: HttpBackend,
@@ -73,6 +73,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ) {
     this.isLoading$ = this.store.select(fromLogin.loading);
     this.error$ = this.store.select(fromLogin.error);
+    this.mfaRequired$ = this.store.select(fromLogin.selectMFARequired);
   }
 
   ngAfterViewInit(): void {
@@ -95,6 +96,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     formGroup['password'] = new FormControl('', Validators.required);
     formGroup['remember_me'] = new FormControl('');
     this.loginForm = this.fb.group(formGroup);
+
+    this.mfaForm = this.fb.group({
+      mfaCode: new FormControl('', [Validators.required])
+    });
 
     this.route.queryParams.subscribe(params => {
       if (params.hasOwnProperty('invitation_code')) {
@@ -132,14 +137,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   public async login() {
     if (this.loginForm.valid) {
-        await this.loginTheUser( this.loginForm.value );
+      this.store.dispatch(loginActions.LoginAction({payload: this.loginForm.value }));
     } else {
       this.toastr.error('', 'Invalid Form.');
     }
   }
 
-  public async loginTheUser( loginData:Ilogin ){
-    this.store.dispatch(loginActions.LoginAction({payload: loginData }));
+  public sendMFACode() {
+    if (this.mfaForm.valid) {
+      this.store.dispatch(loginActions.SendMFACodeAction({payload: this.mfaForm.value }));
+    } else {
+      this.toastr.error('', 'Invalid Format.');
+    }
   }
 
   public async acceptInvitation() {

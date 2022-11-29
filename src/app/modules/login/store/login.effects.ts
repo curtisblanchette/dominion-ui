@@ -9,7 +9,6 @@ import * as loginActions from './login.actions';
 import * as flowActions from '../../../modules/flow/store/flow.actions';
 import * as reportsActions from '../../../modules/reports/store/reports.actions';
 import * as systemActions from '../../system/store/system.actions';
-import { LoginService } from '../services/login.service';
 import { User } from '../models/user';
 
 import * as fromLogin from './login.reducer';
@@ -17,6 +16,7 @@ import { CognitoService } from '../../../common/cognito/cognito.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../environments/environment';
 import { HttpBackend, HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { TypedAction } from '@ngrx/store/src/models';
 
 @Injectable()
 export class LoginEffects {
@@ -25,7 +25,6 @@ export class LoginEffects {
 
   constructor(
     private actions$: Actions,
-    private loginService: LoginService,
     private router: Router,
     private store: Store<fromLogin.LoginState>,
     private cognito: CognitoService,
@@ -36,30 +35,44 @@ export class LoginEffects {
     this.httpNoAuth = new HttpClient(httpBackend);
   }
 
+  private completeLogin(response: any): TypedAction<string> {
+    const access_token = response.accessToken.getJwtToken();
+    const id_token = response.idToken.getJwtToken();
+    const refresh_token = response.refreshToken.getToken();
+    const roles = response.idToken.payload['cognito:groups'];
+    const email = response.idToken.payload['cognito:email'];
+    const id = response.idToken.payload['cognito:username'];
+    const workspaceId = response.idToken.payload['custom:workspaceId'];
+    const user = new User({
+      picture: 'assets/img/default-avatar.png',
+      access_token,
+      id_token,
+      refresh_token,
+      roles,
+      id,
+      username: email,
+    });
+    return loginActions.LoginSuccessfulAction({payload: user._serialize()});
+  }
+
   login$ = createEffect(
     (): any =>
       this.actions$.pipe(
         ofType(loginActions.LoginAction),
         mergeMap((action) => {
 
-            return this.loginService.login(action.payload).then((response: any) => {
-              const access_token = response.accessToken.getJwtToken();
-              const id_token = response.idToken.getJwtToken();
-              const refresh_token = response.refreshToken.getToken();
-              const roles = response.idToken.payload['cognito:groups'];
-              const email = response.idToken.payload['cognito:email'];
-              const id = response.idToken.payload['cognito:username'];
-              const workspaceId = response.idToken.payload['custom:workspaceId'];
-              const user = new User({
-                picture: 'assets/img/default-avatar.png',
-                access_token,
-                id_token,
-                refresh_token,
-                roles,
-                id,
-                username: email,
-              });
-              return loginActions.LoginSuccessfulAction({payload: user._serialize()});
+          const authenticationData = {
+            Username: action.payload.username,
+            Password: action.payload.password
+          };
+
+            return this.cognito.authenticateUser(authenticationData).then((response: any) => {
+
+              if (response.mfaRequired) {
+                return loginActions.LoginMFARequiredAction({payload: true});
+              }
+
+              return this.completeLogin(response);
             }).catch(e => {
               switch(e.code) {
                 case 'UserNotFoundException':
@@ -71,11 +84,21 @@ export class LoginEffects {
                   return throwError(e);
               }
             });
-
-
         }),
       )
   );
+
+  sendMFACode$ = createEffect(
+    (): any =>
+      this.actions$.pipe(
+        ofType(loginActions.SendMFACodeAction),
+        mergeMap((action) => {
+          return this.cognito.sendMFACode(action.payload.mfaCode).then(response => {
+            return this.completeLogin(response);
+          });
+        })
+      )
+  )
 
   logout$ = createEffect(
     (): any =>
@@ -198,8 +221,7 @@ export class LoginEffects {
             this.toastr.success('Logging you in...', 'User Created!');
             return loginActions.LoginAction( { payload: {
               username: action.code.email,
-              password: action.payload.password,
-              remember_me: 'yes'
+              password: action.payload.password
             }});
           }
         })

@@ -80,7 +80,7 @@ export class CognitoService {
 
   }
 
-  public authenticateUser(authenticationData: { Username: any; }): Promise<CognitoUserSession> {
+  public authenticateUser(authenticationData: { Username: any; }): Promise<CognitoUserSession | { mfaRequired: true }> {
 
     const authenticationDetails = new AuthenticationDetails(authenticationData);
 
@@ -97,6 +97,22 @@ export class CognitoService {
           this.cognitoUserSession = session;
           this.cognitoUser.setSignInUserSession(this.cognitoUserSession);
           resolve(this.cognitoUserSession);
+        },
+        onFailure: (err) => {
+          reject(err);
+        },
+        mfaRequired: (codeDeliveryDetails) => {
+          resolve({mfaRequired: true});
+        }
+      });
+    });
+  }
+
+  public sendMFACode(mfaCode: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      return this.cognitoUser.sendMFACode(mfaCode, {
+        onSuccess: (res) => {
+          resolve(res);
         },
         onFailure: (err) => {
           reject(err);
