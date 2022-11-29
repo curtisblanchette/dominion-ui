@@ -36,7 +36,8 @@ jobs:
           wait-on: 'http://localhost:4200'
           browser: chrome
           record: true
-          spec: 'cypress/**/newLead.cy.ts'
+          spec: ''
+#          spec: 'cypress/**/newLead.cy.ts'
 
   deploy:
     needs: e2e-chrome-test
