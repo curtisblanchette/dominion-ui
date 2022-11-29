@@ -2,7 +2,6 @@
 
 
   <header class="button-group">
-    <!--    <fiiz-dropdown type="button" (onClick)="handleFabAction($event)" [items]="menuItems" position="bottom-right"></fiiz-dropdown>-->
     <fiiz-dropdown
       size="small"
       #objectionDropdown
@@ -10,9 +9,9 @@
       type="search"
       [items]="objections$"
       title="Objections"
+      [autofocus]="true"
       (getValues)="goToObjections($event)">
     </fiiz-dropdown>
-    <!--    <div class="button-group">-->
     <fiiz-button
       size="small"
       (click)="openNotesDialog()"
@@ -25,8 +24,6 @@
       style="align-self: end;"
       [disabled]="(status$ | async) === 'success' || (isFirstStep$ | async)"
       (click)="endCall()">End Call</fiiz-button>
-    <!--    </div>-->
-
   </header>
 
   <section class="flow-layout__left">
