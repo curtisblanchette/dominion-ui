@@ -40,7 +40,7 @@ jobs:
           spec: 'cypress/**/newLead.cy.ts'
 
   deploy:
-    needs: e2e-chrome-test
+#    needs: e2e-chrome-test
     runs-on: ubuntu-20.04
     strategy:
       matrix:
