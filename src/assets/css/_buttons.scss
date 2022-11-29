@@ -44,11 +44,11 @@
   > fiiz-dropdown {
 
     &:first-child fiiz-button {
-      box-shadow: none!important;
+      // box-shadow: none!important;
       border-radius: #{var(--button-border-radius)} 0 0 #{var(--button-border-radius)}!important;
 
       button {
-        box-shadow: none!important;
+        // box-shadow: none!important;
       }
     }
   }
