@@ -10,6 +10,7 @@ env:
 jobs:
 
   e2e-chrome-test:
+    if: true == false
     runs-on: ubuntu-20.04
     environment: dev
     strategy:
@@ -31,13 +32,12 @@ jobs:
           CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
           CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
         with:
-          #          build: npm run build:dev
+          # build: npm run build:dev
           start: npm run start:dev
           wait-on: 'http://localhost:4200'
           browser: chrome
           record: true
-          spec: ''
-#          spec: 'cypress/**/newLead.cy.ts'
+          spec: 'cypress/**/newLead.cy.ts'
 
   deploy:
     needs: e2e-chrome-test
