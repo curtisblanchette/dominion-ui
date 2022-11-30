@@ -34,7 +34,7 @@ export const reducer = createReducer(
   initialState,
   on(loginActions.LoginAction, (state) => ({ ...state, loading: true })),
   on(loginActions.LoginSuccessfulAction, (state, {payload}) => ({...state, user: payload, loading: false, mfaRequired: false, error: null})),
-  on(loginActions.LoginMFARequiredAction, (state, {payload}) => ({...state, loading: false, mfaRequired: true})),
+  on(loginActions.LoginMFARequiredAction, (state, {payload}) => ({...state, loading: false, mfaRequired: payload, error: null})),
   on(loginActions.LoginErrorAction, (state, {error}) => ({...state, user: null, loading: false, error: error})),
   on(loginActions.UpdateUserAction, (state, {payload}) => ({...state, user: payload, error: null})),
   on(loginActions.LogoutAction, (state) => ({...state, user: null, agent: null, workspace: null})),

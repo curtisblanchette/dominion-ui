@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.loginForm = this.fb.group(formGroup);
 
     this.mfaForm = this.fb.group({
-      mfaCode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)])
+      mfaCode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern(/^[0-9]*$/)])
     });
 
     this.route.queryParams.subscribe(params => {
@@ -150,6 +150,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.toastr.error('', 'Invalid Format.');
       this.store.dispatch(loginActions.LoginErrorAction({error: 'Invalid OTP'}))
     }
+  }
+
+  public cancelMFA() {
+    this.store.dispatch(loginActions.LoginMFARequiredAction({payload: false}));
   }
 
   public async acceptInvitation() {

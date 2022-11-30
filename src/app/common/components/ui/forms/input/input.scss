@@ -64,6 +64,7 @@
     top: -15px;
     left: 2em;
     line-height: 1em;
+    letter-spacing: initial;
   }
 
   label.required:after {
@@ -86,12 +87,14 @@
     position: relative;
     display: block;
     color: var(--text1);
+    text-align: inherit;
     font-weight: 500;
     line-height: 44px;
     padding:var(--input-padding-tb) var(--input-padding-lr);
     box-sizing: border-box;
     margin: 0;
     border: none;
+    letter-spacing: inherit;
     @include elevate(1);
     -moz-appearance: none;
     -webkit-appearance: none;

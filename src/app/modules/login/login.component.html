@@ -41,16 +41,21 @@
 
       <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$" [disabled]="(isLoading$ | async) || loginForm.invalid">Let's Go!</fiiz-button>
       <!-- <button class="forgot-password transparent large" type="button" (click)="updateShowForm('forgot-password')">Forgot password?</button> -->
-      <div style="color: var(--red);" *ngIf="error$ | async">{{(error$ | async)}}</div>
+      <p style="color: var(--red);" *ngIf="error$ | async">{{(error$ | async)}}</p>
     </form>
   </ng-container>
 
   <ng-container *ngIf="(mfaRequired$ | async)">
-    <form [formGroup]="mfaForm" (ngSubmit)="sendMFACode()" data-qa="mfa-form" id="mfa-form">
-      <fiiz-input id="mfaCode" style="text-align:center;" [autofocus]="true" label="One-Time Passcode" formControlName="mfaCode" required></fiiz-input>
-      <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$" [disabled]="(isLoading$ | async) || mfaForm.invalid">That's my code!</fiiz-button>
 
-      <div style="color: var(--red);" *ngIf="error$ | async">{{(error$ | async)}}</div>
+    <form [formGroup]="mfaForm" (ngSubmit)="sendMFACode()" data-qa="mfa-form" id="mfa-form">
+      <fiiz-input id="mfaCode" style="text-align:center; letter-spacing: .5em" [autofocus]="true" label="One-Time Passcode" formControlName="mfaCode" required></fiiz-input>
+      <div class="button-group">
+        <fiiz-button icon="fa-arrow-left" (click)="cancelMFA()" style="flex: none;" title="Back to login."></fiiz-button>
+        <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$" [disabled]="(isLoading$ | async) || mfaForm.invalid">That's my code!</fiiz-button>
+      </div>
+
+
+      <p style="color: var(--red);" *ngIf="error$ | async">{{(error$ | async)}}</p>
     </form>
   </ng-container>
 </ng-template>
