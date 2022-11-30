@@ -15,7 +15,7 @@ import * as fromFlow from '../../store/flow.reducer';
 import * as fromApp from '../../../../store/app.reducer';
 import { LookupTypes, ModuleTypes } from '../../../../data/entity-metadata';
 import { ContactModel } from '../../../../common/models/contact.model';
-import { FiizDatePickerComponent, RadioItem } from '../../../../common/components/ui/forms';
+import { FiizDatePickerComponent, FiizRadioComponent, RadioItem } from '../../../../common/components/ui/forms';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
 import { FlowBotAction, FlowBotActionStatus, FlowBot } from '../../classes';
@@ -81,6 +81,8 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
   @ViewChild('callOutcome', {static : false}) callOutcomeDropdown: FiizDropDownComponent;
   @ViewChild('callReasonDropdown') callReasonDropdown: FiizDropDownComponent;
   @ViewChild('scheduledCallBack') scheduledCallBack: FiizDatePickerComponent;
+  @ViewChild('callStatusRadio', {static : false}) callStatusRadio: FiizRadioComponent;
+  @ViewChild('callReasonRadio', {static : false}) callReasonRadio: FiizRadioComponent;
 
   @ViewChildren(FiizDataComponent) dataComponents: QueryList<FiizDataComponent>;
 
@@ -182,6 +184,31 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
           }
         });
         this.callOutcomeDropdown.setTheValue(null, null);
+      })
+    }
+
+    if( this.template == 'reason-for-call'){
+      this.callStatusRadio.getValues.subscribe( id => {
+        this.callStatuses$.forEach((values:DropdownItem[]) => {
+          const find = values.filter( val => val.id == id );
+          if( find && find[0]['label'] == 'Answered' ){
+            this.callReasons$.forEach( reason => {
+              return reason.map( r => r.disabled = false )
+            });
+          } else {            
+            this.callReasons$.forEach( reason => {
+              return reason.map( (r) => {
+                if( r.id == 'take-notes' ){
+                  r.disabled = false;
+                  this.callReasonRadio.value = r.id;
+                  this.callReasonRadio.onChange(r.id);
+                } else {
+                  r.disabled = true;
+                }
+              })
+            });            
+          }
+        })
       })
     }
 

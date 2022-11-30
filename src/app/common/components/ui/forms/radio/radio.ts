@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, QueryList, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, QueryList, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
@@ -33,6 +33,8 @@ export class FiizRadioComponent implements ControlValueAccessor, AfterViewInit {
   @Input('disabled') disabled = false;
 
   @Input('autofocus') autofocus = false;
+
+  @Output('getValues') getValues:EventEmitter<any> = new EventEmitter();
 
   @ViewChild('inputs') inputs: QueryList<ElementRef>;
 
@@ -81,6 +83,8 @@ export class FiizRadioComponent implements ControlValueAccessor, AfterViewInit {
     } else {
       this.onChange(parseInt(<string>this.value, 0));
     }
+
+    this.getValues.emit(this.value);
 
     this.onTouched();
   }
