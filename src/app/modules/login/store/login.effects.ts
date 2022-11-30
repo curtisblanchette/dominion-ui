@@ -95,6 +95,11 @@ export class LoginEffects {
         mergeMap((action) => {
           return this.cognito.sendMFACode(action.payload.mfaCode).then(response => {
             return this.completeLogin(response);
+          }).catch(e => {
+            if(e.code !== 'InvalidParameterException') {
+              return loginActions.LoginErrorAction({error: e.message});
+            }
+            return loginActions.LoginErrorAction({error: null});
           });
         })
       )

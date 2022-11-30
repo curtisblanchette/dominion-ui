@@ -19,6 +19,7 @@ export interface Ilogin{
 
 
 @Component({
+  selector: 'fiiz-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   animations: [
@@ -40,7 +41,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public invitationCode: { id: string; workspaceId: string; email: string;};
   public isLoading$: Observable<boolean | null>;
   public error$: Observable<any>;
-  public errorMessage!: string;
   public loadingMessage!: string;
   public mfaRequired$: Observable<boolean>;
 
@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.loginForm = this.fb.group(formGroup);
 
     this.mfaForm = this.fb.group({
-      mfaCode: new FormControl('', [Validators.required])
+      mfaCode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)])
     });
 
     this.route.queryParams.subscribe(params => {
@@ -148,6 +148,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.store.dispatch(loginActions.SendMFACodeAction({payload: this.mfaForm.value }));
     } else {
       this.toastr.error('', 'Invalid Format.');
+      this.store.dispatch(loginActions.LoginErrorAction({error: 'Invalid OTP'}))
     }
   }
 
