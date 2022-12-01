@@ -58,6 +58,8 @@ class CypressCustomCommands {
 
     });
 
+    Cypress.Commands.add('getIframe', this.getIframe);
+
   }
 
   public login(username: string, password: string, { cacheSession = true } = {}) {
@@ -219,6 +221,12 @@ class CypressCustomCommands {
     }).as("searchLeads")
     cy.wait("@searchLeads")
     cy.get('[data-qa="table-row"]').should('be.visible').should('have.length.at.least',1).first().click();
+  }
+
+  public getIframe(selector:string):any{
+    return cy.get(selector).should('exist').find('iframe').then(($iframe) => {
+      return cy.wrap($iframe[0]).its('0.contentDocument.body');
+    });
   }
 
 }
