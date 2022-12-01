@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.11 (2022-12-01)
+
+
+### Bug Fixes
+
+* **otp:** modify session expiry message ([bd1eabb](https://github.com/4iiz/dominion-ui/commit/bd1eabb3b7d0aa57a358eb8b6f9f3a1c33cffba4))
+
 ### 1.23.10 (2022-12-01)
 
 ### 1.23.9 (2022-12-01)
