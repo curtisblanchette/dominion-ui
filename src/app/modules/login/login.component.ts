@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public error$: Observable<any>;
   public loadingMessage!: string;
   public mfaRequired$: Observable<boolean>;
+  public challengeParameters$: Observable<any>;
 
   @ViewChild('loadingTemplate') loadingTemplate: TemplateRef<any>;
   @ViewChild('loginTemplate') loginTemplate: TemplateRef<any>;
@@ -74,6 +75,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.isLoading$ = this.store.select(fromLogin.loading);
     this.error$ = this.store.select(fromLogin.error);
     this.mfaRequired$ = this.store.select(fromLogin.selectMFARequired);
+    this.challengeParameters$ = this.store.select(fromLogin.selectMFAChallengeParameters);
   }
 
   ngAfterViewInit(): void {
@@ -153,7 +155,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   public cancelMFA() {
-    this.store.dispatch(loginActions.LoginMFARequiredAction({payload: false}));
+    this.store.dispatch(loginActions.LoginMFARequiredAction({mfaRequired: false}));
   }
 
   public async acceptInvitation() {

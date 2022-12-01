@@ -48,9 +48,10 @@
   <ng-container *ngIf="(mfaRequired$ | async)">
 
     <form [formGroup]="mfaForm" (ngSubmit)="sendMFACode()" data-qa="mfa-form" id="mfa-form">
+      <p style="text-align: center;">A code has been sent via {{(challengeParameters$ | async).CODE_DELIVERY_DELIVERY_MEDIUM}} to {{(challengeParameters$ | async).CODE_DELIVERY_DESTINATION}} </p>
       <fiiz-input id="mfaCode" style="text-align:center; letter-spacing: .5em" [autofocus]="true" label="One-Time Passcode" formControlName="mfaCode" required></fiiz-input>
       <div class="button-group">
-        <fiiz-button icon="fa-arrow-left" (click)="cancelMFA()" style="flex: none;" title="Back to login."></fiiz-button>
+        <fiiz-button icon="fa-arrow-left" (click)="cancelMFA()" style="flex: none;" title="Back to login.">Back</fiiz-button>
         <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$" [disabled]="(isLoading$ | async) || mfaForm.invalid">That's my code!</fiiz-button>
       </div>
 

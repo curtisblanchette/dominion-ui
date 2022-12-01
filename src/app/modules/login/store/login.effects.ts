@@ -69,7 +69,10 @@ export class LoginEffects {
             return this.cognito.authenticateUser(authenticationData).then((response: any) => {
 
               if (response.mfaRequired) {
-                return loginActions.LoginMFARequiredAction({payload: true});
+                return loginActions.LoginMFARequiredAction({
+                  mfaRequired: response.mfaRequired,
+                  challengeParameters: response.challengeParameters
+                });
               }
 
               return this.completeLogin(response);

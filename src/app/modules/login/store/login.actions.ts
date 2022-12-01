@@ -53,7 +53,10 @@ export const LoginSuccessfulAction = createAction(
 
 export const LoginMFARequiredAction = createAction(
   ActionTypes.MFA_REQUIRED,
-  props<{ payload: boolean }>()
+  props<{
+    mfaRequired: boolean,
+    challengeParameters?: any
+  } >()
 );
 
 export const GetUserAction = createAction(

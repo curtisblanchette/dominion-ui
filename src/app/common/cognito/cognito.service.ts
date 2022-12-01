@@ -77,10 +77,9 @@ export class CognitoService {
       };
     }
     return false;
-
   }
 
-  public authenticateUser(authenticationData: { Username: any; }): Promise<CognitoUserSession | { mfaRequired: true }> {
+  public authenticateUser(authenticationData: { Username: any; }): Promise<CognitoUserSession | { mfaRequired: boolean, challengeParameters: any }> {
 
     const authenticationDetails = new AuthenticationDetails(authenticationData);
 
@@ -101,8 +100,8 @@ export class CognitoService {
         onFailure: (err) => {
           reject(err);
         },
-        mfaRequired: (codeDeliveryDetails) => {
-          resolve({mfaRequired: true});
+        mfaRequired: (codeDeliveryDetails, challengeParameters) => {
+          resolve({mfaRequired: true, challengeParameters});
         }
       });
     });

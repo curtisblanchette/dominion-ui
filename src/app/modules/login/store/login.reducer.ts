@@ -6,6 +6,7 @@ export interface LoginState {
   user: User | null;
   loading: boolean;
   mfaRequired: boolean;
+  challengeParameters: any;
   error: any;
   refreshFlag: boolean;
 }
@@ -26,6 +27,7 @@ export const initialState: LoginState = {
   user: getUserInitialState(),
   mfaRequired: false,
   loading: false,
+  challengeParameters: null,
   error: null,
   refreshFlag: false
 };
@@ -34,7 +36,7 @@ export const reducer = createReducer(
   initialState,
   on(loginActions.LoginAction, (state) => ({ ...state, loading: true })),
   on(loginActions.LoginSuccessfulAction, (state, {payload}) => ({...state, user: payload, loading: false, mfaRequired: false, error: null})),
-  on(loginActions.LoginMFARequiredAction, (state, {payload}) => ({...state, loading: false, mfaRequired: payload, error: null})),
+  on(loginActions.LoginMFARequiredAction, (state, {mfaRequired, challengeParameters}) => ({...state, loading: false, mfaRequired, challengeParameters, error: null})),
   on(loginActions.LoginErrorAction, (state, {error}) => ({...state, user: null, loading: false, error: error})),
   on(loginActions.UpdateUserAction, (state, {payload}) => ({...state, user: payload, error: null})),
   on(loginActions.LogoutAction, (state) => ({...state, user: null, agent: null, workspace: null})),
@@ -56,3 +58,4 @@ export const error = createSelector(selectLogin, (state: LoginState) => state.er
 export const refreshed = createSelector(selectLogin, (state: LoginState) => state.refreshFlag);
 
 export const selectMFARequired = createSelector(selectLogin, (state: LoginState) => state.mfaRequired);
+export const selectMFAChallengeParameters = createSelector(selectLogin, (state: LoginState) => state.challengeParameters);
