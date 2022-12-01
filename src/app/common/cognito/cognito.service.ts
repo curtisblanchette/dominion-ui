@@ -114,6 +114,9 @@ export class CognitoService {
           resolve(res);
         },
         onFailure: (err) => {
+          if(err.code === 'NotAuthorizedException') {
+            err.message = 'OTP is only valid for 3 minutes.';
+          }
           reject(err);
         }
       });

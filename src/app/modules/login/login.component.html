@@ -41,7 +41,7 @@
 
       <fiiz-button primary class="full-width" type="submit" [loading]="isLoading$" [disabled]="(isLoading$ | async) || loginForm.invalid">Let's Go!</fiiz-button>
       <!-- <button class="forgot-password transparent large" type="button" (click)="updateShowForm('forgot-password')">Forgot password?</button> -->
-      <p style="color: var(--red);" *ngIf="error$ | async">{{(error$ | async)}}</p>
+      <p style="color: var(--red); text-align: center;" *ngIf="error$ | async">{{(error$ | async)}}</p>
     </form>
   </ng-container>
 
@@ -56,7 +56,7 @@
       </div>
 
 
-      <p style="color: var(--red);" *ngIf="error$ | async">{{(error$ | async)}}</p>
+      <p style="color: var(--red); text-align: center;" *ngIf="error$ | async">{{(error$ | async)}}</p>
     </form>
   </ng-container>
 </ng-template>
