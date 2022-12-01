@@ -1,0 +1,4 @@
+{
+    "statuses" : ["Answered","Bad Number","Client Hung Up","No Answer","Number Disconnected","Wrong Number"],
+    "reason" : ["Take Notes"]
+}
