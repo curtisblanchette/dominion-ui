@@ -55,7 +55,7 @@ export interface IDropDownMenuItem {
 export class FiizDropDownComponent extends EntityCollectionComponentBase implements ControlValueAccessor, AfterViewInit, AfterContentInit, OnInit {
 
   public searchForm: FormGroup;
-  public showDropDowns: boolean = false;
+  public isOpen: boolean = false;
   public value: string | number | boolean | string[] | number[] | undefined;
   public values: string[] = [];
   public perPage: number = 10;
@@ -95,28 +95,39 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   @HostListener('click', ['$event'])
   clickInside($event: any) {
-    if ($event.target.id !== 'search-dropdown') { // This is to enter input search params
-      if (!this.disabled || !this.multiselect) {
-        const elements = document.getElementsByClassName('dropdown-menu');
-        if( elements.length > 0 ){
-          for( let element of elements ){
-            element.remove();
-          }
+    // check the event target
+
+    if (!($event.currentTarget.classList.contains('search')) || !$event.target.parentElement.classList.contains('multiselect-item')) { // This is to enter input search params
+
+      const elements = document.getElementsByClassName('dropdown-menu');
+      if (elements.length > 0) {
+        for (let element of elements) {
+          element.remove();
         }
-        this.toggle();
       }
+      this.isOpen = !this.isOpen;
+
+      if (this.isOpen && !this.apiData) {
+        this.getData();
+      }
+
+      $event.stopPropagation();
     }
-    $event.stopPropagation();
+
+
   }
 
+  // ensures all dropdowns close when clicking outside.
   @HostListener('document:click', ['$event'])
   clickOutside($event: any) {
     $event.stopPropagation();
-    this.showDropDowns = false;
+    this.isOpen = false;
   }
 
-  onChange: (value: string | number | boolean | any[] | DropdownItem | DropdownItem[] | undefined | null) => void = () => {};
-  onTouched: Function = () => {};
+  onChange: (value: string | number | boolean | any[] | DropdownItem | DropdownItem[] | undefined | null) => void = () => {
+  };
+  onTouched: Function = () => {
+  };
 
   @ViewChild('dropdownList') dropdownList: ElementRef;
   @ViewChild('searchInput') searchInput: ElementRef;
@@ -148,12 +159,6 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public async ngAfterViewInit() {
-    // TODO remove the need for this.apiData. observable streams can filter the results automatically while keeping the source intact.
-    // keeps the source data updated, filtering mutates this.items$
-    // this.items$.pipe(untilDestroyed(this), map(items => {
-    //   this.apiData = items;
-    // })).subscribe();
-
 
     // @ts-ignore
     this.searchForm.get('search').valueChanges.pipe(
@@ -197,11 +202,11 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
           return {
             label: item.name ? item.name : item.fullName,
             id: item.id,
-            checked: false
+            checked: this.values.includes(item.id)
           } as DropdownItem;
         });
-        if( !this.required && this.dropdownType == 'search' ){
-          data.unshift( {label : '--None--', id: null, checked : false} );
+        if (this.required && this.dropdownType == 'search') {
+          data.unshift({label: '--None--', id: null, checked: false});
         }
 
       }
@@ -215,20 +220,20 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
               })
             )
         );
-        if( !this.required && this.dropdownType == 'search' ){
-          data.unshift( {label : '--None--', id: null, checked : false} );
+        if (!this.required && this.dropdownType == 'search') {
+          data.unshift({label: '--None--', id: null, checked: false});
         }
       }
 
       if (data) {
         this.totalRecords = data.count || 0;
         // if( !this.required ){
-          // data = {...{}, ...data};
+        // data = {...{}, ...data};
         // }
         this.items$ = of(data);
       }
     } else {
-      if( this.apiData ){
+      if (this.apiData) {
         const data = this.apiData.filter(item => item.label.toLowerCase().includes(value.toLowerCase()));
         if (data) {
           this.totalRecords = data.length || 0;
@@ -251,12 +256,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       // have to get the initial value from api or store
       // because we haven't loaded any data into the component yet
       if (this.isEntity()) {
-        if(!this.multiselect) {
+        if (!this.multiselect) {
           data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}/${this.value}`));
           this.title = data.name ? data.name : data.fullName;
         } else {
-          if(this.values) {
-            data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}?id=${this.values.join(',')}`).pipe(map((res:any) => res.rows)));
+          if (this.values) {
+            data = await firstValueFrom(this.http.get(`${environment.dominion_api_url}/${uriOverrides[this.moduleName]}?id=${this.values.join(',')}`).pipe(map((res: any) => res.rows)));
             this.title = data.filter((c: any) => this.values.includes(c.id)).map((x: any) => x.name).join(', ');
           }
         }
@@ -275,10 +280,11 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   }
 
   public isPreselected(value: any): boolean {
-    if(!this.values) {
+    if (!this.values) {
       return false;
     }
-    return !!this.values.find(x => x === value);
+    const isSelected = !!this.values.find(x => x === value);
+    return isSelected;
   }
 
   registerOnChange(fn: any) {
@@ -289,18 +295,26 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onTouched = fn;
   }
 
-  public async setTheValue(value: string | null, label:string | null ) {
-    if( !label ){
+  public async setTheValue($event:any = {}, item: DropdownItem | null) {
+
+    if(this.multiselect && item) {
+      item.checked = !item?.checked;
+      $event.stopPropagation();
+    }
+
+    if (!item?.label) {
       this.title = '--None--';
     } else {
+
+
       this.onTouched();
-      if( this.multiselect ){
+      if (this.multiselect) {
         // check if it's already selected
-        const found = this.values?.find((id) => id === value);
-        if(found) {
-          this.values = this.values.filter((id) => id !== value);
+        const found = this.values?.find((id) => id === item.id);
+        if (found) {
+          this.values = this.values.filter((id) => id !== item.id);
         } else {
-          this.values.push(value as string);
+          this.values.push(item.id as string);
         }
         this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
         if (this.apiData?.length) {
@@ -308,12 +322,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
           return this.onChange(this.values);
         }
       } else {
-          this.title = label;
-          this.getValues.emit(value);
-          this.value = value as string;
+        this.title = item.label;
+        this.getValues.emit(item.id);
+        this.value = item.id as string;
       }
     }
-    return this.onChange(value);
+    return this.onChange(this.value);
   }
 
   // only used for dropdown anchors/links
@@ -321,21 +335,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     this.onClick.emit(value as string);
   }
 
-  public toggle() {
-    this.showDropDowns = this.multiselect ? true : !this.showDropDowns;
-
-    if (this.showDropDowns) {
-      this.getData();
-    }
-
-  }
-
   public getDisplayValue() {
     return this.title;
   }
 
   public async navigationByKeys(event: KeyboardEvent) {
-    if (!this.showDropDowns) {
+    if (!this.isOpen) {
       return;
     }
 
@@ -361,7 +366,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
       this.setSelectedItem(this.currentIndex);
     } else if (event.code === 'Escape') {
-      this.showDropDowns = false;
+      this.isOpen = false;
     }
   }
 

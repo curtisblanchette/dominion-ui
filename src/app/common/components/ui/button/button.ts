@@ -19,6 +19,7 @@ export class FiizButtonComponent implements AfterViewInit, AfterViewInit {
   @Input('autofocus') autofocus = false;
   @ViewChild('el') el: ElementRef;
   @HostBinding('class.disabled') get disabled() { return this.isDisabled };
+  @HostBinding('attr.data-qa') qaAttribute: string = 'button:';
 
   constructor(
 

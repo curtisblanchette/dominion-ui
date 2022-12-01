@@ -59,6 +59,13 @@
       margin-bottom: 0;
     }
 
+    .fa-square {
+
+    }
+    .fa-square-check {
+      color: var(--primary);
+    }
+
     &__wrapper {
       background: var(--slate1);
     }
@@ -103,10 +110,7 @@
         border-radius: 0 0 var(--button-border-radius) var(--button-border-radius);
       }
     }
-
-
   }
-
 }
 
 [class*="fiiz-dropdown-button-bottom-"] {

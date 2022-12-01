@@ -1,21 +1,22 @@
 <label [for]="id" tabindex="-1" *ngIf="label" [ngClass]="{ 'required' : required }">{{label}}</label>
 <div [ngClass]="{ 'no-title': !title, 'disabled': disabled }">
 
-  <fiiz-button class="full-width dropdown" [autofocus]="autofocus" [disabled]="disabled" size="{{size ? size : null}}" tabindex="-1">
+  <fiiz-button class="full-width dropdown" [autofocus]="autofocus"
+               [disabled]="disabled" size="{{size ? size : null}}" tabindex="-1">
     {{getDisplayValue()}}
     <i class="fa-solid fa-caret-down" style="margin-left: auto;"></i>
   </fiiz-button>
 
-  <div #dropdownList @dropDownMenu class="dropdown-menu fiiz-dropdown-button-{{position}}" *ngIf="showDropDowns"
+  <div #dropdownList @dropDownMenu class="dropdown-menu fiiz-dropdown-button-{{position}}" *ngIf="isOpen"
        [ngSwitch]="type">
 
     <ng-template [ngIf]="dropdownType === 'search' || dropdownType === 'basic'">
       <form [formGroup]="searchForm" *ngIf="dropdownType === 'search'">
         <fiiz-input
+          id="search"
           #searchInput
           formControlName="search"
           autocomplete="off"
-          [disabled]="disabled"
           [autofocus]="true"
           (keyup)="onKeyUpEvent($event)"
           type="text"
@@ -30,12 +31,10 @@
 
         <fiiz-button tabindex="-1"
            *ngFor="let item of items$ | async; let i = index; let last = last; "
-           [ngClass]="{'selected': multiselect ? isPreselected(item.id) : currentIndex === i, 'dropdown': true, 'divider':!last}"
-           (click)="setTheValue(item.id, item.label)"
-           [disabled]="disabled"
-           data-qa="dropdown-item"
+           [ngClass]="{'selected': multiselect ? item.checked : currentIndex === i, 'dropdown': true, 'multiselect-item': multiselect, 'divider': !last}"
+           (click)="setTheValue($event, item)"
            style="border-radius: 0;">
-          <i class="fa" [ngClass]="{'fa-square': multiselect, 'fa-square-check': multiselect && isPreselected(item.id) }" *ngIf="multiselect"></i>
+          <i class="fa" [ngClass]="{'fa-square': multiselect && !item.checked, 'fa-square-check': multiselect && item.checked }" *ngIf="multiselect"></i>
           {{ item.label }}
         </fiiz-button>
 

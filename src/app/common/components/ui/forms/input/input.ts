@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, ViewChild } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, forwardRef, HostBinding, Input, OnInit, ViewChild } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import intlTelInput from 'intl-tel-input';
 
 @Component({
@@ -12,7 +12,7 @@ import intlTelInput from 'intl-tel-input';
     multi: true
   }]
 })
-export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
+export class FiizInputComponent implements ControlValueAccessor, OnInit, AfterViewInit {
 
   @HostBinding('class.has-label')
 
@@ -50,11 +50,14 @@ export class FiizInputComponent implements ControlValueAccessor, AfterViewInit {
 
   ) {
 
+  }
 
+  public ngOnInit() {
+    this.qaAttribute = 'input:' + this.id;
   }
 
   public ngAfterViewInit() {
-    this.qaAttribute = 'input:' + this.id;
+
 
     if(this.type === 'tel') {
       this.inputElement.nativeElement.setAttribute('type', 'tel');

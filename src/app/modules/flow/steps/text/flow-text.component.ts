@@ -181,7 +181,7 @@ export class FlowTextComponent extends EntityCollectionComponentBase implements 
             }));
           }
         });
-        this.callOutcomeDropdown.setTheValue(null, null);
+        this.callOutcomeDropdown.setTheValue({},null);
       })
     }
 
