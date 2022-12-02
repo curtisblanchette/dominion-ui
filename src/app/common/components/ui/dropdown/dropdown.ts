@@ -23,17 +23,19 @@ export interface IDropDownMenu {
   position?: string;
 }
 
-export interface IDropDownMenuItemAnchor {
+export interface IDropDownMenuBase {
   id?: string | number;
+  checked?: boolean;
   label: string;
   icon?: string;
+  disabled?: boolean;
+}
+
+export interface IDropDownMenuItemAnchor extends IDropDownMenuBase{
   path: string;
 }
 
-export interface IDropDownMenuItem {
-  id?: string | number;
-  label: string;
-  icon: string;
+export interface IDropDownMenuItem extends IDropDownMenuBase {
   emitterValue: string;
 }
 
@@ -96,7 +98,6 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
   @HostListener('click', ['$event'])
   clickInside($event: any) {
     // check the event target
-
     if (!($event.currentTarget.classList.contains('search')) || !$event.target.parentElement.classList.contains('multiselect-item')) { // This is to enter input search params
 
       const elements = document.getElementsByClassName('dropdown-menu');
@@ -110,11 +111,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       if (this.isOpen && !this.apiData) {
         this.getData();
       }
-
       $event.stopPropagation();
     }
-
-
   }
 
   // ensures all dropdowns close when clicking outside.
@@ -188,10 +186,18 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     return enumValues.includes(this.moduleName);
   }
 
+  private applySelected(items: any[]) {
+    return items.map((item: any) => {
+      item.checked = this.values.includes(item.id);
+      return item;
+    });
+  }
+
   public async getData(value: string = '') {
+    let data: any = {};
+
     if (this.moduleName) {
       this.currentIndex = -1;
-      let data: any = {};
 
       // figure out if it's an entity or a lookup
       if (this.isEntity()) {
@@ -228,16 +234,16 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       if (data) {
         this.totalRecords = data.count || 0;
         // if( !this.required ){
-        // data = {...{}, ...data};
+        //   data = {...{}, ...data};
         // }
-        this.items$ = of(data);
+        this.items$ = of(data).pipe(map(this.applySelected.bind(this)));
       }
     } else {
       if (this.apiData) {
-        const data = this.apiData.filter(item => item.label.toLowerCase().includes(value.toLowerCase()));
+        data = this.apiData.filter(item => item.label.toLowerCase().includes(value.toLowerCase()));
         if (data) {
           this.totalRecords = data.length || 0;
-          this.items$ = of(data);
+          this.items$ = of(data).pipe(map(this.applySelected.bind(this)));
         }
       }
     }
@@ -279,14 +285,6 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
     }
   }
 
-  public isPreselected(value: any): boolean {
-    if (!this.values) {
-      return false;
-    }
-    const isSelected = !!this.values.find(x => x === value);
-    return isSelected;
-  }
-
   registerOnChange(fn: any) {
     this.onChange = fn;
   }
@@ -297,8 +295,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public async setTheValue($event:any = {}, item: DropdownItem | null) {
 
-    if(this.multiselect && item) {
-      item.checked = !item?.checked;
+    if(this.multiselect && item?.checked) {
+
       $event.stopPropagation();
     }
 
@@ -306,14 +304,15 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       this.title = '--None--';
     } else {
 
-
       this.onTouched();
       if (this.multiselect) {
         // check if it's already selected
         const found = this.values?.find((id) => id === item.id);
         if (found) {
+          // remove it from values
           this.values = this.values.filter((id) => id !== item.id);
         } else {
+          // add to values
           this.values.push(item.id as string);
         }
         this.title = (await firstValueFrom(this.items$.pipe(map(items => items.filter((x: any) => this.values.includes(x.id))))))?.map(x => x.label).join(', ');
@@ -353,7 +352,6 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         this.currentIndex--;
       }
       this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
-      this.setSelectedItem(this.currentIndex);
     } else if (event.code === 'ArrowDown') {
       if (this.currentIndex < 0) {
         this.currentIndex = 0;
@@ -361,18 +359,12 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         this.currentIndex++;
       }
       this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
-      this.setSelectedItem(this.currentIndex);
     } else if ((event.code === 'Enter' || event.code === 'NumpadEnter') && this.currentIndex >= 0) {
       this.dropdownList.nativeElement.querySelectorAll('fiiz-button button').item(this.currentIndex).focus();
-      this.setSelectedItem(this.currentIndex);
     } else if (event.code === 'Escape') {
       this.isOpen = false;
     }
   }
 
-  public setSelectedItem(index: number) {
-    // const selectedItem = this.items[index] as DropdownItem;
-    // this.setTheValue(selectedItem.label, selectedItem.id);
-  }
 
 }

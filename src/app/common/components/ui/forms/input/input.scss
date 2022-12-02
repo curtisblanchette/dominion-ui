@@ -6,6 +6,7 @@
   position: relative;
   margin-bottom: var(--input-margin-bottom);
   //overflow: hidden;
+  text-align: left;
   border-radius: var(--input-border-radius);
 
   &.has-label {

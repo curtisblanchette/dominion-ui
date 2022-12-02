@@ -21,8 +21,7 @@
         [items]="actionItems$"
         position="bottom-right"
         [title]="buttonLabels.action"
-        (onClick)="getActionItemValue($event)"
-      ></fiiz-dropdown>
+        (onClick)="getActionItemValue($event)"></fiiz-dropdown>
       <fiiz-button *ngIf="options.editable" primary (click)="onEditRecord()" [disabled]="!selected" icon="fa-pencil">
         <label>{{buttonLabels.edit}}</label>
       </fiiz-button>
@@ -69,15 +68,15 @@
   <div style="height: 100%; display: flex; justify-content: space-around; align-items: center;">
     <div>
       <div class="message-block" style="padding-top: 5%;">
-        We could not find any {{moduleName}}s
+        We could not find any {{module}}s
         <ng-container *ngIf="searchForm.controls.search.value">with the term "{{searchForm.controls.search.value}}"
         </ng-container>
       </div>
       <div class="message-block">
-        <span>Try another search term or create a new {{moduleName}}.</span>
+        <span>Try another search term or create a new {{module}}.</span>
       </div>
       <div class="message-block" style="padding-top: 4%;">
-        <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create New {{moduleName}}</fiiz-button>
+        <fiiz-button *ngIf="options.controls.createNew" stroked (click)="onCreateNew()">Create New {{module}}</fiiz-button>
       </div>
     </div>
   </div>

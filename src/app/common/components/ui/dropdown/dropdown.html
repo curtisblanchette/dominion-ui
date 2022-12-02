@@ -1,5 +1,5 @@
 <label [for]="id" tabindex="-1" *ngIf="label" [ngClass]="{ 'required' : required }">{{label}}</label>
-<div [ngClass]="{ 'no-title': !title, 'disabled': disabled }">
+<div [ngClass]="{ 'no-title': !title, 'disabled': disabled }" >
 
   <fiiz-button class="full-width dropdown" [autofocus]="autofocus"
                [disabled]="disabled" size="{{size ? size : null}}" tabindex="-1">
@@ -31,10 +31,11 @@
 
         <fiiz-button tabindex="-1"
            *ngFor="let item of items$ | async; let i = index; let last = last; "
+           [disabled]="item.disabled"
            [ngClass]="{'selected': multiselect ? item.checked : currentIndex === i, 'dropdown': true, 'multiselect-item': multiselect, 'divider': !last}"
-           (click)="setTheValue($event, item)"
+           (click)="$event.stopPropagation(); setTheValue($event, item)"
            style="border-radius: 0;">
-          <i class="fa" [ngClass]="{'fa-square': multiselect && !item.checked, 'fa-square-check': multiselect && item.checked }" *ngIf="multiselect"></i>
+          <i class="fa" [ngClass]="{'fa-square': !item.checked, 'fa-square-check': item.checked }" *ngIf="multiselect"></i>
           {{ item.label }}
         </fiiz-button>
 
@@ -43,9 +44,12 @@
 
     <ng-template [ngIf]="dropdownType === 'button'">
 
-        <fiiz-button class="dropdown" tabindex="-1" *ngFor="let item of items$ | async; let i = index; let last = last" [ngClass]="{'divider': !last}" (click)="emitTheValue(item.emitterValue)">
-          <i [class]="item.icon"></i> {{ item.label }}
-        </fiiz-button>
+        <fiiz-button class="dropdown"
+                     tabindex="-1"
+                     *ngFor="let item of items$ | async; let i = index; let last = last"
+                     [disabled]="item.disabled"
+                     [ngClass]="{'divider': !last}"
+                     (click)="emitTheValue(item.emitterValue)"><i [class]="item.icon"></i> {{ item.label }}</fiiz-button>
 
     </ng-template>
 

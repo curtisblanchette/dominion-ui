@@ -84,13 +84,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   @ViewChild('noDataFound') noDataTemplate: TemplateRef<any>;
   @ViewChild('initial') initialTemplate: TemplateRef<any>
 
-  public actionItems$: Observable<IDropDownMenuItem[]> = of([
-    {
-      label: 'Delete',
-      icon: 'fa-solid fa-trash',
-      emitterValue : 'delete'
-    }
-  ]);
+  public actionItems$: Observable<IDropDownMenuItem[]>;
 
   public buttonLabels:{[key:string] : string };
 
@@ -122,12 +116,13 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       return value;
     }));
 
-    this.getButtonLabels();
+
 
   }
 
   public override async ngAfterContentInit() {
     await super.ngAfterContentInit();
+    this.getButtonLabels();
 
     this.template$ = this.loadingSubject$.asObservable().pipe(
       untilDestroyed(this),
@@ -160,6 +155,15 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   }
 
   public async ngAfterViewInit() {
+
+    this.actionItems$ = of([
+      {
+        label: 'Delete',
+        icon: 'fa-solid fa-trash',
+        disabled: true,
+        emitterValue : 'delete'
+      }
+    ]);
 
     this.searchForm.get('search')?.valueChanges.pipe(
       untilDestroyed(this),
