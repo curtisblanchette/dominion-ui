@@ -205,7 +205,7 @@ export class FiizDataComponent extends EntityCollectionComponentBase implements 
 
         this.form.get('campaignId')?.valueChanges.pipe(untilDestroyed(this)).subscribe((campaignId: any) => {
           if(this.dropdowns){
-            const ls = this.dropdowns.find(cmp => cmp.id === 'campaignId')?.apiData.find(x => x.id === campaignId);
+            const ls = this.dropdowns.find(cmp => cmp.id === 'campaignId')?.apiData?.find(x => x.id === campaignId);
             this.form.get('leadSourceId')?.patchValue(ls?.leadSourceId);
           }
         });

@@ -88,7 +88,6 @@ export class SettingsComponent implements OnInit {
     }
 
     this.form = this.fb.group(form);
-    console.log(this.form);
   }
 
   public getSettingDisplayName(name: string) {

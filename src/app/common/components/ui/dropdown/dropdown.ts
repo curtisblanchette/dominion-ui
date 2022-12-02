@@ -188,7 +188,9 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   private applySelected(items: any[]) {
     return items.map((item: any) => {
-      item.checked = this.values.includes(item.id);
+      if(Object.isExtensible((item))) {
+        item.checked = this.values.includes(item.id);
+      }
       return item;
     });
   }
@@ -236,14 +238,14 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
         // if( !this.required ){
         //   data = {...{}, ...data};
         // }
-        this.items$ = of(data).pipe(map(this.applySelected.bind(this)));
+        this.items$ = of(data).pipe(map((items) => this.applySelected(items)));
       }
     } else {
       if (this.apiData) {
         data = this.apiData.filter(item => item.label.toLowerCase().includes(value.toLowerCase()));
         if (data) {
           this.totalRecords = data.length || 0;
-          this.items$ = of(data).pipe(map(this.applySelected.bind(this)));
+          this.items$ = of(data).pipe(map((items) => this.applySelected(items)));
         }
       }
     }
@@ -280,8 +282,8 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
       }
     } else {
       // the data source was statically provided (aka. its not a module or lookup)
-      // const data = [...(await firstValueFrom(this.items$))].find((item: any) => item.id === value) as any;
-      // this.title = data?.label ? data?.label : this.title;
+      const data = [...(await firstValueFrom(this.items$))].find((item: any) => item.id === value) as any;
+      this.title = data?.label ? data?.label : this.title;
     }
   }
 
@@ -295,8 +297,7 @@ export class FiizDropDownComponent extends EntityCollectionComponentBase impleme
 
   public async setTheValue($event:any = {}, item: DropdownItem | null) {
 
-    if(this.multiselect && item?.checked) {
-
+    if(this.multiselect) {
       $event.stopPropagation();
     }
 

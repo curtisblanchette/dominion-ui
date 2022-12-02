@@ -21,8 +21,7 @@
           (keyup)="onKeyUpEvent($event)"
           type="text"
           placeholder="Search..."
-          class="search"
-        ></fiiz-input>
+          class="search"></fiiz-input>
       </form>
       <div class="dropdown-menu__items">
         <ng-template *ngIf="!(loadingSubject$ | async)">
@@ -33,7 +32,7 @@
            *ngFor="let item of items$ | async; let i = index; let last = last; "
            [disabled]="item.disabled"
            [ngClass]="{'selected': multiselect ? item.checked : currentIndex === i, 'dropdown': true, 'multiselect-item': multiselect, 'divider': !last}"
-           (click)="$event.stopPropagation(); setTheValue($event, item)"
+           (click)="setTheValue($event, item)"
            style="border-radius: 0;">
           <i class="fa" [ngClass]="{'fa-square': !item.checked, 'fa-square-check': item.checked }" *ngIf="multiselect"></i>
           {{ item.label }}
