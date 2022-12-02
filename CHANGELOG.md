@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.12 (2022-12-02)
+
+
+### Bug Fixes
+
+* **develop:** dropdown multiselect fixes ([3971f7e](https://github.com/4iiz/dominion-ui/commit/3971f7e268508d8ceb662022b8472e34b8d81108))
+
 ### 1.23.11 (2022-12-01)
 
 
