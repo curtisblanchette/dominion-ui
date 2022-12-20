@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.16 (2022-12-20)
+
+
+### Bug Fixes
+
+* **develop:** update package organization ([d5d750f](https://github.com/curtisblanchette/dominion-ui/commit/d5d750f735e0a055b8019a3d73c168064aceeb44))
+
 ### 1.23.14 (2022-12-20)
 
 ### 1.23.13 (2022-12-20)
