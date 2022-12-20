@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.13 (2022-12-20)
+
+
+### Bug Fixes
+
+* **develop:** update .npmrc and package-json ([a44503d](https://github.com/curtisblanchette/dominion-ui/commit/a44503db351168eaf79241cd2f5792395d7ba0a3))
+
 ### 1.23.12 (2022-12-02)
 
 
