@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import dayjs from 'dayjs';
 import { Dayjs, ManipulateType } from 'dayjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
-import { IEvent } from '@4iiz/corev2';
+import { IEvent } from '@trichome/core';
 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
 import * as fromApp from '../../../../store/app.reducer';

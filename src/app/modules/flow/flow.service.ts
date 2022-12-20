@@ -20,7 +20,7 @@ import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
-import { Call, Contact, Deal, ICallNote, Lead, Address, Event, Campaign, LeadSource, Office } from '@4iiz/corev2/dist/models/index';
+import { Call, Contact, Deal, ICallNote, Lead, Address, Event, Campaign, LeadSource, Office } from '@trichome/core/dist/models/index';
 
 export interface IHistory {
   prevStepId: string;

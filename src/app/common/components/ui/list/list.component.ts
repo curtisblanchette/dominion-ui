@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, startWith, take } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
-import { Call, Contact, Deal, Event, Lead, User } from '@4iiz/corev2';
+import { Call, Contact, Deal, Event, Lead, User } from '@trichome/core';
 import pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { IDropDownMenuItem } from '../dropdown';
@@ -115,9 +115,6 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
       this.searchInModule();
       return value;
     }));
-
-
-
   }
 
   public override async ngAfterContentInit() {

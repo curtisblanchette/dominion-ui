@@ -3,7 +3,7 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { Store } from '@ngrx/store';
 import { ManipulateType } from 'dayjs';
 import dayjs from 'dayjs';
-import { IEvent } from '@4iiz/corev2';
+import { IEvent } from '@trichome/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
