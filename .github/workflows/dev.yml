@@ -8,36 +8,36 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
-
-  e2e-chrome-test:
-    if: true == false
-    runs-on: ubuntu-20.04
-    environment: dev
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [ 16.x ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Run Tests
-        uses: cypress-io/github-action@v4.2.0
-        env:
-          CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
-          CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
-        with:
-          # build: npm run build:dev
-          start: npm run start:dev
-          wait-on: 'http://localhost:4200'
-          browser: chrome
-          record: true
-          spec: 'cypress/**/newLead.cy.ts'
+#
+#  e2e-chrome-test:
+#    if: true == false
+#    runs-on: ubuntu-20.04
+#    environment: dev
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        node-version: [ 16.x ]
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install Dependencies
+#        run: npm install
+#
+#      - name: Run Tests
+#        uses: cypress-io/github-action@v4.2.0
+#        env:
+#          CYPRESS_API_URL: ${{ secrets.CYPRESS_API_URL }}
+#          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+#          CYPRESS_USERNAME: ${{ secrets.CYPRESS_USERNAME }}
+#          CYPRESS_PASSWORD: ${{ secrets.CYPRESS_PASSWORD }}
+#        with:
+#          # build: npm run build:dev
+#          start: npm run start:dev
+#          wait-on: 'http://localhost:4200'
+#          browser: chrome
+#          record: true
+#          spec: 'cypress/**/newLead.cy.ts'
 
   deploy:
 #    needs: e2e-chrome-test

@@ -23,7 +23,7 @@
   },
   "private": true,
   "dependencies": {
-    "@4iiz/corev2": "0.6.33",
+    "@trichome/core": "0.6.38",
     "@angular/animations": "~14.1.3",
     "@angular/cdk": "^14.1.3",
     "@angular/common": "~14.1.3",
