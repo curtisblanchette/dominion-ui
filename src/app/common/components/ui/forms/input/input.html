@@ -21,8 +21,16 @@
            [value]="value"
            [(ngModel)]="value"
            [disabled]="disabled"
+           (change)="type === 'file' ? showPreview($event) : null"
+           accept="image/*"
            [ngClass]="{ 'number': type === 'number', 'has-icon': !!icon }"
            (ngModelChange)="changed($event)"/>
+
+    <img src="#"
+         #imgPreview
+         class="preview"
+         alt="Image Preview"
+         *ngIf="type === 'file'"/>
   </div>
 </ng-template>
 

@@ -33,13 +33,14 @@ export class FiizInputComponent implements ControlValueAccessor, OnInit, AfterVi
   @Input('autofocus') autofocus = false;
 
   @ViewChild('inputElement', { read: ElementRef }) inputElement: ElementRef;
+  @ViewChild('imgPreview') imgPreview: ElementRef;
 
   @HostBinding('attr.disabled')
   isDisabled = false;
 
   @HostBinding('attr.data-qa') qaAttribute: string;
 
-  value: number | string;
+  value: number | string | any;
 
   intlTelInput?: any;
 
@@ -92,7 +93,22 @@ export class FiizInputComponent implements ControlValueAccessor, OnInit, AfterVi
     this.disabled = disabled;
   }
 
+  private showPreview($event: any) {
+      const file = $event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imgPreview.nativeElement.src = reader.result;
+      }
+      reader.readAsDataURL(file);
+  }
+
   changed($event:any) {
+
+    if(this.type === 'file') {
+      // this.showPreview($event);
+      console.log($event)
+    }
+
     this.value =  $event;
 
     if(this.intlTelInput) {

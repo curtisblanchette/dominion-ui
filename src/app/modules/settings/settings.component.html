@@ -24,7 +24,14 @@
             </fiiz-dropdown>
             <fiiz-input
               type="text"
-              *ngIf="setting.name !== 'timezone'"
+              *ngIf="setting.name === 'company_name'"
+              [label]="getSettingDisplayName(setting.name)"
+              formControlName="value"
+              placeholder="{{getSettingDisplayName(setting.name)}}">
+            </fiiz-input>
+            <fiiz-input
+              type="file"
+              *ngIf="setting.name === 'company_logo'"
               [label]="getSettingDisplayName(setting.name)"
               formControlName="value"
               placeholder="{{getSettingDisplayName(setting.name)}}">

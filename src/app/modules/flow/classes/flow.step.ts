@@ -41,7 +41,7 @@ export class FlowStep extends FlowNode implements FlowSerialization<FlowStep> {
       this.afterRoutingTrigger = data.afterRoutingTrigger;
     }
 
-    // only modify constructed at if its unset
+    // only modify _constructedAt if it's unset
     if(data._constructedAt) {
       this._constructedAt = new Date().getTime();
     } else {
