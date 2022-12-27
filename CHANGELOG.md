@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.19 (2022-12-27)
+
+
+### Bug Fixes
+
+* **develop:** have to revert ts increment ([63c2474](https://github.com/curtisblanchette/dominion-ui/commit/63c2474f545eb8e9a6a47852b8c3e22dfa5443d5))
+
 ### 1.23.18 (2022-12-21)
 
 ### 1.23.17 (2022-12-20)
