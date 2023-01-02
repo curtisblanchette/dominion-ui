@@ -1,5 +1,5 @@
-@import '~src/assets/css/variables';
-@import '~src/assets/css/functions';
+@import 'src/assets/css/variables';
+@import 'src/assets/css/functions';
 
   /* class applies to select element itself, not a wrapper element */
 :host {
@@ -32,7 +32,7 @@
     left: 2em;
     line-height: 1em;
   }
-  
+
   label.required:after {
     content: ' *';
     color: var(--text1-shade25);

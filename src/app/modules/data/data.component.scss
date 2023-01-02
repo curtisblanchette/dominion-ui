@@ -1,4 +1,4 @@
-@import '~src/assets/css/variables';
+@import 'src/assets/css/variables';
 
 :host {
   height: var(--full-height-minus-navbar);
@@ -46,7 +46,7 @@
 @media all and (min-width: $mobile-threshold) {
   :host {
     gap: 2em;
-    flex-direction: row;    
+    flex-direction: row;
 
     section.sidebar {
       flex: 1;
