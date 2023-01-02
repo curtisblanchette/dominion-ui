@@ -3,7 +3,6 @@ import { DefaultDataServiceFactory, EntityCollectionServiceFactory } from '@ngrx
 import { Store } from '@ngrx/store';
 import { ManipulateType } from 'dayjs';
 import dayjs from 'dayjs';
-import { IEvent } from '@trichome/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
 import { EntityCollectionComponentBase } from '../../../../data/entity-collection.component.base';
@@ -22,6 +21,7 @@ import { ModuleTypes } from '../../../../data/entity-metadata';
 import { Fields } from '../../../../common/models/event.model';
 import { FiizDataComponent } from '../../../../common/components/ui/data/data.component';
 import { DropdownItem } from '../../../../common/components/interfaces/dropdownitem.interface';
+import { IEvent } from '@trichome/core';
 
 
 @UntilDestroy()

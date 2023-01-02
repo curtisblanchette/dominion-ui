@@ -20,7 +20,7 @@ import * as fromLogin from '../login/store/login.reducer';
 import { v4 as uuidv4 } from 'uuid';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { DropdownItem } from '../../common/components/interfaces/dropdownitem.interface';
-import { Call, Contact, Deal, ICallNote, Lead, Address, Event, Campaign, LeadSource, Office } from '@trichome/core/dist/models/index';
+import { ICall, IContact, IDeal, ILead, IAddress, IEvent, ICampaign, ILeadSource, IOffice, ICallNote } from '@trichome/core';
 
 export interface IHistory {
   prevStepId: string;
@@ -45,15 +45,15 @@ export class FlowService {
   public eventsService: CustomDataService<DominionType>;
   public leadsService: CustomDataService<DominionType>;
 
-  public leadService: EntityCollectionService<Lead>;
-  public contactService: EntityCollectionService<Contact>;
-  public dealService: EntityCollectionService<Deal>;
-  public eventService: EntityCollectionService<Event>;
-  public addressService: EntityCollectionService<Address>;
-  public campaignService: EntityCollectionService<Campaign>;
-  public leadSourceService: EntityCollectionService<LeadSource>;
-  public officeService: EntityCollectionService<Office>;
-  public callService: EntityCollectionService<Call>;
+  public leadService: EntityCollectionService<ILead>;
+  public contactService: EntityCollectionService<IContact>;
+  public dealService: EntityCollectionService<IDeal>;
+  public eventService: EntityCollectionService<IEvent>;
+  public addressService: EntityCollectionService<IAddress>;
+  public campaignService: EntityCollectionService<ICampaign>;
+  public leadSourceService: EntityCollectionService<ILeadSource>;
+  public officeService: EntityCollectionService<IOffice>;
+  public callService: EntityCollectionService<ICall>;
 
   private renderer: Renderer2;
 

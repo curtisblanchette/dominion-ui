@@ -5,10 +5,10 @@ import { DealModel } from './deal.model';
 import { EventModel } from './event.model';
 import { LeadSourceModel } from './leadSource.model';
 import { LeadModel } from './lead.model';
-import { Address, Call, Call_Note, Campaign, Contact, Deal, Event, Event_Note, ICall, ICallDTO, ICallNoteDTO, ICampaign, ICampaignDTO, IContact, IContactDTO, IDeal, IDealDTO, IEvent, IEventDTO, IEventNoteDTO, ILead, ILeadDTO, ILeadSource, ILeadSourceDTO, Lead, LeadSource, LK_PracticeArea, Office } from '@trichome/core/dist/models/index';
 import { Validators } from '@angular/forms';
 import { AddressModel } from './address.model';
 import { OfficeModel } from './office.model';
+import { ICall, ICallDTO, ICampaign, IContact, ICustomField, IDeal, IEvent, ILead, ILeadSource, ISetting, ISettingDTO } from '@trichome/core';
 
 export interface IModel {
   label: string;
@@ -31,24 +31,13 @@ export const models: {[key: string]: any} = {
   office: OfficeModel
 }
 
-export const types: {[key: string]: any} = {
-  address: Address,
-  call: Call,
-  campaign: Campaign,
-  deal: Deal,
-  contact: Contact,
-  office: Office,
-  event: Event,
-  lead: Lead,
-  leadSource: LeadSource
-}
-
-export type DominionType =
-  Call | ICall | ICallDTO | Call_Note | ICallNoteDTO |
-  Campaign | ICampaign | ICampaignDTO |
-  Deal | IDeal | IDealDTO |
-  Contact | IContact | IContactDTO |
-  Event | IEvent | IEventDTO | Event_Note | IEventNoteDTO |
-  Lead | ILead | ILeadDTO |
-  LeadSource | ILeadSource | ILeadSourceDTO |
-  LK_PracticeArea;
+export type DominionType = ICall
+  | ICallDTO
+  | ICampaign
+  | IDeal
+  | IContact
+  | IEvent
+  | ILead
+  | ILeadSource
+  | ICustomField
+  | ISetting;

@@ -35,7 +35,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
     return firstValueFrom( super.execute('POST', `${this.entityUrl}${entity.id}/convert-lead`) );
   }
 
-  override add(entity: Partial<DominionType>, notify: boolean = true) {
+  override add(entity: Partial<T>, notify: boolean = true) {
     const data = this.removeNulls(entity);
     const entityLabel = this.entityName[0].toUpperCase() + this.entityName.substring(1, this.entityName.length)
 
@@ -69,7 +69,7 @@ export class CustomDataService<T> extends DefaultDataService<T> {
   override getAll(): Observable<T[]> {
     // transform lookups into DropDownItem's
     if((<string[]>Object.values(LookupTypes)).includes(this.entityName)) {
-      return super.getAll().pipe(map(CustomDataService.toDropdownItems));
+      return super.getAll().pipe(map((res: any) => CustomDataService.toDropdownItems(res)));
     }
     return super.getAll();
   }

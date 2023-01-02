@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { firstValueFrom, Observable, of, startWith, take } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FlowService } from '../../../../modules/flow/flow.service';
-import { Call, Contact, Deal, Event, Lead, User } from '@trichome/core';
+import { ICall, IContact, IDeal, IEvent, ILead, IUser } from '@trichome/core';
 import pluralize from 'pluralize';
 import { DefaultDataServiceFactory, EntityCollectionServiceFactory, QueryParams } from '@ngrx/data';
 import { IDropDownMenuItem } from '../dropdown';
@@ -63,7 +63,7 @@ export class FiizListComponent extends EntityCollectionComponentBase implements 
   public page: number = 1;
   public limit: number = 25;
   public offset: number = 0;
-  public selected: Call | Lead | Contact | Deal | Event | User | null;
+  public selected: ICall | ILead | IContact | IDeal | IEvent | IUser | null;
   public columns: DropdownItem[] = [];
 
   @ViewChildren('row') rows: QueryList<ElementRef>;
