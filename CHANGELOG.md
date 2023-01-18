@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.23.20 (2023-01-18)
+
+
+### Bug Fixes
+
+* **develop:** bump core and rebuild package-lock.json ([44fc990](https://github.com/curtisblanchette/dominion-ui/commit/44fc990f792e5cee42659a9b05500a9ebbf41232))
+
 ### 1.23.19 (2022-12-27)
 
 
