@@ -42,7 +42,7 @@
     "@ngrx/entity": "^14.0.1",
     "@ngrx/store": "^14.0.1",
     "@tinymce/tinymce-angular": "^7.0.0",
-    "@trichome/core": "0.6.54",
+    "@trichome/core": "0.6.56",
     "amazon-cognito-identity-js": "^5.2.10",
     "assert": "^2.0.0",
     "countries-and-timezones": "^3.3.0",
