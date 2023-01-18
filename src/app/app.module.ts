@@ -98,7 +98,6 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
   ]
 })
 export class AppModule {
-
   constructor() {
     dayjs.extend(utc);
     dayjs.extend(timezone);
